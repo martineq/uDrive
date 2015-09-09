@@ -1,4 +1,0 @@
-#.gitignore
-
-# Ignoro los archivos temporales (todos los que terminan con el caracter "~")
-*~
