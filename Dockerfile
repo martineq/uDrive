@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
 		cmake \
 		wget \
 		unzip \
+		valgrind \
 		tree \
 		libsnappy-dev \
 		zlib1g-dev \
