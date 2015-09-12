@@ -25,9 +25,9 @@ before_script:
     - mkdir server/build server/test_build
 
 script: 
-    - cd server/build && cmake -DCHECK_COVERAGE=ON ../ && make 
-    - cd -
-    - cd server/test_build && cmake ../test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
-    - cd -
-    - cd server/test_rest && npm install && ./run.sh
-    - cd -
+#    - cd server/build && cmake -DCHECK_COVERAGE=ON ../ && make 
+#    - cd -
+#    - cd server/test_build && cmake ../test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
+#    - cd -
+#    - cd server/test_rest && npm install && ./run.sh
+#    - cd -
