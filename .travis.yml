@@ -1,0 +1,33 @@
+language: cpp
+
+compiler:
+    - gcc
+    # Se remueve clang por qe rocksdb no compila, problemas con c++11
+    # - clang
+
+before_install:
+   # As of this writing (10 May 2014) the Travis build environment is Ubuntu 12.04,
+   # which needs the following ugly dependency incantations to build RocksDB:
+    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-get update -qq
+    - sudo apt-get install -y -qq gcc-4.9 g++-4.9 zlib1g-dev libbz2-dev libsnappy-dev
+
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 50
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 50
+    - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 50
+
+    - wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb
+    - sudo dpkg -i libgflags0_2.0-1_amd64.deb
+    - wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
+    - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
+
+before_script:
+    - mkdir server/build server/test_build
+
+script: 
+    - cd server/build && cmake -DCHECK_COVERAGE=ON ../ && make 
+    - cd -
+    - cd server/test_build && cmake ../test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
+    - cd -
+    - cd server/test_rest && npm install && ./run.sh
+    - cd -
