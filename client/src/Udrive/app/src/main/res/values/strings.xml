@@ -1,10 +1,18 @@
 <resources>
-    <string name="app_name">Udrive</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">uDrive</string>
     <string name="action_settings">Settings</string>
+
     <string name="title_activity_file_list">FileListActivity</string>
     <string name="title_activity_file_detail">FileDetailActivity</string>
     <string name="file_lastMod">Última modificación</string>
     <string name="file_name">Nombre</string>
+
+    <string name="title_main_activity">Sign in to uDrive</string>
+    <string name="button_send">Sign in</string>
+    <string name="title_activity_display_message">Log in OK!</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="sign_up_msg">Don\'t have an account?</string>
+    <string name="sign_up_link">Sign up</string>
+
 </resources>
