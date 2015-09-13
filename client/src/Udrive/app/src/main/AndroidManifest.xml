@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fiuba.tallerprog2.udrive" >
+    package="com.fiuba.app.udrive" >
 
     <application
         android:allowBackup="true"
