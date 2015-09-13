@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Udrive.iml" filepath="$PROJECT_DIR$/Udrive.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$USER_HOME$/Dropbox/Facultad Eugenia/75.52/coding/tp7552/client/src/Udrive/app/app.iml" filepath="$USER_HOME$/Dropbox/Facultad Eugenia/75.52/coding/tp7552/client/src/Udrive/app/app.iml" />
     </modules>
   </component>
 </project>
