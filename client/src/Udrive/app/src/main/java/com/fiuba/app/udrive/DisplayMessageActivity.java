@@ -1,4 +1,4 @@
-package com.fiuba.tallerprog2.udrive;
+package com.fiuba.app.udrive;
 
 import android.app.Activity;
 

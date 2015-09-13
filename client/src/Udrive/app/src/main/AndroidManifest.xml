@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fiuba.tallerprog2.udrive" >
+    package="com.fiuba.app.udrive" >
 
     <application
         android:allowBackup="true"
@@ -8,20 +8,24 @@
         android:label="@string/app_name"
         android:theme="@style/MyTheme.Base" >
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_main_activity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+          android:name=".MainActivity"
+          android:label="@string/title_main_activity" >
+	<intent-filter>
+		<action android:name="android.intent.action.MAIN" />
+		<category android:name="android.intent.category.LAUNCHER" />
+	</intent-filter>
         </activity>
         <activity
-            android:name="com.fiuba.tallerprog2.udrive.DisplayMessageActivity"
+            android:name=".FileListActivity"
+            android:label="@string/title_activity_file_list" >
+        </activity>
+        <activity
+            android:name=".DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.fiuba.tallerprog2.udrive.MainActivity" >
+            android:parentActivityName="com.fiuba.app.udrive.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.fiuba.tallerprog2.udrive.MainActivity" />
+                android:value="com.fiuba.app.udrive.MainActivity" />
         </activity>
     </application>
 
