@@ -6,9 +6,9 @@ using namespace std;
 int main(int argc, char** argv) {
 
 	LibraryTest lt;
-	lt.RocksDBExample();
-	lt.MongooseExample();
-	lt.JsonExample();
+	lt.EjemploRocksDB();
+	lt.EjemploMongoose();
+	lt.EjemploJson();
 
 	return 0;
 }

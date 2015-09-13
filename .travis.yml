@@ -1,33 +1,64 @@
+# Selección del lenguaje: C++
 language: cpp
 
+# Seleeción de compiladores
 compiler:
-    - gcc
-    # Se remueve clang por qe rocksdb no compila, problemas con c++11
-    # - clang
+  - gcc
 
+# Creo un directorio dedicado a la instalación
 before_install:
-   # As of this writing (10 May 2014) the Travis build environment is Ubuntu 12.04,
-   # which needs the following ugly dependency incantations to build RocksDB:
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-get update -qq
-    - sudo apt-get install -y -qq gcc-4.9 g++-4.9 zlib1g-dev libbz2-dev libsnappy-dev
+  - cd server
+  - mkdir temp_install
 
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 50
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 50
-    - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 50
+# Instalo todas las dependencias. (Tener en cuenta que Travis usa como base Ubuntu 12.04)
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq lcov curl build-essential python git wget cmake unzip valgrind tree tar
+  - sudo apt-get install -y -qq libsnappy-dev zlib1g-dev libbz2-dev
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update
+  - sudo apt-get install -y gcc-4.9 g++-4.9
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 10
+  - sudo update-alternatives --config gcc
+  - sudo update-alternatives --config g++
+  - sudo update-alternatives --config gcov
+  - sudo rm -rf /var/lib/apt/lists/*
+  - cd temp_install
+  - sudo wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb
+  - sudo dpkg -i libgflags0_2.0-1_amd64.deb
+  - sudo wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
+  - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
+  - sudo wget https://github.com/facebook/rocksdb/archive/master.zip
+  - sudo unzip master.zip
+  - cd rocksdb-master
+  - sudo make static_lib
+  - sudo cp librocksdb.a /usr/local/lib
+  - cd ..
+  - sudo rm -rf rocksdb-master
+  - sudo rm master.zip
+  - sudo wget https://github.com/open-source-parsers/jsoncpp/archive/master.zip
+  - sudo unzip master.zip
+  - cd jsoncpp-master
+  - sudo python amalgamate.py
+  - cd dist
+  - sudo gcc -c jsoncpp.cpp
+  - sudo ar rvs libjsoncpp.a jsoncpp.o
+  - sudo cp libjsoncpp.a /usr/local/lib
+  - cd ../..
+  - sudo rm -rf jsoncpp-master
+  - sudo rm master.zip
+  - cd ..
+  - sudo rm -rf temp_install
 
-    - wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb
-    - sudo dpkg -i libgflags0_2.0-1_amd64.deb
-    - wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
-    - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
-
+# Creo un directorio dedicado al build
 before_script:
-    - mkdir server/build server/test_build
+  - mkdir build
 
+# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. TODO: Habilitar make y solucionar los errores
 script: 
-#    - cd server/build && cmake -DCHECK_COVERAGE=ON ../ && make 
-#    - cd -
-#    - cd server/test_build && cmake ../test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
-#    - cd -
-#    - cd server/test_rest && npm install && ./run.sh
-#    - cd -
+  - cd build
+  - sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
+#  - sudo make
+#  - sudo make coveralls
