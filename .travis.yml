@@ -5,6 +5,12 @@ language: cpp
 compiler:
   - gcc
 
+# Solo hacer build de los branches elegidos
+branches:
+  only:
+    - master
+    - develop
+
 # Creo un directorio dedicado a la instalación
 before_install:
   - cd server
