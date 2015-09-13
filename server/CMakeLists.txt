@@ -27,7 +27,7 @@ set(SRC ${RUTA_SRC}/main.cpp ${RUTA_SRC}/LibraryTest.cpp ${RUTA_LIB}/mongoose/mo
 set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp) #mongoose
 
 # Flag para indicar si se quiere generar un ejecutable
-option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" NO) #TODO: Setear "NO" a la hora de crear los tests
+option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" NO)
 
 ### Comandos para coveralls-cmake ###
 
