@@ -7,6 +7,7 @@ compiler:
 
 # Creo un directorio dedicado a la instalación
 before_install:
+  - cd server
   - mkdir temp_install
 
 # Instalo todas las dependencias. (Tener en cuenta que Travis usa como base Ubuntu 12.04)
