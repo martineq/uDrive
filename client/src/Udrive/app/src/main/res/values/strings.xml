@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_file_list">FileListActivity</string>
+    <string name="title_activity_file_detail">FileDetailActivity</string>
+    <string name="file_lastMod">Última modificación</string>
+    <string name="file_name">Nombre</string>
 </resources>

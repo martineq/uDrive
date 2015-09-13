@@ -12,6 +12,15 @@ public class File {
     private Date lastModDate;
     private Integer cantItems;
 
+    public File(String name, Integer size, Character type, Boolean shared, Date lastModDate, Integer cantItems){
+        this.name = name;
+        this.size = size;
+        this.type = type;
+        this.shared = shared;
+        this.lastModDate = lastModDate;
+        this.cantItems = cantItems;
+    }
+
     public Integer getId() {
         return id;
     }
