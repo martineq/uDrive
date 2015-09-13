@@ -6,3 +6,6 @@
 
 ## Travis CI
 [![Build Status](https://travis-ci.org/martineq/tp7552.svg?branch=develop)](https://travis-ci.org/martineq/tp7552)
+
+## Coveralls
+[![Coverage Status](https://coveralls.io/repos/martineq/tp7552/badge.svg?branch=master&service=github)](https://coveralls.io/github/martineq/tp7552?branch=master)
