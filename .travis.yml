@@ -62,9 +62,9 @@ install:
 before_script:
   - mkdir build
 
-# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. TODO: Habilitar make y solucionar los errores
+# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake.
 script: 
   - cd build
   - sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
-#  - sudo make
-#  - sudo make coveralls
+  - sudo make
+  - sudo make coveralls
