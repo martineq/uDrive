@@ -1,6 +1,7 @@
 package com.fiuba.app.udrive.model;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class File {
 
@@ -49,6 +50,11 @@ public class File {
         return cantItems;
     }
 
+    public String getLastModDateFormated(){
+        String DATE_FORMAT = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(this.getLastModDate());
+    }
 
 
 }

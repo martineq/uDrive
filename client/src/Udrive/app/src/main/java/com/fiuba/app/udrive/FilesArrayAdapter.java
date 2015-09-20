@@ -49,9 +49,19 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
 
         File file = files.get(position);
         if (file != null) {
+            String lastMod = convertView.getResources().getString(R.string.file_lastMod)+" "+file.getLastModDateFormated();
             viewHolder.txName.setText(file.getName());
-            viewHolder.txLastMod.setText(file.getLastModDate().toString());
-            viewHolder.imagFile.setImageResource(R.drawable.file);
+            viewHolder.txLastMod.setText(lastMod);
+            if(file.getType() == 'd'){
+                if(file.getShared()){
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_folder_account);
+                }else{
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_folder);
+                }
+
+            }else{
+                viewHolder.imagFile.setImageResource(R.drawable.ic_file);
+            }
 
         }
         return convertView;
