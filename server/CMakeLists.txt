@@ -119,11 +119,3 @@ if (NOT SOLO_EXECUTABLE)
   add_test(${NOMBRE_PROYECTO} test_ejemplo)
 endif ()
 
-
-####################
-####################
-####################
-
-# Pruebo correr un script de prueba 
-# execute_process(COMMAND ${RUTA_RAIZ}/script.sh)
-
