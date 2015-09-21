@@ -14,5 +14,7 @@
     <string name="password">Password</string>
     <string name="sign_up_msg">Don\'t have an account?</string>
     <string name="sign_up_link">Sign up</string>
+    <string name="loading">Cargando...</string>
+    <string name="error_obtaining_files">Error obteniendo archivos</string>
 
 </resources>

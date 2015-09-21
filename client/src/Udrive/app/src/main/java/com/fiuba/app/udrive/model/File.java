@@ -10,10 +10,10 @@ public class File {
     private Integer size;
     private Character type;
     private Boolean shared;
-    private Date lastModDate;
+    private String lastModDate;
     private Integer cantItems;
 
-    public File(String name, Integer size, Character type, Boolean shared, Date lastModDate, Integer cantItems){
+    public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems){
         this.name = name;
         this.size = size;
         this.type = type;
@@ -42,7 +42,7 @@ public class File {
         return shared;
     }
 
-    public Date getLastModDate() {
+    public String getLastModDate() {
         return lastModDate;
     }
 
@@ -51,9 +51,10 @@ public class File {
     }
 
     public String getLastModDateFormated(){
-        String DATE_FORMAT = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        return sdf.format(this.getLastModDate());
+        //String DATE_FORMAT = "dd/MM/yyyy";
+        //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        //sdf.format(this.getLastModDate());
+        return getLastModDate();
     }
 
 
