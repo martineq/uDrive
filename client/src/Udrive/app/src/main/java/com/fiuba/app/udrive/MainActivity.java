@@ -1,12 +1,7 @@
 package com.fiuba.app.udrive;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -18,11 +13,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.fiuba.app.udrive.model.UserAccount;
+import com.fiuba.app.udrive.model.UserData;
+import com.fiuba.app.udrive.rest.service.RestClient;
+import com.fiuba.app.udrive.rest.service.RestService;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static final String USER_CREDENTIALS = "com.fiuba.tallerprog2.udrive.CREDENTIALS";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -64,19 +64,49 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called when the user clicks the Sign in button */
+    /**
+     * Called when the user clicks the Sign in button
+     */
     public void sendMessage(View view) {
+
+        String email = ((EditText) findViewById(R.id.email)).getText().toString();
+        String password = ((EditText) findViewById(R.id.password)).getText().toString();
+
+        UserData userData = new UserData(email, password);
+
+        /* try and catch to handle a possible lack of internet connection */
+
+        /////////////////////////////////
+        // Testing Retrofit requests
+        /////////////////////////////////
+
+        final String API_URL = "http://jsonplaceholder.typicode.com";
+
+        RestService service = RestClient.createService(RestService.class, API_URL);
+        service.getToken(userData, new Callback<UserAccount>() {
+            @Override
+            public void success(UserAccount uAccount, Response response) {
+              //  System.out.println(testRest.getOrigin());
+                System.out.println(uAccount.getToken());
+                response.getStatus();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // Implement getStatusCode(RetrofitError error) which returns an int code
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    System.out.println(">>>> No Internet connection");
+                } else
+                    System.out.println(">>>> An error occurred");
+            }
+        });
+
+        ///////////////////
         // Do something in response to button
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText emailText = (EditText) findViewById(R.id.email);
-        EditText pwdText = (EditText) findViewById(R.id.password);
-        String email = emailText.getText().toString();
-        String password = pwdText.getText().toString();
-        String[] credentials = {email,password};
-        intent.putExtra(USER_CREDENTIALS, credentials);
-        startActivity(intent);
+        // send user, pass and get token. Then instantiate
+        // Launch FileListActivity after getting token
+        // Send user object
+
     }
-
-
 
 }
