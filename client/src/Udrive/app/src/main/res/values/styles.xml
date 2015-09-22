@@ -25,7 +25,7 @@
     </style>
 
     <style name="MyActionOverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-       <item name="android:src">@drawable/ic_overflow</item>
+       <item name="android:src">@drawable/ic_dots_vertical_white</item>
     </style>
 
 </resources>

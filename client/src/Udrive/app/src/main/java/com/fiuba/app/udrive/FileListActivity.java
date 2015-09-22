@@ -7,6 +7,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.File;
+import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 
@@ -30,6 +31,9 @@ public class FileListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
+        UserAccount uAccount = (UserAccount) getIntent().getSerializableExtra("userAccount");
+        System.out.println("Desde FileListActivity >>> TOKEN: "+uAccount.getToken());
+
         this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
