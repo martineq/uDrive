@@ -17,7 +17,7 @@ void LibraryTest::EjemploRocksDB() {
 	cout << " ¡Hola Mundo! - RocksDB " << endl;
 	cout << "------------------------" << endl;
 
-	std::string kDBPath = "/tmp/testdb/"; //get_current_dir_name(); kDBPath+="tempBD";
+	std::string kDBPath = get_current_dir_name(); kDBPath+="/directorio_temporal_BD";
 
 	DB* db;
 	Options options;
@@ -128,7 +128,7 @@ void LibraryTest::EjemploMongoose() {
 
 	// Serve request. Hit Ctrl-C to terminate the program
 	printf("Starting on port %s\n", mg_get_option(server, "listening_port"));
-	for (int i=0;i<5;i++) {
+	for (int i=0;i<3;i++) {
 	cout << "Mongoose - Poll Cicle No:"<< i+1 << endl;
 	mg_poll_server(server, 1000);
 	}
