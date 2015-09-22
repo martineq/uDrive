@@ -20,11 +20,17 @@ set(RUTA_SRC "${RUTA_RAIZ}/src")
 set(RUTA_TOOLS "${RUTA_RAIZ}/tools")
 set(RUTA_TEST "${RUTA_RAIZ}/test")
 
-# Seteo una variable "SRC" donde coloco la rutas de los archivos fuente
-set(SRC ${RUTA_SRC}/main.cpp ${RUTA_SRC}/LibraryTest.cpp ${RUTA_LIB}/mongoose/mongoose.c)
+# Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
+set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
+
+# Seteo todos los fuentes que no necesiten testeo y code coverage (por ejemplo el main, archivos fuente de librerías)
+set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_LIB}/mongoose/mongoose.c)
+
+# Seteo TODOS los fuentes que necesita el proyecto
+set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
 
 # Seteo los nombres de las librerías
-set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp) #mongoose
+set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp)
 
 # Flag para indicar si se quiere generar un ejecutable
 option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" NO)
@@ -100,7 +106,7 @@ if (COVERALLS)
   # 1er argumento: Lista de archivos fuente
   # 2do argumento: "ON" para subir al sitio Coveralls.io
   # 3er argumento: Ruta alternativa de ubicación de la herramienta coveralls-cmake
-  coveralls_setup("${SRC}" 
+  coveralls_setup("${SRC_TESTEABLE}" 
                    ${COVERALLS_UPLOAD}
                   "${RUTA_COVERALLS_CMAKE}")
 endif(COVERALLS)
@@ -115,7 +121,6 @@ if (NOT SOLO_EXECUTABLE)
   enable_testing()
   add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
   target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   add_test(${NOMBRE_PROYECTO} test_ejemplo)
 endif ()
 
