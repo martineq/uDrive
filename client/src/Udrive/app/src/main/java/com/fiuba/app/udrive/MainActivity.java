@@ -2,6 +2,7 @@ package com.fiuba.app.udrive;
 
 import android.app.AlertDialog;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -15,19 +16,30 @@ import android.widget.TextView;
 
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
-import com.fiuba.app.udrive.rest.service.RestClient;
-import com.fiuba.app.udrive.rest.service.RestService;
+import com.fiuba.app.udrive.network.LoginService;
+import com.fiuba.app.udrive.network.ServiceCallback;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String PASS_SALT = "UDRIVE1234";
+
+    private LoginService mLoginService = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.mLoginService = new LoginService();
+
         TextView signUpLink = (TextView)findViewById(R.id.sign_up_link);
         signUpLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,41 +84,48 @@ public class MainActivity extends AppCompatActivity {
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
-        UserData userData = new UserData(email, password);
+        UserData userData = new UserData(email, md5(PASS_SALT+password));
+        System.out.println(md5(password));
 
         /* try and catch to handle a possible lack of internet connection */
 
-        /////////////////////////////////
-        // Testing Retrofit requests
-        /////////////////////////////////
-
-        final String API_URL = "http://jsonplaceholder.typicode.com";
-
-        RestService service = RestClient.createService(RestService.class, API_URL);
-        service.getToken(userData, new Callback<UserAccount>() {
+        this.mLoginService.getToken(/*userData, */new ServiceCallback<UserAccount>() {
             @Override
-            public void success(UserAccount uAccount, Response response) {
-              //  System.out.println(testRest.getOrigin());
+            public void onSuccess(UserAccount uAccount) {
                 System.out.println(uAccount.getToken());
-                response.getStatus();
+                Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+                intent.putExtra("userAccount", uAccount);
+                startActivity(intent);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                // Implement getStatusCode(RetrofitError error) which returns an int code
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    System.out.println(">>>> No Internet connection");
-                } else
-                    System.out.println(">>>> An error occurred");
+            public void onFailure(String message) {
+                System.out.println(">>>>> Retrofit: An error has occurred.");
+                AlertDialog alert= new AlertDialog.Builder(MainActivity.this).create();
+                alert.setTitle("Error");
+                alert.setMessage(message);
+                alert.show();
             }
         });
+    }
 
-        ///////////////////
-        // Do something in response to button
-        // send user, pass and get token. Then instantiate
-        // Launch FileListActivity after getting token
-        // Send user object
+    public static String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
 
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

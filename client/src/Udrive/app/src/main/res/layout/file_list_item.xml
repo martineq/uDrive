@@ -4,7 +4,7 @@
 
 
     <ImageView android:id="@+id/imageViewFileListItem" android:layout_width="60dp" android:layout_height="60dp"
-        android:layout_margin="5dip"  android:layout_centerVertical="true" android:src="@drawable/file" />
+        android:layout_margin="5dip"  android:layout_centerVertical="true" />
 
     <TextView android:id="@+id/textViewFileListName" android:layout_height="wrap_content"
         android:layout_width="fill_parent" android:layout_margin="4dip"
@@ -15,7 +15,7 @@
     <TextView android:id="@+id/textViewFileListLastMod" android:layout_height="wrap_content"
         android:layout_width="fill_parent" android:layout_margin="4dip"
         android:layout_toRightOf="@+id/imageViewFileListItem" android:layout_below="@id/textViewFileListName"
-        android:textSize="20sp" android:singleLine="true"
+        android:textSize="10sp" android:singleLine="true"
         android:text="@string/file_lastMod" />
-    
+
 </RelativeLayout>

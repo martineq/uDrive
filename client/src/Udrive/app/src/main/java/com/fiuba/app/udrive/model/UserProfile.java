@@ -1,8 +1,5 @@
 package com.fiuba.app.udrive.model;
 
-/**
- * Created by eugenia on 20/09/15.
- */
 public class UserProfile extends UserData {
     private String firstname;
     private String lastname;
@@ -19,43 +16,43 @@ public class UserProfile extends UserData {
         this.id = id;
     }
 
-    public String getFirstname() {
+    public String getFirstname(){
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public void setFirstname(String firstname){
         this.firstname = firstname;
     }
 
-    public String getLastname() {
+    public String getLastname(){
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public void setLastname(String lastname){
         this.lastname = lastname;
     }
 
-    public String getPhoto() {
+    public String getPhoto(){
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(String photo){
         this.photo = photo;
     }
 
-    public String getLastLocation() {
+    public String getLastLocation(){
         return lastLocation;
     }
 
-    public void setLastLocation(String lastLocation) {
+    public void setLastLocation(String lastLocation){
         this.lastLocation = lastLocation;
     }
 
-    public int getId() {
+    public int getId(){
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id){
         this.id = id;
     }
 }

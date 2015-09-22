@@ -1,7 +1,7 @@
 <resources>
         <!-- Customize your theme here. -->
     <!-- Base theme applied no matter what API -->
-    <style name="MyTheme.Base" parent="Theme.AppCompat.Light">
+    <style name="MyTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Set theme colors from http://www.google.com/design/spec/style/color.html#color-color-palette-->
         <!-- colorPrimary is used for the default action bar background -->
         <item name="colorPrimary">#f19c47</item>
@@ -25,7 +25,7 @@
     </style>
 
     <style name="MyActionOverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-       <item name="android:src">@drawable/ic_overflow</item>
+       <item name="android:src">@drawable/ic_dots_vertical_white</item>
     </style>
 
 </resources>

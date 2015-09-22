@@ -1,10 +1,8 @@
 package com.fiuba.app.udrive.model;
 
-/**
- * Created by eugenia on 20/09/15.
- */
-public class UserAccount extends UserData {
+import java.io.Serializable;
 
+public class UserAccount extends UserData implements Serializable {
     private String token = null;
     private int id;
 
@@ -18,15 +16,15 @@ public class UserAccount extends UserData {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(String token){
         this.token = token;
     }
 
-    public int getId() {
+    public int getId(){
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id){
         this.id = id;
     }
 

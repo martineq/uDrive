@@ -32,7 +32,11 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.2.0'
 
     // Google GSON
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3'
+
 
     // logging module dependencies
+
 }
+
+
