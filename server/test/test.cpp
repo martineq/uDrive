@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char **argv) {
 
     LibraryTest lt;
-    //lt.EjemploRocksDB(); // Si corro RocksDB en Travis-CI me devuelve: "Exception: SegFault"
+    //lt.EjemploRocksDB(); //En entorno travis o docker da un Segfault
     lt.EjemploMongoose();
     lt.EjemploJson();
 
