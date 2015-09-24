@@ -7,7 +7,7 @@
 ##########
 
 # Versión de CMake mínima usada para generar el proyecto, si no la encuentra, finaliza.
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR) # Se quitó el 3.1 para que corra con el cmake de travis
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # Definición del proyecto. Con CXX indico que todos los archivos son tratados como C++.
 set(NOMBRE_PROYECTO "server")  # Seteo el nombre del ejecutable
@@ -20,11 +20,20 @@ set(RUTA_SRC "${RUTA_RAIZ}/src")
 set(RUTA_TOOLS "${RUTA_RAIZ}/tools")
 set(RUTA_TEST "${RUTA_RAIZ}/test")
 
+
+### Seteos referidos a la compilación del servidor ###
+
+# Seteo distintos paquetes de archivos fuente, se agregan líneas nuevas según necesidad
+# Ejemplo para agregar paquetes: set(PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cpp ${RUTA_SRC}/nombre_fuente2.cpp)
+set(PACK_HOLA_MUNDO ${RUTA_SRC}/LibraryTest.cpp)
+set(PACK_MONGOOSE ${RUTA_LIB}/mongoose/mongoose.c)
+#...mas packs acá...
+
 # Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
-set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
+set(SRC_TESTEABLE ${PACK_HOLA_MUNDO})
 
 # Seteo todos los fuentes que no necesiten testeo y code coverage (por ejemplo el main, archivos fuente de librerías)
-set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_LIB}/mongoose/mongoose.c)
+set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${PACK_MONGOOSE})
 
 # Seteo TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
@@ -33,13 +42,25 @@ set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
 set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp)
 
 # Flag para indicar si se quiere generar un ejecutable
-option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" NO)
+option(EXE "Activa la creación de un ejecutable, sin tests" NO)
 
-### Comandos para coveralls-cmake ###
+
+
+### Seteos referidos al testing ###
+
+# Seteo el nombre del test
+set(NOMBRE_TESTING "test_server")  
+
+# Seteo los archivos fuente que se usan para realizar el testeo
+set(SRC_TESTING ${RUTA_TEST}/test.cpp)
+
+
+
+### Comandos para el uso de coveralls-cmake ###
 
 # Setea las opciones para la herramienta coveralls-cmake
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(COVERALLS "Activa el soporte para Coveralls.io" OFF)
+option(COVERALLS_UPLOAD "Sube el json generado de coveralls" ON)
 
 # Seteo la ruta donde se encuentran los scripts de la herramienta coveralls-cmake
 set(RUTA_COVERALLS_CMAKE "${RUTA_TOOLS}/coveralls-cmake/cmake")
@@ -68,15 +89,15 @@ endforeach(LIB ${LIBS})
 #########################################
 
 # Verifico si debo crear un ejecutable o una librería
-if (SOLO_EXECUTABLE)
-  message(STATUS "- Modo ejecutable")
+if (EXE)
+  message(STATUS "- Generación de ejecutable")
   # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
   add_executable(${NOMBRE_PROYECTO} ${SRC})
-else (SOLO_EXECUTABLE)
-  message(STATUS "- Modo biblioteca")
+else (EXE)
+  message(STATUS "- Generación de biblioteca")
   # Creo una biblioteca para correr los tests
   add_library(${NOMBRE_PROYECTO} ${SRC})
-endif (SOLO_EXECUTABLE)
+endif (EXE)
 
 # Incluyo la ruta de las librerías para el compiler
 include_directories(${RUTA_LIB})
@@ -85,8 +106,7 @@ include_directories(${RUTA_LIB})
 link_directories(${RUTA_LIB})
 target_link_libraries(${NOMBRE_PROYECTO} ${LIBS})
 
-# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB. Agrega al compilador el feature "cxx_range_for"
-#target_compile_features(${NOMBRE_PROYECTO} PRIVATE cxx_range_for) # No funciona en versiones de CMake anteriores a 3.1 (Travis tiene 2.8)
+# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
@@ -112,15 +132,15 @@ if (COVERALLS)
 endif(COVERALLS)
 
 
-#############################
-# Configuración de los test #
-#############################
+#########################
+# Configuración de test #
+#########################
 
-if (NOT SOLO_EXECUTABLE)
+if (NOT EXE)
   # Agregos los tests
   enable_testing()
-  add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
-  target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
-  add_test(${NOMBRE_PROYECTO} test_ejemplo)
+  add_executable(${NOMBRE_TESTING} ${SRC_TESTING})
+  target_link_libraries(${NOMBRE_TESTING} ${NOMBRE_PROYECTO})
+  add_test(${NOMBRE_PROYECTO} ${NOMBRE_TESTING})
 endif ()
 
