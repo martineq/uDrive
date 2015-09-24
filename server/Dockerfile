@@ -10,7 +10,7 @@ FROM ubuntu:14.04
 MAINTAINER mart mart
 
 # Copio carpetas. TODO: Ver que contenido copiar.
-COPY ./ /home
+COPY ./ /home/server
 
 # En el RUN hago las siguientes tareas:
 # 1) Instalo las programas necesarios
