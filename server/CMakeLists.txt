@@ -21,10 +21,10 @@ set(RUTA_TOOLS "${RUTA_RAIZ}/tools")
 set(RUTA_TEST "${RUTA_RAIZ}/test")
 
 # Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
-set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
+#set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
 
 # Seteo todos los fuentes que no necesiten testeo y code coverage (por ejemplo el main, archivos fuente de librerías)
-set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_LIB}/mongoose/mongoose.c)
+set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_SRC}/WEBserver.cpp ${RUTA_SRC}/util/log.cpp ${RUTA_LIB}/mongoose/mongoose.c)
 
 # Seteo TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
@@ -33,7 +33,11 @@ set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
 set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp)
 
 # Flag para indicar si se quiere generar un ejecutable
-option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" NO)
+option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" ON)
+
+set(SOLO_EXECUTABLE "YES") #Pongo esto porque sino no funciona la linea anterior
+
+message("SOLO EXECUTABLE " ${SOLO_EXECUTABLE})
 
 ### Comandos para coveralls-cmake ###
 
@@ -69,13 +73,13 @@ endforeach(LIB ${LIBS})
 
 # Verifico si debo crear un ejecutable o una librería
 if (SOLO_EXECUTABLE)
-  message(STATUS "- Modo ejecutable")
-  # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
-  add_executable(${NOMBRE_PROYECTO} ${SRC})
-else (SOLO_EXECUTABLE)
-  message(STATUS "- Modo biblioteca")
-  # Creo una biblioteca para correr los tests
-  add_library(${NOMBRE_PROYECTO} ${SRC})
+	message(STATUS "- Modo ejecutable")
+	# Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
+	add_executable(${NOMBRE_PROYECTO} ${SRC})
+else (SOLO_EXECUTABLE) 
+	message(STATUS "- Modo biblioteca")
+ 	# Creo una biblioteca para correr los tests
+	add_library(${NOMBRE_PROYECTO} ${SRC})
 endif (SOLO_EXECUTABLE)
 
 # Incluyo la ruta de las librerías para el compiler
@@ -118,9 +122,9 @@ endif(COVERALLS)
 
 if (NOT SOLO_EXECUTABLE)
   # Agregos los tests
-  enable_testing()
-  add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
-  target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
-  add_test(${NOMBRE_PROYECTO} test_ejemplo)
+#  enable_testing()
+#  add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
+#  target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
+#  add_test(${NOMBRE_PROYECTO} test_ejemplo)
 endif ()
 
