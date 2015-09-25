@@ -8,15 +8,12 @@ using std::string;
 
 #include "mongoose/mongoose.h"
 #include "mgconnection.h"
+#include "util/log.h"
 
 extern "C" {
 	#include <pthread.h>
 }
 
-
-/**
- * Clase que provee una abstraccion a mg_server, da la posibilidad de hacer un server con multiples threads.
- */
 class WEBServer {
 	public:
 

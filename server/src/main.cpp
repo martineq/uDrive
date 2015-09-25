@@ -23,7 +23,7 @@ void sig_handler(int){
 }
 
 typedef struct Configuration {
-	Configuration() : port("8000"), logFile("-"), logLevel("debug"),dbPath("/tmp/test_db")
+	Configuration() : port("8080"), logFile("-"), logLevel("debug"),dbPath("/tmp/test_db")
 	{}
 	string port;
 	string logFile;
@@ -44,13 +44,13 @@ int main(int argc, char** argv) {
 		//Set nivel de logueo.
 		Log::setLogLevel(config.logLevel);
 		std::ofstream outputLog;
-			if(config.logFile != "-"){
-				outputLog.open(config.logFile);
-				if(outputLog.is_open())
-					Log::setOutput(outputLog);
-				else
-					Log(Log::LogMsgError) << "Error abriendo archivo '" << config.logFile << "'";
-			}
+		if(config.logFile != "-"){
+			outputLog.open(config.logFile);
+			if(outputLog.is_open())
+				Log::setOutput(outputLog);
+			else
+				Log(Log::LogMsgError) << "Error abriendo archivo '" << config.logFile << "'";
+		}
 
 		// Inicializo servidor web
 		Log(Log::LogMsgInfo) << "Iniciando Servidor...";

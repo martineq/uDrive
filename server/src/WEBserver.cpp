@@ -3,16 +3,14 @@
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
-		mg_set_option(server, "listening_port", "8000");
 }
 
 WEBServer::~WEBServer(){
 	if(this->running)
 		this->stop();
 }
-
 /**
- * Defime el port donde escucha el servidor. Por defecto 8080.
+ * Defime el port donde escucha el servidor. Por defecto 8000.
  */
 const char* WEBServer::setPort(string port){
 	return mg_set_option(server, "listening_port", port.c_str());
@@ -30,12 +28,20 @@ void WEBServer::run(){
 	pthread_create(&hilo, NULL, WEBServer::threadHandler, this);
 }
 
+
+/**
+ * Metodo que maneja los request del servidor.
+ */
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
   if (ev == MG_AUTH) {
+	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/hello")) {
-    mg_printf_data(conn, "%s", "Hello world");
+	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+	  mg_printf_data(conn, "%s", "Hello world");
     return MG_TRUE;   // Mark as processed
+  } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
+	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
   } else {
     return MG_FALSE;  // Rest of the events are not processed
   }
