@@ -30,18 +30,15 @@ set(PACK_MONGOOSE ${RUTA_LIB}/mongoose/mongoose.c)
 #...mas packs acá...
 
 # Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
-<<<<<<< HEAD
+
 set(SRC_TESTEABLE ${PACK_HOLA_MUNDO})
-=======
+
 #set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
->>>>>>> refs/remotes/origin/feat/src-RestLogin
+
 
 # Seteo todos los fuentes que no necesiten testeo y code coverage (por ejemplo el main, archivos fuente de librerías)
-<<<<<<< HEAD
-set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${PACK_MONGOOSE})
-=======
-set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_SRC}/WEBserver.cpp ${RUTA_SRC}/util/log.cpp ${RUTA_LIB}/mongoose/mongoose.c)
->>>>>>> refs/remotes/origin/feat/src-RestLogin
+
+set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_SRC}/WEBserver.cpp ${RUTA_SRC}/util/log.cpp ${PACK_MONGOOSE})
 
 # Seteo TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
@@ -50,17 +47,11 @@ set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
 set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp)
 
 # Flag para indicar si se quiere generar un ejecutable
-<<<<<<< HEAD
+
 option(EXE "Activa la creación de un ejecutable, sin tests" NO)
-=======
 option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" ON)
 
 set(SOLO_EXECUTABLE "YES") #Pongo esto porque sino no funciona la linea anterior
-
-message("SOLO EXECUTABLE " ${SOLO_EXECUTABLE})
->>>>>>> refs/remotes/origin/feat/src-RestLogin
-
-
 
 ### Seteos referidos al testing ###
 
@@ -105,7 +96,7 @@ endforeach(LIB ${LIBS})
 #########################################
 
 # Verifico si debo crear un ejecutable o una librería
-<<<<<<< HEAD
+
 if (EXE)
   message(STATUS "- Generación de ejecutable")
   # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
@@ -115,17 +106,6 @@ else (EXE)
   # Creo una biblioteca para correr los tests
   add_library(${NOMBRE_PROYECTO} ${SRC})
 endif (EXE)
-=======
-if (SOLO_EXECUTABLE)
-	message(STATUS "- Modo ejecutable")
-	# Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
-	add_executable(${NOMBRE_PROYECTO} ${SRC})
-else (SOLO_EXECUTABLE) 
-	message(STATUS "- Modo biblioteca")
- 	# Creo una biblioteca para correr los tests
-	add_library(${NOMBRE_PROYECTO} ${SRC})
-endif (SOLO_EXECUTABLE)
->>>>>>> refs/remotes/origin/feat/src-RestLogin
 
 # Incluyo la ruta de las librerías para el compiler
 include_directories(${RUTA_LIB})
@@ -166,16 +146,8 @@ endif(COVERALLS)
 
 if (NOT EXE)
   # Agregos los tests
-<<<<<<< HEAD
   enable_testing()
   add_executable(${NOMBRE_TESTING} ${SRC_TESTING})
   target_link_libraries(${NOMBRE_TESTING} ${NOMBRE_PROYECTO})
   add_test(${NOMBRE_PROYECTO} ${NOMBRE_TESTING})
-=======
-#  enable_testing()
-#  add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
-#  target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
-#  add_test(${NOMBRE_PROYECTO} test_ejemplo)
->>>>>>> refs/remotes/origin/feat/src-RestLogin
 endif ()
-
