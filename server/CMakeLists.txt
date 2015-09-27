@@ -105,7 +105,7 @@ if (EXE)
   # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)
   add_executable(${NOMBRE_PROYECTO} ${SRC})
 else (EXE)
-  message(STATUS "- Generación de biblioteca")
+  message(STATUS "*** Generación de biblioteca ***")
   # Creo una biblioteca para correr los tests
   add_library(${NOMBRE_PROYECTO} ${SRC})
 endif (EXE)
