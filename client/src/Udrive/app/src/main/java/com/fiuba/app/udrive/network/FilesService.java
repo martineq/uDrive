@@ -15,8 +15,8 @@ public class FilesService extends AbstractService {
 
     private FilesServiceApi mFilesServiceApi;
 
-    public FilesService() {
-        this.mFilesServiceApi = createService(FilesServiceApi.class);
+    public FilesService(final String token) {
+        this.mFilesServiceApi = createService(FilesServiceApi.class, token);
     }
 
     public void getFiles(final ServiceCallback<List<File>> serviceCallback) {

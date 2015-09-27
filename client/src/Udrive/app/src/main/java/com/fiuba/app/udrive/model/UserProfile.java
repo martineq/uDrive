@@ -7,8 +7,8 @@ public class UserProfile extends UserData {
     private String lastLocation = null;
     private int id;
 
-    public UserProfile(String email, String password, String firstname, String lastname, String photo, String lastLocation, int id){
-        super(email, password);
+    public UserProfile(String email, String firstname, String lastname, String photo, String lastLocation, int id){
+        super(email, null);
         this.firstname = firstname;
         this.lastname = lastname;
         this.photo = photo;
