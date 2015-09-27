@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent mNextIntent = new Intent(MainActivity.this, FileListActivity.class);
                 mNextIntent.putExtra("userAccount", uAccount);
                 startActivity(mNextIntent);
+                finish();
             }
 
             @Override
