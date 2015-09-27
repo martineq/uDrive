@@ -22,7 +22,6 @@
 #include "rocksdb/types.h"
 #include "rocksdb/transaction_log.h"
 #include "rocksdb/listener.h"
-#include "rocksdb/snapshot.h"
 #include "rocksdb/thread_status.h"
 
 #ifdef _WIN32
@@ -68,6 +67,18 @@ struct ColumnFamilyDescriptor {
 
 static const int kMajorVersion = __ROCKSDB_MAJOR__;
 static const int kMinorVersion = __ROCKSDB_MINOR__;
+
+// Abstract handle to particular state of a DB.
+// A Snapshot is an immutable object and can therefore be safely
+// accessed from multiple threads without any external synchronization.
+class Snapshot {
+ public:
+  // returns Snapshot's sequence number
+  virtual SequenceNumber GetSequenceNumber() const = 0;
+
+ protected:
+  virtual ~Snapshot();
+};
 
 // A range of keys
 struct Range {
@@ -312,28 +323,22 @@ class DB {
   //  "rocksdb.compaction-pending" - 1 if at least one compaction is pending
   //  "rocksdb.background-errors" - accumulated number of background errors
   //  "rocksdb.cur-size-active-mem-table"
-//  "rocksdb.size-all-mem-tables"
-//  "rocksdb.num-entries-active-mem-table"
-//  "rocksdb.num-entries-imm-mem-tables"
-//  "rocksdb.num-deletes-active-mem-table"
-//  "rocksdb.num-deletes-imm-mem-tables"
-//  "rocksdb.estimate-num-keys" - estimated keys in the column family
-//  "rocksdb.estimate-table-readers-mem" - estimated memory used for reding
-//      SST tables, that is not counted as a part of block cache.
-//  "rocksdb.is-file-deletions-enabled"
-//  "rocksdb.num-snapshots"
-//  "rocksdb.oldest-snapshot-time"
-//  "rocksdb.num-live-versions" - `version` is an internal data structure.
-//      See version_set.h for details. More live versions often mean more SST
-//      files are held from being deleted, by iterators or unfinished
-//      compactions.
-//  "rocksdb.estimate-live-data-size"
-//  "rocksdb.total-sst-files-size" - total size of all used sst files, this may
-//      slow down online queries if there are too many files.
-//  "rocksdb.base-level"
-//  "rocksdb.estimate-pending-compaction-bytes" - estimated total number of
-//      bytes compaction needs to rewrite the data to get all levels down
-//      to under target size. Not valid for other compactions than level-based.
+  //  "rocksdb.cur-size-all-mem-tables"
+  //  "rocksdb.num-entries-active-mem-table"
+  //  "rocksdb.num-entries-imm-mem-tables"
+  //  "rocksdb.num-deletes-active-mem-table"
+  //  "rocksdb.num-deletes-imm-mem-tables"
+  //  "rocksdb.estimate-num-keys" - estimated keys in the column family
+  //  "rocksdb.estimate-table-readers-mem" - estimated memory used for reding
+  //      SST tables, that is not counted as a part of block cache.
+  //  "rocksdb.is-file-deletions-enabled"
+  //  "rocksdb.num-snapshots"
+  //  "rocksdb.oldest-snapshot-time"
+  //  "rocksdb.num-live-versions" - `version` is an internal data structure.
+  //      See version_set.h for details. More live versions often mean more SST
+  //      files are held from being deleted, by iterators or unfinished
+  //      compactions.
+  //  "rocksdb.estimate-live-data-size"
 #ifndef ROCKSDB_LITE
   struct Properties {
     static const std::string kNumFilesAtLevelPrefix;
@@ -347,7 +352,6 @@ class DB {
     static const std::string kBackgroundErrors;
     static const std::string kCurSizeActiveMemTable;
     static const std::string kCurSizeAllMemTables;
-    static const std::string kSizeAllMemTables;
     static const std::string kNumEntriesActiveMemTable;
     static const std::string kNumEntriesImmMemTables;
     static const std::string kNumDeletesActiveMemTable;
@@ -359,8 +363,6 @@ class DB {
     static const std::string kOldestSnapshotTime;
     static const std::string kNumLiveVersions;
     static const std::string kEstimateLiveDataSize;
-    static const std::string kTotalSstFilesSize;
-    static const std::string kEstimatePendingCompactionBytes;
   };
 #endif /* ROCKSDB_LITE */
 
@@ -379,7 +381,6 @@ class DB {
   //  "rocksdb.background-errors"
   //  "rocksdb.cur-size-active-mem-table"
   //  "rocksdb.cur-size-all-mem-tables"
-  //  "rocksdb.size-all-mem-tables"
   //  "rocksdb.num-entries-active-mem-table"
   //  "rocksdb.num-entries-imm-mem-tables"
   //  "rocksdb.num-deletes-active-mem-table"
@@ -391,9 +392,6 @@ class DB {
   //  "rocksdb.oldest-snapshot-time"
   //  "rocksdb.num-live-versions"
   //  "rocksdb.estimate-live-data-size"
-  //  "rocksdb.total-sst-files-size"
-  //  "rocksdb.base-level"
-  //  "rocksdb.estimate-pending-compaction-bytes"
   virtual bool GetIntProperty(ColumnFamilyHandle* column_family,
                               const Slice& property, uint64_t* value) = 0;
   virtual bool GetIntProperty(const Slice& property, uint64_t* value) {

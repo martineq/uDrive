@@ -15,6 +15,7 @@
 #include <memory>
 #include <vector>
 #include <limits>
+#include <stdint.h>
 #include <unordered_map>
 
 #include "rocksdb/version.h"
@@ -735,10 +736,6 @@ struct ColumnFamilyOptions {
   // Default: false
   bool paranoid_file_checks;
 
-  // Measure IO stats in compactions, if true.
-  // Default: false
-  bool compaction_measure_io_stats;
-
   // Create ColumnFamilyOptions with default values for all fields
   ColumnFamilyOptions();
   // Create ColumnFamilyOptions from Options
@@ -812,11 +809,6 @@ struct DBOptions {
   // compaction. For universal-style compaction, you can usually set it to -1.
   // Default: 5000
   int max_open_files;
-
-  // If max_open_files is -1, DB will open all files on DB::Open(). You can
-  // use this option to increase the number of threads used to open the files.
-  // Default: 1
-  int max_file_opening_threads;
 
   // Once write-ahead logs exceed this size, we will start forcing the flush of
   // column families whose memtables are backed by the oldest live WAL file
@@ -908,7 +900,7 @@ struct DBOptions {
   // into multiple, smaller ones that are run simultaneously. This is still
   // under development and is only available for level-based compaction.
   // Default: 1
-  uint32_t max_subcompactions;
+  uint32_t num_subcompactions;
 
   // Maximum number of concurrent background memtable flush jobs, submitted to
   // the HIGH priority thread pool.
@@ -1025,18 +1017,6 @@ struct DBOptions {
       WILLNEED
   };
   AccessHint access_hint_on_compaction_start;
-
-  // If true, always create a new file descriptor and new table reader
-  // for compaction inputs. Turn this parameter on may introduce extra
-  // memory usage in the table reader, if it allocates extra memory
-  // for indexes. This will allow file descriptor prefetch options
-  // to be set for compaction input files and not to impact file
-  // descriptors for the same file used by user queries.
-  // Suggest to enable BlockBasedTableOptions.cache_index_and_filter_blocks
-  // for this mode if using block-based table.
-  //
-  // Default: false
-  bool new_table_reader_for_compaction_inputs;
 
   // Use adaptive mutex, which spins in the user space before resorting
   // to kernel. This could reduce context switch when the mutex is not
