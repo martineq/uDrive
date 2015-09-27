@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
 		unzip \
 		valgrind \
 		tree \
+        vim \
 		nano \
 		libsnappy-dev \
 		zlib1g-dev \
@@ -40,34 +41,31 @@ RUN apt-get update && apt-get install -y \
 	cd /home && \
 	mkdir temp_install && \
 	cd temp_install && \
-	wget https://github.com/facebook/rocksdb/archive/master.zip && \
-	unzip master.zip && \
-	cd rocksdb-master && \
+	wget https://github.com/facebook/rocksdb/archive/v3.13.1.zip && \
+	unzip v3.13.1.zip && \
+	cd rocksdb-3.13.1 && \
 	make static_lib && \
-	sudo cp librocksdb.a /usr/local/lib && \
+	sudo cp librocksdb.a /usr/lib && \
 	cd .. && \
-	rm -rf rocksdb-master && \
-	rm master.zip && \
-	wget https://github.com/cesanta/mongoose/archive/master.zip && \
-	unzip master.zip && \
-	cd mongoose-master && \
+	rm v3.13.1.zip && \
+	wget https://github.com/cesanta/mongoose/archive/5.6.zip && \
+	unzip 5.6.zip && \
+	cd mongoose-5.6 && \
 	gcc -c mongoose.c && \
 	ar rvs libmongoose.a mongoose.o && \
-	sudo cp libmongoose.a /usr/local/lib && \
+	sudo cp libmongoose.a /usr/lib && \
 	cd .. && \
-	rm -rf mongoose-master && \
-	rm master.zip && \
-	wget https://github.com/open-source-parsers/jsoncpp/archive/master.zip && \
-	unzip master.zip && \
-	cd jsoncpp-master && \
+	rm 5.6.zip && \
+	wget https://github.com/open-source-parsers/jsoncpp/archive/1.6.5.zip && \
+	unzip 1.6.5.zip && \
+	cd jsoncpp-1.6.5 && \
 	python amalgamate.py && \
 	cd dist && \
 	gcc -c jsoncpp.cpp && \
 	ar rvs libjsoncpp.a jsoncpp.o && \
-	sudo cp libjsoncpp.a /usr/local/lib && \
+	sudo cp libjsoncpp.a /usr/lib && \
 	cd ../.. && \
-	rm -rf jsoncpp-master && \
-	rm master.zip && \
+	rm 1.6.5.zip && \
 	cd .. && \
 	rm -rf temp_install
 # TODO: Para seguir agregando comandos en la misma línea acordarse de agregar el " && \" en la línea de arriba

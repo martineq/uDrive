@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char **argv) {
 
     LibraryTest lt;
-    //lt.EjemploRocksDB(); //En entorno travis o docker da un Segfault
+    lt.EjemploRocksDB();
     lt.EjemploMongoose();
     lt.EjemploJson();
 

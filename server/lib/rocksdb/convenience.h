@@ -48,9 +48,6 @@ Status GetDBOptionsFromString(
     const std::string& opts_str,
     DBOptions* new_options);
 
-Status GetStringFromDBOptions(const DBOptions& db_options,
-                              std::string* opts_str);
-
 Status GetBlockBasedTableOptionsFromString(
     const BlockBasedTableOptions& table_options,
     const std::string& opts_str,

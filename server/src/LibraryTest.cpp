@@ -10,56 +10,53 @@
 using namespace std;
 using namespace rocksdb;
 
-
 void LibraryTest::EjemploRocksDB() {
 
 	cout << "------------------------" << endl;
 	cout << " ¡Hola Mundo! - RocksDB " << endl;
-	cout << "------------------------" << endl;
+	cout << "------------------------" << endl; 
 
-	std::string kDBPath = get_current_dir_name(); kDBPath+="/directorio_temporal_BD";
-
-	DB* db;
-	Options options;
+	DB* db; 
+	Options options; 
 
 	// Optimiza RocksDB. This is the easiest way to get RocksDB to perform well
-	options.IncreaseParallelism();
-	options.OptimizeLevelStyleCompaction();
+	options.IncreaseParallelism(); 
+	options.OptimizeLevelStyleCompaction(); 
 
 	// Crea la BD si no existiera antes
-	options.create_if_missing = true;
-
+	options.create_if_missing = true; 
+	
 	// Abre la BD
-	Status s = DB::Open(options, kDBPath, &db);
-	assert(s.ok());
+	Status s = DB::Open(options, "/tmp/testdb", &db); 
+	assert(s.ok()); 
 
 	// Uso del Put()
-	s = db->Put(WriteOptions(), "key1", "value");
-	assert(s.ok());
-	std::string value;
+	s = db->Put(WriteOptions(), "key1", "value"); 
+	assert(s.ok()); 
+	std::string value; 
 
 	// Uso del Get()
-	s = db->Get(ReadOptions(), "key1", &value);
-	assert(s.ok());
-	assert(value == "value");
+	s = db->Get(ReadOptions(), "key1", &value); 
+	assert(s.ok()); 
+	assert(value == "value"); 
 
 	// Aplico un grupo de actualizaciones atómicas
 	{
-	WriteBatch batch;
-	batch.Delete("key1");
-	batch.Put("key2", value);
-	s = db->Write(WriteOptions(), &batch);
+	WriteBatch batch; 
+	batch.Delete("key1"); 
+	batch.Put("key2", value); 
+	s = db->Write(WriteOptions(), &batch); 
 	}
 
-	s = db->Get(ReadOptions(), "key1", &value);
-	assert(s.IsNotFound());
+	s = db->Get(ReadOptions(), "key1", &value); 
+	assert(s.IsNotFound()); 
 
-	db->Get(ReadOptions(), "key2", &value);
-	assert(value == "value");
+	db->Get(ReadOptions(), "key2", &value); 
+	assert(value == "value"); 
 
-	delete db;
+	delete db; 
 
-	cout << "Se creó y eliminó una base de datos en: " << kDBPath << endl;
+	cout << "Se creó una base de datos en: /tmp/testdb" << endl;
 
 	cout << "---------------" << endl;
 	cout << " Fin - RocksDB " << endl;
@@ -115,13 +112,14 @@ void LibraryTest::SalidaJson(const Json::Value & value){
 }
 
 void LibraryTest::EjemploMongoose() {
-
-	struct mg_server *server;
-
-	cout << "-------------------------" << endl;
+    
+    cout << "-------------------------" << endl;
 	cout << " ¡Hola Mundo! - Mongoose " << endl;
 	cout << "-------------------------" << endl;
 
+
+	struct mg_server *server;
+	
 	// Create and configure the server
 	server = mg_create_server(NULL, ev_handler);
 	mg_set_option(server, "listening_port", "8080");
@@ -136,12 +134,11 @@ void LibraryTest::EjemploMongoose() {
 	// Cleanup, and free server instance
 	mg_destroy_server(&server);
 
-	cout << "----------------" << endl;
-	cout << " Fin - Mongoose " << endl;
-	cout << "----------------" << endl;
+    cout << "----------------" << endl;
+    cout << " Fin - Mongoose " << endl;
+    cout << "----------------" << endl;
 
 }
-
 
 int LibraryTest::ev_handler(struct mg_connection *conn, enum mg_event ev) {
   switch (ev) {
