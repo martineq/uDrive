@@ -8,6 +8,6 @@ language: cpp
 services:
   - docker
 
-# Inicio el script para correr las pruebas y enviar los datos a coveralls.io a partir de CMake. (Todo dentro de la imagen Docker)
+# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. (Todo dentro de la imagen Docker)
 script: 
   - docker run martineq/tp7552:latest /bin/sh -c "cd server && mkdir build && cd build && sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug .. && sudo make && sudo make coveralls"
