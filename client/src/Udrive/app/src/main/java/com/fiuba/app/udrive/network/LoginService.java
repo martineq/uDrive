@@ -25,7 +25,7 @@ public class LoginService extends AbstractService {
     private LoginServiceApi mLoginServiceApi;
 
     public LoginService() {
-        this.mLoginServiceApi = createService(LoginServiceApi.class);
+        this.mLoginServiceApi = createService(LoginServiceApi.class, null);
     }
 
     public void getToken(/*UserData uData, */final ServiceCallback<UserAccount> uAccountCb){
