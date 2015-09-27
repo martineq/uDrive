@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String PASS_SALT = "UDRIVE1234";
     private static final String ACCOUNT_FILENAME = "account_file";
+    public static final String TAG = "MainActivity";
 
     private LoginService mLoginService = null;
 
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         this.mLoginService.getToken(/*userData, */new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount) {
-                System.out.println(uAccount.getToken());
+                Log.d(TAG, "User account obtained -> TOKEN: " + uAccount.getToken());
                 // Serialize UserAccount instance to get data when necessary
                 // i.e. to get the token when opening app
                 ObjectStream<UserAccount> objectFileUAccount =

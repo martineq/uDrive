@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -36,8 +37,7 @@ public class FileListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
         UserAccount uAccount = (UserAccount) getIntent().getSerializableExtra("userAccount");
-        System.out.println("Desde FileListActivity >>> TOKEN: "+uAccount.getToken());
-
+        Log.d(TAG, "TOKEN: " + uAccount.getToken());
         this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
@@ -80,12 +80,14 @@ public class FileListActivity extends AppCompatActivity {
             public void onSuccess(List<File> files) {
                 mFilesAdapter.updateFiles(files);
                 progressDialog.dismiss();
+                Log.d(TAG, "Number of files received " + files.size());
             }
 
             @Override
             public void onFailure(String message) {
                 Toast.makeText(FileListActivity.this, R.string.error_obtaining_files, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
+                Log.e(TAG, message);
             }
         });
     }
