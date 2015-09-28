@@ -24,21 +24,23 @@ set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los
 ######################################################
 
 # Seteo distintos paquetes de archivos fuente, se agregan líneas nuevas según necesidad
-# Ejemplo para agregar paquetes: set(SRC_PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cpp ${RUTA_SRC}/nombre_fuente2.cpp)
-set(SRC_PACK_MAIN ${RUTA_SRC}/main.cpp)
-set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/LibraryTest.cpp)
-#...mas packs acá...
+# Ejemplo para agregar paquetes: set(SRC_PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cc ${RUTA_SRC}/nombre_fuente2.cc)
+set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
+set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
+set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc)
+set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
+# ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
 
 
-# Todos los fuentes que serán testeados y tendrán análisis de code coverage
+
+# Todos los fuentes que serán testeados y tendrán análisis de code coverage. NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
 set(SRC_TESTEABLE ${SRC_PACK_HOLA_MUNDO})
 
-# Fuentes que no necesiten testeo y code coverage (main, librerías, etc)
+# Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} )
 
-set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${RUTA_SRC}/WEBserver.cpp ${RUTA_SRC}/util/log.cpp )
-
-# Reuno TODOS los fuentes que necesita el proyecto
-set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
+# Reuno TODOS los fuentes que necesita el proyecto 
+set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # NO modificar esta línea
 
 # Nombres de las librerías a usar en el proyecto
 set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt mongoose)
@@ -58,10 +60,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 set(NOMBRE_TEST "test_server")
 
 # Seteo distintos paquetes de archivos de test, se agregan líneas nuevas según necesidad
-set(SRC_TEST_PACK_SIMPLE ${RUTA_TEST}/test.cpp)
-#...mas packs acá...
+set(SRC_TEST_PACK_SIMPLE ${RUTA_TEST}/test.cc)
+# ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE CON CÓDIGO DE PRUEBAS *****
 
-# Seteo TODOS los archivos fuente que se usan para realizar el testeo
+# Seteo TODOS los archivos fuente que se usan para realizar el testeo. NO AGREGAR RUTAS, sólo variables "${SRC_TEST_...}"
 set(SRC_TEST ${SRC_TEST_PACK_SIMPLE})
 
 
@@ -105,7 +107,7 @@ if (EXE)
   # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)
   add_executable(${NOMBRE_PROYECTO} ${SRC})
 else (EXE)
-  message(STATUS "*** Generación de biblioteca ***")
+  message(STATUS "*** Generación de biblioteca para test ***")
   # Creo una biblioteca para correr los tests
   add_library(${NOMBRE_PROYECTO} ${SRC})
 endif (EXE)

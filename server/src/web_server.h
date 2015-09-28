@@ -1,5 +1,5 @@
-#ifndef __WEBSERVER_H__
-#define __WEBSERVER_H__
+#ifndef __WEB_SERVER_H__
+#define __WEB_SERVER_H__
 
 #include <string>
 #include <vector>
