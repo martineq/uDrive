@@ -35,3 +35,4 @@ void Log::setLogLevel(const string& level){
 	else if(level == "error")
 		Log::logLevel = Log::LogMsgError;
 }
+
