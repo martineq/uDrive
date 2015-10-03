@@ -1,6 +1,5 @@
-// db_handler.h
-#ifndef  DB_HANDLER_INC
-#define  DB_HANDLER_INC
+#ifndef  DB_HANDLER_H
+#define  DB_HANDLER_H
 
 #include "rocksdb/db.h"
 #include "rocksdb/slice.h"
@@ -26,4 +25,4 @@ class DbHandler {
 
 }; 
  
-#endif
+#endif // DB_HANDLER_H
