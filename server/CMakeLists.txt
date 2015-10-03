@@ -29,6 +29,7 @@ set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
 set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
 set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc)
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
+set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
 
 
@@ -37,10 +38,10 @@ set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
 set(SRC_TESTEABLE ${SRC_PACK_HOLA_MUNDO})
 
 # Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
-set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} )
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} )
 
-# Reuno TODOS los fuentes que necesita el proyecto 
-set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # NO modificar esta línea
+# Reuno TODOS los fuentes que necesita el proyecto
+set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
 
 # Nombres de las librerías a usar en el proyecto
 set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt mongoose)
