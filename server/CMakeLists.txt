@@ -29,7 +29,7 @@ set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
 set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
 set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc)
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
-set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc)
+set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
 
 
