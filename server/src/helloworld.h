@@ -12,6 +12,7 @@ class HelloWorld {
 
   public:
   void EjemploRocksDB();
+  void EjemploRocksDBDos();
   void EjemploJson();
   void EjemploMongoose();
 

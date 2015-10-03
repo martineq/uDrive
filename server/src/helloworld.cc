@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "helloworld.h"
+#include "db_handler.h"
 
 using namespace std;
 using namespace rocksdb;
@@ -19,28 +20,28 @@ void HelloWorld::EjemploRocksDB() {
   DB* db; 
   Options options; 
 
-  // Optimiza RocksDB. This is the easiest way to get RocksDB to perform well
+  // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
   options.IncreaseParallelism(); 
   options.OptimizeLevelStyleCompaction(); 
 
-  // Crea la BD si no existiera antes
+  // Create the DB if it's not already present
   options.create_if_missing = true; 
 
-  // Abre la BD
+  // Open DB
   Status s = DB::Open(options, "/tmp/testdb", &db); 
   assert(s.ok()); 
 
-  // Uso del Put()
+  // Put key-value
   s = db->Put(WriteOptions(), "key1", "value"); 
   assert(s.ok()); 
   std::string value; 
 
-  // Uso del Get()
+  // Get value
   s = db->Get(ReadOptions(), "key1", &value); 
   assert(s.ok()); 
   assert(value == "value"); 
 
-  // Aplico un grupo de actualizaciones atómicas
+  // atomically apply a set of updates
   {
   WriteBatch batch; 
   batch.Delete("key1"); 
@@ -56,7 +57,7 @@ void HelloWorld::EjemploRocksDB() {
 
   delete db; 
 
-  cout << "Se creó una base de datos en: /tmp/testdb " << endl;
+  cout << "Base de datos en: /tmp/testdb " << endl;
 
   cout << "---------------" << endl;
   cout << " Fin - RocksDB " << endl;
@@ -149,3 +150,44 @@ int HelloWorld::ev_handler(struct mg_connection *conn, enum mg_event ev) {
   }
 }
 
+void HelloWorld::EjemploRocksDBDos(){
+
+  cout << "---------------------------" << endl;
+  cout << " ¡Hola Mundo! - RocksDBDos " << endl;
+  cout << "---------------------------" << endl;
+
+  DbHandler dbh;
+
+  assert(dbh.open("/tmp/testdb"));  
+  assert(dbh.put("key1","value"));
+  
+  std::string value;
+  bool found;
+  assert(dbh.get("key1", &value, found));
+  assert(found); 
+  assert(value == "value"); 
+
+  assert(!dbh.get("key999", &value, found));
+  assert(!found); 
+
+  assert(dbh.put("key2","newvalue"));
+  assert(dbh.get("key2", &value, found));
+  assert(value == "newvalue"); 
+
+  assert(dbh.put("key3","value3"));
+  assert(dbh.put("key4","value4"));
+  assert(dbh.put("key5","value5"));
+  assert(dbh.put("key6","value6"));
+
+  assert(dbh.erase("key2"));
+  assert(!dbh.get("key2", &value, found));
+  assert(!found); 
+
+  
+  cout << "Base de datos en: /tmp/testdb " << endl;
+
+  cout << "------------------" << endl;
+  cout << " Fin - RocksDBDos " << endl;
+  cout << "------------------" << endl;
+  
+}

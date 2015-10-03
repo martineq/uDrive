@@ -10,3 +10,6 @@ build/
 .kdev4/
 *.kdev4
 *.kate-swp
+
+# Ignoro un archivo main alternativo
+main.cc.alt
