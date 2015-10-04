@@ -7,7 +7,7 @@
 using std::string;
 
 #include "mongoose/mongoose.h"
-#include "mgconnection.h"
+#include "mongoose/mgconnection.h"
 #include "util/log.h"
 
 extern "C" {
@@ -24,8 +24,6 @@ class WEBServer {
 		const char* setDocumentRoot(string path);
 		void run();
 		void stop();
-
-
 
 	protected:
 		struct mg_server *server;
