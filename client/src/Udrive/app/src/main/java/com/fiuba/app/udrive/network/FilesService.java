@@ -23,12 +23,17 @@ public class FilesService extends AbstractService {
         mFilesServiceApi.getFiles(new Callback<List<File>>() {
             @Override
             public void success(List<File> files, Response response) {
-                serviceCallback.onSuccess(files);
+                serviceCallback.onSuccess(files, response.getStatus());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                serviceCallback.onFailure(error.getMessage());
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
             }
         });
     }
