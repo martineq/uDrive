@@ -50,7 +50,7 @@ bool DbHandler::put(std::string key, std::string value){
 /**
  * @brief Gets the database entry for "key" to "value".
  *  If the database contains an entry for "key" store the corresponding value in *value and return OK.
- *  Returns false en error (includes a "key not found").
+ *  Returns false on error (includes a "key not found").
  *  If there is no entry for "key" leave *value unchanged and found indicates false.
  * 
  * @param key Name of the key stored in the database
@@ -91,3 +91,22 @@ bool DbHandler::check_status(rocksdb::Status s){
     return true;
   }
 }
+
+
+void DbHandler::erase_batch(std::string key){
+  if(db_==nullptr) return;
+  batch_.Delete(key);
+}
+
+
+void DbHandler::put_batch(std::string key, std::string value){
+  if(db_==nullptr) return;
+  batch_.Put(key,value);
+}
+
+
+bool DbHandler::write_batch(){
+  if(db_==nullptr) return false;
+  return(check_status(db_->Write(rocksdb::WriteOptions(),&batch_)) );
+}
+
