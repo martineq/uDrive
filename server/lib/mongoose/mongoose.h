@@ -87,6 +87,8 @@ enum {
 
 // Server management functions
 struct mg_server *mg_create_server(void *server_param, mg_handler_t handler);
+/** Returns the server_param */
+void *mg_get_server_param(struct mg_server *);
 void mg_destroy_server(struct mg_server **);
 const char *mg_set_option(struct mg_server *, const char *opt, const char *val);
 time_t mg_poll_server(struct mg_server *, int milliseconds);
@@ -103,6 +105,7 @@ void mg_send_status(struct mg_connection *, int status_code);
 void mg_send_header(struct mg_connection *, const char *name, const char *val);
 size_t mg_send_data(struct mg_connection *, const void *data, int data_len);
 size_t mg_printf_data(struct mg_connection *, const char *format, ...);
+size_t mg_vprintf_data(struct mg_connection *c, const char *format, va_list ap);
 size_t mg_write(struct mg_connection *, const void *buf, size_t len);
 size_t mg_printf(struct mg_connection *conn, const char *fmt, ...);
 
