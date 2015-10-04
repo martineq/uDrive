@@ -4,6 +4,12 @@ sudo: required
 # Selección del lenguaje: C++
 language: cpp
 
+# Solo hacer build sobre los branches elegidos
+branches:
+only:
+  - master
+  - develop
+
 # Agrego el uso del servicio de Docker
 services:
   - docker
