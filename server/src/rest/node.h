@@ -1,7 +1,7 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-#include "mongoose/mgconnection.h"
+#include "../mg_connection.h"
 
 
 class Node {
@@ -10,9 +10,7 @@ class Node {
 		bool handle(MgConnection& conn, const char* url);
 	protected:
 
-		bool match(const char* url) = 0;
-
-		void execute(MgConnection& conn, const char* url) = 0;
+		bool match(const char* url);
 
 		/** Chequea el metodo (METHOD HTTP) de la connecion y ejecuta el metodo correspondiente
 			 */

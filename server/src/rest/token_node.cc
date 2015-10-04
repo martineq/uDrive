@@ -4,8 +4,8 @@
 #include <ctime>
 #include <sstream>
 
-#include "util/random_number.h"
-#include "util/md5.h"
+#include "../util/random_number.h"
+#include "../util/md5.h"
 
 using std::string;
 using std::stringstream;
@@ -20,10 +20,11 @@ void TokenNode::executeGet(MgConnection& conn, const char* url){
 
 	//Validar si es password es valido
 		if(1){
+			TokenNode::CreateToken(email);
 			std::string token=TokenNode::CreateToken(email);
 			conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 			conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"userid\": \"%s\" , \"email\": \"%s\" , \"token\": \"%s\" }", "0", email, token.c_str());
+			conn.printfData("{ \"userid\": \"%s\",  \"email\": \"%s\"  \"token\": \"%s\" }", "0", email.c_str(), token.c_str());
 			return;
 		}
 		conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);
@@ -31,9 +32,9 @@ void TokenNode::executeGet(MgConnection& conn, const char* url){
 		conn.printfData("{ \"message\": \"%s\",  \"error_user_msg\": \"Problemas con el logeo\"}", email.c_str());
 }
 
-std::string CreateToken(const string& username){
+std::string TokenNode::CreateToken(const string& email){
 	stringstream ss;
-	ss << randomNumber(1000) << username << time(NULL) << randomNumber(9999) ;
+	ss << randomNumber(1000) << email << time(NULL) << randomNumber(9999) ;
 	string out;
 	md5Str(out, ss.str());
 	return out;
