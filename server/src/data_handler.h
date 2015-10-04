@@ -1,18 +1,32 @@
 #ifndef DATA_HANDLER_H
 #define DATA_HANDLER_H
 
+#include <iostream>
 #include <string>
 #include "db_handler.h"
+#include "db_constants.h"
 
 using namespace std;
 
 class DataHandler {
 
+  private:
+    DbHandler dbh_;
+    
+    string generate_user_key(string email, string item_selected);
+    string generate_dir_key(string dir_id, string item_selected);
+    string generate_file_key(string file_id, string item_selected);
+    bool user_exists(string email);
+    
+    // TODO (mart): long get_quota(email)
+  
   public:
     DataHandler();
     ~DataHandler();
 
-    bool add_user(string email, string password, string name, string location, string& token, int& status);
+    bool init();
+    
+    bool add_user(string email, string password, string name, string location, string token, string date, int& status);
     bool add_user_avatar(string email, string token, string file_stream, int& status);
     bool add_directory(string email, string token, string name, string date, string parent_dir, string& dir_id, int& status);
     bool add_file(string email, string token, string name, string extension, string date, string directory, string& file_id, int& status);

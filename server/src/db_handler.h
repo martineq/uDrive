@@ -4,6 +4,7 @@
 #include "rocksdb/db.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/options.h"
+#include "rocksdb/write_batch.h"
 #include <string>
 #include <iostream>
 
@@ -12,6 +13,7 @@ class DbHandler {
   private:
     rocksdb::DB* db_;
     rocksdb::Status status_;
+    rocksdb::WriteBatch batch_;
     
     bool check_status(rocksdb::Status s);
 
@@ -23,6 +25,10 @@ class DbHandler {
     bool get(std::string key, std::string* value, bool& found);
     bool erase(std::string key);
 
+    void put_batch(std::string key, std::string value);
+    void erase_batch(std::string key);
+    bool write_batch();
+    
 }; 
- 
+
 #endif // DB_HANDLER_H
