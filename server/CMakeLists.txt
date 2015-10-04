@@ -19,6 +19,8 @@ set(RUTA_LIB "${RUTA_RAIZ}/lib")
 set(RUTA_SRC "${RUTA_RAIZ}/src")
 set(RUTA_TOOLS "${RUTA_RAIZ}/tools")
 set(RUTA_TEST "${RUTA_RAIZ}/test")
+set(RUTA_TEST "${RUTA_RAIZ}/rest")
+set(RUTA_TEST "${RUTA_RAIZ}/util")
 
 # Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
 #set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)

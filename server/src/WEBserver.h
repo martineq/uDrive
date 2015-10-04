@@ -6,8 +6,7 @@
 
 using std::string;
 
-#include "mongoose/mongoose.h"
-#include "mgconnection.h"
+#include "mongoose/mgconnection.h"
 #include "util/log.h"
 
 extern "C" {

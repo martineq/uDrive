@@ -42,6 +42,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;   // Mark as processed
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
 	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+	  TokenNode tn=new TokenNode();
   } else {
     return MG_FALSE;  // Rest of the events are not processed
   }
