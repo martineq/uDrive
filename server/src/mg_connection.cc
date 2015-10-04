@@ -1,4 +1,5 @@
 #include "mg_connection.h"
+#include "mongoose/mongoose.h"
 
 extern "C" {
 	#include <stdarg.h>
