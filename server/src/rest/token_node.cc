@@ -4,10 +4,8 @@
 #include <ctime>
 #include <sstream>
 
-#include "../db/user.h"
-#include "../db/access_token.h"
-#include "../util/random_number.h"
-#include "../util/md5.h"
+#include "util/random_number.h"
+#include "util/md5.h"
 
 using std::string;
 using std::stringstream;

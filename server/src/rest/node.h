@@ -12,7 +12,7 @@ class Node {
 
 		bool match(const char* url) = 0;
 
-		virtual void execute(MgConnection& conn, const char* url) = 0;
+		void execute(MgConnection& conn, const char* url) = 0;
 
 		/** Chequea el metodo (METHOD HTTP) de la connecion y ejecuta el metodo correspondiente
 			 */
