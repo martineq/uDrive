@@ -1,51 +1,82 @@
-#######################################
-# Archivo de configuración para CMake #
-#######################################
+###################################################
+# Archivo de configuración CMake para el servidor #
+###################################################
 
-##########
-# Seteos #
-##########
+#############################
+# Seteos de nombres y rutas #
+#############################
 
 # Versión de CMake mínima usada para generar el proyecto, si no la encuentra, finaliza.
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR) # Se quitó el 3.1 para que corra con el cmake de travis
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-# Definición del proyecto. Con CXX indico que todos los archivos son tratados como C++.
 set(NOMBRE_PROYECTO "server")  # Seteo el nombre del ejecutable
-project(${NOMBRE_PROYECTO} C CXX)
+project(${NOMBRE_PROYECTO} C CXX) # Definición del proyecto
 
-# Seteo rutas del directorio de librerias y del directorio de código fuente
-set(RUTA_RAIZ "${${NOMBRE_PROYECTO}_SOURCE_DIR}")
-set(RUTA_LIB "${RUTA_RAIZ}/lib")
-set(RUTA_SRC "${RUTA_RAIZ}/src")
-set(RUTA_TOOLS "${RUTA_RAIZ}/tools")
-set(RUTA_TEST "${RUTA_RAIZ}/test")
+set(RUTA_RAIZ "${${NOMBRE_PROYECTO}_SOURCE_DIR}") # Ruta del directorio raíz
+set(RUTA_LIB "${RUTA_RAIZ}/lib") # Ruta del directorio donde se encuentran los headers de las librerías usadas
+set(RUTA_SRC "${RUTA_RAIZ}/src") # Ruta del directorio donde se encuentran los archivos fuente
+set(RUTA_TOOLS "${RUTA_RAIZ}/tools") # Ruta del directorio donde se encuentran las herramientas para usar en el proyecto
+set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los archivos de test
+
+
+######################################################
+### Seteos referidos a la compilación del servidor ###
+######################################################
+
+# Seteo distintos paquetes de archivos fuente, se agregan líneas nuevas según necesidad
+# Ejemplo para agregar paquetes: set(SRC_PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cc ${RUTA_SRC}/nombre_fuente2.cc)
+set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
+set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
+set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc)
+set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
+set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
+# ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
+
+
+
+# Todos los fuentes que serán testeados y tendrán análisis de code coverage. NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
+set(SRC_TESTEABLE ${SRC_PACK_HOLA_MUNDO})
+
+# Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} )
+
+# Reuno TODOS los fuentes que necesita el proyecto
+set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
+
+# Nombres de las librerías a usar en el proyecto
+set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt mongoose)
+
+# Flag para indicar si se quiere generar un ejecutable. Para activarlo usar desde la carpeta build "cmake -DEXE=SI .."
+option(EXE "Activa la creación de un ejecutable, sin tests" NO)
 set(RUTA_TEST "${RUTA_RAIZ}/rest")
 set(RUTA_TEST "${RUTA_RAIZ}/util")
 
-# Seteo todos los fuentes que serán testeados y tendrá análisis de code coverage
-#set(SRC_TESTEABLE ${RUTA_SRC}/LibraryTest.cpp)
+# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 
-# Seteo todos los fuentes que no necesiten testeo y code coverage (por ejemplo el main, archivos fuente de librerías)
-set(SRC_NO_TESTEABLE ${RUTA_SRC}/main.cpp ${RUTA_SRC}/WEBserver.cpp ${RUTA_SRC}/util/log.cpp ${RUTA_LIB}/mongoose/mongoose.c)
 
-# Seteo TODOS los fuentes que necesita el proyecto
-set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE})
+###################################
+### Seteos referidos al testing ###
+###################################
 
-# Seteo los nombres de las librerías
-set(LIBS rocksdb bz2 snappy z pthread rt jsoncpp)
+# Seteo el nombre del test
+set(NOMBRE_TEST "test_server")
 
-# Flag para indicar si se quiere generar un ejecutable
-option(SOLO_EXECUTABLE "Activa la creación de un ejecutable, sin tests" ON)
+# Seteo distintos paquetes de archivos de test, se agregan líneas nuevas según necesidad
+set(SRC_TEST_PACK_SIMPLE ${RUTA_TEST}/test.cc)
+# ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE CON CÓDIGO DE PRUEBAS *****
 
-set(SOLO_EXECUTABLE "YES") #Pongo esto porque sino no funciona la linea anterior
+# Seteo TODOS los archivos fuente que se usan para realizar el testeo. NO AGREGAR RUTAS, sólo variables "${SRC_TEST_...}"
+set(SRC_TEST ${SRC_TEST_PACK_SIMPLE})
 
-message("SOLO EXECUTABLE " ${SOLO_EXECUTABLE})
 
-### Comandos para coveralls-cmake ###
+#############################################
+### Seteos para el uso de coveralls-cmake ###
+#############################################
 
 # Setea las opciones para la herramienta coveralls-cmake
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(COVERALLS "Activa el soporte para Coveralls.io" OFF)
+option(COVERALLS_UPLOAD "Sube el json generado de coveralls" ON)
 
 # Seteo la ruta donde se encuentran los scripts de la herramienta coveralls-cmake
 set(RUTA_COVERALLS_CMAKE "${RUTA_TOOLS}/coveralls-cmake/cmake")
@@ -59,14 +90,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${RUTA_COVERALLS_CMAKE})
 ########################
 
 # Chequeo la existencia de todas las librerias agregadas
-foreach(LIB ${LIBS})
-  find_library(LIBRERIA${LIB} ${LIB})
+foreach(LIB ${NOMBRE_LIBS})
+  find_library(LIBRERIA${LIB} NAMES ${LIB} )
   if (LIBRERIA${LIB}) #False si es 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, vacio, o si termina en "-NOTFOUND". Caso contrario es TRUE.
-    message(STATUS "Librería |${LIB}| encontrada en |${LIBRERIA${LIB}}|")         
+    message(STATUS "Librería |${LIB}| encontrada en |${LIBRERIA${LIB}}|")
   else (LIBRERIA${LIB})
     message(FATAL_ERROR "No se encontró la librería |${LIB}|. Verificar existencia.")
   endif (LIBRERIA${LIB})
-endforeach(LIB ${LIBS})
+endforeach(LIB ${NOMBRE_LIBS})
 
 
 #########################################
@@ -74,33 +105,26 @@ endforeach(LIB ${LIBS})
 #########################################
 
 # Verifico si debo crear un ejecutable o una librería
-if (SOLO_EXECUTABLE)
-	message(STATUS "- Modo ejecutable")
-	# Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)         
-	add_executable(${NOMBRE_PROYECTO} ${SRC})
-else (SOLO_EXECUTABLE) 
-	message(STATUS "- Modo biblioteca")
- 	# Creo una biblioteca para correr los tests
-	add_library(${NOMBRE_PROYECTO} ${SRC})
-endif (SOLO_EXECUTABLE)
+if (EXE)
+  message(STATUS "*** Generación de ejecutable ***")
+  # Nombre del ejecutable resultante de la compilación. Los demás argumentos son los archivos fuente (sin los headers)
+  add_executable(${NOMBRE_PROYECTO} ${SRC})
+else (EXE)
+  message(STATUS "*** Generación de biblioteca para test ***")
+  # Creo una biblioteca para correr los tests
+  add_library(${NOMBRE_PROYECTO} ${SRC})
+endif (EXE)
 
 # Incluyo la ruta de las librerías para el compiler
 include_directories(${RUTA_LIB})
-
-# Vinculo la ruta de las librerías y los nombres de las mismas para el linker
-link_directories(${RUTA_LIB})
-target_link_libraries(${NOMBRE_PROYECTO} ${LIBS})
-
-# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB. Agrega al compilador el feature "cxx_range_for"
-#target_compile_features(${NOMBRE_PROYECTO} PRIVATE cxx_range_for) # No funciona en versiones de CMake anteriores a 3.1 (Travis tiene 2.8)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+target_link_libraries(${NOMBRE_PROYECTO} ${NOMBRE_LIBS})
 
 
 ###################################################
 # Configuración de la herramienta coveralls-cmake #
 ###################################################
 
-# Si activo Coveralls en la llamada de CMake 
+# Si activo Coveralls en la llamada de CMake
 if (COVERALLS)
   # Agrego el módulo CMake correspondiente...
   include(Coveralls)
@@ -112,21 +136,20 @@ if (COVERALLS)
   # 1er argumento: Lista de archivos fuente
   # 2do argumento: "ON" para subir al sitio Coveralls.io
   # 3er argumento: Ruta alternativa de ubicación de la herramienta coveralls-cmake
-  coveralls_setup("${SRC_TESTEABLE}" 
+  coveralls_setup("${SRC_TESTEABLE}"
                    ${COVERALLS_UPLOAD}
                   "${RUTA_COVERALLS_CMAKE}")
 endif(COVERALLS)
 
 
-#############################
-# Configuración de los test #
-#############################
+#########################
+# Configuración de test #
+#########################
 
-if (NOT SOLO_EXECUTABLE)
+if (NOT EXE)
   # Agregos los tests
-#  enable_testing()
-#  add_executable(test_ejemplo ${RUTA_TEST}/test.cpp)
-#  target_link_libraries(test_ejemplo ${NOMBRE_PROYECTO})
-#  add_test(${NOMBRE_PROYECTO} test_ejemplo)
+  enable_testing()
+  add_executable(${NOMBRE_TEST} ${SRC_TEST})
+  target_link_libraries(${NOMBRE_TEST} ${NOMBRE_PROYECTO})
+  add_test(${NOMBRE_PROYECTO} ${NOMBRE_TEST})
 endif ()
-

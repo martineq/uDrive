@@ -1,4 +1,4 @@
-#include "WEBserver.h"
+#include "web_server.h"
 #include <string.h>
 
 WEBServer::WEBServer(){
@@ -27,8 +27,6 @@ void WEBServer::run(){
 	this->running = 1;
 	pthread_create(&hilo, NULL, WEBServer::threadHandler, this);
 }
-
-
 /**
  * Metodo que maneja los request del servidor.
  */
@@ -38,10 +36,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/hello")) {
 	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
-	  mg_printf_data(conn, "%s", "Hello world");
+	  	  return MG_FALSE;
     return MG_TRUE;   // Mark as processed
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
 	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+	  TokenNode tn = new TokenNode();
+	  tn.handle(conn,conn->uri);
   } else {
     return MG_FALSE;  // Rest of the events are not processed
   }
