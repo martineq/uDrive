@@ -1,5 +1,5 @@
-#ifndef __MG_CONECTION_H__
-#define __MG_CONECTION_H__
+#ifndef __MG_CONNECTION_W_H__
+#define __MG_CONNECTION_W_H__
 
 #include "mongoose/mongoose.h"
 
@@ -8,12 +8,12 @@
 
 /** Clase que representa una coneccion, abstrae struct mg_connection de mongoose
  */
-class MgConnection {
+class MgConnectionW {
 	public:
 		/** Constructor
 		 * @param coneccion
 		 */
-		MgConnection(struct mg_connection *conn);
+		MgConnectionW(struct mg_connection *conn);
 
 		/** Enum que representa los codigos de estado de html
 		 */
@@ -45,7 +45,7 @@ class MgConnection {
 		/** Envia el codigo de estado
 		 * @param codigo (enum)
 		 */
-		void sendStatus(MgConnection::StatusCodes code);
+		void sendStatus(MgConnectionW::StatusCodes code);
 
 		/** Envia el codigo de estado
 		 * @param codigo entero
@@ -63,7 +63,7 @@ class MgConnection {
 		 */
 		void sendContentType(const std::string& type);
 		void sendContentType(const char* type);
-		void sendContentType(MgConnection::ContentTypes type);
+		void sendContentType(MgConnectionW::ContentTypes type);
 
 		/** Printf - abstrae mg_vprintf_data
 		 */
