@@ -1,15 +1,17 @@
-#ifndef __AUTH_NODE_H__
-#define __AUTH_NODE_H__
+#ifndef __TOKEN_NODE_H__
+#define __TOKEN_NODE_H__
 
 #include "../rest/node.h"
+#include "../util/log.h"
 
 class TokenNode : public Node {
 	public:
 		TokenNode();
+		~TokenNode();
 
+		void execute(MgConnectionW& conn, const char* url);
 	protected:
-		void executeGet(MgConnection& conn, const char* url);
-		static std::string CreateToken(const std::string& email);
+		std::string CreateToken(const std::string& email);
 };
 
 #endif
