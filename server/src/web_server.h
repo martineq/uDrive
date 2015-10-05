@@ -8,6 +8,8 @@ using std::string;
 
 #include "mongoose/mongoose.h"
 #include "util/log.h"
+#include "rest/token_node.h"
+#include "rest/info_node.h"
 
 extern "C" {
 	#include <pthread.h>
@@ -23,8 +25,6 @@ class WEBServer {
 		const char* setDocumentRoot(string path);
 		void run();
 		void stop();
-
-
 
 	protected:
 		struct mg_server *server;
