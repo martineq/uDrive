@@ -1,9 +1,21 @@
 # Selección del lenguaje: C++
 language: cpp
 
+<<<<<<< HEAD
 # Seleeción de compiladores
 compiler:
   - gcc
+=======
+# Solo hacer build sobre los branches elegidos
+branches:
+  only:
+    - master
+    - develop
+
+# Agrego el uso del servicio de Docker
+services:
+  - docker
+>>>>>>> branch 'develop' of https://github.com/martineq/tp7552.git
 
 # Solo hacer build de los branches elegidos
 branches:

@@ -16,6 +16,7 @@ import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
+import com.fiuba.app.udrive.network.StatusCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,15 +78,18 @@ public class FileListActivity extends AppCompatActivity {
 
         mFilesService.getFiles(new ServiceCallback<List<File>>() {
             @Override
-            public void onSuccess(List<File> files) {
+            public void onSuccess(List<File> files, int status) {
                 mFilesAdapter.updateFiles(files);
                 progressDialog.dismiss();
                 Log.d(TAG, "Number of files received " + files.size());
             }
 
             @Override
-            public void onFailure(String message) {
-                Toast.makeText(FileListActivity.this, R.string.error_obtaining_files, Toast.LENGTH_LONG).show();
+            public void onFailure(String message, int status) {
+                if (StatusCode.isHumanReadable(status)){
+                   message = StatusCode.getMessage(FileListActivity.this, status);
+                   Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                }
                 progressDialog.dismiss();
                 Log.e(TAG, message);
             }

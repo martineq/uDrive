@@ -18,7 +18,7 @@ import retrofit.http.POST;
 public class LoginService extends AbstractService {
 
     private interface LoginServiceApi {
-        @GET("/token/1") // After testing Supress /1 and decomment uData
+        @GET("/token/1") // After testing Suppress /1 and uncomment uData
         void getToken(/*@Body UserData uData, */Callback<UserAccount> uAccountCb);
     }
 
@@ -32,12 +32,17 @@ public class LoginService extends AbstractService {
         mLoginServiceApi.getToken(/*uData, */new Callback<UserAccount>(){
             @Override
             public void success(UserAccount userAccount, Response response){
-                uAccountCb.onSuccess(userAccount);
+                uAccountCb.onSuccess(userAccount, response.getStatus());
             }
 
             @Override
             public void failure(RetrofitError error){
-                uAccountCb.onFailure(error.getMessage());
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                uAccountCb.onFailure(error.getMessage(), status);
             }
         });
     }

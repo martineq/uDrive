@@ -6,3 +6,4 @@
 # Ignoro carpetas las carpetas:
 build/
 
+/client/

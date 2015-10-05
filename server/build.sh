@@ -8,9 +8,9 @@ if [ -d ./build ];
 	else
 		echo 'creo la carpeta'
 		mkdir build
-		cd build
 	fi
-cmake ./
-make
+cd build
+cmake ../ cmake -DEXE=SI
+make 
 exit 0
 

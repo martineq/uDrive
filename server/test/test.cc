@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char **argv) {
   
   HelloWorld hw;
-  hw.EjemploRocksDB();
+  //hw.EjemploRocksDB();
   hw.EjemploMongoose();
   hw.EjemploJson();
 
