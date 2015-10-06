@@ -18,8 +18,8 @@ import retrofit.http.POST;
 public class LoginService extends AbstractService {
 
     private interface LoginServiceApi {
-        @GET("/token/1") // After testing Suppress /1 and uncomment uData
-        void getToken(/*@Body UserData uData, */Callback<UserAccount> uAccountCb);
+        @GET("/token")
+        void getToken(@Body UserData uData, Callback<UserAccount> uAccountCb);
     }
 
     private LoginServiceApi mLoginServiceApi;
@@ -28,8 +28,8 @@ public class LoginService extends AbstractService {
         this.mLoginServiceApi = createService(LoginServiceApi.class, null);
     }
 
-    public void getToken(/*UserData uData, */final ServiceCallback<UserAccount> uAccountCb){
-        mLoginServiceApi.getToken(/*uData, */new Callback<UserAccount>(){
+    public void getToken(UserData uData, final ServiceCallback<UserAccount> uAccountCb){
+        mLoginServiceApi.getToken(uData, new Callback<UserAccount>(){
             @Override
             public void success(UserAccount userAccount, Response response){
                 uAccountCb.onSuccess(userAccount, response.getStatus());

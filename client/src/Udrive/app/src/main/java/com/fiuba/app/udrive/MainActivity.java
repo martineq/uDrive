@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         UserData userData = new UserData(email, md5(PASS_SALT+password));
         System.out.println(md5(password));
 
-        this.mLoginService.getToken(/*userData, */new ServiceCallback<UserAccount>() {
+        this.mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount, int status) {
                 if (uAccount.getId() != 0 ) {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
      * @return a hex representation of the hashed string or an empty string if
      * an exception occurs
      */
-    public static String md5(String s) {
+    public static String md5(String s) { 
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
