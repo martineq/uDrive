@@ -15,7 +15,7 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-InfoNode::InfoNode()  : Node("Info") {
+InfoNode::InfoNode()  : Node("info") {
 	// TODO Auto-generated constructor stub
 
 }
@@ -37,11 +37,12 @@ vector<string> split(const string &s, char delim) {
 void InfoNode::execute(MgConnectionW& conn, const char* url){
 
 	vector<string> lista=split(conn->uri,'/');
-	string userid=lista[3];
+	string userId=lista[3];
 	string dirId=lista[5];
 
 	if (!lista[4].compare("dir")){
 		//Valido si el usuario existe en la base de datos
+		// Obtener token del Header y chequear que exista para el userId solicitado.
 		if (!1){
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
@@ -52,9 +53,7 @@ void InfoNode::execute(MgConnectionW& conn, const char* url){
 		if (1){
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%i\",  \"name\": \"%s\",  "
-				"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%i\", "
-				"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 1, "Carpeta", 500,"a",1,"false","10/10/2015");
+			conn.printfData("[{ \"id\": \"%i\",  \"name\": \"%s\",  \"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%i\", \"shared\": \"%s\",  \"lastModDate\": \"%s\"}, { \"id\": \"%i\",  \"name\": \"%s\", \"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%i\", \"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 1, "Carpeta-1", 500, "d", 1, "false", "10/10/2015", 2, "Archivo-1", 300, "a", 1, "false", "03/10/2015");
 			return;
 		}else{
 			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
