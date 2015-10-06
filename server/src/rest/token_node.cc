@@ -37,7 +37,7 @@ void TokenNode::execute(MgConnectionW& conn, const char* url){
 			//genero id usuario aleatorio solo para test.
 			int userId=randomNumber(9999);
 			string token=CreateToken(email);
-			conn.sendStatus(MgConnectionW::STATUS_CODE_CREATED);
+			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{ \"userId\": \"%i\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId, email.c_str(), token.c_str());
 			return;
