@@ -5,6 +5,7 @@
 
 #include <map>
 #include <string>
+using std::string;
 
 /** Clase que representa una coneccion, abstrae struct mg_connection de mongoose
  */
@@ -58,6 +59,8 @@ class MgConnectionW {
 		 */
 		void sendHeader(const std::string& name, const std::string& val);
 		void sendHeader(const char* name, const char* val);
+
+		string getAuthorization();
 
 		/** Setea el content type
 		 */
