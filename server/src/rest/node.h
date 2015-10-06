@@ -10,8 +10,6 @@ class Node {
 		bool handle(MgConnectionW& conn, const char* url);
 	protected:
 
-		bool match(const char* url);
-
 		/** Chequea el metodo (METHOD HTTP) de la connecion y ejecuta el metodo correspondiente
 			 */
 		void execute(MgConnectionW& conn, const char* url);

@@ -16,14 +16,13 @@ using std::stringstream;
 TokenNode::TokenNode() : Node("token") {
 }
 
-void TokenNode::execute(MgConnectionW& conn, const char* url){
+void TokenNode::executePost(MgConnectionW& conn, const char* url){
 
 	// Tomo usuario y pass de la conexion
 	std::string email = conn.getVarStr("email");
 	std::string password = conn.getVarStr("password");
 
 	 Log(Log::LogMsgDebug) << "[" << "Validando usuario" << "] " << email << " " << password;
-
 
 		//Valido si el usuario existe en la base de datos
 		if (!1){

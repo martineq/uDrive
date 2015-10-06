@@ -39,6 +39,8 @@ void InfoNode::execute(MgConnectionW& conn, const char* url){
 	vector<string> lista=split(conn->uri,'/');
 	string userid=lista[3];
 	string dirId=lista[5];
+	//Validacion del token que se recibe.
+	Log(Log::LogMsgDebug) << "[" << "HEADERS " << "] " << conn->http_headers;
 
 	if (!lista[4].compare("dir")){
 		//Valido si el usuario existe en la base de datos

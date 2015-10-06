@@ -16,10 +16,6 @@ bool Node::handle(MgConnectionW& conn, const char* url){
 	return false;
 }
 
-bool Node::match(const char* url){
-	return strncmp(url, this->uri.c_str(), this->uri.length()) == 0;
-}
-
 void Node::execute(MgConnectionW& conn, const char* url){
 	const char *method = conn->request_method;
 	if(strcmp(method, "GET") == 0)

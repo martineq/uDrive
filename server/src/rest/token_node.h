@@ -9,7 +9,7 @@ class TokenNode : public Node {
 		TokenNode();
 		~TokenNode();
 
-		void execute(MgConnectionW& conn, const char* url);
+		void executePost(MgConnectionW& conn, const char* url);
 	protected:
 		std::string CreateToken(const std::string& email);
 };
