@@ -3,6 +3,13 @@
 # Ignoro los archivos temporales (todos los que terminan con el caracter "~")
 *~
 
-# Ignoro carpetas las carpetas:
+# Ignoro la carpeta build:
 build/
 
+# Ignoro la carpeta de proyecto KDevelop y sus archivos:
+.kdev4/
+*.kdev4
+*.kate-swp
+
+# Ignoro un archivo main alternativo
+main.cc.alt

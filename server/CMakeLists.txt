@@ -18,6 +18,7 @@ set(RUTA_SRC "${RUTA_RAIZ}/src") # Ruta del directorio donde se encuentran los a
 set(RUTA_TOOLS "${RUTA_RAIZ}/tools") # Ruta del directorio donde se encuentran las herramientas para usar en el proyecto
 set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los archivos de test
 
+
 ######################################################
 ### Seteos referidos a la compilación del servidor ###
 ######################################################
@@ -25,14 +26,15 @@ set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los
 # Seteo distintos paquetes de archivos fuente, se agregan líneas nuevas según necesidad
 # Ejemplo para agregar paquetes: set(SRC_PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cc ${RUTA_SRC}/nombre_fuente2.cc)
 set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
-#set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
+set(SRC_PACK_HOLA_MUNDO ${RUTA_SRC}/helloworld.cc)
 set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc ${RUTA_SRC}/mg_connection_w.cc ${RUTA_LIB}/mongoose/mongoose.c)
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
-#set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
+set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
 set(SRC_PACK_UTILS ${RUTA_SRC}/util/md5.cc ${RUTA_SRC}/util/random_number.cc ${RUTA_SRC}/util/bin2hex.cc)
 set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc)
-
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
+
+
 
 # Todos los fuentes que serán testeados y tendrán análisis de code coverage. NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
 set(SRC_TESTEABLE ${SRC_PACK_HOLA_MUNDO})
@@ -44,8 +46,7 @@ set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${S
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
 
 # Nombres de las librerías a usar en el proyecto
-#set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt mongoose)
-set(NOMBRE_LIBS z snappy bz2 jsoncpp pthread rt mongoose)
+set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt)
 
 # Flag para indicar si se quiere generar un ejecutable. Para activarlo usar desde la carpeta build "cmake -DEXE=SI .."
 option(EXE "Activa la creación de un ejecutable, sin tests" NO)

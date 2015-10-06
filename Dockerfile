@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
 		unzip \
 		valgrind \
 		tree \
-        vim \
+		vim \
 		nano \
 		libsnappy-dev \
 		zlib1g-dev \

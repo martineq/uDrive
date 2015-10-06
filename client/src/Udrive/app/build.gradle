@@ -36,6 +36,7 @@ dependencies {
     // rest client for http interaction and dependencies
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
 
     // Google GSON
     compile 'com.google.code.gson:gson:2.3'

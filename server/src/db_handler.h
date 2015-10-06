@@ -27,7 +27,9 @@ class DbHandler {
 
     void put_batch(std::string key, std::string value);
     void erase_batch(std::string key);
+    void clear_batch();
     bool write_batch();
+    
     
 }; 
 

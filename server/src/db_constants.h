@@ -1,17 +1,24 @@
 // Database Path
 #define DB_PATH "/tmp/testdb"
 
-// DataHandler status
+// DataHandler exit status
 #define DH_STATUS_OK 1
 #define DH_STATUS_USER_ALREADY_EXISTS 2
 #define DH_STATUS_DATABASE_ERROR 3
+#define DH_STATUS_KEY_NOT_FOUND 4
 
-// DataHandler prefixes and suffixes
+// DataHandler deleted_status
+#define DH_DELETED_STATUS_EXISTS "1"
+#define DH_DELETED_STATUS_ERASED "2"
+
+// DataHandler prefixes and suffixes for key construction
 #define PREFIX_USER "user_"
 #define PREFIX_DIR "dir_"
 #define PREFIX_FILE "file_"
-#define PREFIX_TICKET "ticket_"
+#define PREFIX_INDEX_USER_ID_FROM_USER_EMAIL "index_user_id_from_user_email_"
+#define PREFIX_TICKET_LAST "ticket_last_"
 
+#define SUFFIX_EMAIL "_email"
 #define SUFFIX_PASSWORD "_password"
 #define SUFFIX_TOKEN "_token"
 #define SUFFIX_NAME "_name"
@@ -28,11 +35,13 @@
 #define SUFFIX_DIRECTORIES_CONTAINED "_directories_contained"
 #define SUFFIX_EXTENSION "_extension"
 #define SUFFIX_SIZE "_size"
-#define SUFFIX_STATUS "_deleted_status"
+#define SUFFIX_DELETED_STATUS "_deleted_status"
 #define SUFFIX_FILE_REVISION "_file_revision"
-#define SUFFIX_PARENT_REVISION "_parent_revision"
+#define SUFFIX_USERS_SHARED "_users_shared"
+#define SUFFIX_USER_ID "user_id"
+#define SUFFIX_DIR_ID "dir_id"
+#define SUFFIX_FILE_ID "file_id"
 
 // DataHandler labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
-

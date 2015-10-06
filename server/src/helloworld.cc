@@ -167,7 +167,7 @@ void HelloWorld::EjemploRocksDBDos(){
   assert(found); 
   assert(value == "value"); 
 
-  assert(!dbh.get("key999", &value, found));
+  assert(dbh.get("key999", &value, found));
   assert(!found); 
 
   assert(dbh.put("key2","newvalue"));
@@ -180,7 +180,7 @@ void HelloWorld::EjemploRocksDBDos(){
   assert(dbh.put("key6","value6"));
 
   assert(dbh.erase("key2"));
-  assert(!dbh.get("key2", &value, found));
+  assert(dbh.get("key2", &value, found));
   assert(!found); 
 
   

@@ -50,7 +50,7 @@ bool DbHandler::put(std::string key, std::string value){
 /**
  * @brief Gets the database entry for "key" to "value".
  *  If the database contains an entry for "key" store the corresponding value in *value and return OK.
- *  Returns false on error (includes a "key not found").
+ *  Returns false on error (an error NOT includes "key not found").
  *  If there is no entry for "key" leave *value unchanged and found indicates false.
  * 
  * @param key Name of the key stored in the database
@@ -66,6 +66,12 @@ bool DbHandler::get(std::string key, std::string* value, bool& found){
 
   rocksdb::Status s = db_->Get(rocksdb::ReadOptions(),key,value);
   found = !(s.IsNotFound());
+  
+  if(!found){
+    std::cerr << "Key |"<< key << "| not found" << std::endl;
+    return true; // "Key not found" is not an DB error
+  }
+
   return(check_status(s));
 }
 
@@ -85,7 +91,7 @@ bool DbHandler::erase(std::string key){
 
 bool DbHandler::check_status(rocksdb::Status s){
   if( !(s.ok()) ){
-    std::cerr << "DB Status Not OK -> |"<< s.ToString() << "|" << std::endl;
+    std::cerr << "DB Status -> |"<< s.ToString() << "|" << std::endl;
     return false;
   }else{
     return true;
@@ -102,6 +108,11 @@ void DbHandler::erase_batch(std::string key){
 void DbHandler::put_batch(std::string key, std::string value){
   if(db_==nullptr) return;
   batch_.Put(key,value);
+}
+
+void DbHandler::clear_batch(){
+  if(db_==nullptr) return;
+  batch_.Clear();
 }
 
 

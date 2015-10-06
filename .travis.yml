@@ -1,70 +1,19 @@
+# Necesito SU para el Docker
+sudo: required
+
 # Selección del lenguaje: C++
 language: cpp
 
-# Seleeción de compiladores
-compiler:
-  - gcc
-
-# Solo hacer build de los branches elegidos
+# Solo hacer build sobre los branches elegidos
 branches:
   only:
     - master
     - develop
 
-# Creo un directorio dedicado a la instalación
-before_install:
-  - cd server
-  - mkdir temp_install
+# Agrego el uso del servicio de Docker
+services:
+  - docker
 
-# Instalo todas las dependencias. (Tener en cuenta que Travis usa como base Ubuntu 12.04)
-install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y -qq lcov curl build-essential python git wget cmake unzip valgrind tree tar
-  - sudo apt-get install -y -qq libsnappy-dev zlib1g-dev libbz2-dev
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update
-  - sudo apt-get install -y gcc-4.9 g++-4.9
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 10
-  - sudo update-alternatives --config gcc
-  - sudo update-alternatives --config g++
-  - sudo update-alternatives --config gcov
-  - sudo rm -rf /var/lib/apt/lists/*
-  - cd temp_install
-  - sudo wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb
-  - sudo dpkg -i libgflags0_2.0-1_amd64.deb
-  - sudo wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
-  - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
-  - sudo wget https://github.com/facebook/rocksdb/archive/master.zip
-  - sudo unzip master.zip
-  - cd rocksdb-master
-  - sudo make static_lib
-  - sudo cp librocksdb.a /usr/local/lib
-  - cd ..
-  - sudo rm -rf rocksdb-master
-  - sudo rm master.zip
-  - sudo wget https://github.com/open-source-parsers/jsoncpp/archive/master.zip
-  - sudo unzip master.zip
-  - cd jsoncpp-master
-  - sudo python amalgamate.py
-  - cd dist
-  - sudo gcc -c jsoncpp.cpp
-  - sudo ar rvs libjsoncpp.a jsoncpp.o
-  - sudo cp libjsoncpp.a /usr/local/lib
-  - cd ../..
-  - sudo rm -rf jsoncpp-master
-  - sudo rm master.zip
-  - cd ..
-  - sudo rm -rf temp_install
-
-# Creo un directorio dedicado al build
-before_script:
-  - mkdir build
-
-# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake.
+# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. (Todo dentro de la imagen Docker)
 script: 
-  - cd build
-  - sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
-  - sudo make
-  - sudo make coveralls
+  - docker run martineq/tp7552:latest /bin/sh -c "cd server && mkdir build && cd build && sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug .. && sudo make && sudo make coveralls"
