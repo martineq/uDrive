@@ -5,15 +5,15 @@ public class UserProfile extends UserData {
     private String lastname;
     private String photo = null; // TODO: check this.
     private String lastLocation = null;
-    private int id;
+    private int userId;
 
-    public UserProfile(String email, String firstname, String lastname, String photo, String lastLocation, int id){
+    public UserProfile(String email, String firstname, String lastname, String photo, String lastLocation, int userId){
         super(email, null);
         this.firstname = firstname;
         this.lastname = lastname;
         this.photo = photo;
         this.lastLocation = lastLocation;
-        this.id = id;
+        this.userId = userId;
     }
 
     public String getFirstname(){
@@ -48,11 +48,11 @@ public class UserProfile extends UserData {
         this.lastLocation = lastLocation;
     }
 
-    public int getId(){
-        return id;
+    public int getUserId(){
+        return userId;
     }
 
-    public void setId(int id){
-        this.id = id;
+    public void setUserId(int userId){
+        this.userId = userId;
     }
 }

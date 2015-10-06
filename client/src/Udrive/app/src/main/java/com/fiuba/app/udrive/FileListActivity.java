@@ -43,7 +43,7 @@ public class FileListActivity extends AppCompatActivity {
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         this.mFilesService = new FilesService(uAccount.getToken());
-        loadFiles();
+        loadFiles(uAccount.getUserId(), 0); // Change 0 to the corresponding dirId
     }
 
     @Override
@@ -72,11 +72,11 @@ public class FileListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadFiles(){
+    private void loadFiles(int userId, int dirId){
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
 
-        mFilesService.getFiles(new ServiceCallback<List<File>>() {
+        mFilesService.getFiles(userId, dirId, new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
                 mFilesAdapter.updateFiles(files);

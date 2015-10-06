@@ -5,12 +5,13 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 public class FilesService extends AbstractService {
 
     private interface FilesServiceApi {
-        @GET("/files")
-        void getFiles(Callback<List<File>> files);
+        @GET("/info/users/{userId}/dir/{dirId}")
+        void getFiles(@Path("userId") int userId, @Path("dirId") int dirId, Callback<List<File>> files);
     }
 
     private FilesServiceApi mFilesServiceApi;
@@ -19,8 +20,8 @@ public class FilesService extends AbstractService {
         this.mFilesServiceApi = createService(FilesServiceApi.class, token);
     }
 
-    public void getFiles(final ServiceCallback<List<File>> serviceCallback) {
-        mFilesServiceApi.getFiles(new Callback<List<File>>() {
+    public void getFiles(int userId, int dirId, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.getFiles(userId, dirId, new Callback<List<File>>() {
             @Override
             public void success(List<File> files, Response response) {
                 serviceCallback.onSuccess(files, response.getStatus());

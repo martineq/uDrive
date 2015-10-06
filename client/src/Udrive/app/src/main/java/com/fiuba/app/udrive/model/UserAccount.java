@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class UserAccount extends UserData implements Serializable {
     private String token = null;
-    private int id;
+    private int userId;
 
-    public UserAccount(final String email, final String token, int id){
+    public UserAccount(final String email, final String token, int userId){
         super(email, null);
         this.token = token;
-        this.id = id; // User ID
+        this.userId = userId; // User ID
     }
 
     public String getToken(){
@@ -20,12 +20,12 @@ public class UserAccount extends UserData implements Serializable {
         this.token = token;
     }
 
-    public int getId(){
-        return id;
+    public int getUserId(){
+        return userId;
     }
 
-    public void setId(int id){
-        this.id = id;
+    public void setUserId(int userId){
+        this.userId = userId;
     }
 
 
