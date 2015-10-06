@@ -44,10 +44,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	  mg_printf_data(conn, "%s", "Hello world");
 
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
+
 	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 	  TokenNode* tn=new TokenNode();
 	  tn->execute(mgConnection,conn->uri);
     return MG_TRUE;   // Mark as processed
+
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
  	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "]" << conn->request_method << " " << conn->uri << " " << conn->query_string;
  	  InfoNode* in=new InfoNode();

@@ -17,7 +17,6 @@ TokenNode::TokenNode() : Node("token") {
 }
 
 void TokenNode::executePost(MgConnectionW& conn, const char* url){
-
 	// Tomo usuario y pass de la conexion
 	std::string email = conn.getVarStr("email");
 	std::string password = conn.getVarStr("password");
