@@ -20,7 +20,7 @@ android {
         }
         debug {
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.FULL'
-            buildConfigField "String", "BASE_URL", '"http://localhost:8080"' //'"http://quick-entities.herokuapp.com"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.105:8080"' //'"http://quick-entities.herokuapp.com"'
         }
     }
 }

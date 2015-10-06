@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
      * @return a hex representation of the hashed string or an empty string if
      * an exception occurs
      */
-    public static String md5(String s) { 
+    public static String md5(String s) {
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest.getInstance("MD5");

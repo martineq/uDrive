@@ -14,12 +14,13 @@ import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 
 public class LoginService extends AbstractService {
 
     private interface LoginServiceApi {
-        @GET("/token")
-        void getToken(@Body UserData uData, Callback<UserAccount> uAccountCb);
+        @POST("/token")
+        void getToken(@Body UserData userData, Callback<UserAccount> uAccountCb);
     }
 
     private LoginServiceApi mLoginServiceApi;
@@ -28,8 +29,8 @@ public class LoginService extends AbstractService {
         this.mLoginServiceApi = createService(LoginServiceApi.class, null);
     }
 
-    public void getToken(UserData uData, final ServiceCallback<UserAccount> uAccountCb){
-        mLoginServiceApi.getToken(uData, new Callback<UserAccount>(){
+    public void getToken(UserData userData, final ServiceCallback<UserAccount> uAccountCb){
+        mLoginServiceApi.getToken(userData, new Callback<UserAccount>(){
             @Override
             public void success(UserAccount userAccount, Response response){
                 uAccountCb.onSuccess(userAccount, response.getStatus());
