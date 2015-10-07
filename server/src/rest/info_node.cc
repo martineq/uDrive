@@ -33,41 +33,57 @@ vector<string> split(const string &s, char delim) {
 
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	vector<string> lista=split(conn->uri,'/');
-	if (!lista[4].compare("dir")){
+
+	std::cout << lista.size() << std::endl;
+
+	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
 		//Validacion del token que se recibe.
 		string userId=lista[3];
+		string dirId=lista[5];
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
 
 		int status;
-		string token;
+		string token=conn.getAuthorization();
 		//BD: Consulto en la BD el token de este userid
 
-		if (!1){ //Comparo el token recibido con el token de la BD
+		if (token.compare("be16e465de64f0d2f2d83f3cfcd6370b")!=0){ //BD:Valido si el mail existe en la base de datos
+			Log(Log::LogMsgDebug) << "[" << "invalid token" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"message\": \"user not found\", \"code\": %d, \"error_user_msg\": \"Usuario desconocido.\" }", MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-			return;
-		}
-		Log(Log::LogMsgDebug) << "[" << "valid user" << "]";
-		string dirId=lista[5];
-
-		if (1){ //BD: Compruebo si existe el dirId
-			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%i\",  \"name\": \"%s\",  "
-				"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%i\", "
-				"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 1, "Carpeta", 500,"a",1,"false","10/10/2015");
-			return;
-		}else{
+			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+									"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+									"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+		}else if (dirId.compare("1000")!=0){
+			Log(Log::LogMsgDebug) << "[" << "invalid dirId" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"message\": \"Bad Request\",  \"error_user_msg\": \"No existe directorio\"}");
+			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+		}else if (userId.compare("1111")!=0){
+			Log(Log::LogMsgDebug) << "[" << "invalid userId" << "]";
+			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+		}else{
+			Log(Log::LogMsgDebug) << "[" << "retrieve list" << "]";
+			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
+			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 1000, "Carpeta1", 1024,"d",2,"true","10/08/2015");
 		}
-
-	}else{ //
+	}else{
+		Log(Log::LogMsgDebug) << "[" << "invalid url" << "]";
 		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"message\": \"Method not allowed\",  \"error_user_msg\": \"Metodo no permitido\"}");
+		conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+
 	}
+
 }
 
