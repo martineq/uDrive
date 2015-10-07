@@ -23,32 +23,28 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 
 	 Log(Log::LogMsgDebug) << "[" << "Validando usuario" << "] " << email << " " << password;
 
-		if (!1){ //BD:Valido si el usuario existe en la base de datos
-			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+		if (email.compare("mail@mail.com")!=0){ //BD:Valido si el mail existe en la base de datos
+			Log(Log::LogMsgDebug) << "[" << "email incorrecto" << "] ";
+			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"message\": \"user not found\", \"code\": %d, \"error_user_msg\": \"Usuario desconocido.\" }", MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
+		}
+		else if (password.compare("1234")!=0){ //BD:Valido si el password es correcto en la BD.
+			Log(Log::LogMsgDebug) << "[" << "password incorrecto" << "] ";
+			conn.sendStatus(MgConnectionW::STATUS_CODE_FORBIDDEN);
+			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			conn.printfData( "{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
 			return;
 		}
-
-		if (!1){ //BD:Valido si el password es correcto en la BD.
-			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"message\": \"wrong password\", \"code\": %d, \"error_user_msg\": \"Contraseña incorrecta.\" }", MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-			return;
-			}
-
-		if(1){ //Si el usuario y password es valido
-
-			int userid=randomNumber(9999);//genero id usuario aleatorio solo para test.
-			string token=CreateToken(email);
-			conn.sendStatus(MgConnectionW::STATUS_CODE_CREATED);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"userId\": \"%i\",  \"email\": \"%s\",  \"token\": \"%s\" }", userid, email.c_str(), token.c_str());
-			return;
+		else{
+			Log(Log::LogMsgDebug) << "[" << "Genero Token" << "] ";
+				int userId=randomNumber(9999);
+				string token=CreateToken(email);
+				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
+				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId, email.c_str(), token.c_str());
+				return;
 		}
-		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"message\": \"Bad Request\",  \"error_user_msg\": \"Mensaje Erroneo\"}");
 }
 
 std::string TokenNode::CreateToken(const std::string& email){
