@@ -71,7 +71,7 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   
   // Creates the root directory
   string id_dir_root;
-  if(!add_directory(user_id,name,date,LABEL_EMPTY_STRING,id_dir_root,status)) return false;
+  if(!add_directory(user_id,name,date,LABEL_NO_PARENT,id_dir_root,status)) return false;
 
   // Prepares data
   dbh_.clear_batch();
@@ -127,7 +127,7 @@ bool DataHandler::add_user_token(string email, string token, string& user_id, in
  * @param user_id ...
  * @param name ...
  * @param date ...
- * @param parent_dir_id ...
+ * @param parent_dir_id add "LABEL_NO_PARENT" as ID if the directory is the root directory.
  * @param dir_id returns directory ID
  * @param status returns DataHandler status ONLY if @return==false
  * @return bool
@@ -140,13 +140,15 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
     return false;
   } 
 
+  
   // Add dir_id to parent dir
   string directories_contained;
-  if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),&directories_contained,status) ){ return false; }
-  directories_contained.append(";"+dir_id);
-  if( !dbh_put(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained,status) ){ return false; }
-
-  // Add info to new dir
+  if( parent_dir_id != LABEL_NO_PARENT ){
+    if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),&directories_contained,status) ){ return false; }
+    directories_contained.append(";"+dir_id);  
+  }
+  
+  // Add info to new dir. 
   dbh_.clear_batch();
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_NAME),name);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DATE_LAST_MOD),date);
@@ -155,8 +157,13 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY),parent_dir_id);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),LABEL_EMPTY_STRING);
-
-  // Saves data to new dir
+  
+  // Writes new dir to parent dir.
+  if( parent_dir_id != LABEL_NO_PARENT ){
+  dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained);
+  }
+  
+  // Saves all data
   if(!dbh_.write_batch()){
     status = DH_STATUS_DATABASE_ERROR;
     return false;
@@ -240,7 +247,7 @@ bool DataHandler::get_user_password(string email, string& password, int& status)
   if( !get_email_user_id_index(email,user_id,status) ){ return false; }
 
   // Get password
-  return(dbh_put(generate_user_key(user_id,SUFFIX_PASSWORD),password,status));
+  return(dbh_get(generate_user_key(user_id,SUFFIX_PASSWORD),&password,status));
 }
 
 
@@ -335,7 +342,7 @@ bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& st
 
 
 /**
- * @brief Deletes all information for the user ID. Returns true on success.
+ * @brief Deletes all information for the user ID and their Index entry. Returns true on success.
  *        On error returns false and a DataHandler status (see db_constants.h)
  *        (Warning: all info will be deleted without any check for files or directories)
  * 
@@ -345,12 +352,19 @@ bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& st
  */
 bool DataHandler::delete_user(string user_id, int& status){
 
+  string email;
+  if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(email),status) ) return false;
+  
   dbh_.clear_batch();
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_EMAIL));
+  dbh_.erase_batch(generate_user_key(user_id,SUFFIX_PASSWORD));
+  dbh_.erase_batch(generate_user_key(user_id,SUFFIX_TOKEN));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_NAME));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_LOCATION));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES));
+  dbh_.erase_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES));
+  dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email);
   
   // Saves data
   if(!dbh_.write_batch()){
@@ -358,6 +372,7 @@ bool DataHandler::delete_user(string user_id, int& status){
     return false;
   }
 
+  
   return true;
 }
 
@@ -556,8 +571,8 @@ bool DataHandler::create_id(string type_of_id, string& id){
   bool found = false;
   
   // Read and increment ticket id
-  if( !(dbh_.get(generate_ticket_key(type_of_id),&id,found) && found==true) ){
-    unsigned long new_id = ( (stoul(id,nullptr,10)) + 1 ); // Increment
+  if( (dbh_.get(generate_ticket_key(type_of_id),&id,found) && found==true) ){
+    unsigned long new_id = ( (stoul(id,nullptr,10)) + 1 ); // Increment ticket
     return( dbh_.put(generate_ticket_key(type_of_id),to_string(new_id)) );
   }else{
     return false;

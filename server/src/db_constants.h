@@ -45,3 +45,4 @@
 // DataHandler labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
+#define LABEL_NO_PARENT "no_parent"

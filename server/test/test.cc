@@ -1,18 +1,19 @@
 // test.cc
 
 #include <iostream>
-#include "../src/helloworld.h"
+#include "test_basic.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
   
-  HelloWorld hw;
-  //hw.EjemploRocksDB();
-  hw.EjemploMongoose();
-  hw.EjemploJson();
+  TestBasic tb;
+  tb.TestRocksDB();
+  tb.TestMongoose();
+  tb.TestJson();
+  tb.TestDbHandler();
+  tb.TestDataHandler();
 
-  // Test siempre positivo (Sólo de prueba)
   return 0;
 }
 
