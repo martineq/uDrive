@@ -16,12 +16,9 @@ using std::stringstream;
 using std::vector;
 
 InfoNode::InfoNode()  : Node("Info") {
-	// TODO Auto-generated constructor stub
-
 }
 
 InfoNode::~InfoNode() {
-	// TODO Auto-generated destructor stub
 }
 
 vector<string> split(const string &s, char delim) {
@@ -34,22 +31,27 @@ vector<string> split(const string &s, char delim) {
     return tokens;
 }
 
-void InfoNode::execute(MgConnectionW& conn, const char* url){
-
+void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	vector<string> lista=split(conn->uri,'/');
-	string userid=lista[3];
-	string dirId=lista[5];
-
 	if (!lista[4].compare("dir")){
-		//Valido si el usuario existe en la base de datos
-		if (!1){
+		//Validacion del token que se recibe.
+		string userId=lista[3];
+		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
+
+		int status;
+		string token;
+		//BD: Consulto en la BD el token de este userid
+
+		if (!1){ //Comparo el token recibido con el token de la BD
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{ \"message\": \"user not found\", \"code\": %d, \"error_user_msg\": \"Usuario desconocido.\" }", MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			return;
 		}
-		//Si existe el dirId
-		if (1){
+		Log(Log::LogMsgDebug) << "[" << "valid user" << "]";
+		string dirId=lista[5];
+
+		if (1){ //BD: Compruebo si existe el dirId
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{ \"id\": \"%i\",  \"name\": \"%s\",  "
@@ -62,8 +64,8 @@ void InfoNode::execute(MgConnectionW& conn, const char* url){
 			conn.printfData("{ \"message\": \"Bad Request\",  \"error_user_msg\": \"No existe directorio\"}");
 		}
 
-	}else{
-		conn.sendStatus(MgConnectionW::STATUS_CODE_METHOD_NOT_ALLOWED);
+	}else{ //
+		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		conn.printfData("{ \"message\": \"Method not allowed\",  \"error_user_msg\": \"Metodo no permitido\"}");
 	}
