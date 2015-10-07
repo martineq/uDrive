@@ -34,19 +34,15 @@ vector<string> split(const string &s, char delim) {
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	vector<string> lista=split(conn->uri,'/');
 
-	std::cout << lista.size() << std::endl;
-
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
-		//Validacion del token que se recibe.
 		string userId=lista[3];
 		string dirId=lista[5];
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
 
 		int status;
 		string token=conn.getAuthorization();
-		//BD: Consulto en la BD el token de este userid
 
-		if (token.compare("be16e465de64f0d2f2d83f3cfcd6370b")!=0){ //BD:Valido si el mail existe en la base de datos
+		if (token.compare("be16e465de64f0d2f2d83f3cfcd6370b")!=0){
 			Log(Log::LogMsgDebug) << "[" << "invalid token" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
