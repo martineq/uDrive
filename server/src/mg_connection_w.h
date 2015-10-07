@@ -7,24 +7,17 @@
 #include <string>
 using std::string;
 
-/** Clase que representa una coneccion, abstrae struct mg_connection de mongoose
- */
 class MgConnectionW {
 	public:
-		/** Constructor
-		 * @param coneccion
-		 */
 		MgConnectionW(struct mg_connection *conn);
 
-		/** Enum que representa los codigos de estado de html
-		 */
 		typedef enum StatusCodes {
 			// 2xx Success
-			STATUS_CODE_OK=200, ///< Todo bien
+			STATUS_CODE_OK=200, ///< OK
 			STATUS_CODE_CREATED=201, ///< Se creo algo
 
 			// 4xx Client Error
-			STATUS_CODE_BAD_REQUEST=400, ///< El cliente no paso toda la informacion, request malo
+			STATUS_CODE_BAD_REQUEST=400, ///<
 			STATUS_CODE_UNAUTHORIZED=401, ///< Cliente no esta autorizado para lo que quiere hacer
 			STATUS_CODE_FORBIDDEN=403, ///< El cliente tiene prohibido hacer eso (no es un tema de permisos)
 			STATUS_CODE_NOT_FOUND=404, ///< No se encuentro
@@ -52,7 +45,6 @@ class MgConnectionW {
 		 * @param codigo entero
 		 */
 		void sendStatus(int code);
-
 		/** Setea un header del request
 		 * @param name: nombre del header
 		 * @param val: valor
@@ -61,7 +53,6 @@ class MgConnectionW {
 		void sendHeader(const char* name, const char* val);
 
 		string getAuthorization();
-
 		/** Setea el content type
 		 */
 		void sendContentType(const std::string& type);

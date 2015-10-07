@@ -9,7 +9,6 @@
 #include "../util/random_number.h"
 #include "../util/md5.h"
 
-
 using std::string;
 using std::stringstream;
 
@@ -17,7 +16,6 @@ TokenNode::TokenNode() : Node("token") {
 }
 
 void TokenNode::executePost(MgConnectionW& conn, const char* url){
-	// Tomo usuario y pass de la conexion
 	std::string email = conn.getVarStr("email");
 	std::string password = conn.getVarStr("password");
 
