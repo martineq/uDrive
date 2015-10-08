@@ -33,6 +33,12 @@ void MgConnectionW::sendHeader(const string& name, const string& val){
 	this->sendHeader(name.c_str(), val.c_str());
 }
 
+string MgConnectionW::getAuthorization(){
+	const char* dar=mg_get_header(this->conn,"Authorization");
+	std::string my_string(dar);
+	return my_string;
+}
+
 void MgConnectionW::sendHeader(const char* name, const char* val){
 	mg_send_header(this->conn, name, val);
 }

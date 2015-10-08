@@ -68,7 +68,7 @@ bool DbHandler::get(std::string key, std::string* value, bool& found){
   found = !(s.IsNotFound());
   
   if(!found){
-    std::cerr << "Key |"<< key << "| not found" << std::endl;
+    std::cerr << "DB info: Key |"<< key << "| not found." << std::endl;
     return true; // "Key not found" is not an DB error
   }
 
