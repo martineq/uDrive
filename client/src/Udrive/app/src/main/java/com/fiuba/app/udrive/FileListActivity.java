@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,7 +23,7 @@ import com.fiuba.app.udrive.network.StatusCode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileListActivity extends AppCompatActivity {
+public class FileListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     public static final String TAG = "FileListActivity";
 
@@ -33,17 +35,28 @@ public class FileListActivity extends AppCompatActivity {
 
     private FilesService mFilesService;
 
+    private UserAccount mUserAccount;
+
+    public static final String EXTRA_USER_ACCOUNT = "userAccount";
+
+    public static final String EXTRA_DIR_ID = "dirId";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-        UserAccount uAccount = (UserAccount) getIntent().getSerializableExtra("userAccount");
-        Log.d(TAG, "TOKEN: " + uAccount.getToken());
+        mUserAccount = (UserAccount) getIntent().getSerializableExtra(this.EXTRA_USER_ACCOUNT);
+        Integer dirId = (Integer) getIntent().getSerializableExtra(this.EXTRA_DIR_ID);
+        Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
         this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
-        this.mFilesService = new FilesService(uAccount.getToken());
-        loadFiles(uAccount.getUserId(), 0); // Change 0 to the corresponding dirId
+        list.setOnItemClickListener(this);
+        this.mFilesService = new FilesService(mUserAccount.getToken());
+        System.out.println("idDir: "+dirId);
+        if (dirId == null)
+            dirId = 0;
+        loadFiles(mUserAccount.getUserId(), dirId); // Change 0 to the corresponding dirId
     }
 
     @Override
@@ -94,5 +107,18 @@ public class FileListActivity extends AppCompatActivity {
                 Log.e(TAG, message);
             }
         });
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "Click--> position " + position);
+        File actualFile = mFiles.get(position);
+        if (actualFile.isDir()){
+            Intent mNextIntent = new Intent(this, FileListActivity.class);
+            mNextIntent.putExtra(this.EXTRA_USER_ACCOUNT, mUserAccount);
+            mNextIntent.putExtra(this.EXTRA_DIR_ID, actualFile.getId());
+            startActivity(mNextIntent);
+        }
+
     }
 }

@@ -57,5 +57,13 @@ public class File {
         return getLastModDate();
     }
 
+    public boolean isFile(){
+        return !isDir();
+    }
+
+    public boolean isDir(){
+        return this.getType() == 'd' ? true : false;
+    }
+
 
 }
