@@ -85,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
         UserData userData = new UserData(email, md5(PASS_SALT+password));
         System.out.println(md5(password));
 
-        this.mLoginService.getToken(/*userData, */new ServiceCallback<UserAccount>() {
+        this.mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount, int status) {
-                if (uAccount.getId() != 0 ) {
+                if (uAccount.getUserId() != 0 ) {
 
                     Log.d(TAG, "Getting token: Done.");
                     // Serialize UserAccount instance to get data when necessary

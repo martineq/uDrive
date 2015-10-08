@@ -20,5 +20,6 @@
     <string name="error_mail_pass">Correo electrónico o contraseña incorrectos</string>
     <string name="error_network">Sin conexión a Internet</string>
     <string name="default_error">Error inesperado</string>
+    <string name="error_auth">Error de autenticación</string>
 
 </resources>
