@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                             new ObjectStream<>(ACCOUNT_FILENAME, MainActivity.this);
                     objectFileUAccount.put(uAccount);
                     Intent mNextIntent = new Intent(MainActivity.this, FileListActivity.class);
-                    mNextIntent.putExtra("userAccount", uAccount);
+                    mNextIntent.putExtra(FileListActivity.EXTRA_USER_ACCOUNT, uAccount);
+                    mNextIntent.putExtra(FileListActivity.EXTRA_DIR_ID, new Integer(0));
                     progressDialog.dismiss();
                     startActivity(mNextIntent);
                     finish();
