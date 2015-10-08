@@ -67,7 +67,7 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			Log(Log::LogMsgDebug) << "[" << "retrieve list" << "]";
 
 			const std::string dirs[4] = {"Photos", "Music", "Documents", "Movies"};
-			const std::string files[4] = {"Doc.pdf", "My stylesheet.xls", "PIC0001.jpg", "U2-One.mp3"};
+			const std::string files[4] = {"Doc.pdf", "My spreadsheet.xls", "PIC0001.jpg", "U2-One.mp3"};
 			const std::string dates[4] = {"01/05/2006", "10/05/2014", "13/09/2015", "18/11/2014"};
 			
 			srand ( time(NULL) ); //initialize the random seed
