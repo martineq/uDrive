@@ -16,7 +16,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.NONE'
-            buildConfigField "String", "BASE_URL", 'http://quick-entities.herokuapp.com'
+            buildConfigField "String", "BASE_URL", '"http://190.7.56.249:8055"'
         }
         debug {
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.FULL'
