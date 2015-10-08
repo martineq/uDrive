@@ -4,13 +4,21 @@
 #include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <vector>
+using std::vector;
 
 #include "../util/random_number.h"
 #include "../util/md5.h"
 
 using std::string;
 using std::stringstream;
+
+struct email_pass{
+	string email="";
+	string pass="";
+};
+
+typedef struct email_pass email_pass;
 
 TokenNode::TokenNode() : Node("token") {
 }
@@ -27,7 +35,7 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
 		}
-		else if (password.compare("1234")!=0){ //BD:Valido si el password es correcto en la BD.
+		else if (password.compare("90d0c318f2c19b8f5477a9b52d5e6b63")!=0){ //BD:Valido si el password es correcto en la BD.
 			Log(Log::LogMsgDebug) << "[" << "password incorrecto" << "] ";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
