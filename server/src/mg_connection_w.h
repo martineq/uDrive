@@ -13,18 +13,19 @@ class MgConnectionW {
 
 		typedef enum StatusCodes {
 			// 2xx Success
-			STATUS_CODE_OK=200, ///< OK
-			STATUS_CODE_CREATED=201, ///< Se creo algo
+			STATUS_CODE_OK=200, // OK
+			STATUS_CODE_CREATED=201, // Se creo algo
+			STATUS_CODE_NO_CONTENT=204, //No content
 
 			// 4xx Client Error
-			STATUS_CODE_BAD_REQUEST=400, ///<
-			STATUS_CODE_UNAUTHORIZED=401, ///< Cliente no esta autorizado para lo que quiere hacer
-			STATUS_CODE_FORBIDDEN=403, ///< El cliente tiene prohibido hacer eso (no es un tema de permisos)
-			STATUS_CODE_NOT_FOUND=404, ///< No se encuentro
-			STATUS_CODE_METHOD_NOT_ALLOWED=405, ///< Se pidio un GET/POST/DELETE y no se implementa ese metodo
+			STATUS_CODE_BAD_REQUEST=400, //
+			STATUS_CODE_UNAUTHORIZED=401, // Cliente no esta autorizado para lo que quiere hacer
+			STATUS_CODE_FORBIDDEN=403, // El cliente tiene prohibido hacer eso (no es un tema de permisos)
+			STATUS_CODE_NOT_FOUND=404, // No se encuentro
+			STATUS_CODE_METHOD_NOT_ALLOWED=405, // Se pidio un GET/POST/DELETE y no se implementa ese metodo
 
 			// 5xx Errores de Servidor
-			STATUS_CODE_INTERNAL_ERROR=500 ///< Error del servidor
+			STATUS_CODE_INTERNAL_ERROR=500 // Error del servidor
 
 		} StatusCodes;
 

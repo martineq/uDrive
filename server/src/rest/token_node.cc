@@ -23,13 +23,13 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 
 		if (email.compare("mail@mail.com")!=0){ //BD:Valido si el mail existe en la base de datos
 			Log(Log::LogMsgDebug) << "[" << "email incorrecto" << "] ";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
+			conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
 		}
 		else if (password.compare("1234")!=0){ //BD:Valido si el password es correcto en la BD.
 			Log(Log::LogMsgDebug) << "[" << "password incorrecto" << "] ";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_FORBIDDEN);
+			conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData( "{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
 			return;
@@ -44,6 +44,7 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 				return;
 		}
 }
+
 
 std::string TokenNode::CreateToken(const std::string& email){
 	stringstream ss;
