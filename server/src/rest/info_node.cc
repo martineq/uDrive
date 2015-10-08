@@ -46,38 +46,42 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			Log(Log::LogMsgDebug) << "[" << "invalid token" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
-									"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-									"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 		}else if (dirId.compare("1000")!=0){
 			Log(Log::LogMsgDebug) << "[" << "invalid dirId" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
-												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 		}else if (userId.compare("1111")!=0){
 			Log(Log::LogMsgDebug) << "[" << "invalid userId" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
-												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 		}else{
 			Log(Log::LogMsgDebug) << "[" << "retrieve list" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\",  "
 												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 1000, "Carpeta1", 1024,"d",2,"true","10/08/2015");
+												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"},"
+							  "{\"id\": \"%d\",  \"name\": \"%s\",  "
+												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]"
+					, 1000, "Carpeta1", 1024,"d",2,"true","10/08/2015", 1001, "Carpeta2", 4096,"d",3,"false","20/12/2015");
 		}
 	}else{
 		Log(Log::LogMsgDebug) << "[" << "invalid url" << "]";
 		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"id\": \"%d\",  \"name\": \"%s\",  "
+		conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
 											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}", 0, "", 0,"",0,"","");
+											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 
 	}
 
