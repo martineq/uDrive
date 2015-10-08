@@ -1,0 +1,19 @@
+# Necesito SU para el Docker
+sudo: required
+
+# Selección del lenguaje: C++
+language: cpp
+
+# Solo hacer build sobre los branches elegidos
+branches:
+  only:
+    - master
+    - develop
+
+# Agrego el uso del servicio de Docker
+services:
+  - docker
+
+# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. (Todo dentro de la imagen Docker)
+script: 
+  - docker run martineq/tp7552:latest /bin/sh -c "cd server && mkdir build && cd build && sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug .. && sudo make && sudo make coveralls"

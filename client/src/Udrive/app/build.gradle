@@ -5,8 +5,8 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.fiuba.tallerprog2.udrive"
-        minSdkVersion 17
+        applicationId "com.fiuba.app.udrive"
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -15,11 +15,34 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.NONE'
+            buildConfigField "String", "BASE_URL", '"http://190.7.56.249:8055"'
+        }
+        debug {
+            buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.FULL'
+            buildConfigField "String", "BASE_URL", /*'"http://192.168.1.105:8080"'*/ '"http://190.7.56.249:8055"'
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.1'
+
+    // rest client for http interaction and dependencies
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+
+    // Google GSON
+    compile 'com.google.code.gson:gson:2.3'
+
+    // lib to use sliding up panel layouts
+    compile 'com.sothree.slidinguppanel:library:3.1.1'
 }
+
+

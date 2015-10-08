@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">uDrive</string>
+    <string name="action_settings">Configuración</string>
+    <string name="action_profile">Mi perfil</string>
+    <string name="action_signout">Salir</string>
+
+    <string name="title_activity_file_list">Mis archivos</string>
+    <string name="title_activity_file_detail">FileDetailActivity</string>
+    <string name="file_lastMod">Última modificación </string>
+    <string name="file_name">Nombre</string>
+
+    <string name="title_main_activity">Ingresar a uDrive</string>
+    <string name="button_send">Ingresar</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="sign_up_msg">No tienes una cuenta?</string>
+    <string name="sign_up_link">Registrate</string>
+    <string name="loading">Cargando...</string>
+    <string name="error_obtaining_files">Error obteniendo archivos</string>
+    <string name="error_mail_pass">Correo electrónico o contraseña incorrectos</string>
+    <string name="error_network">Sin conexión a Internet</string>
+    <string name="default_error">Error inesperado</string>
+    <string name="error_auth">Error de autenticación</string>
+
+</resources>
