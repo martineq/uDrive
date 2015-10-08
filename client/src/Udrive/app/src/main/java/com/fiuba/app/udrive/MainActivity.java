@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
         UserData userData = new UserData(email, md5(PASS_SALT+password));
-        System.out.println(md5(password));
+        System.out.println(userData.getPassword());
 
         this.mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
