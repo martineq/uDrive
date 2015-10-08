@@ -17,8 +17,7 @@ COPY ./ /home
 # 2) Instalo las dependencias necesarias
 # 3) Limpio el directorio luego del apt-get
 # 4) Instalo la librería RocksDB manualmente
-# 5) Instalo la librería Mongoose manualmente
-# 6) Instalo la librería jsoncpp manualmente
+# 5) Instalo la librería jsoncpp manualmente
 RUN apt-get update && apt-get install -y \
 		build-essential \
 		python \
@@ -48,14 +47,6 @@ RUN apt-get update && apt-get install -y \
 	sudo cp librocksdb.a /usr/lib && \
 	cd .. && \
 	rm v3.13.1.zip && \
-	wget https://github.com/cesanta/mongoose/archive/5.6.zip && \
-	unzip 5.6.zip && \
-	cd mongoose-5.6 && \
-	gcc -c mongoose.c && \
-	ar rvs libmongoose.a mongoose.o && \
-	sudo cp libmongoose.a /usr/lib && \
-	cd .. && \
-	rm 5.6.zip && \
 	wget https://github.com/open-source-parsers/jsoncpp/archive/1.6.5.zip && \
 	unzip 1.6.5.zip && \
 	cd jsoncpp-1.6.5 && \
@@ -70,7 +61,7 @@ RUN apt-get update && apt-get install -y \
 	rm -rf temp_install
 # TODO: Para seguir agregando comandos en la misma línea acordarse de agregar el " && \" en la línea de arriba
 #	 && \
-#	 && \
+
 
 # Defino el directorio de trabajo
 WORKDIR /home
