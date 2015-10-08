@@ -49,7 +49,7 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
 														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
 														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-		}else if (dirId.compare("1000")!=0){
+		/*}else if (dirId.compare("1000")!=0){
 			Log(Log::LogMsgDebug) << "[" << "invalid dirId" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
@@ -63,7 +63,7 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
 														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
 														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-		}else{
+		*/}else{
 			Log(Log::LogMsgDebug) << "[" << "retrieve list" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
