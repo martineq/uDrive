@@ -1,10 +1,13 @@
 #include "token_node.h"
+#include "../lib/json/json.h"
 
 #include <ctime>
 #include <sstream>
+#include <cstring>
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
+
 using std::vector;
 
 #include "../util/random_number.h"
@@ -24,8 +27,25 @@ TokenNode::TokenNode() : Node("token") {
 }
 
 void TokenNode::executePost(MgConnectionW& conn, const char* url){
-	std::string email = conn.getVarStr("email");
-	std::string password = conn.getVarStr("password");
+
+	const char *s = conn->content;
+	char body[1024*sizeof(char)] = "";
+
+	strncpy(body, s, conn->content_len);
+	body[conn->content_len] = '0';
+
+	// Parse the JSON body
+	Json::Value root;
+	Json::Reader reader;
+	bool parsedSuccess = reader.parse(body, root, false);
+	if (!parsedSuccess) {
+		// Error, do something
+	}
+	const Json::Value mail = root["email"];
+	const Json::Value pass = root["password"];
+
+	std::string email = mail.asString();
+	std::string password = pass.asString();
 
 	 Log(Log::LogMsgDebug) << "[" << "Validando usuario" << "] " << email << " " << password;
 
