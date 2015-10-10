@@ -4,9 +4,11 @@
 ***
 
 ## :information_source: Información del proyecto
-[:white_check_mark: Página web del proyecto](http://martineq.github.io/tp7552/)
+[:link: Página web del proyecto](http://martineq.github.io/tp7552/)
 
-[:white_check_mark: Wiki del proyecto](https://github.com/martineq/tp7552/wiki)
+[:notebook: Wiki del proyecto](https://github.com/martineq/tp7552/wiki)
+
+[:octocat: Repositorio del proyecto](https://github.com/martineq/tp7552)
 
 ***
 
@@ -34,7 +36,7 @@ Luego ejecutar el servidor con:
 ### Instalación y ejecución
 
 Descargar el apk de instalación (Android):
-* [:arrow_down: Versión 0.1 :arrow_down:](https://github.com/martineq/tp7552/raw/344e1550a2eab0febc324910d4edaf2256522ac9/client/src/Udrive/app/app-release.apk) ( :warning: Esta versión se conecta a un servidor remoto de testeo)
+* [:arrow_down: Versión 0.1 :arrow_down:](https://github.com/martineq/tp7552/raw/344e1550a2eab0febc324910d4edaf2256522ac9/client/src/Udrive/app/app-release.apk) ( :warning: Esta versión se conecta a un servidor remoto de testeo )
 
 
 ***
