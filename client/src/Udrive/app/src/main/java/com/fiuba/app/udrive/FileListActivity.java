@@ -52,7 +52,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
-        this.mFilesService = new FilesService(mUserAccount.getToken());
+        this.mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+dirId);
         if (dirId == null)
             dirId = 0;
@@ -77,11 +77,14 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         if (id == R.id.action_signout) {
             ObjectStream<UserAccount> os = new ObjectStream<>(MainActivity.getAccountFilename(), FileListActivity.this);
             os.delete();
-            Intent main = new Intent(FileListActivity.this, MainActivity.class);
+            Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(main);
-            finish();
+            finishAffinity();
+        } else if (id == R.id.action_settings) {
+            Intent settings = new Intent(FileListActivity.this, SettingsActivity.class);
+            startActivity(settings);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
