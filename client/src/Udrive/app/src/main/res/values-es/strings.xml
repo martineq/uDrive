@@ -18,8 +18,14 @@
     <string name="loading">Cargando...</string>
     <string name="error_obtaining_files">Error obteniendo archivos</string>
     <string name="error_mail_pass">Correo electrónico o contraseña incorrectos</string>
-    <string name="error_network">Sin conexión a Internet</string>
+    <string name="error_network">Sin conexión a Internet o parámetros de conexión incorrectos.</string>
     <string name="default_error">Error inesperado</string>
     <string name="error_auth">Error de autenticación</string>
+
+    <!-- Strings related to Settings -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_item_connection">Parámetros de conexión</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_cancel">Cancelar</string>
 
 </resources>

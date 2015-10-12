@@ -1,5 +1,9 @@
 package com.fiuba.app.udrive.network;
+import android.content.Context;
+
 import com.fiuba.app.udrive.model.File;
+
+import java.net.ContentHandler;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -16,7 +20,8 @@ public class FilesService extends AbstractService {
 
     private FilesServiceApi mFilesServiceApi;
 
-    public FilesService(final String token) {
+    public FilesService(final String token, Context context) {
+        super(context);
         this.mFilesServiceApi = createService(FilesServiceApi.class, token);
     }
 

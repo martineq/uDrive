@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.EditText;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             // Continues showing login inputs
             setContentView(R.layout.activity_main);
 
-            this.mLoginService = new LoginService();
+            //this.mLoginService = new LoginService(MainActivity.this);
 
             TextView signUpLink = (TextView) findViewById(R.id.sign_up_link);
             signUpLink.setOnClickListener(new View.OnClickListener() {
@@ -70,11 +72,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+            settings.putExtra("mainCalling", true);
+            startActivity(settings);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     /**
      * Makes a request to server when the user clicks the Sign in button
      * @param view, is the button to perform the signing in
      */
     public void sendMessage(View view) {
+        this.mLoginService = new LoginService(MainActivity.this);
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);

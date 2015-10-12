@@ -16,11 +16,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.NONE'
-            buildConfigField "String", "BASE_URL", '"http://190.7.56.249:8055"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.105:8080"'
+            //'"http://190.7.56.249:8055"'
         }
         debug {
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.FULL'
-            buildConfigField "String", "BASE_URL", /*'"http://192.168.1.105:8080"'*/ '"http://190.7.56.249:8055"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.105:8080"'
+            //'"http://190.7.56.249:8055"'
         }
     }
 }
@@ -31,7 +33,9 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
 
     // rest client for http interaction and dependencies
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -43,6 +47,9 @@ dependencies {
 
     // lib to use sliding up panel layouts
     compile 'com.sothree.slidinguppanel:library:3.1.1'
+
 }
+
+
 
 
