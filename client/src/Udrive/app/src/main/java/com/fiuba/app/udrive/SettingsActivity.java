@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
                 // ListView Clicked item value
                 String itemValue = (String) mListView.getItemAtPosition(position);
 
-                if (itemValue == "Connection"){
+                if (itemValue == getString(R.string.settings_item_connection)){
 
                     final EditText ip = new EditText(SettingsActivity.this);
                     final EditText port = new EditText(SettingsActivity.this);
