@@ -18,6 +18,7 @@ COPY ./ /home
 # 3) Limpio el directorio luego del apt-get
 # 4) Instalo la librería RocksDB manualmente
 # 5) Instalo la librería jsoncpp manualmente
+# 6) Instalo la librería GTest manualmente
 RUN apt-get update && apt-get install -y \
 		build-essential \
 		python \
@@ -57,6 +58,15 @@ RUN apt-get update && apt-get install -y \
 	sudo cp libjsoncpp.a /usr/lib && \
 	cd ../.. && \
 	rm 1.6.5.zip && \
+	wget https://googletest.googlecode.com/files/gtest-1.7.0.zip && \
+	unzip gtest-1.7.0.zip && \
+	cd gtest-1.7.0 && \
+	./configure && \
+	make && \
+	sudo cp -a lib/.libs/libgtest.a /usr/lib && \
+	sudo cp -a lib/.libs/libgtest_main.a /usr/lib && \
+	cd .. && \
+	rm gtest-1.7.0.zip && \
 	cd .. && \
 	rm -rf temp_install
 # TODO: Para seguir agregando comandos en la misma línea acordarse de agregar el " && \" en la línea de arriba

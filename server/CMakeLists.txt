@@ -19,7 +19,7 @@ set(RUTA_TOOLS "${RUTA_RAIZ}/tools") # Ruta del directorio donde se encuentran l
 set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los archivos de test
 
 
-###############################################e#######
+######################################################
 ### Seteos referidos a la compilación del servidor ###
 ######################################################
 
@@ -46,13 +46,13 @@ set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${S
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
 
 # Nombres de las librerías a usar en el proyecto
-set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt)
+set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt gtest)
 
 # Flag para indicar si se quiere generar un ejecutable. Para activarlo usar desde la carpeta build "cmake -DEXE=SI .."
 option(EXE "Activa la creación de un ejecutable, sin tests" NO)
 
-# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
+# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB. pthread requerido por GTest
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++11 ")
 
 
 ###################################
