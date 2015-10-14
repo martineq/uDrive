@@ -70,9 +70,11 @@ public class SettingsActivity extends AppCompatActivity {
                     LinearLayout layout = new LinearLayout(SettingsActivity.this);
                     layout.setOrientation(LinearLayout.VERTICAL);
                     layout.setGravity(Gravity.CENTER_VERTICAL);
-                    // TODO: set padding
+                    layout.setPaddingRelative(200, 50, 200, 50);
                     ip.setText(ConnectionConfig.getIP(SettingsActivity.this));
                     port.setText(ConnectionConfig.getPort(SettingsActivity.this));
+                    ip.setGravity(Gravity.CENTER_HORIZONTAL);
+                    port.setGravity(Gravity.CENTER_HORIZONTAL);
                     layout.addView(ip);
                     layout.addView(port);
 
