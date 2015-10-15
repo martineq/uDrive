@@ -21,6 +21,7 @@
     <string name="error_network">Sin conexión a Internet o parámetros de conexión incorrectos.</string>
     <string name="default_error">Error inesperado</string>
     <string name="error_auth">Error de autenticación</string>
+    <string name="error_port_number">Error: El puerto debe ser mayor a 1024 y menor a 49151</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Configuración</string>

@@ -7,6 +7,10 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,10 +28,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Pattern;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private ListView mListView;
+
+    private static final Pattern PARTIAL_IP_ADDRESS =
+            Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}" +
+                    "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +83,30 @@ public class SettingsActivity extends AppCompatActivity {
                     ip.setText(ConnectionConfig.getIP(SettingsActivity.this));
                     port.setText(ConnectionConfig.getPort(SettingsActivity.this));
                     ip.setGravity(Gravity.CENTER_HORIZONTAL);
+
+                    ip.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        }
+
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        private String mPreviousText = "";
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            if (PARTIAL_IP_ADDRESS.matcher(s).matches()) {
+                                mPreviousText = s.toString();
+                            } else {
+                                s.replace(0, s.length(), mPreviousText);
+                            }
+                        }
+                    });
+
+                    port.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    port.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
                     port.setGravity(Gravity.CENTER_HORIZONTAL);
                     layout.addView(ip);
                     layout.addView(port);
@@ -84,6 +117,10 @@ public class SettingsActivity extends AppCompatActivity {
                             .setView(layout)
                             .setPositiveButton(getString(R.string.settings_save), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    if ((Integer.parseInt(port.getText().toString()) < 1024) || (Integer.parseInt(port.getText().toString()) > 49151)){
+                                        Toast.makeText(getApplicationContext(), getString(R.string.error_port_number), Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
                                     Toast.makeText(getApplicationContext(), "IP: " + ip.getText() + " Port: " + port.getText(), Toast.LENGTH_LONG).show();
                                     ConnectionConfig.setConnectionParams(ip.getText().toString(), port.getText().toString(), SettingsActivity.this);
                                     System.out.println("Connecting to >>> "+ConnectionConfig.getConnectionURL(SettingsActivity.this));

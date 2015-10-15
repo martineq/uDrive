@@ -21,6 +21,7 @@
     <string name="error_network">No internet connection or wrong connection settings</string>
     <string name="default_error">Unexpected error</string>
     <string name="error_auth">Authentication error</string>
+    <string name="error_port_number">Error: Port number must be greater than 1024 and less than 49151</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Settings</string>
