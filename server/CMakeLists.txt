@@ -33,6 +33,7 @@ set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
 set(SRC_PACK_UTILS ${RUTA_SRC}/util/md5.cc ${RUTA_SRC}/util/random_number.cc ${RUTA_SRC}/util/bin2hex.cc)
 set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc)
 set(SRC_PACK_YAML ${RUTA_SRC}/config_parser.cc)
+set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
 
 
@@ -41,7 +42,7 @@ set(SRC_PACK_YAML ${RUTA_SRC}/config_parser.cc)
 set(SRC_TESTEABLE ${SRC_PACK_TEST_BASICO})
 
 # Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
-set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS} ${SRC_PACK_YAML}) 
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS} ${SRC_PACK_YAML} ${SRC_PACK_FILE}) 
 
 # Reuno TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
