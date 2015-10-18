@@ -6,8 +6,9 @@
 # Ignoro la carpeta build:
 build/
 
-# Ignoro la carpeta de proyecto KDevelop y sus archivos:
+# Ignoro las carpeta de proyecto KDevelop y sus archivos:
 .kdev4/
+build_kdev/
 *.kdev4
 *.kate-swp
 
