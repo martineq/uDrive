@@ -19,6 +19,7 @@ COPY ./ /home
 # 4) Instalo la librería RocksDB manualmente
 # 5) Instalo la librería jsoncpp manualmente
 # 6) Instalo la librería GTest manualmente
+# 7) Instalo la librería yaml-cpp manualmente
 RUN apt-get update && apt-get install -y \
 		build-essential \
 		python \
@@ -67,6 +68,17 @@ RUN apt-get update && apt-get install -y \
 	sudo cp -a lib/.libs/libgtest_main.a /usr/lib && \
 	cd .. && \
 	rm gtest-1.7.0.zip && \
+	wget https://github.com/jbeder/yaml-cpp/archive/release-0.3.0.zip && \
+	unzip release-0.3.0.zip && \
+	cd yaml-cpp-release-0.3.0 && \
+	mkdir build && \
+	cd build && \
+	cmake .. && \
+	make && \
+	cp libyaml-cpp.a /usr/lib && \
+	cd ../.. && \
+	rm -rf yaml-cpp-release-0.3.0 && \
+	rm release-0.3.0.zip && \
 	cd .. && \
 	rm -rf temp_install
 # TODO: Para seguir agregando comandos en la misma línea acordarse de agregar el " && \" en la línea de arriba
