@@ -10,7 +10,7 @@ branches:
     - master
     - develop
 
-# Notifico a Slack los informes de Travis-CI
+# Notifico a Slack los informes de Travis CI
 notifications:
   slack: tallerdeprogramacion2:HL5boJMM5KdLnwsD0DFMMxNx
 
