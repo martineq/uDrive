@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String PASS_SALT = "UDRIVE1234";
     private static final String ACCOUNT_FILENAME = "account_file";
-    public static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
 
     private LoginService mLoginService = null;
 
