@@ -26,6 +26,15 @@
             android:name=".SettingsActivity"
             android:label="@string/settings_title" >
         </activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/title_activity_sign_up"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyTheme.Base" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fiuba.app.udrive.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

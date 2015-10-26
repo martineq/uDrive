@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
+import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.LoginService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
@@ -31,7 +32,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final String PASS_SALT = "UDRIVE1234";
     private static final String ACCOUNT_FILENAME = "account_file";
     private static final String TAG = "MainActivity";
 
@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
         ObjectStream<UserAccount> objectStream = new ObjectStream<>(ACCOUNT_FILENAME, MainActivity.this);
         if (objectStream.exists()){
             UserAccount uAccount = objectStream.get();
-            Intent mNextIntent = new Intent(MainActivity.this, FileListActivity.class);
-            mNextIntent.putExtra("userAccount", uAccount);
-            startActivity(mNextIntent);
+            Intent nextIntent = new Intent(MainActivity.this, FileListActivity.class);
+            nextIntent.putExtra("userAccount", uAccount);
+            startActivity(nextIntent);
             finish();
         } else {
             // Continues showing login inputs
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
             signUpLink.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Just for testing click on Sign Up button
-                    Toast.makeText(MainActivity.this, "Sign up: Just for testing.", Toast.LENGTH_LONG).show();
+                    Intent signUpIntent = new Intent(MainActivity.this, SignUpActivity.class);
+                    startActivity(signUpIntent);
                 }
             });
         }
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view, is the button to perform the signing in
      */
     public void sendMessage(View view) {
-        this.mLoginService = new LoginService(MainActivity.this);
+        mLoginService = new LoginService(MainActivity.this);
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
-        UserData userData = new UserData(email, md5(PASS_SALT+password));
+        UserData userData = new UserData(email, Util.encodePassword(password));
         System.out.println(userData.getPassword());
 
-        this.mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
+        mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount, int status) {
                 if (uAccount.getUserId() != 0 ) {
@@ -146,34 +146,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Applies a md5 hash algorithm to the given string
-     * @param s, is the string to be encoded
-     * @return a hex representation of the hashed string or an empty string if
-     * an exception occurs
-     */
-    public static String md5(String s) {
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
-
-            // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++)
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
 
     public final static String getAccountFilename(){
         return ACCOUNT_FILENAME;
     }
+
 
 }

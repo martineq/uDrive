@@ -27,5 +27,11 @@
     <style name="MyActionOverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
        <item name="android:src">@drawable/ic_dots_vertical_white</item>
     </style>
+    <style name="MyTheme.Base.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="MyTheme.Base.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="MyTheme.Base.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

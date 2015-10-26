@@ -29,4 +29,12 @@
     <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
+    <!-- Sign up strings -->
+    <string name="title_activity_sign_up">Sign up for uDrive</string>
+    <string name="signup_firstname">Firstname</string>
+    <string name="signup_lastname">Lastname</string>
+    <string name="signup_button">Create account</string>
+    <string name="error_mail_exists">The e-mail you entered is already in use. Please enter another one.</string>
+    <string name="signup_ok">User account successfully created!</string>
+
 </resources>

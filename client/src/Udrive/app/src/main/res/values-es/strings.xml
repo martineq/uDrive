@@ -29,4 +29,12 @@
     <string name="settings_save">Guardar</string>
     <string name="settings_cancel">Cancelar</string>
 
+    <!-- Sign up strings -->
+    <string name="title_activity_sign_up">Registrarse en uDrive</string>
+    <string name="signup_firstname">Nombre</string>
+    <string name="signup_lastname">Apelido</string>
+    <string name="signup_button">Crear cuenta</string>
+    <string name="error_mail_exists">El correo electrónico ingresado ya existe. Por favor ingrese otro.</string>
+    <string name="signup_ok">¡La cuenta se creó exitosamente!</string>
+
 </resources>
