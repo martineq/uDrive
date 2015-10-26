@@ -29,4 +29,7 @@
     <string name="settings_save">Guardar</string>
     <string name="settings_cancel">Cancelar</string>
 
+    <!-- String related to Add file-->
+    <string name="action_upload_file">Agregar archivo</string>
+
 </resources>
