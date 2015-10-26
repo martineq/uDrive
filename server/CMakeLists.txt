@@ -31,7 +31,7 @@ set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc ${RUTA_SRC}/mg_connection_w.cc
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
 set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
 set(SRC_PACK_UTILS ${RUTA_SRC}/util/md5.cc ${RUTA_SRC}/util/random_number.cc ${RUTA_SRC}/util/bin2hex.cc)
-set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc)
+set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc ${RUTA_SRC}/rest/receive_file_node.cc)
 set(SRC_PACK_YAML ${RUTA_SRC}/config_parser.cc)
 set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****

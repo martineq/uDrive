@@ -7,8 +7,6 @@ ConfigParser::ConfigParser(){
 ConfigParser::~ConfigParser(){
 
 }
-
-
 /**
  * @brief Reads the content of the config file for server. Returns true on success.
  * 

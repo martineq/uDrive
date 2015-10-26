@@ -19,7 +19,7 @@ class ConfigParser {
   public:
 
     typedef struct Configuration {
-      Configuration() : bindport("8080"), bindip("0.0.0.0"), logfile("-"), loglevel("info")
+      Configuration() : bindport("8080"), bindip("0.0.0.0"), logfile("-"), loglevel("debug")
       {}
       std::string bindport;
       std::string bindip;

@@ -46,7 +46,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
  	  InfoNode* in=new InfoNode();
  	  in->execute(mgConnection,conn->uri);
-     return MG_TRUE;   // Mark as processed
+     return MG_TRUE;
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
+ 	  ReceiveFileNode* rfn=new ReceiveFileNode();	  
+ 	  rfn->execute(mgConnection,conn->uri);
+     return MG_TRUE; 
+     
   } else {
     return MG_FALSE;  // Rest of the events are not processed
   }

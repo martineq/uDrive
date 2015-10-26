@@ -49,21 +49,8 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
 														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
 														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-		/*}else if (dirId.compare("1000")!=0){
-			Log(Log::LogMsgDebug) << "[" << "invalid dirId" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-		}else if (userId.compare("1111")!=0){
-			Log(Log::LogMsgDebug) << "[" << "invalid userId" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_NOT_FOUND);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-		*/}else{
+		
+		}else{
 			Log(Log::LogMsgDebug) << "[" << "retrieve list" << "]";
 
 			const std::string dirs[4] = {"Photos", "Music", "Documents", "Movies"};
@@ -94,17 +81,8 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
   			item << "]";
 			Log(Log::LogMsgDebug) << item.str();	
 
-
-
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			/*conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\",  "
-												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"},"
-							  "{\"id\": \"%d\",  \"name\": \"%s\",  "
-												"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-												"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]"
-					, 1000, "Carpeta1", 1024,"d",2,"true","10/08/2015", 1001, "Archivo1", 4096,"a",3,"false","20/12/2015");*/
 			const std::string tmp = item.str();
 			const char* msg = tmp.c_str();
 			conn.printfData(msg);

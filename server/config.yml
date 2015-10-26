@@ -6,7 +6,7 @@ bindip: 192.168.1.1
 bindport: 8080
 
 ## loglevel: we want to see server. debug, warning, info, error. Default: info
-loglevel: info
+loglevel: debug
 
 ## logfile: destination to send the log records. Default: "stdout"
 logfile: messages.log
