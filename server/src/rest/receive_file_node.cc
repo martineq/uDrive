@@ -20,8 +20,6 @@ ReceiveFileNode::ReceiveFileNode() : Node("ReceiveFileNode") {
 
 ReceiveFileNode::~ReceiveFileNode() {
 }
-
-
 vector<string> ReceiveFileNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
@@ -34,7 +32,7 @@ vector<string> ReceiveFileNode::split(const string &s, char delim) {
 
 void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 	vector<string> lista=ReceiveFileNode::split(conn->uri,'/');
-	Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] " << lista[3] << " " << lista.size(); 
+	Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] "; 
 
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		std::string userId=lista[2];
@@ -53,22 +51,21 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 		}else{
 			//Autorizado
-			Log(Log::LogMsgDebug) << "[" << "Receive file" << "]";
+			Log(Log::LogMsgInfo) << "[" << "Receive file" << "], authorized";
 			
 			std::string var_name;
 			std::string file_name;
 			std::string arch;
 
 			while((arch = conn.getMultipartData(var_name, file_name)) != ""){
-				Log(Log::LogMsgDebug) << "[" << "Recibiendo archivos" << "], Var_name: " << var_name << ", file_name: " << file_name << " Contenido: " << arch;
+				Log(Log::LogMsgDebug) << "[" << "Receive file" << "], Var_name: " << var_name << ", file_name: " << file_name << " Contenido: " << arch;
 				if(var_name == "arch") break;
 			}
-			Log(Log::LogMsgDebug) << "Termino de recibir archivo.";
+			Log(Log::LogMsgInfo) << "[" << "Receive file" << "], finished";
 
 			//Tomo tiempo de ultima modificacion
 			time_t now = time(0);
 			char* dt = ctime(&now);
-
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("[{ \"id\": \"%s\",  \"name\": \"%s\","
