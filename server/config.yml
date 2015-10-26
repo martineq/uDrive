@@ -1,0 +1,5 @@
+# Configuración de conexión
+bindip: 192.168.1.1
+bindport: 8080
+loglevel: info
+logfile: messages.log
