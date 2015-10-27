@@ -8,7 +8,7 @@ FileHandler::~FileHandler(){
 
 }
 
-size_t FileHandler::load_file(string user_id, string file_id, string revision, char*& p_file_stream, size_t& size_stream){
+size_t FileHandler::load_file(string user_id, string file_id, string revision, char*& p_file_stream){
 
   FILE * p_file;
   string file_name = user_id+file_id+revision;
@@ -20,6 +20,7 @@ size_t FileHandler::load_file(string user_id, string file_id, string revision, c
   }
 
   // Obtain the file size
+  size_t size_stream;
   fseek(p_file,0,SEEK_END);
   size_stream = ftell(p_file);
   rewind(p_file);

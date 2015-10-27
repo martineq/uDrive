@@ -54,8 +54,8 @@ TEST(FileTest, SaveAndLoadFile) {
   string file_id = "222";
   string revision = "010";
   const char* p_save_file_stream = "# Configuración de conexión\nip: 127.0.0.1\nport: 8080"; // Size: 54 bytes
-  size_t p_save_size_stream = 54;
-  fh.save_file(user_id,file_id,revision,p_save_file_stream,p_save_size_stream);
+  size_t save_size_stream = 54;
+  fh.save_file(user_id,file_id,revision,p_save_file_stream,save_size_stream);
     
   // Load file  
   char* p_load_file_stream = NULL;

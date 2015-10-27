@@ -170,11 +170,12 @@ bool RequestDispatcher::get_file_stream(string user_id, string user_token, strin
     return false;
   }
 
-  if( fh_.load_file(user_id,file_id,LABEL_REVISION_1,p_file_stream,size_stream)==0 ){
+  size_stream = fh_.load_file(user_id,file_id,LABEL_REVISION_1,p_file_stream);
+  if( size_stream==0 ){
     status = STATUS_FAIL_LOADING_FILE;
     return false;
   }
-  
+
   return true;
 }
 
