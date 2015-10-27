@@ -29,7 +29,7 @@ public class UserProfile extends UserData {
     }
 
     public void setFirstname(String _firstname){
-        firstname = _firstname;
+        firstname = _firstname.toLowerCase();
     }
 
     public String getLastname(){
@@ -37,7 +37,7 @@ public class UserProfile extends UserData {
     }
 
     public void setLastname(String _lastname){
-        lastname = _lastname;
+        lastname = _lastname.toLowerCase();
     }
 
     public String getPhoto(){

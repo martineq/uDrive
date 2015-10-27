@@ -6,10 +6,10 @@ public class UserAccount extends UserData implements Serializable {
     private String token = null;
     private int userId;
 
-    public UserAccount(final String email, final String token, int userId){
+    public UserAccount(final String email, final String _token, int _userId){
         super(email, null);
-        this.token = token;
-        this.userId = userId;
+        token = _token;
+        userId = _userId;
     }
 
     public String getToken(){
