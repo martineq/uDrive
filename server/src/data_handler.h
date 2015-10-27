@@ -33,6 +33,7 @@ class DataHandler {
       string location;
       string dir_root;
       string shared_files;
+      string user_quota_used;
     } ;
 
     struct dir_info_st {
@@ -61,7 +62,7 @@ class DataHandler {
     DataHandler();
     ~DataHandler();
 
-    bool init();
+    bool init(string database_path);
 
     bool add_user(string email, string password, string name, string location, string token, string date, string& user_id, int& status);
     bool add_user_token(string email, string token, string& user_id, int& status);
@@ -78,7 +79,8 @@ class DataHandler {
     bool delete_directory(string dir_id, int& status);
     bool delete_file(string file_id, int& status);
 
-    bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
+    bool modify_user_password(string user_id, string password, int& status);
+    bool modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, int& status);
     bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
 
