@@ -70,7 +70,7 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   
   // Creates the root directory
   string id_dir_root;
-  if(!add_directory(user_id,name,date,LABEL_NO_PARENT,id_dir_root,status)) return false;
+  if(!add_directory(user_id,LABEL_ROOT,date,LABEL_NO_PARENT_DIR,id_dir_root,status)) return false;
 
   // Prepares data
   dbh_.clear_batch();
@@ -81,8 +81,8 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_LOCATION),location);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT),id_dir_root);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES),LABEL_EMPTY_STRING);  
-  dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),LABEL_INTEGER_ZERO);  
-   
+  dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),LABEL_ZERO);  
+  
   // Saves data
   if(dbh_.write_batch()){
     add_email_user_id_index(email,user_id);
@@ -127,7 +127,7 @@ bool DataHandler::add_user_token(string email, string token, string& user_id, in
  * @param user_id ...
  * @param name ...
  * @param date ...
- * @param parent_dir_id add "LABEL_NO_PARENT" as ID if the directory is the root directory.
+ * @param parent_dir_id add "LABEL_NO_PARENT_DIR" as ID if the directory is the root directory.
  * @param dir_id returns directory ID
  * @param status returns DataHandler status ONLY if @return==false
  * @return bool
@@ -143,7 +143,7 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   
   // Add dir_id to parent dir
   string directories_contained;
-  if( parent_dir_id != LABEL_NO_PARENT ){
+  if( parent_dir_id != LABEL_NO_PARENT_DIR ){
     if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),&directories_contained,status) ){ return false; }
     directories_contained.append(";"+dir_id);  
   }
@@ -159,7 +159,7 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),LABEL_EMPTY_STRING);
   
   // Writes new dir to parent dir.
-  if( parent_dir_id != LABEL_NO_PARENT ){
+  if( parent_dir_id != LABEL_NO_PARENT_DIR ){
     dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained);
   }
   

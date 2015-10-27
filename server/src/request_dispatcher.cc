@@ -64,8 +64,17 @@ bool RequestDispatcher::log_in(string email, string password, string new_token, 
 bool RequestDispatcher::new_directory(string user_id, string user_token, string name, string date, string parent_dir_id,
                                       string& dir_id, int& status){
   if( !check_token(user_id,user_token,status) ){ return false; }
+
+  if( parent_dir_id==LABEL_ZERO ){
+    if( !get_root_dir_id(user_id,parent_dir_id,status) ){ return false; }
+  }
   
-  return dh_.add_directory(user_id,name,date,parent_dir_id,dir_id,status);
+  if( !dh_.add_directory(user_id,name,date,parent_dir_id,dir_id,status) ){ return false; }
+  
+  // Change parent_dir_id date
+  if( !change_dir_date(parent_dir_id,date,status) ){ return false; }
+  
+  return true;
 }
 
 
@@ -81,6 +90,10 @@ bool RequestDispatcher::new_file(string user_id, string user_token, string name,
     return false;
   }
 
+  if( parent_dir_id==LABEL_ZERO ){
+    if( !get_root_dir_id(user_id,parent_dir_id,status) ){ return false; }
+  }
+    
   // Add logical file
   if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
   
@@ -110,6 +123,10 @@ bool RequestDispatcher::get_user_info(string user_id, string user_token, DataHan
 
 bool RequestDispatcher::get_directory_info(string user_id, string user_token, string dir_id, DataHandler::dir_info_st& dir_info, int& status){
   if( !check_token(user_id,user_token,status) ){ return false; }
+  
+  if( dir_id==LABEL_ZERO ){
+    if( !get_root_dir_id(user_id,dir_id,status) ){ return false; }
+  }
   
   DataHandler::dir_info_st dir_info_temp;
   if( !dh_.get_directory_info(dir_id,dir_info_temp,status) ){ return false; }
@@ -261,3 +278,9 @@ bool RequestDispatcher::change_dir_date(string dir_id, string new_date, int& sta
   return( dh_.modify_directory_info(dir_id,dir_info.name,new_date,dir_info.tags,status) );
 }
 
+bool RequestDispatcher::get_root_dir_id(string user_id, string& root_dir_id, int& status){
+  DataHandler::user_info_st user_info;
+  if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
+  root_dir_id = user_info.dir_root;
+  return true;
+}

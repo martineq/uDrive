@@ -49,8 +49,8 @@
 // Labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
-#define LABEL_NO_PARENT "no_parent"
+#define LABEL_NO_PARENT_DIR "no_parent"
 #define LABEL_REVISION_1 "1"
 #define LABEL_STRING_DELIMITER ';'
-#define LABEL_INTEGER_ZERO 0
+#define LABEL_ZERO "0"
 
