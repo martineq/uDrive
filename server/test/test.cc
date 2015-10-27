@@ -68,7 +68,7 @@ TEST(FileTest, SaveAndLoadFile) {
   std::cout <<"File content readed: " << std::endl;
   std::cout << p_load_file_stream<< std::endl;
 
-  EXPECT_EQ(p_save_size_stream,p_load_size_stream);
+  EXPECT_EQ(save_size_stream,p_load_size_stream);
 
 }
 
