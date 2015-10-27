@@ -17,7 +17,6 @@ void Node::execute(MgConnectionW& conn, const char* url){
 	else if(strcmp(method, "DELETE") == 0)
 		this->executeDelete(conn, url);
 	else
-
 		this->methodNotAllowed(conn, url);
 }
 

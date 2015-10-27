@@ -1,15 +1,18 @@
-// Database Path
-#define DB_PATH "/tmp/testdb"
+// DataHandler & RequestDispatcher exit status
+#define STATUS_OK 1
+#define STATUS_USER_ALREADY_EXISTS 2
+#define STATUS_DATABASE_ERROR 3
+#define STATUS_KEY_NOT_FOUND 4
+#define STATUS_WRONG_PASSWORD 5
+#define STATUS_WRONG_TOKEN 6
+#define STATUS_FAIL_SAVING_FILE 7
+#define STATUS_FAIL_LOADING_FILE 8
+#define STATUS_USER_FORBIDDEN 9
+#define STATUS_MAX_QUOTA_EXCEEDED 10
 
-// DataHandler exit status
-#define DH_STATUS_OK 1
-#define DH_STATUS_USER_ALREADY_EXISTS 2
-#define DH_STATUS_DATABASE_ERROR 3
-#define DH_STATUS_KEY_NOT_FOUND 4
-
-// DataHandler deleted_status
-#define DH_DELETED_STATUS_EXISTS "1"
-#define DH_DELETED_STATUS_ERASED "2"
+// Deleted file status
+#define DELETED_FILE_STATUS_EXISTS "1"
+#define DELETED_FILE_STATUS_ERASED "2"
 
 // DataHandler prefixes and suffixes for key construction
 #define PREFIX_USER "user_"
@@ -23,6 +26,7 @@
 #define SUFFIX_TOKEN "_token"
 #define SUFFIX_NAME "_name"
 #define SUFFIX_LOCATION "_location"
+#define SUFFIX_QUOTA_USED "_quota_used"
 #define SUFFIX_AVATAR_FILE "_avatar_file"
 #define SUFFIX_DIR_ROOT "_dir_root"
 #define SUFFIX_SHARED_FILES "_shared_files"
@@ -42,7 +46,11 @@
 #define SUFFIX_DIR_ID "dir_id"
 #define SUFFIX_FILE_ID "file_id"
 
-// DataHandler labels
+// Labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
 #define LABEL_NO_PARENT "no_parent"
+#define LABEL_REVISION_1 "1"
+#define LABEL_STRING_DELIMITER ';'
+#define LABEL_INTEGER_ZERO 0
+

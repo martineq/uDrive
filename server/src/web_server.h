@@ -10,6 +10,7 @@ using std::string;
 #include "util/log.h"
 #include "rest/token_node.h"
 #include "rest/info_node.h"
+#include "rest/receive_file_node.h"
 
 extern "C" {
 	#include <pthread.h>
