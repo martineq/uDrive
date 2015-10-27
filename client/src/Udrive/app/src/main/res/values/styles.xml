@@ -14,6 +14,7 @@
               colorControlHighlight and colorSwitchThumbNormal. -->
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="actionOverflowButtonStyle">@style/MyActionOverFlow</item>
+        <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
     </style>
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="titleTextStyle">@style/MyTitleTextStyle</item>
@@ -58,6 +59,17 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <!-- **** AlertDialogButton styles ****-->
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/alertDialogButtonStyle</item>
+    </style>
+
+    <style name="alertDialogButtonStyle">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textColor">@color/white </item>
+        <item name="android:background">@color/primary</item>
     </style>
 
 </resources>

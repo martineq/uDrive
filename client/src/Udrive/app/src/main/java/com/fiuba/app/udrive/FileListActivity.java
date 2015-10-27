@@ -2,16 +2,20 @@ package com.fiuba.app.udrive;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -100,6 +104,52 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
 
             startActivityForResult(i, FILE_CODE);
+        } else if (id == R.id.action_add_folder) {
+            LayoutInflater li = LayoutInflater.from(this);
+            View newFolderView = li.inflate(R.layout.new_folder, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(newFolderView);
+
+            final EditText userInput = (EditText) newFolderView.findViewById(R.id.editTextDialogUserInput);
+
+            // set dialog message
+            alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog,int id) {
+                    // get user input and set it to result
+                    // edit text
+                    String nameFolder = userInput.getText().toString();
+                    mFilesService.addFolder(mUserAccount.getUserId(), mDirId, nameFolder, new ServiceCallback<List<File>>() {
+                        @Override
+                        public void onSuccess(List<File> files, int status) {
+                            mFilesAdapter.updateFiles(files);
+                            Log.d(TAG, "Number of files received " + files.size());
+                        }
+
+                        @Override
+                        public void onFailure(String message, int status) {
+                            if (StatusCode.isHumanReadable(status)) {
+                                message = StatusCode.getMessage(FileListActivity.this, status);
+                                Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                            }
+                            Log.e(TAG, message);
+                        }
+                    });
+
+                }
+            });
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
         }
 
         return super.onOptionsItemSelected(item);
