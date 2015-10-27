@@ -25,6 +25,7 @@ import com.fiuba.app.udrive.network.StatusCode;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 /**
  * This class represents the main activity for the app.
@@ -107,13 +108,23 @@ public class MainActivity extends AppCompatActivity {
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
+        ArrayList<String> words = new ArrayList<String>();
+        words.add("");
+        words.add(" ");
+        words.add(null);
+        if (Util.validateString(email, words)||Util.validateString(password, words)){
+            progressDialog.dismiss();
+            Toast.makeText(MainActivity.this, R.string.error_empty, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         UserData userData = new UserData(email, Util.encodePassword(password));
         System.out.println(userData.getPassword());
 
         mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount, int status) {
-                if (uAccount.getUserId() != 0 ) {
+                if (uAccount.getUserId() != 0) {
 
                     Log.d(TAG, "Getting token: Done.");
                     // Serialize UserAccount instance to get data when necessary
@@ -138,9 +149,9 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(String message, int status) {
                 Log.e(TAG, "Error attempting to get data from server");
                 progressDialog.dismiss();
-               if (StatusCode.isHumanReadable(status)){
-                   message = StatusCode.getMessage(MainActivity.this, status);
-                   Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                if (StatusCode.isHumanReadable(status)) {
+                    message = StatusCode.getMessage(MainActivity.this, status);
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 }
             }
         });

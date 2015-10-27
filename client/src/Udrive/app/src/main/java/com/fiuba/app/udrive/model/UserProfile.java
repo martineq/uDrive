@@ -8,16 +8,21 @@ public class UserProfile extends UserData {
     private String photo = null; // TODO: check this.
     private String lastLocation = null; // TODO: Mobile GPS usage
     private int userId = 0;
-    private String quota = null;
+    private String quotaAvailable = null;
+    private String quotaTotal = null;
+    private String quotaUsagePercent = null;
 
     public UserProfile(String _email, String _password, String _firstname, String _lastname,
-                       String _photo, String _lastLocation, String _quota){
-        super(_email, Util.encodePassword(_password));
-        firstname = _firstname;
-        lastname = _lastname;
+                       String _photo, String _lastLocation, String _quotaTotal, String _quotaAvailable,
+                       String _quotaUsagePercent){
+        super(_email.toLowerCase(), Util.encodePassword(_password));
+        firstname = _firstname.toLowerCase();
+        lastname = _lastname.toLowerCase();
         photo = _photo;
         lastLocation = _lastLocation;
-        quota = _quota;
+        quotaTotal = _quotaTotal;
+        quotaAvailable = _quotaAvailable;
+        quotaUsagePercent = _quotaUsagePercent;
     }
 
     public String getFirstname(){
@@ -60,11 +65,27 @@ public class UserProfile extends UserData {
         userId = _userId;
     }
 
-    public String getQuota(){
-        return quota;
+    public String getQuotaTotal(){
+        return quotaTotal;
     }
 
-    public void setQuota(String _quota){
-        quota = _quota;
+    public void setQuotaTotal(String _quotaTotal){
+        quotaTotal = _quotaTotal;
+    }
+
+    public String getQuotaAvailable(){
+        return quotaAvailable;
+    }
+
+    public void setQuotaAvailable(String _quotaAvailable){
+        quotaAvailable = _quotaAvailable;
+    }
+
+    public String getQuotaUsagePercent(){
+        return quotaUsagePercent;
+    }
+
+    public void setQuotaUsagePercent(String _quotaUsagePercent){
+        quotaUsagePercent = _quotaUsagePercent;
     }
 }

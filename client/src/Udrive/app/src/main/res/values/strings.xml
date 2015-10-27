@@ -22,6 +22,7 @@
     <string name="default_error">Unexpected error</string>
     <string name="error_auth">Authentication error</string>
     <string name="error_port_number">Error: Port number must be greater than 1024 and less than 49151</string>
+    <string name="error_empty">E-mail or password was not entered</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Settings</string>
@@ -35,6 +36,10 @@
     <string name="signup_lastname">Lastname</string>
     <string name="signup_button">Create account</string>
     <string name="error_mail_exists">The e-mail you entered is already in use. Please enter another one.</string>
+    <string name="error_email">You must enter an e-mail</string>
+    <string name="error_firstname">You must enter the fistname</string>
+    <string name="error_lastname">You must enter your lastname</string>
+    <string name="error_password">You must enter your password</string>
     <string name="signup_ok">User account successfully created!</string>
 
 </resources>

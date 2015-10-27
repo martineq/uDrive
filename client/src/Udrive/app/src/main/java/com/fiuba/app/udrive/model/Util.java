@@ -1,7 +1,11 @@
 package com.fiuba.app.udrive.model;
 
+import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by eugenia on 26/10/15.
@@ -36,5 +40,9 @@ public class Util {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static boolean validateString(String target, ArrayList<String> items){
+        return items.contains(target);
     }
 }
