@@ -9,7 +9,7 @@ public class UserAccount extends UserData implements Serializable {
     public UserAccount(final String email, final String token, int userId){
         super(email, null);
         this.token = token;
-        this.userId = userId; // User ID
+        this.userId = userId;
     }
 
     public String getToken(){

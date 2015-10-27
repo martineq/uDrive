@@ -3,21 +3,12 @@ package com.fiuba.app.udrive.network;
 import android.content.Context;
 
 import com.fiuba.app.udrive.model.GenericResult;
-import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
-import com.fiuba.app.udrive.network.AbstractService;
-import com.fiuba.app.udrive.network.ServiceCallback;
-import com.squareup.okhttp.OkHttpClient;
-
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.http.Body;
-import retrofit.http.GET;
 import retrofit.http.POST;
-import retrofit.http.Path;
 
 public class SignUpService extends AbstractService {
 

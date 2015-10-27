@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * This class is intended to handle the app settings by user
+ * This class is intended to handle the app settings by the user
  * @access public
  */
 public class SettingsActivity extends AppCompatActivity {
 
     private ListView mListView;
-
+    // It is the format pattern to avoid malformed IP
     private static final Pattern PARTIAL_IP_ADDRESS =
             Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}" +
                     "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
@@ -37,17 +37,17 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        // Get ListView object from xml
+        // Gets ListView object from xml
         mListView = (ListView) findViewById(R.id.settingsView);
 
         ArrayList<String> items = new ArrayList<String>();
         ArrayList<Integer> imgs = new ArrayList<Integer>();
-        // If settings was clicked not logged in, so we just show Connections settings
+        // If settings was clicked being not logged in, so we just show Connections settings
         // and anything else.
         if (getIntent().getBooleanExtra("mainCalling", false)) {
             items.add(getString(R.string.settings_item_connection));
             imgs.add(R.drawable.ic_wifi_grey600_36dp);
-        } else { // Then we define other settings options
+        } else { // Then we define other settings options. TODO. Put the corresponding options
             items.add("Account");
             imgs.add(R.drawable.ic_account_plus);
         }

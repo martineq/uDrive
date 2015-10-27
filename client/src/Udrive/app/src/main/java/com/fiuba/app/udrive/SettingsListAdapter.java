@@ -10,28 +10,28 @@ import android.widget.TextView;
 
 public class SettingsListAdapter extends ArrayAdapter<String> {
 
-    private final Activity context;
-    private final String[] itemname;
-    private final Integer[] imgid;
+    private final Activity mContext;
+    private final String[] mItemname;
+    private final Integer[] mImgid;
 
     public SettingsListAdapter(Activity context, String[] itemname, Integer[] imgid) {
         super(context, R.layout.settings_item, itemname);
         // TODO Auto-generated constructor stub
 
-        this.context=context;
-        this.itemname=itemname;
-        this.imgid=imgid;
+        this.mContext =context;
+        this.mItemname =itemname;
+        this.mImgid =imgid;
     }
 
     public View getView(int position,View view,ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
+        LayoutInflater inflater= mContext.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.settings_item, null,true);
 
         TextView txt = (TextView) rowView.findViewById(R.id.textViewSettingItem);
         ImageView image = (ImageView) rowView.findViewById(R.id.imageViewSettingItem);
 
-        txt.setText(itemname[position]);
-        image.setImageResource(imgid[position]);
+        txt.setText(mItemname[position]);
+        image.setImageResource(mImgid[position]);
         return rowView;
 
     };

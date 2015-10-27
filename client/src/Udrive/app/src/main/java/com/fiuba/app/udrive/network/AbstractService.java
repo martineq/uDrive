@@ -1,6 +1,5 @@
 package com.fiuba.app.udrive.network;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -15,10 +14,7 @@ public abstract class AbstractService {
 
     protected Context mContext;
 
-    private static RestAdapter.Builder builder;/* = new RestAdapter.Builder()
-            .setEndpoint(ConnectionConfig.getConnectionURL(this.mContext))
-            .setClient(new OkClient(new OkHttpClient()))
-            .setLogLevel(BuildConfig.RETROFIT_LOGGING);*/
+    private static RestAdapter.Builder builder;
 
     public AbstractService(Context context) {
         this.mContext = context;

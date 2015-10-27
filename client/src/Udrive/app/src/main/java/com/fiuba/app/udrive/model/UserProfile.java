@@ -1,7 +1,5 @@
 package com.fiuba.app.udrive.model;
 
-import com.fiuba.app.udrive.MainActivity;
-
 public class UserProfile extends UserData {
     private String firstname;
     private String lastname;
@@ -13,13 +11,14 @@ public class UserProfile extends UserData {
     private String quotaUsagePercent = null;
 
     public UserProfile(String _email, String _password, String _firstname, String _lastname,
-                       String _photo, String _lastLocation, String _quotaTotal, String _quotaAvailable,
+                       String _photo, String _lastLocation, int _userId, String _quotaTotal, String _quotaAvailable,
                        String _quotaUsagePercent){
         super(_email.toLowerCase(), Util.encodePassword(_password));
         firstname = _firstname.toLowerCase();
         lastname = _lastname.toLowerCase();
         photo = _photo;
         lastLocation = _lastLocation;
+        userId = _userId;
         quotaTotal = _quotaTotal;
         quotaAvailable = _quotaAvailable;
         quotaUsagePercent = _quotaUsagePercent;

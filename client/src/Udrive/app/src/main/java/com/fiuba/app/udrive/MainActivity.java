@@ -23,8 +23,6 @@ import com.fiuba.app.udrive.network.LoginService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         words.add("");
         words.add(" ");
         words.add(null);
-        if (Util.validateString(email, words)||Util.validateString(password, words)){
+        if (Util.matchString(email, words)||Util.matchString(password, words)){
             progressDialog.dismiss();
             Toast.makeText(MainActivity.this, R.string.error_empty, Toast.LENGTH_LONG).show();
             return;
@@ -132,11 +130,11 @@ public class MainActivity extends AppCompatActivity {
                     ObjectStream<UserAccount> objectFileUAccount =
                             new ObjectStream<>(ACCOUNT_FILENAME, MainActivity.this);
                     objectFileUAccount.put(uAccount);
-                    Intent mNextIntent = new Intent(MainActivity.this, FileListActivity.class);
-                    mNextIntent.putExtra(FileListActivity.EXTRA_USER_ACCOUNT, uAccount);
-                    mNextIntent.putExtra(FileListActivity.EXTRA_DIR_ID, new Integer(0));
+                    Intent nextIntent = new Intent(MainActivity.this, FileListActivity.class);
+                    nextIntent.putExtra(FileListActivity.EXTRA_USER_ACCOUNT, uAccount);
+                    nextIntent.putExtra(FileListActivity.EXTRA_DIR_ID, new Integer(0));
                     progressDialog.dismiss();
-                    startActivity(mNextIntent);
+                    startActivity(nextIntent);
                     finish();
                 } else {
                     progressDialog.dismiss();

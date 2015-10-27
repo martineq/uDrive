@@ -37,7 +37,7 @@
     <string name="signup_button">Create account</string>
     <string name="error_mail_exists">The e-mail you entered is already in use. Please enter another one.</string>
     <string name="error_email">You must enter an e-mail</string>
-    <string name="error_firstname">You must enter the fistname</string>
+    <string name="error_firstname">You must enter the firstname</string>
     <string name="error_lastname">You must enter your lastname</string>
     <string name="error_password">You must enter your password</string>
     <string name="signup_ok">User account successfully created!</string>

@@ -1,7 +1,6 @@
 package com.fiuba.app.udrive;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +16,9 @@ import com.fiuba.app.udrive.network.StatusCode;
 
 import java.util.ArrayList;
 
+/**
+ * This class handles the user account registration
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private SignUpService mSignUpService = null;
@@ -51,17 +53,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         String error = "";
 
-        if (Util.validateString(firstname, words))
-            error += getString(R.string.error_firstname);
+        if (Util.matchString(firstname, words))
+            error += getString(R.string.error_firstname)+"\n";
 
-        if (Util.validateString(lastname, words))
-            error += "\n"+getString(R.string.error_lastname);
+        if (Util.matchString(lastname, words))
+            error += getString(R.string.error_lastname)+"\n";
 
-        if (Util.validateString(email, words))
-            error += "\n"+getString(R.string.error_email);
+        if (Util.matchString(email, words))
+            error += getString(R.string.error_email)+"\n";
 
-        if (Util.validateString(password, words))
-            error += "\n"+getString(R.string.error_password);
+        if (Util.matchString(password, words))
+            error += getString(R.string.error_password);
 
         System.out.println("Error >>>> "+error);
 
@@ -72,13 +74,12 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         UserProfile userProfile = new UserProfile(email, password, firstname, lastname,
-                null, null, null, null, null);
-        // photo, lastLocation, quotaTotal, quotaAvailable, quotaUsagePercent
+                null, null, 0, null, null, null);
+        // photo, lastLocation, userId, quotaTotal, quotaAvailable, quotaUsagePercent
 
         mSignUpService.signUp(userProfile, new ServiceCallback<GenericResult>() {
             @Override
             public void onSuccess(GenericResult res, int status) {
-                // TODO: delete. Just for testing.
                 //res.setResultCode(1);
                 if (res.getResultCode() == 1) {
                     progressDialog.dismiss();

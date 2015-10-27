@@ -22,7 +22,7 @@
     <string name="default_error">Error inesperado</string>
     <string name="error_auth">Error de autenticación</string>
     <string name="error_port_number">Error: El puerto debe ser mayor a 1024 y menor a 49151</string>
-    <string name="error_empty">E-mail or password was not entered</string>
+    <string name="error_empty">Ingrese correo electrónico y contraseña</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Configuración</string>
@@ -37,9 +37,9 @@
     <string name="signup_button">Crear cuenta</string>
     <string name="error_mail_exists">El correo electrónico ingresado ya existe. Por favor ingrese otro.</string>
     <string name="signup_ok">¡La cuenta se creó exitosamente!</string>
-    <string name="error_mail">You must enter an e-mail</string>
-    <string name="error_firstname">You must enter the firstname</string>
-    <string name="error_lastname">You must enter your lastname</string>
-    <string name="error_password">You must enter your password</string>
+    <string name="error_mail">Debe ingresar el correo electrónico</string>
+    <string name="error_firstname">Debe ingresar el nombre</string>
+    <string name="error_lastname">Debe ingresar el apellido</string>
+    <string name="error_password">Debe ingresar una contraseña</string>
 
 </resources>
