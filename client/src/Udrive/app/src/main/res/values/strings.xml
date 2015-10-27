@@ -29,4 +29,14 @@
     <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
+    <!-- String related to Add file-->
+    <string name="action_upload_file">Add file</string>
+
+    <!-- String related to Add folder-->
+    <string name="new_folder_ok">Ok</string>
+    <string name="new_folder_cancel">Cancel</string>
+    <string name="action_add_folder">Add folder</string>
+    <string name="folder_name">Folder name romi: </string>
+
+
 </resources>

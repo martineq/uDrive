@@ -2,14 +2,20 @@ package com.fiuba.app.udrive;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +25,7 @@ import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
+import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +44,11 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
 
     private UserAccount mUserAccount;
 
+    private Integer mDirId;
+
+
+    public static final int FILE_CODE = 1;
+
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
 
     public static final String EXTRA_DIR_ID = "dirId";
@@ -46,17 +58,17 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(this.EXTRA_USER_ACCOUNT);
-        Integer dirId = (Integer) getIntent().getSerializableExtra(this.EXTRA_DIR_ID);
+        mDirId = (Integer) getIntent().getSerializableExtra(this.EXTRA_DIR_ID);
         Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
         this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
         this.mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
-        System.out.println("idDir: "+dirId);
-        if (dirId == null)
-            dirId = 0;
-        loadFiles(mUserAccount.getUserId(), dirId); // Change 0 to the corresponding dirId
+        System.out.println("idDir: "+mDirId);
+        if (mDirId == null)
+           mDirId = 0;
+        loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
     }
 
     @Override
@@ -84,7 +96,62 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         } else if (id == R.id.action_settings) {
             Intent settings = new Intent(FileListActivity.this, SettingsActivity.class);
             startActivity(settings);
+        } else if (id == R.id.action_upload_file) {
+            Intent i = new Intent(this, FilePickerActivity.class);
+            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+            i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+
+            startActivityForResult(i, FILE_CODE);
+        } else if (id == R.id.action_add_folder) {
+            LayoutInflater li = LayoutInflater.from(this);
+            View newFolderView = li.inflate(R.layout.new_folder, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(newFolderView);
+
+            final EditText userInput = (EditText) newFolderView.findViewById(R.id.editTextDialogUserInput);
+
+            // set dialog message
+            alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog,int id) {
+                    // get user input and set it to result
+                    // edit text
+                    String nameFolder = userInput.getText().toString();
+                    mFilesService.addFolder(mUserAccount.getUserId(), mDirId, nameFolder, new ServiceCallback<List<File>>() {
+                        @Override
+                        public void onSuccess(List<File> files, int status) {
+                            mFilesAdapter.updateFiles(files);
+                            Log.d(TAG, "Number of files received " + files.size());
+                        }
+
+                        @Override
+                        public void onFailure(String message, int status) {
+                            if (StatusCode.isHumanReadable(status)) {
+                                message = StatusCode.getMessage(FileListActivity.this, status);
+                                Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                            }
+                            Log.e(TAG, message);
+                        }
+                    });
+
+                }
+            });
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,5 +190,31 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             startActivity(mNextIntent);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == FILE_CODE && resultCode == Activity.RESULT_OK) {
+
+            Uri uri = data.getData();
+            //Toast.makeText(this, uri.getPath(), Toast.LENGTH_LONG).show();
+            mFilesService.upload(mUserAccount.getUserId(), mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
+                @Override
+                public void onSuccess(List<File> files, int status) {
+                    mFilesAdapter.updateFiles(files);
+                    Log.d(TAG, "Number of files received " + files.size());
+                }
+
+                @Override
+                public void onFailure(String message, int status) {
+                    if (StatusCode.isHumanReadable(status)) {
+                        message = StatusCode.getMessage(FileListActivity.this, status);
+                        Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                    Log.e(TAG, message);
+                }
+            });
+        }
     }
 }
