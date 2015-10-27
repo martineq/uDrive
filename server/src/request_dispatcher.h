@@ -17,18 +17,19 @@ class RequestDispatcher{
     size_t max_user_quota_;
     
     bool check_token(string user_id, string user_token, int& status);
-    vector<string> split_string(string string_to_split, char delimiter);
     bool get_user_quota_used(string user_id, string& quota, int& status);
     bool increase_user_quota_used(string user_id, string quota_increased, int& status);
     bool decrease_user_quota_used(string user_id, string quota_decreased, int& status); 
     bool change_dir_date(string dir_id, string new_date, int& status);
+    bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
     
   public:
     RequestDispatcher();
     ~RequestDispatcher();
+    vector<string> split_string(string string_to_split, char delimiter);
 
     bool init(string database_path,size_t max_user_quota);
-    
+        
     bool sign_up(string email, string password, string name, string location, string new_token, string date, string& user_id, int& status);
     bool log_in(string email, string password, string new_token, string& user_id, int& status);
     
@@ -55,7 +56,7 @@ class RequestDispatcher{
 /*
 Clase Request Dispatcher
 
-TODO: ¿Cómo se van a manejar las revisiones? Ver si hay que agregar parent_revision en cada file.
+TODO (mart): ¿Cómo se van a manejar las revisiones? Ver si hay que agregar parent_revision en cada file.
 
 Casos de uso y funciones de Data Handler relacionadas: 
 + Modificar info usr        -> get_user_token(), modify_user_info().            TODO: Verificar que el usr sea dueño.

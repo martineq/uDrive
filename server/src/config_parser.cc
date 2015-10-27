@@ -57,10 +57,10 @@ void ConfigParser::load_content(YAML::Node& root_node, ConfigParser::Configurati
     }else if ( key.compare(YAML_LABEL_BINDPORT) == 0 ){ config.bindport = read_yaml_node_to_string(it.second());
     }else if ( key.compare(YAML_LABEL_LOGFILE) == 0 ){ config.logfile = read_yaml_node_to_string(it.second());
     }else if ( key.compare(YAML_LABEL_LOGLEVEL) == 0 ){ config.loglevel = read_yaml_node_to_string(it.second()); }
-
+    
+  }
+  
   return void();
-}
-
 }
 
 
