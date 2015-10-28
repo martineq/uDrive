@@ -53,4 +53,7 @@
 #define LABEL_REVISION_1 "1"
 #define LABEL_STRING_DELIMITER ';'
 #define LABEL_ZERO "0"
-
+#define LABEL_A "a"
+#define LABEL_D "d"
+#define LABEL_TRUE "true"
+#define LABEL_FALSE "false"

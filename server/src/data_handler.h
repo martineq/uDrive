@@ -44,6 +44,7 @@ class DataHandler {
       string parent_directory;
       string files_contained;
       string directories_contained;
+      string size;
     } ;
     
     struct file_info_st {
@@ -81,7 +82,7 @@ class DataHandler {
 
     bool modify_user_password(string user_id, string password, int& status);
     bool modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, int& status);
-    bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
+    bool modify_directory_info(string dir_id, string name, string date, string tags, string size, int& status);
     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
 
 };
