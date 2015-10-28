@@ -25,7 +25,7 @@ void takeConfFromFile(ConfigParser::Configuration& config){
 		ConfigParser yp;
 		if (!yp.load_configuration(config)){
   			std::cout << "Load configuration fail" << std::endl;
-  		}
+  		}else Log(Log::LogMsgInfo) << "Read configuration ok";
 }
 
 int main(int argc, char** argv) {
@@ -45,9 +45,7 @@ int main(int argc, char** argv) {
 		}
 
 		//Set nivel de logueo.
-		std::cout << config.loglevel << std::endl;
 		Log::setLogLevel(config.loglevel);
-		std::cout << config.logfile << std::endl;
 
 		Log(Log::LogMsgInfo) << "Starting server...";
 		Log(Log::LogMsgInfo) << "Bindport: " << config.bindport;
@@ -66,9 +64,8 @@ int main(int argc, char** argv) {
 		Log(Log::LogMsgDebug) << "Initing BD";
 
 		RequestDispatcher rd;
-  		std::string db_path = config.dbpath;
   		size_t max_quota = 9999;
- 		bool status_db=rd.init(db_path,max_quota);
+ 		bool status_db=rd.init(config.dbpath,max_quota);
  		
 
   		if (!status_db) {

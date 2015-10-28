@@ -8,6 +8,7 @@
 
 #include "data_handler.h"
 #include "file_handler.h"
+#include "util/log.h"
 
 class RequestDispatcher{
 

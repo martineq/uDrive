@@ -1,5 +1,6 @@
 #include "db_handler.h"
 
+
 DbHandler::DbHandler(void){
   db_=nullptr;
 }
@@ -19,13 +20,15 @@ DbHandler::~DbHandler(void){
  */
 bool DbHandler::open(std::string filename){
   rocksdb::Options options;
-
+  
   // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
   options.IncreaseParallelism();
   options.OptimizeLevelStyleCompaction();
 
   // Create the DB if it's not already present
   options.create_if_missing = true;
+
+   
 
   // Open DB and return status
   return(check_status(rocksdb::DB::Open(options, filename, &db_)));  

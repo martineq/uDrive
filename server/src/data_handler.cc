@@ -1,4 +1,5 @@
 #include "data_handler.h"
+#include "util/log.h"
 
 DataHandler::DataHandler(void){
   
@@ -9,7 +10,6 @@ DataHandler::~DataHandler(void){
 
 }
 
-
 /**
  * @brief Initiates the database. 
  * Returns true if the DB is successfully open. On error returns false.
@@ -18,7 +18,10 @@ DataHandler::~DataHandler(void){
  * @return bool
  */
 bool DataHandler::init(string database_path){
+  Log(Log::LogMsgDebug) << "Opening bd... " <<database_path;
   if(dbh_.open(database_path)){
+     
+
     // user_id ticket
     init_id_ticket(SUFFIX_USER_ID);
     

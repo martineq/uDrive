@@ -5,6 +5,7 @@
 #include "rocksdb/slice.h"
 #include "rocksdb/options.h"
 #include "rocksdb/write_batch.h"
+#include "util/log.h"
 #include <string>
 #include <iostream>
 
