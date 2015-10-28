@@ -145,6 +145,24 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   ok = rd.new_directory(user_id,token,dir_name,date,parent_dir_id,dir_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(dir_id!="0");
+
+  // ** Another file post **
+  // + Post file       IN: binStream/filename/userId/dirId/token    OUT: fileId
+  // Parameters IN
+  const char* p_bin_stream_2 = "# Configuración de conexión\nip: 123.4.5.6\nport: 9090"; // Size: 54 bytes
+  string save_size_stream_2 = "54";
+  string file_name_2 = "archivo_2";
+  string file_ext_2 = "txt";
+  user_id;
+  string parent_dir_id_2 = "0"; // 0 == ROOT DIR
+  string token_2 = generated_token;
+  date="29/10/2015";
+  // Parameters OUT
+  string file_id_2 = "0";
+  status = 0;
+  ok = rd.new_file(user_id,token_2,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(file_id_2!="0");
   
   
   // + Get dirInfo     IN: userId/dirId/token                     OUT: listaDeArchivos/listaDeSubcarpetas  
@@ -160,13 +178,27 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
   EXPECT_EQ(dir_info.directories_contained,";2");       // IDs of directories contained, separated by semicolon
-  EXPECT_EQ(dir_info.files_contained,";1");             // IDs of files contained, separated by semicolon
+  EXPECT_EQ(dir_info.files_contained,";1;2");           // IDs of files contained, separated by semicolon
   EXPECT_EQ(dir_info.name,"root");                      // Dir name
   EXPECT_EQ(dir_info.owner,"1");                        // ID of owner
   EXPECT_EQ(dir_info.parent_directory,"no_parent");     // ID of parent dir. Special case: Root Dir.
   EXPECT_EQ(dir_info.tags,"");                          // Tags, separated by semicolon
-  
+  EXPECT_EQ(dir_info.size,"108");                       // Dir size (54*2==108)
 
+  // ** For reding information of sub-directories and files contained in this directory **
+  vector<RequestDispatcher::info_element_st> v_dir_elem_info;
+  rd.get_directory_element_info_from_dir_info(user_id,token,dir_info,v_dir_elem_info,status);
+  for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
+    RequestDispatcher::info_element_st ei = (*it);
+    // *** For use in info_node.cc ***  Note: %lu=long unsigned 
+    cout << "Element info in JSON Format: " ;
+    printf("[{ \"id\": \"%lu\",  \"name\": \"%s\","
+                                                                                                                "\"size\": \"%lu\" ,  \"type\": \"%s\",  \"cantItems\": \"%lu\", "
+                                                                                                                "\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]",ei.id,ei.name.c_str(),ei.size,ei.type.c_str(),ei.number_of_items,ei.shared.c_str(),ei.lastModDate.c_str());
+    cout << endl;
+
+  }
+  
   // + Get userInfo    IN: userId/token                           OUT: name/email
   // Parameters IN  
   user_id;
@@ -182,8 +214,8 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   EXPECT_EQ(user_info.location,"152.08;121.55");     // User location   
   EXPECT_EQ(user_info.name,"jake");                  // User name   
   EXPECT_EQ(user_info.shared_files,"");              // IDs of shared files, separated by semicolon
-  EXPECT_EQ(user_info.user_quota_used,"54");         // Size of quota used   
-  
+  EXPECT_EQ(user_info.user_quota_used,"108");        // Size of quota used (54*2==108)
+    
 }
 
 

@@ -20,13 +20,26 @@ class RequestDispatcher{
     bool get_user_quota_used(string user_id, string& quota, int& status);
     bool increase_user_quota_used(string user_id, string quota_increased, int& status);
     bool decrease_user_quota_used(string user_id, string quota_decreased, int& status); 
-    bool change_dir_date(string dir_id, string new_date, int& status);
+    bool change_dir_date_recursive(string dir_id, string new_date, int& status);
+    bool increase_dir_size_recursive(string dir_id, string size_increased, int& status);
+    bool decrease_dir_size_recursive(string dir_id, string size_decreased, int& status);
     bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
+    vector<string> split_string(string string_to_split, char delimiter);
     
   public:
+    
+    struct info_element_st {
+      size_t id;
+      string name;
+      size_t size;
+      string type;
+      size_t number_of_items;
+      string shared;
+      string lastModDate;
+    } ;
+    
     RequestDispatcher();
     ~RequestDispatcher();
-    vector<string> split_string(string string_to_split, char delimiter);
 
     bool init(string database_path,size_t max_user_quota);
         
@@ -49,6 +62,8 @@ class RequestDispatcher{
 //     bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
 //     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
 
+    bool get_directory_element_info_from_dir_info(string user_id, string user_token, DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    
 };
 
 #endif // REQUESTDISPATCHER_H

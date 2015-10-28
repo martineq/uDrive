@@ -157,7 +157,8 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY),parent_dir_id);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),LABEL_EMPTY_STRING);
-  
+  dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_SIZE),LABEL_ZERO);
+    
   // Writes new dir to parent dir.
   if( parent_dir_id != LABEL_NO_PARENT_DIR ){
     dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained);
@@ -287,6 +288,7 @@ bool DataHandler::get_user_info(string user_id, user_info_st& user_info, int& st
   if( !dbh_get(generate_user_key(user_id,SUFFIX_SHARED_FILES),&(user_info.shared_files),status) ) return false;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_QUOTA_USED),&(user_info.user_quota_used),status) ) return false;
   
+  
   return true;
 }
 
@@ -310,6 +312,7 @@ bool DataHandler::get_directory_info(string dir_id, dir_info_st& dir_info, int& 
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY),&(dir_info.parent_directory),status) ) return false;
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),&(dir_info.files_contained),status) ) return false;
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),&(dir_info.directories_contained),status) ) return false;
+  if( !dbh_get(generate_dir_key(dir_id,SUFFIX_SIZE),&(dir_info.size),status) ) return false;
 
   return true;
 }
@@ -381,7 +384,7 @@ bool DataHandler::delete_user(string user_id, int& status){
 /**
  * @brief Deletes all information for the dir ID. Returns true on success.
  *        On error returns false and a DataHandler status (see db_constants.h)
- *        (Warning: all info will be deleted without any check for files or directories)
+ *        (Warning: all info will be deleted without any check for files or subdirectories)
  * 
  * @param dir_id ...
  * @param status returns DataHandler status ONLY if @return==false
@@ -483,15 +486,17 @@ bool DataHandler::modify_user_info(string user_id, string email, string name, st
  * @param name ...
  * @param date ...
  * @param tags ...
+ * @param size ...
  * @param status status returns DataHandler status ONLY if @return==false
  * @return bool
  */
-bool DataHandler::modify_directory_info(string dir_id, string name, string date, string tags, int& status){
+bool DataHandler::modify_directory_info(string dir_id, string name, string date, string tags, string size, int& status){
   
   dbh_.clear_batch();
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_NAME),name);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DATE_LAST_MOD),date);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_TAGS),tags);
+  dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_SIZE),size);
   
   if(!dbh_.write_batch()){
     status = STATUS_DATABASE_ERROR;
