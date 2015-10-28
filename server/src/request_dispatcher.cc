@@ -73,7 +73,7 @@ bool RequestDispatcher::new_directory(string user_id, string user_token, string 
   if( !dh_.add_directory(user_id,name,date,parent_dir_id,dir_id,status) ){ return false; }
   
   // Change parent_dir_id date
-  if( !change_dir_date(parent_dir_id,date,status) ){ return false; }
+  if( !change_dir_date_recursive(parent_dir_id,date,status) ){ return false; }
   
   return true;
 }
@@ -108,8 +108,11 @@ bool RequestDispatcher::new_file(string user_id, string user_token, string name,
   // Add size to user quota
   if( !increase_user_quota_used(user_id,size,status) ){ return false; }
   
-  // Change parent_dir_id date
-  if( !change_dir_date(parent_dir_id,date,status) ){ return false; }
+  // Change parent_dir_id date & add size
+  if( !change_dir_date_recursive(parent_dir_id,date,status) ){ return false; }
+
+  // Recursive size add
+  if( !increase_dir_size_recursive(parent_dir_id,size,status) ){ return false; }
   
   return true;
 }
@@ -125,7 +128,9 @@ bool RequestDispatcher::get_user_info(string user_id, string user_token, DataHan
 bool RequestDispatcher::get_directory_info(string user_id, string user_token, string dir_id, DataHandler::dir_info_st& dir_info, int& status){
   if( !check_token(user_id,user_token,status) ){ return false; }
   
-  if( dir_id==LABEL_ZERO ){
+  bool is_root_dir = (dir_id==LABEL_ZERO);
+  
+  if( is_root_dir ){
     if( !get_root_dir_id(user_id,dir_id,status) ){ return false; }
   }
   
@@ -136,8 +141,80 @@ bool RequestDispatcher::get_directory_info(string user_id, string user_token, st
     status = STATUS_USER_FORBIDDEN;
     return false;
   }
-  
+
+  // Assign dir_info value
   dir_info = dir_info_temp;
+  
+  if( !is_root_dir ){
+    // Check if the parent dir is the root dir, and then, format the root dir ID (change to id==0)
+    DataHandler::dir_info_st parent_dir_info_temp;
+    if( !dh_.get_directory_info(dir_info.parent_directory,parent_dir_info_temp,status) ){ return false; }
+    if( parent_dir_info_temp.parent_directory == LABEL_NO_PARENT_DIR ){
+      dir_info.parent_directory = LABEL_ZERO;
+    }   
+  }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id, string user_token, DataHandler::dir_info_st dir_info,
+                                                                 vector< RequestDispatcher::info_element_st >& directory_element_info, int& status){
+  directory_element_info.clear();
+  
+  // Fill subdir info
+  vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
+    string subdir_id = (*it);
+    DataHandler::dir_info_st subdir_info;
+    RequestDispatcher::info_element_st info_element;
+    
+    if( !get_directory_info(user_id,user_token,subdir_id,subdir_info,status) ){ return false; }
+    info_element.id = stoul(subdir_id,nullptr,10);
+    info_element.lastModDate = subdir_info.date_last_mod;
+    info_element.name = subdir_info.name;
+    info_element.type = LABEL_D;  
+    info_element.shared = LABEL_FALSE; // Directory is always shared==false 
+    info_element.size = stoul(subdir_info.size,nullptr,10);
+    
+    // Calculate number of items
+    vector<string> temp_subdir_ids = split_string(subdir_info.directories_contained,LABEL_STRING_DELIMITER);
+    vector<string> temp_file_ids = split_string(subdir_info.files_contained,LABEL_STRING_DELIMITER);
+    info_element.number_of_items = temp_subdir_ids.size() + temp_file_ids.size();
+    
+    directory_element_info.push_back(info_element);
+  }  
+  
+  
+  // Fill file info  
+  vector<string> file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);  
+  for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    RequestDispatcher::info_element_st info_element;
+    
+    if( !get_file_info(user_id,user_token,file_id,file_info,status) ){ return false; }
+    info_element.id = stoul(file_id,nullptr,10);
+    info_element.lastModDate = file_info.date_last_mod;
+    info_element.name = file_info.name;
+    info_element.type = LABEL_A;  
+    info_element.size = stoul(file_info.size,nullptr,10);
+    info_element.number_of_items = 0; // File is always number_of_items==0 
+    
+    // Calculate number of users shared
+    vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+    size_t number_of_users_shared = temp_users_shared.size();
+    if(number_of_users_shared > 0){
+      info_element.shared = LABEL_TRUE; 
+    }else{
+      info_element.shared = LABEL_FALSE; 
+    }
+    
+    
+    directory_element_info.push_back(info_element);
+  }  
+
+  
   return true;
 }
 
@@ -272,12 +349,47 @@ bool RequestDispatcher::decrease_user_quota_used(string user_id, string quota_de
                                user_info.shared_files,to_string(new_quota),status) );
 }
 
-bool RequestDispatcher::change_dir_date(string dir_id, string new_date, int& status){
+
+bool RequestDispatcher::change_dir_date_recursive(string dir_id, string new_date, int& status){
   DataHandler::dir_info_st dir_info;
   if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+
+  // Recursive
+  if( dir_info.parent_directory!=LABEL_NO_PARENT_DIR ){
+    if( !change_dir_date_recursive(dir_info.parent_directory,new_date,status) ){ return false; }
+  }
   
-  return( dh_.modify_directory_info(dir_id,dir_info.name,new_date,dir_info.tags,status) );
+  return( dh_.modify_directory_info(dir_id,dir_info.name,new_date,dir_info.tags,dir_info.size,status) );
 }
+
+
+bool RequestDispatcher::increase_dir_size_recursive(string dir_id, string size_increased, int& status){
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+
+  // Recursive
+  if( dir_info.parent_directory!=LABEL_NO_PARENT_DIR ){
+    if( !increase_dir_size_recursive(dir_info.parent_directory,size_increased,status) ){ return false; }
+  }
+  
+  size_t new_size = stoul(dir_info.size,nullptr,10) + stoul(size_increased,nullptr,10) ;
+  return( dh_.modify_directory_info(dir_id,dir_info.name,dir_info.date_last_mod,dir_info.tags,to_string(new_size),status) );
+}
+
+
+bool RequestDispatcher::decrease_dir_size_recursive(string dir_id, string size_decreased, int& status){
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+
+  // Recursive
+  if( dir_info.parent_directory!=LABEL_NO_PARENT_DIR ){
+    if( !decrease_dir_size_recursive(dir_info.parent_directory,size_decreased,status) ){ return false; }
+  }
+  
+  size_t new_size = stoul(dir_info.size,nullptr,10) - stoul(size_decreased,nullptr,10) ;  
+  return( dh_.modify_directory_info(dir_id,dir_info.name,dir_info.date_last_mod,dir_info.tags,to_string(new_size),status) );
+}
+
 
 bool RequestDispatcher::get_root_dir_id(string user_id, string& root_dir_id, int& status){
   DataHandler::user_info_st user_info;

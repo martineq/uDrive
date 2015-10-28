@@ -194,7 +194,7 @@ void TestBasic::TestDbHandler(){
 
 void TestBasic::TestDataHandler(){
   cout << " Test DataHandler" << endl;
-
+  // TODO (mart): add dir.size varieable to test
   DataHandler dh;
   
   // Turns on Database
