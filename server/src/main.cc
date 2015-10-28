@@ -9,6 +9,7 @@ extern "C" {
 #include "web_server.h"
 #include "util/log.h"
 #include "config_parser.h"
+#include "request_dispatcher.h"
 
 using std::cout;
 using std::endl;
@@ -40,6 +41,7 @@ int main(int argc, char** argv) {
 		Log(Log::LogMsgInfo) << "Bindip: " << config.bindip;
 		Log(Log::LogMsgInfo) << "Loglevel: " << config.loglevel;
 		Log(Log::LogMsgInfo) << "Logfile: " << config.logfile;
+		Log(Log::LogMsgInfo) << "Dbpath: " << config.dbpath;
 
 		//close signals
 		signal(SIGHUP, sig_handler);
@@ -57,9 +59,20 @@ int main(int argc, char** argv) {
 				Log(Log::LogMsgError) << "Error opening file '" << config.logfile << "'";
 		}
 
+		//Init DB
+		Log(Log::LogMsgInfo) << "Init database...";
+		RequestDispatcher rd;
+  		string db_path = "/tmp/testdb_checkpoint2";
+ 		size_t max_quota = 9999;
+  		if (!rd.init(db_path,max_quota)) {
+  			Log(Log::LogMsgError) << "Init database fail";
+  			return 0;
+  		}
+
 		// Init web server
 		WEBServer server;
 		server.setPort(config.bindport);
+		server.setRequestDispatcher(&rd);
 		server.run();
 		Log(Log::LogMsgInfo) << "Server started";
 		while(Corriendo)

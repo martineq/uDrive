@@ -1,6 +1,6 @@
 # UDrive configuration file server
 ## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0
-bindip: 192.168.1.1
+bindip: 0.0.0.0
 
 ## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080
 bindport: 8080
@@ -10,3 +10,6 @@ loglevel: debug
 
 ## logfile: destination to send the log records. Default: "stdout"
 logfile: messages.log
+
+## path of database
+pathdb: db_checkpoint2
