@@ -32,9 +32,22 @@ int main(int argc, char** argv) {
 		ConfigParser::Configuration config;
 		takeConfFromFile(config);
 
+		//Set output log
+		std::ofstream outputLog;
+		if(config.logfile != "-"){
+			outputLog.open(config.logfile);
+			std::cout << "open outputLog" << std::endl;
+			if(outputLog.is_open()){
+				Log::setOutput(outputLog);
+				std::cout << "set outputLog" << std::endl;
+			}else
+				std::cout << "ERROR opening log file" << std::endl;
+		}
+
 		//Set nivel de logueo.
 		std::cout << config.loglevel << std::endl;
 		Log::setLogLevel(config.loglevel);
+		std::cout << config.logfile << std::endl;
 
 		Log(Log::LogMsgInfo) << "Starting server...";
 		Log(Log::LogMsgInfo) << "Bindport: " << config.bindport;
@@ -49,25 +62,19 @@ int main(int argc, char** argv) {
 		signal(SIGKILL, sig_handler);
 		signal(SIGINT, sig_handler);
 		
-		//Set output log
-		std::ofstream outputLog;
-		if(config.logfile != "-"){
-			outputLog.open(config.logfile);
-			if(outputLog.is_open())
-				Log::setOutput(outputLog);
-			else
-				Log(Log::LogMsgError) << "Error opening file '" << config.logfile << "'";
-		}
-
 		//Init DB
-		Log(Log::LogMsgInfo) << "Init database...";
+		Log(Log::LogMsgDebug) << "Initing BD";
+
 		RequestDispatcher rd;
-  		string db_path = "/tmp/testdb_checkpoint2";
- 		size_t max_quota = 9999;
-  		if (!rd.init(db_path,max_quota)) {
+  		std::string db_path = config.dbpath;
+  		size_t max_quota = 9999;
+ 		bool status_db=rd.init(db_path,max_quota);
+ 		
+
+  		if (!status_db) {
   			Log(Log::LogMsgError) << "Init database fail";
   			return 0;
-  		}
+  		}else Log(Log::LogMsgDebug) << "Init BD it's ok";
 
 		// Init web server
 		WEBServer server;

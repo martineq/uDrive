@@ -9,7 +9,7 @@ bindport: 8080
 loglevel: debug
 
 ## logfile: destination to send the log records. Default: "stdout"
-logfile: messages.log
+#logfile: /var/log/messages.log
 
 ## path of database
 pathdb: db_checkpoint2

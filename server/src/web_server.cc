@@ -70,4 +70,8 @@ void WEBServer::stop(){
 		mg_destroy_server(&server);
 }
 
+void WEBServer::setRequestDispatcher(RequestDispatcher* rd){
+	this->rd=rd;
+}
+
 

@@ -10,6 +10,7 @@
 
 #include "../rest/node.h"
 #include "../util/log.h"
+#include "../request_dispatcher.h"
 
 class TokenNode : public Node {
 	public:
@@ -19,6 +20,9 @@ class TokenNode : public Node {
 	protected:
 		void executePost(MgConnectionW& conn, const char* url);
 		std::string CreateToken(const std::string& email);
+		void setRequestDispatcher(RequestDispatcher* rd);
+	private:
+		RequestDispatcher* rd;
 };
 
 #endif
