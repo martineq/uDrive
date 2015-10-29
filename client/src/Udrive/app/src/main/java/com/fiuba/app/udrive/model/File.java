@@ -1,8 +1,5 @@
 package com.fiuba.app.udrive.model;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
 /**
  * Represents a File in the app context with all its required attributes
  */

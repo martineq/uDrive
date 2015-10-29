@@ -104,8 +104,8 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
              */
             Intent userProfile = new Intent(FileListActivity.this, UserProfileActivity.class);
             UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
-                    mUserAccount.getPassword(), /*firstname*/ "maría eugenia",
-                    /*lastname*/ "liva", /*photo*/ "", /*lastLocation*/ "", mUserAccount.getUserId(),
+                    mUserAccount.getPassword(), /*firstname*/ "firstname",
+                    /*lastname*/ "lastname", /*photo*/ "", /*lastLocation*/ "", mUserAccount.getUserId(),
                     /*quotaTotal*/ "750 MB", /*quota disponible*/ "487.5", /*quota usado*/ "35%");
 
             userProfile.putExtra("userProfile", uProfile);
