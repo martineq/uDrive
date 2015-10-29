@@ -72,7 +72,6 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
   				
 				}
-				item << "]";
 
 				if (!enc){
 					Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
