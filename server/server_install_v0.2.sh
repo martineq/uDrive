@@ -84,10 +84,13 @@ cd .. && \
 rm -rf temp_install
 echo "Librerías instaladas en /usr/lib/"
 
-# Bajo el repositorio
+# Bajo el repositorio, compilo y creo el archivo config.yml por defecto
 echo "Obtención de código fuente..."
 git clone --quiet --branch v0.2 --depth 1  https://github.com/martineq/tp7552.git tp7552
 
-echo "Compilación y ejecución del servidor..."
+echo "Compilación del servidor..."
 cd tp7552/server && mkdir build && cd build
 cmake -DEXE=SI .. && make
+
+echo "Creación de archivo de configuración..."
+printf '# UDrive configuration file server\n## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0\nbindip: 0.0.0.0\n\n## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080\nbindport: 8080\n\n## loglevel: we want to see server. debug, warning, info, error. Default: info\nloglevel: debug\n\n## logfile: destination to send the log records. Default: "stdout"\n#logfile: messages.log\n\n## path of database\ndbpath: db_checkpoint2\n ' > config.yml
