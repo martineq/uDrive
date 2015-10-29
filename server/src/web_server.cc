@@ -1,6 +1,8 @@
 #include "web_server.h"
 #include <string.h>
 #include <sstream>
+#include "../lib/json/json.h"
+
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -50,10 +52,16 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
  	  in->execute(mgConnection,conn->uri);
      return MG_TRUE;
 
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
- 	  ReceiveFileNode* rfn=new ReceiveFileNode();
- 	  rfn->setRequestDispatcher(RequestDispatcher::getInstance()); 
- 	  rfn->execute(mgConnection,conn->uri);
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/file/users",11)) {
+	  		ReceiveFileNode* rfn=new ReceiveFileNode();
+ 	  		rfn->setRequestDispatcher(RequestDispatcher::getInstance()); 
+ 	  		rfn->execute(mgConnection,conn->uri);
+     return MG_TRUE; 
+
+   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
+	  		CreateDirNode* cdn=new CreateDirNode();
+ 	  		cdn->setRequestDispatcher(RequestDispatcher::getInstance()); 
+ 	  		cdn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
