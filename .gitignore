@@ -4,7 +4,8 @@
 *~
 
 # Ignoro la carpeta build:
-build/
+/server/**/build/
+/client/**/build/
 
 # Ignoro las carpeta de proyecto KDevelop y sus archivos:
 .kdev4/
