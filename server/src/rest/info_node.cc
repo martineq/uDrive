@@ -74,6 +74,8 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 					}
 				}
 
+				if (directory_element_info.size()==1) enc=true;
+
 
 				if (!enc){
 					Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;

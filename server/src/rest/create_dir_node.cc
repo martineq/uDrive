@@ -96,6 +96,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
 						}
 					}
+					if (directory_element_info.size()==1) enc=true;
 					
 					if (!enc){
 						Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
