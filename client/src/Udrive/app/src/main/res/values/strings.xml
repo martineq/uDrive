@@ -59,5 +59,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- User profile -->
+    <string name="screen_name">Edit firstname and lastname</string>
+    <string name="save_changes">Save changes</string>
 
 </resources>

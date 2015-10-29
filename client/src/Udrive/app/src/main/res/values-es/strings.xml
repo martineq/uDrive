@@ -54,4 +54,8 @@
     <!-- Strings related to User Profile Activity -->
     <string name="userprofile_title">Mi perfil</string>
 
+    <!-- User profile -->
+    <string name="screen_name">Modificar nombre y apellido</string>
+    <string name="save_changes">Guardar cambios</string>
+
 </resources>
