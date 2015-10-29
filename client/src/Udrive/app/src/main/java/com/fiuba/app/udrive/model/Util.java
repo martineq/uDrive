@@ -53,4 +53,25 @@ public class Util {
     public static boolean matchString(String target, ArrayList<String> items){
         return items.contains(target);
     }
+
+    public static String capitalize(String str) {
+        StringBuilder b = new StringBuilder(str);
+        int i = 0;
+        do {
+            b.replace(i, i + 1, b.substring(i, i + 1).toUpperCase());
+            i = b.indexOf(" ", i) + 1;
+        } while (i > 0 && i < b.length());
+        return b.toString();
+    }
+
+    public static String extractDigits(String src) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < src.length(); i++) {
+            char c = src.charAt(i);
+            if (Character.isDigit(c)) {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
 }

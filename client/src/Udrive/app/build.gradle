@@ -44,9 +44,16 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
 
     // lib to use sliding up panel layouts
+
+    compile 'com.android.support:appcompat-v7:23.1.0'
+
+
     compile 'com.sothree.slidinguppanel:library:3.1.1'
+    compile 'com.android.support:design:23.1.0'
+
     // lib to use file picker
     compile 'com.nononsenseapps:filepicker:2.4.2'
+
 }
 
 

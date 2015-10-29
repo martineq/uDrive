@@ -43,12 +43,19 @@
     <string name="error_password">Debe ingresar una contraseña</string>
 
     <!-- String related to Add file-->
-    <string name="action_upload_file">Agregar archivo</string>
+    <string name="action_upload_file">Subir archivo</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">Ok</string>
-    <string name="new_folder_cancel">Cancel</string>
-    <string name="action_add_folder">Add folder</string>
-    <string name="folder_name">Folder name: </string>
+    <string name="new_folder_ok">OK</string>
+    <string name="new_folder_cancel">Cancelar</string>
+    <string name="action_add_folder">Crear carpeta</string>
+    <string name="folder_name">Nombre de carpeta: </string>
+
+    <!-- Strings related to User Profile Activity -->
+    <string name="userprofile_title">Mi perfil</string>
+
+    <!-- User profile -->
+    <string name="screen_name">Modificar nombre y apellido</string>
+    <string name="save_changes">Guardar cambios</string>
 
 </resources>

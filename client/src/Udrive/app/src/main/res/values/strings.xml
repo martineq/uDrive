@@ -44,13 +44,23 @@
     <string name="signup_ok">User account successfully created!</string>
 
     <!-- String related to Add file-->
-    <string name="action_upload_file">Add file</string>
+    <string name="action_upload_file">Upload file</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">Ok</string>
+    <string name="new_folder_ok">OK</string>
     <string name="new_folder_cancel">Cancel</string>
     <string name="action_add_folder">Add folder</string>
-    <string name="folder_name">Folder name romi: </string>
+    <string name="folder_name">Folder name: </string>
 
+    <!-- Strings related to User Profile Activity -->
+    <string name="userprofile_title">My profile</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- User profile -->
+    <string name="screen_name">Edit firstname and lastname</string>
+    <string name="save_changes">Save changes</string>
 
 </resources>

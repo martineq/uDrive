@@ -4,12 +4,11 @@
     tools:context="com.fiuba.app.udrive.FileListActivity">
     <item android:id="@+id/action_profile" android:title="@string/action_profile"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_signout" android:title="@string/action_signout"
+    <item android:id="@+id/action_add_folder" android:title="@string/action_add_folder"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_upload_file" android:title="@string/action_upload_file"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_add_folder" android:title="@string/action_add_folder"
+    <item android:id="@+id/action_signout" android:title="@string/action_signout"
         android:orderInCategory="100" app:showAsAction="never" />
+
 </menu>
