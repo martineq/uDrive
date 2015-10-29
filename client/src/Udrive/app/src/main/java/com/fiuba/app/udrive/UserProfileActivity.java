@@ -1,19 +1,13 @@
 package com.fiuba.app.udrive;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.method.DigitsKeyListener;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -21,13 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.model.Util;
-import com.fiuba.app.udrive.network.ConnectionConfig;
-import com.squareup.picasso.Picasso;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -84,8 +74,8 @@ public class UserProfileActivity extends AppCompatActivity {
         layout.setPaddingRelative(200, 50, 200, 50);
         String fName = Util.capitalize(mUserProfile.getFirstname());
         String lName = Util.capitalize(mUserProfile.getLastname());
-        firstname.setText(fName); // get from Extra
-        lastname.setText(lName); // get from Extra
+        firstname.setText(fName);
+        lastname.setText(lName);
         firstname.setGravity(Gravity.CENTER_HORIZONTAL);
         lastname.setGravity(Gravity.CENTER_HORIZONTAL);
         layout.addView(firstname);
