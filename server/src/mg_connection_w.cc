@@ -43,7 +43,6 @@ std::string MgConnectionW::getMultipartData(string& var_name, string& file_name)
 
 	return string(data, data_len);
 }
-
 void MgConnectionW::sendStatus(MgConnectionW::StatusCodes code){
 	this->sendStatus( (int) code);
 }

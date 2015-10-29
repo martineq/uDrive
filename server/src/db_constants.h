@@ -14,13 +14,14 @@
 #define DELETED_FILE_STATUS_EXISTS "1"
 #define DELETED_FILE_STATUS_ERASED "2"
 
-// DataHandler prefixes and suffixes for key construction
+// DataHandler prefixes for key construction
 #define PREFIX_USER "user_"
 #define PREFIX_DIR "dir_"
 #define PREFIX_FILE "file_"
 #define PREFIX_INDEX_USER_ID_FROM_USER_EMAIL "index_user_id_from_user_email_"
 #define PREFIX_TICKET_LAST "ticket_last_"
 
+// DataHandler suffixes for key construction
 #define SUFFIX_EMAIL "_email"
 #define SUFFIX_PASSWORD "_password"
 #define SUFFIX_TOKEN "_token"
@@ -49,8 +50,11 @@
 // Labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
-#define LABEL_NO_PARENT "no_parent"
+#define LABEL_NO_PARENT_DIR "no_parent"
 #define LABEL_REVISION_1 "1"
 #define LABEL_STRING_DELIMITER ';'
-#define LABEL_INTEGER_ZERO 0
-
+#define LABEL_ZERO "0"
+#define LABEL_A "a"
+#define LABEL_D "d"
+#define LABEL_TRUE "true"
+#define LABEL_FALSE "false"

@@ -12,6 +12,7 @@
 #define YAML_LABEL_BINDPORT "bindport"
 #define YAML_LABEL_LOGFILE "logfile"
 #define YAML_LABEL_LOGLEVEL "loglevel"
+#define YAML_LABEL_DBPATH "dbpath"
 #define YAML_EMPTY_STRING ""
 
 class ConfigParser {
@@ -19,17 +20,24 @@ class ConfigParser {
   public:
 
     typedef struct Configuration {
-      Configuration() : bindport("8080"), bindip("0.0.0.0"), logfile("-"), loglevel("debug")
+      Configuration() : bindport("8080"), bindip("0.0.0.0"), logfile("-"), loglevel("debug"), dbpath("/tmp/db_test")
       {}
       std::string bindport;
       std::string bindip;
       std::string logfile;
       std::string loglevel;
+      std::string dbpath;
     } Configuration;
     
     ConfigParser();
     ~ConfigParser();
     
+    /**
+    * @brief Reads the content of the config file for server. Returns true on success.
+    * 
+    * @param config return config information from file
+    * @return bool
+    */
     bool load_configuration(ConfigParser::Configuration& config);
   
   private:

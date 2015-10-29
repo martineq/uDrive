@@ -1,0 +1,10 @@
+============================================
+
+Documentación del proyecto
+============================================
+
+Gestión del proyecto
+--------------------------------------------
+
+Las tareas se gestionaron mediante el sistema de tickets que nos proveé GitHub. Por cada tarea a realizar se crea un issue que se asigna a un integrante del grupo.  
+Para tener una trazabilidad del estado de las tareas y el código que corresponde a cada corrección, al realizar un commit se indica el número de issue al que corresponde. Por tal razón al momento de  definir las tareas se tuvo en cuenta que sean lo suficientemente atómicas como para cerrarlas con un único commit.

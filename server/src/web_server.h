@@ -11,6 +11,9 @@ using std::string;
 #include "rest/token_node.h"
 #include "rest/info_node.h"
 #include "rest/receive_file_node.h"
+#include "rest/signup_node.h"
+#include "rest/create_dir_node.h"
+#include "request_dispatcher.h"
 
 extern "C" {
 	#include <pthread.h>
@@ -26,14 +29,15 @@ class WEBServer {
 		const char* setDocumentRoot(string path);
 		void run();
 		void stop();
-
+		
 	protected:
 		struct mg_server *server;
 		pthread_t hilo;
 		static void* threadHandler(void*);
 		static int handlerCaller(struct mg_connection*, enum mg_event);
 		int running;
-
+	
+		
 };
 
 #endif

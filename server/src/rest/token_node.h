@@ -10,15 +10,19 @@
 
 #include "../rest/node.h"
 #include "../util/log.h"
+#include "../request_dispatcher.h"
 
 class TokenNode : public Node {
 	public:
 		TokenNode();
 		~TokenNode();
-
+		void setRequestDispatcher(RequestDispatcher* rd);
 	protected:
 		void executePost(MgConnectionW& conn, const char* url);
 		std::string CreateToken(const std::string& email);
+		
+	private:
+		RequestDispatcher* rd;
 };
 
 #endif

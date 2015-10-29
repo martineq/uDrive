@@ -9,6 +9,7 @@ extern "C" {
 #include "web_server.h"
 #include "util/log.h"
 #include "config_parser.h"
+#include "request_dispatcher.h"
 
 using std::cout;
 using std::endl;
@@ -24,15 +25,26 @@ void takeConfFromFile(ConfigParser::Configuration& config){
 		ConfigParser yp;
 		if (!yp.load_configuration(config)){
   			std::cout << "Load configuration fail" << std::endl;
-  		}
+  		}else Log(Log::LogMsgInfo) << "Read configuration ok";
 }
 
 int main(int argc, char** argv) {
 		ConfigParser::Configuration config;
 		takeConfFromFile(config);
 
+		//Set output log
+		std::ofstream outputLog;
+		if(config.logfile != "-"){
+			outputLog.open(config.logfile);
+			std::cout << "open outputLog" << std::endl;
+			if(outputLog.is_open()){
+				Log::setOutput(outputLog);
+				std::cout << "set outputLog" << std::endl;
+			}else
+				std::cout << "ERROR opening log file" << std::endl;
+		}
+
 		//Set nivel de logueo.
-		std::cout << config.loglevel << std::endl;
 		Log::setLogLevel(config.loglevel);
 
 		Log(Log::LogMsgInfo) << "Starting server...";
@@ -40,6 +52,7 @@ int main(int argc, char** argv) {
 		Log(Log::LogMsgInfo) << "Bindip: " << config.bindip;
 		Log(Log::LogMsgInfo) << "Loglevel: " << config.loglevel;
 		Log(Log::LogMsgInfo) << "Logfile: " << config.logfile;
+		//Log(Log::LogMsgInfo) << "Dbpath: " << config.dbpath;
 
 		//close signals
 		signal(SIGHUP, sig_handler);
@@ -47,24 +60,18 @@ int main(int argc, char** argv) {
 		signal(SIGKILL, sig_handler);
 		signal(SIGINT, sig_handler);
 		
-		//Set output log
-		std::ofstream outputLog;
-		if(config.logfile != "-"){
-			outputLog.open(config.logfile);
-			if(outputLog.is_open())
-				Log::setOutput(outputLog);
-			else
-				Log(Log::LogMsgError) << "Error opening file '" << config.logfile << "'";
-		}
+		//Init DB
+		Log(Log::LogMsgDebug) << "Initing BD";
 
+			
 		// Init web server
-		WEBServer server;
-		server.setPort(config.bindport);
-		server.run();
+		WEBServer* server=new WEBServer();
+		server->setPort(config.bindport);
+		server->run();
 		Log(Log::LogMsgInfo) << "Server started";
 		while(Corriendo)
 			sleep(1);
 		Log(Log::LogMsgInfo) << "Stopped server";
-		server.stop();
+		server->stop();
 	return 0;
 }

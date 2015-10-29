@@ -12,17 +12,19 @@
 #include "../util/log.h"
 #include <string.h>
  using std::vector;
+ #include "../request_dispatcher.h"
 
 class ReceiveFileNode  : public Node {
 
 public:
 	ReceiveFileNode();
 	~ReceiveFileNode();
+	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-	
 	void executePost(MgConnectionW& conn, const char* url);
 private:
 	vector<string> split(const string &s, char delim);
+	RequestDispatcher* rd;
 };
 
 #endif /* RECEIVE_FILE_NODE_H_ */
