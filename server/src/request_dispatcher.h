@@ -39,13 +39,13 @@ class RequestDispatcher{
     
     ~RequestDispatcher();   
       struct info_element_st {
-      size_t id;
-      string name;
-      size_t size;
-      string type;
-      size_t number_of_items;
-      string shared;
-      string lastModDate;
+          size_t id;
+          string name;
+          size_t size;
+          string type;
+          size_t number_of_items;
+          string shared;
+          string lastModDate;
     } ;
     
     bool init(string database_path,size_t max_user_quota);

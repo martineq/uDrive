@@ -39,9 +39,7 @@ int main(int argc, char** argv) {
 			std::cout << "open outputLog" << std::endl;
 			if(outputLog.is_open()){
 				Log::setOutput(outputLog);
-				std::cout << "set outputLog" << std::endl;
-			}else
-				std::cout << "ERROR opening log file" << std::endl;
+				}
 		}
 
 		//Set nivel de logueo.
@@ -60,10 +58,6 @@ int main(int argc, char** argv) {
 		signal(SIGKILL, sig_handler);
 		signal(SIGINT, sig_handler);
 		
-		//Init DB
-		Log(Log::LogMsgDebug) << "Initing BD";
-
-			
 		// Init web server
 		WEBServer* server=new WEBServer();
 		server->setPort(config.bindport);

@@ -41,7 +41,7 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 	std::string email = mail.asString();
 	std::string password = pass.asString();
 
-	Log(Log::LogMsgDebug) << "[" << "Validando usuario" << "] " << email << " " << password;
+	Log(Log::LogMsgDebug) << "[" << "validating user" << "] " << email << " " << password;
 
 	string new_token=CreateToken(email);
 	string userId="";
@@ -53,8 +53,7 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
 	}else{
-
-		Log(Log::LogMsgDebug) << "[" << "Valid user: " << userId << "] ";
+		Log(Log::LogMsgDebug) << "[" << "Valid user: userId: " << userId << "] " << "Token: " <<new_token.c_str();
 		conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		conn.printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());

@@ -36,9 +36,9 @@ void WEBServer::run(){
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	mg_server* mgServer = (mg_server*) conn->server_param;
 	MgConnectionW mgConnection(conn);
+	//Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
   if (ev == MG_AUTH) {
-	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
 	  TokenNode* tn=new TokenNode();
@@ -65,9 +65,9 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
      return MG_TRUE; 
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
- 	  SignupNode* sn=new SignupNode();
- 	  sn->setRequestDispatcher(RequestDispatcher::getInstance());
- 	  sn->execute(mgConnection,conn->uri);
+		 	  SignupNode* sn=new SignupNode();
+		 	  sn->setRequestDispatcher(RequestDispatcher::getInstance());
+		 	  sn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
      
   } else {

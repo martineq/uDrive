@@ -65,6 +65,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		if (this->rd->new_directory(userId, token, dirNameS, fecha, dirId, new_dirId, status)){
 			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] new dirId: " << new_dirId.c_str();
 			conn.printfData("{\"dirId\": \"%s\"}",new_dirId.c_str());
 		}else{
 			Log(Log::LogMsgDebug) << "[" << "failed to create" << "]";
@@ -73,7 +74,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 			conn.printfData("{\"dirId\": \"%s\"}","0");
 		}
 	}else{
-		Log(Log::LogMsgDebug) << "[" << "failed to create" << "]";
+			Log(Log::LogMsgDebug) << "[" << "failed to create" << "]";
 			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("{\"dirId\": \"%s\"}","0");
