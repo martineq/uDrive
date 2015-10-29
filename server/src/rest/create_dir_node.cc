@@ -82,16 +82,19 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 				if (this->rd->get_directory_element_info_from_dir_info(userId, token, dirInfo, directory_element_info, status)){
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
 					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
-					for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
-	     				enc=true;
-	     				item 
-	     				<< "{\"id\":\"" << (*directory_it).id 
-	     				<< "\",\"name\":\"" << (*directory_it).name 
-	     				<< "\",\"size\":\""	<< (*directory_it).size	
-	     				<< "\",\"type\":\""	<< (*directory_it).type 
-	     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items 
-	     				<< "\",\"shared\":\"" << (*directory_it).shared 
-	     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
+
+					if (directory_element_info.size()!=0){
+						for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
+		     				enc=true;
+		     				item 
+		     				<< "{\"id\":\"" << (*directory_it).id 
+		     				<< "\",\"name\":\"" << (*directory_it).name 
+		     				<< "\",\"size\":\""	<< (*directory_it).size	
+		     				<< "\",\"type\":\""	<< (*directory_it).type 
+		     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items 
+		     				<< "\",\"shared\":\"" << (*directory_it).shared 
+		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
+						}
 					}
 					
 					if (!enc){
