@@ -11,13 +11,27 @@
 
 using namespace std;
 
-TEST(BasicTest, AlwaysOk) {
+TEST(LibraryTest, AlwaysOk) {
 
   TestBasic tb;
   tb.TestRocksDB();
   tb.TestMongoose();
   tb.TestJson();
+
+  EXPECT_EQ(1,1);
+}
+
+TEST(DbHandlerTest, AlwaysOk) {
+
+  TestBasic tb;
   tb.TestDbHandler();
+
+  EXPECT_EQ(1,1);
+}
+
+TEST(DataHandlerTest, AlwaysOk) {
+
+  TestBasic tb;
   tb.TestDataHandler();
 
   EXPECT_EQ(1,1);
@@ -48,7 +62,7 @@ TEST(YamlTest, ReadsFromFile) {
 }
 
 
-TEST(FileTest, SaveAndLoadFile) {
+TEST(FileHandlerTest, SaveAndLoadFile) {
 
   FileHandler fh;
   

@@ -17,38 +17,12 @@ bool RequestDispatcher::init(string database_path, size_t max_user_quota){
 }
 
 
-/**
- * @brief Adds a new user on the DB. (Used in sign up)
- *        Creates a "root" directory and user ID. Root directory is always id=0. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param email 
- * @param password 
- * @param name 
- * @param location 
- * @param token 
- * @param date 
- * @param user_id returns user ID
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool RequestDispatcher::sign_up(string email, string password, string name, string location, string new_token, string date,
                                 string& user_id, int& status){
   return dh_.add_user(email,password,name,location,new_token,date,user_id,status);
 }
 
 
-/**
- * @brief Verifies email/password and saves new_token. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param email ...
- * @param password ...
- * @param new_token ...
- * @param user_id returns user ID
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool RequestDispatcher::log_in(string email, string password, string new_token, string& user_id, int& status){
   string saved_password;
   if( !dh_.get_user_password(email,saved_password,status) ){ return false; };

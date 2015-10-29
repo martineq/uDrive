@@ -43,8 +43,35 @@ class RequestDispatcher{
     ~RequestDispatcher();
 
     bool init(string database_path,size_t max_user_quota);
-        
+    
+    /**
+    * @brief Adds a new user on the DB. (Used in sign up)
+    *        Creates a "root" directory and user ID. Root directory is always id=0. Returns true on success.
+    *        On error returns false and a DataHandler status (see db_constants.h)
+    * 
+    * @param email 
+    * @param password 
+    * @param name 
+    * @param location 
+    * @param token 
+    * @param date 
+    * @param user_id returns user ID
+    * @param status returns DataHandler status ONLY if @return==false
+    * @return bool
+    */
     bool sign_up(string email, string password, string name, string location, string new_token, string date, string& user_id, int& status);
+    
+    /**
+    * @brief Verifies email/password and saves new_token. Returns true on success.
+    *        On error returns false and a DataHandler status (see db_constants.h)
+    * 
+    * @param email ...
+    * @param password ...
+    * @param new_token ...
+    * @param user_id returns user ID
+    * @param status returns DataHandler status ONLY if @return==false
+    * @return bool
+    */
     bool log_in(string email, string password, string new_token, string& user_id, int& status);
     
     bool new_directory(string user_id, string user_token, string name, string date, string parent_dir_id, string& dir_id, int& status);
@@ -59,9 +86,9 @@ class RequestDispatcher{
     bool delete_directory(string user_id, string user_token, string dir_id, int& status);
     bool delete_file(string user_id, string user_token, string file_id, int& status);
 
-//     bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
-//     bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
-//     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
+//  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
+//  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
+//  bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
 
     bool get_directory_element_info_from_dir_info(string user_id, string user_token, DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
     

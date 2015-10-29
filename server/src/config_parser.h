@@ -32,6 +32,12 @@ class ConfigParser {
     ConfigParser();
     ~ConfigParser();
     
+    /**
+    * @brief Reads the content of the config file for server. Returns true on success.
+    * 
+    * @param config return config information from file
+    * @return bool
+    */
     bool load_configuration(ConfigParser::Configuration& config);
   
   private:
