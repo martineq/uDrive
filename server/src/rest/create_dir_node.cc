@@ -33,6 +33,8 @@ vector<string> CreateDirNode::split(const string &s, char delim) {
 
 void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 	vector<string> lista=CreateDirNode::split(conn->uri,'/');
+
+	int status;
 	
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		string userId=lista[2];
@@ -55,7 +57,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		const Json::Value dirName = root["dirName"];
 		std::string dirNameS = dirName.asString();
 		std::string new_dirId;
-		int status;
+		
 
 		time_t now = time(0);
 		char* dt = ctime(&now);
@@ -63,24 +65,78 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
 		if (this->rd->new_directory(userId, token, dirNameS, fecha, dirId, new_dirId, status)){
-			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] new dirId: " << new_dirId.c_str();
-			conn.printfData("{\"dirId\": \"%s\"}",new_dirId.c_str());
+			DataHandler::dir_info_st dirInfo;
+			if (!this->rd->get_directory_info(userId, token, dirId, dirInfo, status)){
+				Log(Log::LogMsgDebug) << "[" << "Fail get get_directory_info" << "]" << "Status: " << status;
+				conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+			}
+			else{
+				vector<RequestDispatcher::info_element_st> directory_element_info;
+				bool enc = false;
+				std::ostringstream item;
+	  			item << "[";
+				if (this->rd->get_directory_element_info_from_dir_info(userId, token, dirInfo, directory_element_info, status)){
+					vector<RequestDispatcher::info_element_st>::iterator directory_it;
+					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
+					for (directory_it = directory_element_info.begin(); directory_it != directory_element_info.end(); directory_it++){
+	     				enc=true;
+	     				item << "{\"id\":\"" << (*directory_it).id << "\",\"name\":\"" 
+	     				<< (*directory_it).name << "\",\"size\":\"" 
+	     				<< (*directory_it).size	<< "\",\"type\":\"" 
+	     				<< (*directory_it).type << "\",\"cantItems\":\"" 
+	     				<< (*directory_it).number_of_items << "\",\"shared\":\"" 
+	     				<< (*directory_it).shared << "\",\"lastModDate\":\"" 
+	     				<< (*directory_it).lastModDate << "\"}";
+					}
+					item << "]";
+					if (!enc){
+						Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
+						conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+					}else{
+						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size(); 
+	  					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
+						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						const std::string tmp = item.str();
+						const char* msg = tmp.c_str();
+						conn.printfData(msg);
+
+					}
+
+				} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
+				}	
+
+		//	conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
+		//	conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		//	Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] new dirId: " << new_dirId.c_str();
+		//	conn.printfData("{\"dirId\": \"%s\"}",new_dirId.c_str());
+
+
 		}else{
-			Log(Log::LogMsgDebug) << "[" << "failed to create" << "]";
+			Log(Log::LogMsgDebug) << "[" << "failed to create" << "] Status: " << status;
 			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{\"dirId\": \"%s\"}","0");
+			//conn.printfData("{\"dirId\": \"%s\"}","0");
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 		}
 	}else{
-			Log(Log::LogMsgDebug) << "[" << "failed to create" << "]";
+			Log(Log::LogMsgDebug) << "failed to create" << "] Status: " <<status;
 			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("{\"dirId\": \"%s\"}","0");
+			//conn.printfData("{\"dirId\": \"%s\"}","0");
+			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
+											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
+											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 	}
-
-
 }
 
 void CreateDirNode::setRequestDispatcher(RequestDispatcher* rd){
