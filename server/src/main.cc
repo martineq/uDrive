@@ -74,14 +74,14 @@ int main(int argc, char** argv) {
   		}else Log(Log::LogMsgDebug) << "Init BD it's ok";
 
 		// Init web server
-		WEBServer server;
-		server.setPort(config.bindport);
-		server.setRequestDispatcher(&rd);
-		server.run();
+		WEBServer* server=new WEBServer(&rd);
+		server->setPort(config.bindport);
+		//server.setRequestDispatcher(&rd);
+		server->run();
 		Log(Log::LogMsgInfo) << "Server started";
 		while(Corriendo)
 			sleep(1);
 		Log(Log::LogMsgInfo) << "Stopped server";
-		server.stop();
+		server->stop();
 	return 0;
 }

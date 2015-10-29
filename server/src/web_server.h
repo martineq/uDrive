@@ -20,25 +20,23 @@ extern "C" {
 class WEBServer {
 	public:
 
-		WEBServer();
+		WEBServer(RequestDispatcher* rdis);
 		~WEBServer();
 
 		const char* setPort(string port);
 		const char* setDocumentRoot(string path);
 		void run();
 		void stop();
-		void setRequestDispatcher(RequestDispatcher* rd);
-
+		
 	protected:
 		struct mg_server *server;
 		pthread_t hilo;
 		static void* threadHandler(void*);
 		static int handlerCaller(struct mg_connection*, enum mg_event);
 		int running;
-		
 	private:
-		RequestDispatcher* rd;
-
+		static RequestDispatcher* rd;
+		
 };
 
 #endif

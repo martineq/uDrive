@@ -97,5 +97,11 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 
 	}
 
+
 }
+
+void InfoNode::setRequestDispatcher(RequestDispatcher* rd){
+	this->rd=rd;
+}
+
 

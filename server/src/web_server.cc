@@ -2,7 +2,8 @@
 #include <string.h>
 #include <sstream>
 
-WEBServer::WEBServer(){
+WEBServer::WEBServer(RequestDispatcher* rdis){
+		WEBServer::rd = rdis;
 		server = mg_create_server(server, WEBServer::handlerCaller);
 }
 
@@ -45,6 +46,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
  	  InfoNode* in=new InfoNode();
+ 	  in->setRequestDispatcher(rd);
  	  in->execute(mgConnection,conn->uri);
      return MG_TRUE;
 
@@ -68,10 +70,6 @@ void* WEBServer::threadHandler(void* arg){
 void WEBServer::stop(){
 		this->running = 0;
 		mg_destroy_server(&server);
-}
-
-void WEBServer::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
 }
 
 
