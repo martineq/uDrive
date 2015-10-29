@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.UserAccount;
+import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
@@ -93,10 +94,25 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(main);
             finishAffinity();
-        } else if (id == R.id.action_settings) {
-            Intent settings = new Intent(FileListActivity.this, SettingsActivity.class);
-            startActivity(settings);
-        } else if (id == R.id.action_upload_file) {
+
+        }  else if (id == R.id.action_profile) {
+            // Do the request
+            // set response fields into next intent
+            //mUserAccount.getUserId();
+            /*
+            Set all fields incoming from response as extras
+             */
+            Intent userProfile = new Intent(FileListActivity.this, UserProfileActivity.class);
+            UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
+                    mUserAccount.getPassword(), /*firstname*/ "maría eugenia",
+                    /*lastname*/ "liva", /*photo*/ "", /*lastLocation*/ "", mUserAccount.getUserId(),
+                    /*quotaTotal*/ "750 MB", /*quota disponible*/ "487.5", /*quota usado*/ "35%");
+
+            userProfile.putExtra("userProfile", uProfile);
+            startActivity(userProfile);
+
+
+        }  else if (id == R.id.action_upload_file) {
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -104,6 +120,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
 
             startActivityForResult(i, FILE_CODE);
+
         } else if (id == R.id.action_add_folder) {
             LayoutInflater li = LayoutInflater.from(this);
             View newFolderView = li.inflate(R.layout.new_folder, null);
