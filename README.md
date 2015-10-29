@@ -40,7 +40,7 @@ Descargar el archivo apk de instalación (Android) correspondiente a la misma ve
 <!---
 TODO: Actualizar el link para la versión 0.2 del script
 -->
-* [:arrow_down: Versión 0.2 :arrow_down:](https://github.com/martineq/tp7552) ( :ballot_box_with_check: Última versión )
+* [:arrow_down: Versión 0.2 :arrow_down:](https://github.com/martineq/tp7552/raw/v0.2/client/src/Udrive/app/app-release.apk) ( :ballot_box_with_check: Última versión )
 * [:arrow_down: Versión 0.1 :arrow_down:](https://github.com/martineq/tp7552/raw/344e1550a2eab0febc324910d4edaf2256522ac9/client/src/Udrive/app/app-release.apk) ( :warning: Esta versión se conecta a un servidor remoto de testeo )
 
 
