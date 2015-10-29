@@ -14,13 +14,14 @@
 #define DELETED_FILE_STATUS_EXISTS "1"
 #define DELETED_FILE_STATUS_ERASED "2"
 
-// DataHandler prefixes and suffixes for key construction
+// DataHandler prefixes for key construction
 #define PREFIX_USER "user_"
 #define PREFIX_DIR "dir_"
 #define PREFIX_FILE "file_"
 #define PREFIX_INDEX_USER_ID_FROM_USER_EMAIL "index_user_id_from_user_email_"
 #define PREFIX_TICKET_LAST "ticket_last_"
 
+// DataHandler suffixes for key construction
 #define SUFFIX_EMAIL "_email"
 #define SUFFIX_PASSWORD "_password"
 #define SUFFIX_TOKEN "_token"

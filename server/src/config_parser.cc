@@ -1,19 +1,16 @@
-
 #include "config_parser.h"
+
 
 ConfigParser::ConfigParser(){
 
 }
 
+
 ConfigParser::~ConfigParser(){
 
 }
-/**
- * @brief Reads the content of the config file for server. Returns true on success.
- * 
- * @param config return config information from file
- * @return bool
- */
+
+
 bool ConfigParser::load_configuration(ConfigParser::Configuration& config){
   // Open file
   std::ifstream config_file(YAML_CONFIG_FILE);
