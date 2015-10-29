@@ -1,5 +1,8 @@
 package com.fiuba.app.udrive.network;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.fiuba.app.udrive.BuildConfig;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -9,10 +12,18 @@ import retrofit.client.OkClient;
 
 public abstract class AbstractService {
 
-    private static RestAdapter.Builder builder = new RestAdapter.Builder()
-            .setEndpoint(BuildConfig.BASE_URL)
-            .setClient(new OkClient(new OkHttpClient()))
-            .setLogLevel(BuildConfig.RETROFIT_LOGGING);
+    protected Context mContext;
+
+    private static RestAdapter.Builder builder;
+
+    public AbstractService(Context context) {
+        this.mContext = context;
+        //ConnectionConfig.clear(context);
+        this.builder = new RestAdapter.Builder()
+                .setEndpoint(ConnectionConfig.getConnectionURL(this.mContext))
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(BuildConfig.RETROFIT_LOGGING);
+    }
 
 
     protected <T> T createService(Class<T> service, final String token) {
@@ -26,6 +37,14 @@ public abstract class AbstractService {
             });
         }
         return builder.build().create(service);
+    }
+
+    protected static String getURL(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences("connection", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String serverIP = sharedPref.getString("server_ip", "190.7.56.249");
+        String serverPort = sharedPref.getString("server_port", "8055");
+        return "http://"+serverIP+":"+serverPort;
     }
 
 }

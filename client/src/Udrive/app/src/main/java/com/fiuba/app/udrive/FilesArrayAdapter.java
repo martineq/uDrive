@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.fiuba.app.udrive.R;
+
 import com.fiuba.app.udrive.model.File;
 import java.util.List;
 

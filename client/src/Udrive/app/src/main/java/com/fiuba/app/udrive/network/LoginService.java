@@ -1,5 +1,7 @@
 package com.fiuba.app.udrive.network;
 
+import android.content.Context;
+
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
 import com.fiuba.app.udrive.network.AbstractService;
@@ -25,7 +27,8 @@ public class LoginService extends AbstractService {
 
     private LoginServiceApi mLoginServiceApi;
 
-    public LoginService() {
+    public LoginService(Context context) {
+        super(context);
         this.mLoginServiceApi = createService(LoginServiceApi.class, null);
     }
 

@@ -18,8 +18,49 @@
     <string name="loading">Loading...</string>
     <string name="error_obtaining_files">Error obtaining files</string>
     <string name="error_mail_pass">Incorrect email or password</string>
-    <string name="error_network">No internet connection</string>
+    <string name="error_network">No internet connection or wrong connection settings</string>
     <string name="default_error">Unexpected error</string>
     <string name="error_auth">Authentication error</string>
+    <string name="error_port_number">Error: Port number must be greater than 1024 and less than 49151</string>
+    <string name="error_empty">E-mail or password was not entered</string>
+
+    <!-- Strings related to Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_item_connection">Connection settings</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+
+
+    <!-- Sign up strings -->
+    <string name="title_activity_sign_up">Sign up for uDrive</string>
+    <string name="signup_firstname">Firstname</string>
+    <string name="signup_lastname">Lastname</string>
+    <string name="signup_button">Create account</string>
+    <string name="error_mail_exists">The e-mail you entered is already in use. Please enter another one.</string>
+    <string name="error_email">You must enter an e-mail</string>
+    <string name="error_firstname">You must enter the firstname</string>
+    <string name="error_lastname">You must enter your lastname</string>
+    <string name="error_password">You must enter your password</string>
+    <string name="signup_ok">User account successfully created!</string>
+
+    <!-- String related to Add file-->
+    <string name="action_upload_file">Upload file</string>
+
+    <!-- String related to Add folder-->
+    <string name="new_folder_ok">OK</string>
+    <string name="new_folder_cancel">Cancel</string>
+    <string name="action_add_folder">Add folder</string>
+    <string name="folder_name">Folder name: </string>
+
+    <!-- Strings related to User Profile Activity -->
+    <string name="userprofile_title">My profile</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- User profile -->
+    <string name="screen_name">Edit firstname and lastname</string>
+    <string name="save_changes">Save changes</string>
 
 </resources>

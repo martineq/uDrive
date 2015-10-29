@@ -53,7 +53,9 @@ class MgConnectionW {
 		void sendHeader(const std::string& name, const std::string& val);
 		void sendHeader(const char* name, const char* val);
 
-		string getAuthorization();
+		std::string getMultipartData(string& var_name, string& file_name);
+
+		std::string getAuthorization();
 		/** Setea el content type
 		 */
 		void sendContentType(const std::string& type);
@@ -97,8 +99,9 @@ class MgConnectionW {
 
 
 	protected:
-		struct mg_connection *conn; ///< Instacia de mg_connection
+		struct mg_connection *conn; 
 		std::map<std::string, std::string> parameters; ///< map de los parametros guardados por el usuario
+		int multipartOffset;
 };
 
 #endif

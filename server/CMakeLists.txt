@@ -19,7 +19,7 @@ set(RUTA_TOOLS "${RUTA_RAIZ}/tools") # Ruta del directorio donde se encuentran l
 set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los archivos de test
 
 
-###############################################e#######
+######################################################
 ### Seteos referidos a la compilación del servidor ###
 ######################################################
 
@@ -29,9 +29,11 @@ set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
 set(SRC_PACK_TEST_BASICO ${RUTA_TEST}/test_basic.cc)
 set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc ${RUTA_SRC}/mg_connection_w.cc ${RUTA_LIB}/mongoose/mongoose.c)
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
-set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc)
+set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc ${RUTA_SRC}/request_dispatcher.cc)
 set(SRC_PACK_UTILS ${RUTA_SRC}/util/md5.cc ${RUTA_SRC}/util/random_number.cc ${RUTA_SRC}/util/bin2hex.cc)
-set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc)
+set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUTA_SRC}/rest/info_node.cc ${RUTA_SRC}/rest/receive_file_node.cc ${RUTA_SRC}/rest/signup_node.cc ${RUTA_SRC}/rest/create_dir_node.cc)
+set(SRC_PACK_YAML ${RUTA_SRC}/config_parser.cc)
+set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
 
 
@@ -40,19 +42,19 @@ set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUT
 set(SRC_TESTEABLE ${SRC_PACK_TEST_BASICO})
 
 # Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
-set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS}) 
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS} ${SRC_PACK_YAML} ${SRC_PACK_FILE}) 
 
 # Reuno TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
 
 # Nombres de las librerías a usar en el proyecto
-set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt)
+set(NOMBRE_LIBS rocksdb z snappy bz2 jsoncpp pthread rt gtest yaml-cpp)
 
 # Flag para indicar si se quiere generar un ejecutable. Para activarlo usar desde la carpeta build "cmake -DEXE=SI .."
 option(EXE "Activa la creación de un ejecutable, sin tests" NO)
 
-# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
+# Línea agregada para hacer uso de ISO C++11 requerido por RocksDB. pthread requerido por GTest
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++11 ")
 
 
 ###################################

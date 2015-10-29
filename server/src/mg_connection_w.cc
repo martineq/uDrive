@@ -18,9 +18,31 @@ static const char* CONTENT_TYPES[] = {
 };
 
 MgConnectionW::MgConnectionW(struct mg_connection *c) : conn(c) {
+	multipartOffset=0;
 
 }
 
+std::string MgConnectionW::getMultipartData(string& var_name, string& file_name){
+	const char *data = NULL;
+	int data_len = 0;
+
+	var_name.resize(100);
+	file_name.resize(100);
+
+	var_name[0] = 0;
+	file_name[0] = 0;
+
+	this->multipartOffset = mg_parse_multipart(this->conn->content + this->multipartOffset,this->conn->content_len - this->multipartOffset,
+		(char*) var_name.data(), 100,
+		(char*) file_name.data(), 100,
+		&data, &data_len
+	);
+
+	var_name.resize(strlen(var_name.data()));
+	file_name.resize(strlen(file_name.data()));
+
+	return string(data, data_len);
+}
 void MgConnectionW::sendStatus(MgConnectionW::StatusCodes code){
 	this->sendStatus( (int) code);
 }

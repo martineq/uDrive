@@ -194,11 +194,11 @@ void TestBasic::TestDbHandler(){
 
 void TestBasic::TestDataHandler(){
   cout << " Test DataHandler" << endl;
-
+  // TODO (mart): add dir.size varieable to test
   DataHandler dh;
   
   // Turns on Database
-  assert( dh.init() );
+  assert( dh.init("/tmp/testdb") );
 
   
   // Delete user "jake" if there was added previously to the database (just for testing purposes)
@@ -234,7 +234,7 @@ void TestBasic::TestDataHandler(){
   string pass_from_client = "1234";
   string pass_saved_in_db = "0";
   assert( !dh.get_user_password(mail_from_client,pass_saved_in_db,status) );
-  assert( status == DH_STATUS_KEY_NOT_FOUND );
+  assert( status == STATUS_KEY_NOT_FOUND );
   
   // Case B (wrong pass in client login)
   mail_from_client = "mail@mail.com";

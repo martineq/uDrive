@@ -1,4 +1,5 @@
 #include "data_handler.h"
+#include "util/log.h"
 
 DataHandler::DataHandler(void){
   
@@ -9,7 +10,6 @@ DataHandler::~DataHandler(void){
 
 }
 
-
 /**
  * @brief Initiates the database. 
  * Returns true if the DB is successfully open. On error returns false.
@@ -17,9 +17,11 @@ DataHandler::~DataHandler(void){
  * @param  ...
  * @return bool
  */
-bool DataHandler::init(void){
+bool DataHandler::init(string database_path){
+  Log(Log::LogMsgDebug) << "Opening bd... " <<database_path;
+  if(dbh_.open(database_path)){
+     
 
-  if(dbh_.open(DB_PATH)){
     // user_id ticket
     init_id_ticket(SUFFIX_USER_ID);
     
@@ -37,41 +39,26 @@ bool DataHandler::init(void){
 }
 
 
-/**
- * @brief Adds a new user on the DB. (Used in sing up)
- *        Creates a "root" directory and user ID. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param email 
- * @param password 
- * @param name 
- * @param location 
- * @param token 
- * @param date 
- * @param user_id returns user ID
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::add_user(string email, string password, string name, string location, string token, string date, string& user_id, int& status){
 
   // Verifies if the user exists
   string temp_user_id;
   if( get_email_user_id_index(email,temp_user_id,status) ){
-    status = DH_STATUS_USER_ALREADY_EXISTS;
+    status = STATUS_USER_ALREADY_EXISTS;
     return false;
   }else{
-    if( status == DH_STATUS_DATABASE_ERROR ){ return false; }
+    if( status == STATUS_DATABASE_ERROR ){ return false; }
   }
   
   // Creates the user_id
   if( !create_id(SUFFIX_USER_ID,user_id) ){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   
   // Creates the root directory
   string id_dir_root;
-  if(!add_directory(user_id,name,date,LABEL_NO_PARENT,id_dir_root,status)) return false;
+  if(!add_directory(user_id,LABEL_ROOT,date,LABEL_NO_PARENT_DIR,id_dir_root,status)) return false;
 
   // Prepares data
   dbh_.clear_batch();
@@ -82,7 +69,8 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_LOCATION),location);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT),id_dir_root);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES),LABEL_EMPTY_STRING);  
-
+  dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),LABEL_ZERO);  
+  
   // Saves data
   if(dbh_.write_batch()){
     add_email_user_id_index(email,user_id);
@@ -90,25 +78,14 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   }else{
     // If there is an error, delete the root directory
     delete_directory(id_dir_root,status);
-    if(status==DH_STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
-    status = DH_STATUS_DATABASE_ERROR;
+    if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   
 }
 
 
-/**
- * @brief Adds a new token for a existent user (Used in logins AKA sing in). Returns the user_id on success.
- *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
- *        (Used in combination get_user_password() + add_user_token() for user login)
- * 
- * @param email ...
- * @param token ...
- * @param user_id returns user ID
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::add_user_token(string email, string token, string& user_id, int& status){
 
   // Verifies if the user exists
@@ -119,31 +96,18 @@ bool DataHandler::add_user_token(string email, string token, string& user_id, in
 }
 
 
-/**
- * @brief Adds a new directory for an user_id. ("new directory")
- *        Creates dir ID and links to their parent dir. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param user_id ...
- * @param name ...
- * @param date ...
- * @param parent_dir_id add "LABEL_NO_PARENT" as ID if the directory is the root directory.
- * @param dir_id returns directory ID
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::add_directory(string user_id, string name, string date, string parent_dir_id, string& dir_id, int& status){
   
   // Generates ID
   if( !create_id(SUFFIX_DIR_ID,dir_id) ){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   } 
 
   
   // Add dir_id to parent dir
   string directories_contained;
-  if( parent_dir_id != LABEL_NO_PARENT ){
+  if( parent_dir_id != LABEL_NO_PARENT_DIR ){
     if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),&directories_contained,status) ){ return false; }
     directories_contained.append(";"+dir_id);  
   }
@@ -157,15 +121,16 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY),parent_dir_id);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),LABEL_EMPTY_STRING);
-  
+  dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_SIZE),LABEL_ZERO);
+    
   // Writes new dir to parent dir.
-  if( parent_dir_id != LABEL_NO_PARENT ){
-  dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained);
+  if( parent_dir_id != LABEL_NO_PARENT_DIR ){
+    dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained);
   }
   
   // Saves all data
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -173,22 +138,6 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
 }
 
 
-/**
- * @brief Adds a new file for an user_id and contained to a dir_id. ("new file")
- *        Creates file ID and links to their parent dir. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h).
- * 
- * @param user_id ...
- * @param name ...
- * @param extension ...
- * @param date ...
- * @param size ...
- * @param revision revision of the file
- * @param dir_id container directory of the file
- * @param file_id returns the file_id
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::add_file(string user_id, string name, string extension, string date, string size, string revision, string parent_dir_id,
                            string& file_id, int& status){
   
@@ -198,7 +147,7 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   
   // Generates ID for the new file
   if( !create_id(SUFFIX_FILE_ID,file_id) ){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   
@@ -214,14 +163,14 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_TAGS),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_OWNER),user_id);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_SIZE),size);
-  dbh_.put_batch(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DH_DELETED_STATUS_EXISTS);
+  dbh_.put_batch(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_EXISTS);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_USERS_SHARED),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_FILE_REVISION),revision);
   dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),dir_files_contained);
   
   // Saves data to new file
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   
@@ -229,17 +178,6 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
 }
 
 
-/**
- * @brief Obtains the password from an user email. (Used in logins AKA sing in, for checking password account)
- *        Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- *        (Used in combination get_user_password() + add_user_token() for user login)
- * 
- * @param email ...
- * @param password returns the user passcode
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::get_user_password(string email, string& password, int& status){
   
   // Verifies if the user exists and obtains user_id
@@ -251,33 +189,11 @@ bool DataHandler::get_user_password(string email, string& password, int& status)
 }
 
 
-/**
- * @brief Obtains the token from an user_id.
- *        Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- *        (Used in token authentication, comparing with client token)
- * 
- * @param user_id ...
- * @param token returns the token for the user
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::get_user_token(string user_id, string& token, int& status){
   return( dbh_get(generate_user_key(user_id,SUFFIX_TOKEN),&token,status) );
 }
 
 
-/**
- * @brief Obtains user information in a user_info_st struct.
- *        Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- *        ( To get user password/token use get_user_password()/get_user_token() )
- * 
- * @param user_id ...
- * @param user_info On success retuns user information
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::get_user_info(string user_id, user_info_st& user_info, int& status){
 
   if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(user_info.email),status) ) return false;
@@ -285,21 +201,13 @@ bool DataHandler::get_user_info(string user_id, user_info_st& user_info, int& st
   if( !dbh_get(generate_user_key(user_id,SUFFIX_LOCATION),&(user_info.location),status) ) return false;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_DIR_ROOT),&(user_info.dir_root),status) ) return false;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_SHARED_FILES),&(user_info.shared_files),status) ) return false;
-
+  if( !dbh_get(generate_user_key(user_id,SUFFIX_QUOTA_USED),&(user_info.user_quota_used),status) ) return false;
+  
+  
   return true;
 }
 
 
-/**
- * @brief Obtains directory information in a dir_info_st struct.
- *        Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param dir_id ...
- * @param directory_info On success retuns directory information
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::get_directory_info(string dir_id, dir_info_st& dir_info, int& status){
 
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_NAME),&(dir_info.name),status) ) return false;
@@ -309,21 +217,12 @@ bool DataHandler::get_directory_info(string dir_id, dir_info_st& dir_info, int& 
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY),&(dir_info.parent_directory),status) ) return false;
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),&(dir_info.files_contained),status) ) return false;
   if( !dbh_get(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),&(dir_info.directories_contained),status) ) return false;
+  if( !dbh_get(generate_dir_key(dir_id,SUFFIX_SIZE),&(dir_info.size),status) ) return false;
 
   return true;
 }
 
 
-/**
- * @brief Obtains file information in a file_info_st struct.
- *        Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param file_id ...
- * @param file_info On success retuns file information
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& status){
   
   if( !dbh_get(generate_file_key(file_id,SUFFIX_NAME),&(file_info.name),status) ) return false;  
@@ -341,15 +240,6 @@ bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& st
 }
 
 
-/**
- * @brief Deletes all information for the user ID and their Index entry. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- *        (Warning: all info will be deleted without any check for files or directories)
- * 
- * @param user_id ...
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::delete_user(string user_id, int& status){
 
   string email;
@@ -363,12 +253,12 @@ bool DataHandler::delete_user(string user_id, int& status){
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_LOCATION));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES));
-  dbh_.erase_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES));
+  dbh_.erase_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED));
   dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email);
-  
+   
   // Saves data
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -377,15 +267,6 @@ bool DataHandler::delete_user(string user_id, int& status){
 }
 
 
-/**
- * @brief Deletes all information for the dir ID. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- *        (Warning: all info will be deleted without any check for files or directories)
- * 
- * @param dir_id ...
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::delete_directory(string dir_id, int& status){
 
   dbh_.clear_batch();
@@ -399,7 +280,7 @@ bool DataHandler::delete_directory(string dir_id, int& status){
   
   // Erases data
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   
@@ -407,45 +288,37 @@ bool DataHandler::delete_directory(string dir_id, int& status){
 }
 
 
-/**
- * @brief Sets deleted status flag to "DH_DELETED_STATUS_ERASED" (AKA deleted). Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param file_id ...
- * @param status returns DataHandler status ONLY if @return==false
- * @return bool
- */
 bool DataHandler::delete_file(string file_id, int& status){
-  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DH_DELETED_STATUS_ERASED) );  
+  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_ERASED) );  
   return true;
 }
 
 
-/**
- * @brief Modifies user information for an user_id. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param user_id ...
- * @param email ...
- * @param password ...
- * @param name ...
- * @param location ...
- * @param files_shared ID of the files shared (from other owners)
- * @param status status returns DataHandler status ONLY if @return==false
- * @return bool
- */
-bool DataHandler::modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status){
+bool DataHandler::modify_user_password(string user_id, string password, int& status){
+  return( dbh_.put(generate_user_key(user_id,SUFFIX_PASSWORD),password) );
+}
+
+
+bool DataHandler::modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, int& status){
+  
+  string old_email;
+  if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(old_email),status) ) return false;
   
   dbh_.clear_batch();
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_EMAIL),email);
-  dbh_.put_batch(generate_user_key(user_id,SUFFIX_PASSWORD),password);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_NAME),name);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_LOCATION),location);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES),files_shared);
-  dbh_.put_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,user_id);  // Refresh index email-user_id
+  dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),quota);
+  
+  // Update index (if necessary)
+  if( email.compare(old_email)!=0 ){
+    dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+old_email);
+    dbh_.put_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,user_id);  // Refresh index email-user_id
+  }
   
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -453,26 +326,16 @@ bool DataHandler::modify_user_info(string user_id, string email, string password
 }
 
 
-/**
- * @brief Modifies directory information for an dir_id. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param dir_id ...
- * @param name ...
- * @param date ...
- * @param tags ...
- * @param status status returns DataHandler status ONLY if @return==false
- * @return bool
- */
-bool DataHandler::modify_directory_info(string dir_id, string name, string date, string tags, int& status){
+bool DataHandler::modify_directory_info(string dir_id, string name, string date, string tags, string size, int& status){
   
   dbh_.clear_batch();
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_NAME),name);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_DATE_LAST_MOD),date);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_TAGS),tags);
+  dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_SIZE),size);
   
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -480,20 +343,6 @@ bool DataHandler::modify_directory_info(string dir_id, string name, string date,
 }
 
 
-/**
- * @brief Modifies file information for an file_id. Returns true on success.
- *        On error returns false and a DataHandler status (see db_constants.h)
- * 
- * @param file_id ...
- * @param name ...
- * @param extension ...
- * @param date ...
- * @param tags ...
- * @param users_shared user_id's of user that have shared de file
- * @param user_id_modifier ID of the user that modifies the info
- * @param status ...
- * @return bool
- */
 bool DataHandler::modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status){
 
   dbh_.clear_batch();
@@ -506,7 +355,7 @@ bool DataHandler::modify_file_info(string file_id, string name, string extension
 
   // Saves data to file
   if(!dbh_.write_batch()){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -654,11 +503,11 @@ bool DataHandler::dbh_get(string key, string* value, int& status){
   
   if( dbh_.get(key,value,found) ){
     if(!found){
-      status = DH_STATUS_KEY_NOT_FOUND;
+      status = STATUS_KEY_NOT_FOUND;
       return false;
     }
   }else{
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
 
@@ -677,7 +526,7 @@ bool DataHandler::dbh_get(string key, string* value, int& status){
  */
 bool DataHandler::dbh_put(string key, string value, int& status){
   if( !dbh_.put(key,value) ){
-    status = DH_STATUS_DATABASE_ERROR;
+    status = STATUS_DATABASE_ERROR;
     return false;
   }
   return true;

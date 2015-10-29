@@ -18,8 +18,44 @@
     <string name="loading">Cargando...</string>
     <string name="error_obtaining_files">Error obteniendo archivos</string>
     <string name="error_mail_pass">Correo electrónico o contraseña incorrectos</string>
-    <string name="error_network">Sin conexión a Internet</string>
+    <string name="error_network">Sin conexión a Internet o parámetros de conexión incorrectos.</string>
     <string name="default_error">Error inesperado</string>
     <string name="error_auth">Error de autenticación</string>
+    <string name="error_port_number">Error: El puerto debe ser mayor a 1024 y menor a 49151</string>
+    <string name="error_empty">Ingrese correo electrónico y contraseña</string>
+
+    <!-- Strings related to Settings -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_item_connection">Parámetros de conexión</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_cancel">Cancelar</string>
+
+    <!-- Sign up strings -->
+    <string name="title_activity_sign_up">Registrarse en uDrive</string>
+    <string name="signup_firstname">Nombre</string>
+    <string name="signup_lastname">Apelido</string>
+    <string name="signup_button">Crear cuenta</string>
+    <string name="error_mail_exists">El correo electrónico ingresado ya existe. Por favor ingrese otro.</string>
+    <string name="signup_ok">¡La cuenta se creó exitosamente!</string>
+    <string name="error_mail">Debe ingresar el correo electrónico</string>
+    <string name="error_firstname">Debe ingresar el nombre</string>
+    <string name="error_lastname">Debe ingresar el apellido</string>
+    <string name="error_password">Debe ingresar una contraseña</string>
+
+    <!-- String related to Add file-->
+    <string name="action_upload_file">Subir archivo</string>
+
+    <!-- String related to Add folder-->
+    <string name="new_folder_ok">OK</string>
+    <string name="new_folder_cancel">Cancelar</string>
+    <string name="action_add_folder">Crear carpeta</string>
+    <string name="folder_name">Nombre de carpeta: </string>
+
+    <!-- Strings related to User Profile Activity -->
+    <string name="userprofile_title">Mi perfil</string>
+
+    <!-- User profile -->
+    <string name="screen_name">Modificar nombre y apellido</string>
+    <string name="save_changes">Guardar cambios</string>
 
 </resources>

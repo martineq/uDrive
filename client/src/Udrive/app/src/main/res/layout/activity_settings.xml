@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/settingsView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:dividerHeight="0dp">
+    </ListView>
+
+    <EditText
+        android:id="@+id/ip_field"
+        android:hint="IP"
+        android:layout_height="10dp"
+        android:layout_width="100dp">
+    </EditText>
+
+    <EditText
+        android:id="@+id/port_field"
+        android:hint="Port"
+        android:layout_height="10dp"
+        android:layout_width="100dp">
+    </EditText>
+
+</LinearLayout>

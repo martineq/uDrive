@@ -16,11 +16,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.NONE'
-            buildConfigField "String", "BASE_URL", '"http://190.7.56.249:8055"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.105:8080"'
+            //'"http://190.7.56.249:8055"'
         }
         debug {
             buildConfigField "retrofit.RestAdapter.LogLevel", "RETROFIT_LOGGING", 'retrofit.RestAdapter.LogLevel.FULL'
-            buildConfigField "String", "BASE_URL", /*'"http://192.168.1.105:8080"'*/ '"http://190.7.56.249:8055"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.105:8080"'
+            //'"http://190.7.56.249:8055"'
         }
     }
 }
@@ -42,7 +44,21 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
 
     // lib to use sliding up panel layouts
+
+    compile 'com.android.support:appcompat-v7:23.1.0'
+
+
     compile 'com.sothree.slidinguppanel:library:3.1.1'
+    compile 'com.android.support:design:23.1.0'
+
+    // lib to use file picker
+    compile 'com.nononsenseapps:filepicker:2.4.2'
+
 }
+
+
+
+
+
 
 

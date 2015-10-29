@@ -1,8 +1,8 @@
 package com.fiuba.app.udrive.model;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
+/**
+ * Represents a File in the app context with all its required attributes
+ */
 public class File {
 
     private Integer id;
@@ -61,6 +61,10 @@ public class File {
         return !isDir();
     }
 
+    /**
+     * Checks the type of the entity
+     * @return true if it is a directory, false otherwise.
+     */
     public boolean isDir(){
         return this.getType() == 'd' ? true : false;
     }
