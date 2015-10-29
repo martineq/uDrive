@@ -99,7 +99,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 					
 					if (!enc){
 						Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
-						conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+						conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 						conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
 											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
