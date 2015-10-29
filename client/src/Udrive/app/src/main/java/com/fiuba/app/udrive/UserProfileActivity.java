@@ -32,7 +32,7 @@ public class UserProfileActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.name)).setText(
                 Util.capitalize(mUserProfile.getFirstname()) + " " + Util.capitalize(
                         mUserProfile.getLastname()));
-
+        ((TextView)findViewById(R.id.email)).setText(mUserProfile.getEmail());
         ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
         progressbar.setProgress(Integer.parseInt(Util.extractDigits(mUserProfile.getQuotaUsagePercent())));
     }
