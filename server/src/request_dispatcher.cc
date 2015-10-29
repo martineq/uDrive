@@ -1,7 +1,9 @@
 #include "request_dispatcher.h"
 
-RequestDispatcher::RequestDispatcher(){
+RequestDispatcher* RequestDispatcher::myrd = NULL;
 
+RequestDispatcher::RequestDispatcher(){
+  if (!init("db_test",9999)) Log(Log::LogMsgError) << "DB init fail";
 }
 
 

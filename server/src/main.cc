@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 		Log(Log::LogMsgInfo) << "Bindip: " << config.bindip;
 		Log(Log::LogMsgInfo) << "Loglevel: " << config.loglevel;
 		Log(Log::LogMsgInfo) << "Logfile: " << config.logfile;
-		Log(Log::LogMsgInfo) << "Dbpath: " << config.dbpath;
+		//Log(Log::LogMsgInfo) << "Dbpath: " << config.dbpath;
 
 		//close signals
 		signal(SIGHUP, sig_handler);
@@ -63,20 +63,10 @@ int main(int argc, char** argv) {
 		//Init DB
 		Log(Log::LogMsgDebug) << "Initing BD";
 
-		RequestDispatcher rd;
-  		size_t max_quota = 9999;
- 		bool status_db=rd.init(config.dbpath,max_quota);
- 		
-
-  		if (!status_db) {
-  			Log(Log::LogMsgError) << "Init database fail";
-  			return 0;
-  		}else Log(Log::LogMsgDebug) << "Init BD it's ok";
-
+			
 		// Init web server
-		WEBServer* server=new WEBServer(&rd);
+		WEBServer* server=new WEBServer();
 		server->setPort(config.bindport);
-		//server.setRequestDispatcher(&rd);
 		server->run();
 		Log(Log::LogMsgInfo) << "Server started";
 		while(Corriendo)

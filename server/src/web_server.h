@@ -11,6 +11,7 @@ using std::string;
 #include "rest/token_node.h"
 #include "rest/info_node.h"
 #include "rest/receive_file_node.h"
+#include "rest/signup_node.h"
 #include "request_dispatcher.h"
 
 extern "C" {
@@ -20,7 +21,7 @@ extern "C" {
 class WEBServer {
 	public:
 
-		WEBServer(RequestDispatcher* rdis);
+		WEBServer();
 		~WEBServer();
 
 		const char* setPort(string port);
@@ -34,8 +35,7 @@ class WEBServer {
 		static void* threadHandler(void*);
 		static int handlerCaller(struct mg_connection*, enum mg_event);
 		int running;
-	private:
-		static RequestDispatcher* rd;
+	
 		
 };
 

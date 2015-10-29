@@ -81,6 +81,8 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
 
 	}
-
+}
+void ReceiveFileNode::setRequestDispatcher(RequestDispatcher* rd){
+	this->rd=rd;
 }
 

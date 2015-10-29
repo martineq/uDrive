@@ -26,10 +26,19 @@ class RequestDispatcher{
     bool decrease_dir_size_recursive(string dir_id, string size_decreased, int& status);
     bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
     vector<string> split_string(string string_to_split, char delimiter);
+    RequestDispatcher();
+    
+    static RequestDispatcher* myrd;
     
   public:
+
+    static RequestDispatcher *getInstance(){
+        if (myrd == NULL) myrd= new RequestDispatcher();
+        return myrd;
+    }
     
-    struct info_element_st {
+    ~RequestDispatcher();   
+      struct info_element_st {
       size_t id;
       string name;
       size_t size;
@@ -39,9 +48,6 @@ class RequestDispatcher{
       string lastModDate;
     } ;
     
-    RequestDispatcher();
-    ~RequestDispatcher();
-
     bool init(string database_path,size_t max_user_quota);
     
     /**

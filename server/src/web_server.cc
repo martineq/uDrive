@@ -2,8 +2,7 @@
 #include <string.h>
 #include <sstream>
 
-WEBServer::WEBServer(RequestDispatcher* rdis){
-		WEBServer::rd = rdis;
+WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
 }
 
@@ -41,18 +40,26 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
 	  TokenNode* tn=new TokenNode();
+	  tn->setRequestDispatcher(RequestDispatcher::getInstance());
 	  tn->execute(mgConnection,conn->uri);
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
  	  InfoNode* in=new InfoNode();
- 	  in->setRequestDispatcher(rd);
+ 	  in->setRequestDispatcher(RequestDispatcher::getInstance());
  	  in->execute(mgConnection,conn->uri);
      return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
- 	  ReceiveFileNode* rfn=new ReceiveFileNode();	  
+ 	  ReceiveFileNode* rfn=new ReceiveFileNode();
+ 	  rfn->setRequestDispatcher(RequestDispatcher::getInstance()); 
  	  rfn->execute(mgConnection,conn->uri);
+     return MG_TRUE; 
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
+ 	  SignupNode* sn=new SignupNode();
+ 	  sn->setRequestDispatcher(RequestDispatcher::getInstance());
+ 	  sn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
      
   } else {
