@@ -38,10 +38,11 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
 		string userId=lista[3];
 		dirId=lista[5];
-		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
+		string token=conn.getAuthorization();
+		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
 
 		int status;
-		string token=conn.getAuthorization();
+		
 		DataHandler::dir_info_st dirInfo;
 		if (!this->rd->get_directory_info(userId, token, dirId, dirInfo, status)){
 			Log(Log::LogMsgDebug) << "[" << "Fail get get_directory_info" << "]" << "Status: " << status;
