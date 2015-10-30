@@ -30,7 +30,7 @@ notifications:
 install:
   - cd server
   - chmod 777 server_install_v0.2.sh
-  - ./server_install_v0.2.sh -travis
+  - sudo ./server_install_v0.2.sh -travis
   - cd ..  
 
 # Inicio el script para correr las pruebas y enviar los datos de code coverage a coveralls.io, a partir de CMake.
