@@ -8,19 +8,22 @@
 ##  ./server_install_v0.2.sh                    ##
 ##################################################
 
-# Limpieza de librerías debido a posibles versiones conflictivas
-echo "Búsqueda y limpieza de librerías RocksDB, jsoncpp, yaml-cpp y gtest existentes..."
-find / -type f -name "librocksdb.a" -exec rm --force {} \;
-find / -type f -name "librocksdb.so" -exec rm --force {} \;
-find / -type f -name "libjsoncpp.a" -exec rm --force {} \;
-find / -type f -name "libjsoncpp.so" -exec rm --force {} \;
-find / -type f -name "libyaml-cpp.a" -exec rm --force {} \;
-find / -type f -name "libyaml-cpp.so" -exec rm --force {} \;
-find / -type f -name "libgtest.a" -exec rm --force {} \;
-find / -type f -name "libgtest_main.a" -exec rm --force {} \;
-find / -type f -name "libgtest.so" -exec rm --force {} \;
-find / -type f -name "libgtest_main.so" -exec rm --force {} \;
-echo "Fin de búsqueda..."
+# Caso sin parámetros: Limpieza de librerías debido a posibles versiones anteriores conflictivas
+if [ "$#" -eq 0 ]
+then
+	echo "Búsqueda y limpieza de librerías RocksDB, jsoncpp, yaml-cpp y gtest existentes..."
+	find / -type f -name "librocksdb.a" -exec rm --force {} \;
+	find / -type f -name "librocksdb.so" -exec rm --force {} \;
+	find / -type f -name "libjsoncpp.a" -exec rm --force {} \;
+	find / -type f -name "libjsoncpp.so" -exec rm --force {} \;
+	find / -type f -name "libyaml-cpp.a" -exec rm --force {} \;
+	find / -type f -name "libyaml-cpp.so" -exec rm --force {} \;
+	find / -type f -name "libgtest.a" -exec rm --force {} \;
+	find / -type f -name "libgtest_main.a" -exec rm --force {} \;
+	find / -type f -name "libgtest.so" -exec rm --force {} \;
+	find / -type f -name "libgtest_main.so" -exec rm --force {} \;
+	echo "Fin de búsqueda..."
+fi
 
 # Instalación de dependencias y herramientas
 echo "Instalación de dependencias..."
@@ -89,7 +92,7 @@ cd .. && \
 rm -rf temp_install
 echo "Librerías instaladas en /usr/lib/"
 
-# Uso sin parámetros: Bajo el código del repositorio, compilo y creo el archivo config.yml por defecto
+# Caso sin parámetros: Bajo el código del repositorio, compilo y creo el archivo config.yml por defecto
 if [ "$#" -eq 0 ]
 then
   echo "Obtención de código fuente..."
