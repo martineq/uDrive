@@ -101,10 +101,10 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
 //   + Get userInfo    IN: userId/token                           OUT: name/email
   
   // Init database. ¡Warning!: This test assumes an empty Database
-  RequestDispatcher rd;
+  RequestDispatcher* rd=RequestDispatcher::getInstance();
   string db_path = "/tmp/testdb_checkpoint2";
   size_t max_quota = 9999;
-  EXPECT_TRUE(rd.init(db_path,max_quota));
+  EXPECT_TRUE(rd->init(db_path,max_quota));
   
   
   // + Post signup     IN: name/email/pass/token             OUT: userId  
@@ -113,7 +113,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   string location="152.08;121.55"; string generated_token="1029384756"; string date="27/10/2015";
   // Parameters OUT
   string user_id="0"; int status=0;
-  bool ok = rd.sign_up(email,password,name,location,generated_token,date,user_id,status);
+  bool ok = rd->sign_up(email,password,name,location,generated_token,date,user_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(user_id!="0");
   
@@ -123,7 +123,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   email="mail@mail.com"; password="1234"; generated_token="8475610293";
   // Parameters OUT
   string user_id_readed="0"; status=0;
-  ok = rd.log_in(email,password,generated_token,user_id_readed,status);
+  ok = rd->log_in(email,password,generated_token,user_id_readed,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(user_id,user_id_readed);
 
@@ -141,7 +141,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   // Parameters OUT
   string file_id = "0";
   status = 0;
-  ok = rd.new_file(user_id,token,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file_id,status);
+  ok = rd->new_file(user_id,token,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(file_id!="0");
   
@@ -156,7 +156,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   // Parameters OUT
   string dir_id = "0";
   status = 0;
-  ok = rd.new_directory(user_id,token,dir_name,date,parent_dir_id,dir_id,status);
+  ok = rd->new_directory(user_id,token,dir_name,date,parent_dir_id,dir_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(dir_id!="0");
 
@@ -174,7 +174,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   // Parameters OUT
   string file_id_2 = "0";
   status = 0;
-  ok = rd.new_file(user_id,token_2,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
+  ok = rd->new_file(user_id,token_2,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(file_id_2!="0");
   
@@ -187,7 +187,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   // Parameters OUT
   DataHandler::dir_info_st dir_info;
   status = 0;
-  ok = rd.get_directory_info(user_id,token,dir_id,dir_info,status);
+  ok = rd->get_directory_info(user_id,token,dir_id,dir_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
@@ -201,7 +201,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
 
   // ** For reding information of sub-directories and files contained in this directory **
   vector<RequestDispatcher::info_element_st> v_dir_elem_info;
-  rd.get_directory_element_info_from_dir_info(user_id,token,dir_info,v_dir_elem_info,status);
+  rd->get_directory_element_info_from_dir_info(user_id,token,dir_info,v_dir_elem_info,status);
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
@@ -220,7 +220,7 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   // Parameters OUT  
   DataHandler::user_info_st user_info;
   status = 0;
-  ok = rd.get_user_info(user_id,token,user_info,status);
+  ok = rd->get_user_info(user_id,token,user_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   
   EXPECT_EQ(user_info.dir_root,"1");                 // Internal ID of user root dir
