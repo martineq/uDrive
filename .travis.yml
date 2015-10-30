@@ -1,8 +1,20 @@
-# Necesito SU para el Docker
+############################################
+##  .travis.yml para el uso del Servidor  ##
+##  Basado en Ubuntu 14.04                ##
+############################################
+
+# Habilito uso de SU
 sudo: required
+
+# Habilito uso de Trusty beta (Ubuntu 14.04)
+dist: trusty
 
 # Selección del lenguaje: C++
 language: cpp
+
+# Seleeción de compiladores
+compiler:
+  - gcc
 
 # Solo hacer build sobre los branches elegidos
 branches:
@@ -14,10 +26,18 @@ branches:
 notifications:
   slack: tallerdeprogramacion2:HL5boJMM5KdLnwsD0DFMMxNx
 
-# Agrego el uso del servicio de Docker
-services:
-  - docker
+# Instalo todas las dependencias. (Teniendo en cuenta el uso de Trusty beta)
+install:
+  - cd server
+  - chmod 777 server_install_v0.2.sh
+  - ./server_install_v0.2.sh -travis
+  - cd ..  
 
-# Inicio el script para correr las pruebas y enviar los datos a coveralls.io, a partir de CMake. (Todo dentro de la imagen Docker)
+# Inicio el script para correr las pruebas y enviar los datos de code coverage a coveralls.io, a partir de CMake.
 script: 
-  - docker run martineq/tp7552:latest /bin/sh -c "cd server && mkdir build && cd build && sudo cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug .. && sudo make && sudo make coveralls"
+  - cd server
+  - mkdir build 
+  - cd build
+  - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
+  - make
+  - make coveralls
