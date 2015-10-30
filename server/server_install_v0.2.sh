@@ -1,26 +1,29 @@
 #!/bin/bash
 
-########################################################################
-## Script de instalación del server SIN Docker                        ##
-## Sistema operativo utilizado: Ubuntu 14.04 LTS                      ##
-## Para correr este script, ejecutar:                                 ##  
-## chmod 777 server_install_v0.2.sh                                   ##
-## ./server_install_v0.2.sh                                           ##
-########################################################################
+##################################################
+##  Script de instalación del server            ##
+##  Sistema operativo basado: Ubuntu 14.04 LTS  ##
+##  Para correr este script, ejecutar:          ##  
+##  chmod 777 server_install_v0.2.sh            ##
+##  ./server_install_v0.2.sh                    ##
+##################################################
 
-# Limpieza de librerías debido a posibles versiones conflictivas
-echo "Búsqueda y limpieza de librerías RocksDB, jsoncpp, yaml-cpp y gtest existentes..."
-find / -type f -name "librocksdb.a" -exec rm -i {} \;
-find / -type f -name "librocksdb.so" -exec rm -i {} \;
-find / -type f -name "libjsoncpp.a" -exec rm -i {} \;
-find / -type f -name "libjsoncpp.so" -exec rm -i {} \;
-find / -type f -name "libyaml-cpp.a" -exec rm -i {} \;
-find / -type f -name "libyaml-cpp.so" -exec rm -i {} \;
-find / -type f -name "libgtest.a" -exec rm -i {} \;
-find / -type f -name "libgtest_main.a" -exec rm -i {} \;
-find / -type f -name "libgtest.so" -exec rm -i {} \;
-find / -type f -name "libgtest_main.so" -exec rm -i {} \;
-echo "Fin de búsqueda..."
+# Caso sin parámetros: Limpieza de librerías debido a posibles versiones anteriores conflictivas
+if [ "$#" -eq 0 ]
+then
+	echo "Búsqueda y limpieza de librerías RocksDB, jsoncpp, yaml-cpp y gtest existentes..."
+	find / -type f -name "librocksdb.a" -exec rm --force {} \;
+	find / -type f -name "librocksdb.so" -exec rm --force {} \;
+	find / -type f -name "libjsoncpp.a" -exec rm --force {} \;
+	find / -type f -name "libjsoncpp.so" -exec rm --force {} \;
+	find / -type f -name "libyaml-cpp.a" -exec rm --force {} \;
+	find / -type f -name "libyaml-cpp.so" -exec rm --force {} \;
+	find / -type f -name "libgtest.a" -exec rm --force {} \;
+	find / -type f -name "libgtest_main.a" -exec rm --force {} \;
+	find / -type f -name "libgtest.so" -exec rm --force {} \;
+	find / -type f -name "libgtest_main.so" -exec rm --force {} \;
+	echo "Fin de búsqueda..."
+fi
 
 # Instalación de dependencias y herramientas
 echo "Instalación de dependencias..."
@@ -31,15 +34,20 @@ git \
 cmake \
 wget \
 unzip \
-curl \
+valgrind \
+tree \
+vim \
+nano \
 libsnappy-dev \
 zlib1g-dev \
 libbz2-dev \
-libgflags-dev
+libgflags-dev \
+tar \
+curl \
+lcov
 
 # Instalación de librerías
 echo "Instalación de librerías RocksDB, jsoncpp, yaml-cpp y gtest..."
-apt-get install -y wget
 mkdir temp_install && \
 cd temp_install && \
 wget https://github.com/facebook/rocksdb/archive/v3.13.1.zip && \
@@ -84,13 +92,16 @@ cd .. && \
 rm -rf temp_install
 echo "Librerías instaladas en /usr/lib/"
 
-# Bajo el repositorio, compilo y creo el archivo config.yml por defecto
-echo "Obtención de código fuente..."
-git clone --quiet --branch v0.2 --depth 1  https://github.com/martineq/tp7552.git tp7552
+# Caso sin parámetros: Bajo el código del repositorio, compilo y creo el archivo config.yml por defecto
+if [ "$#" -eq 0 ]
+then
+  echo "Obtención de código fuente..."
+  git clone --quiet --branch v0.2 --depth 1  https://github.com/martineq/tp7552.git tp7552
 
-echo "Compilación del servidor..."
-cd tp7552/server && mkdir build && cd build
-cmake -DEXE=SI .. && make
+  echo "Compilación del servidor..."
+  cd tp7552/server && mkdir build && cd build
+  cmake -DEXE=SI .. && make
 
-echo "Creación de archivo de configuración..."
-printf '# UDrive configuration file server\n## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0\nbindip: 0.0.0.0\n\n## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080\nbindport: 8080\n\n## loglevel: we want to see server. debug, warning, info, error. Default: info\nloglevel: debug\n\n## logfile: destination to send the log records. Default: "stdout"\n#logfile: messages.log\n\n## path of database\ndbpath: db_checkpoint2\n ' > config.yml
+  echo "Creación de archivo de configuración..."
+  printf '# UDrive configuration file server\n## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0\nbindip: 0.0.0.0\n\n## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080\nbindport: 8080\n\n## loglevel: we want to see server. debug, warning, info, error. Default: info\nloglevel: debug\n\n## logfile: destination to send the log records. Default: "stdout"\n#logfile: messages.log\n\n## path of database\ndbpath: db_checkpoint2\n ' > config.yml
+fi
