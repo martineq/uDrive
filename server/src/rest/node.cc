@@ -35,5 +35,5 @@ void Node::executeDelete(MgConnectionW& conn, const char* url){
 void Node::methodNotAllowed(MgConnectionW& conn, const char* url){
 	conn.sendStatus(MgConnectionW::STATUS_CODE_METHOD_NOT_ALLOWED);
 	conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"message\": \" Method: '%s' en '%s' no manejado\", \"code\": 404, \"error_user_msg\": \"Ups... No se encontro!\" }", conn->request_method, conn->uri);
+	conn.printfData("{ \"message\":\"Method: '%s' in '%s' not allowed\"}", conn->request_method, conn->uri);
 }

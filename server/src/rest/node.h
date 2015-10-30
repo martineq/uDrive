@@ -7,9 +7,8 @@
 class Node {
 	public:
 		Node(const char* str);
-		bool handle(MgConnectionW& conn, const char* url);
-
-		/** Chequea el metodo (METHOD HTTP) de la connecion y ejecuta el metodo correspondiente
+		
+		/** This method execute this node
 					 */
 		void execute(MgConnectionW& conn, const char* url);
 
