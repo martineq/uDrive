@@ -3,7 +3,7 @@
 
 ***
 
-## :information_source: Información del proyecto
+## :information_source: Udrive - Información del proyecto
 [:link: Página web del proyecto](http://martineq.github.io/tp7552/)
 
 [:notebook: Wiki del proyecto](https://github.com/martineq/tp7552/wiki)
@@ -16,14 +16,15 @@
 
 ### Instalación y ejecución
 
-Descargar el script de instalación:
+Descargar la última versión del script de instalación:
+* [:arrow_down: Versión 0.2 :arrow_down:](https://raw.githubusercontent.com/martineq/tp7552/develop/server/server_install_v0.2.sh)   ( :ballot_box_with_check: Última versión ) ( :warning: Sistema Operativo soportado: Ubuntu 14.04 LTS )
 * [:arrow_down: Versión 0.1 :arrow_down:](https://raw.githubusercontent.com/martineq/tp7552/master/server/server_install_v0.1.sh)   ( :warning: Sistema Operativo soportado: Ubuntu 14.04 LTS )
 
 Para la instalación:
 
-`chmod 777 server_install_v0.1.sh`
+`chmod 777 server_install_v0.2.sh`
 
-`./server_install_v0.1.sh`
+`sudo ./server_install_v0.2.sh`
 
 Luego ejecutar el servidor con:
 
@@ -35,7 +36,11 @@ Luego ejecutar el servidor con:
 
 ### Instalación y ejecución
 
-Descargar el apk de instalación (Android):
+Descargar el archivo apk de instalación (Android) correspondiente a la misma versión del servidor:
+<!---
+TODO: Actualizar el link para la versión 0.2 del script
+-->
+* [:arrow_down: Versión 0.2 :arrow_down:](https://github.com/martineq/tp7552/raw/v0.2/client/src/Udrive/app/app-release.apk) ( :ballot_box_with_check: Última versión )
 * [:arrow_down: Versión 0.1 :arrow_down:](https://github.com/martineq/tp7552/raw/344e1550a2eab0febc324910d4edaf2256522ac9/client/src/Udrive/app/app-release.apk) ( :warning: Esta versión se conecta a un servidor remoto de testeo )
 
 

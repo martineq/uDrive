@@ -102,10 +102,6 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   
   // Init database. ¡Warning!: This test assumes an empty Database
   RequestDispatcher* rd=RequestDispatcher::getInstance();
-  string db_path = "/tmp/testdb_checkpoint2";
-  size_t max_quota = 9999;
-  EXPECT_TRUE(rd->init(db_path,max_quota));
-  
   
   // + Post signup     IN: name/email/pass/token             OUT: userId  
   // Parameters IN
