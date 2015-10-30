@@ -3,7 +3,7 @@
 
 ***
 
-## :information_source: Información del proyecto
+## :information_source: Udrive - Información del proyecto
 [:link: Página web del proyecto](http://martineq.github.io/tp7552/)
 
 [:notebook: Wiki del proyecto](https://github.com/martineq/tp7552/wiki)
