@@ -24,7 +24,7 @@ Para la instalación:
 
 `chmod 777 server_install_v0.2.sh`
 
-`./server_install_v0.2.sh`
+`sudo ./server_install_v0.2.sh`
 
 Luego ejecutar el servidor con:
 
