@@ -54,4 +54,4 @@ TODO: Actualizar el link para la versión 0.2 del script
 [![Build Status](https://travis-ci.org/martineq/tp7552.svg?branch=develop)](https://travis-ci.org/martineq/tp7552)
 
 ### Coveralls
-[![Coverage Status](https://coveralls.io/repos/martineq/tp7552/badge.svg?branch=HEAD&service=github)](https://coveralls.io/github/martineq/tp7552?branch=HEAD)
+[![Coverage Status](https://coveralls.io/repos/martineq/tp7552/badge.svg?branch=develop&service=github)](https://coveralls.io/github/martineq/tp7552?branch=develop)
