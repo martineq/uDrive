@@ -1,12 +1,18 @@
 #include "request_dispatcher.h"
 
-RequestDispatcher* RequestDispatcher::myrd = NULL;
+RequestDispatcher* RequestDispatcher::myrd_ = nullptr;
 
-RequestDispatcher::RequestDispatcher(){
-  if (!init("db_test",9999)) Log(Log::LogMsgError) << "DB init fail";
+
+RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota){
+  
+  if( !init_ok_){
+    init_ok_ = init(database_path,max_user_quota);
+    if (!init_ok_){ Log(Log::LogMsgError) << "DB init fail"; }
+  }
+
 }
-
-
+ 
+ 
 RequestDispatcher::~RequestDispatcher(){
 
 }
@@ -14,7 +20,6 @@ RequestDispatcher::~RequestDispatcher(){
 
 bool RequestDispatcher::init(string database_path, size_t max_user_quota){
   max_user_quota_ = max_user_quota;
-  
   return dh_.init(database_path);
 }
 
@@ -372,4 +377,9 @@ bool RequestDispatcher::get_root_dir_id(string user_id, string& root_dir_id, int
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
   root_dir_id = user_info.dir_root;
   return true;
+}
+
+
+bool RequestDispatcher::db_is_initiated(){
+  return init_ok_;
 }
