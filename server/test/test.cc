@@ -251,7 +251,6 @@ TEST(DataHandlerTest, AlwaysOk) {
   cout << "...and calculated from sub directories contained: "  << dir_info_jack.directories_contained << endl;
   cout << "'type': d" << endl;
 
-
 }
 
 
@@ -309,14 +308,14 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 
 TEST(RequestDispatcherTest, Checkpoint2Routine) {
 
-//   Checkpoint #2  
-//   + Post signup     IN: name/email/pass/token                  OUT: userId
-//   + Get token       IN: email/pass                             OUT: userId/email/token
-//   + Post file       IN: binStream/filename/userId/dirId/token  OUT: fileId
-//   + Post dir        IN: dirname/userId/dirId/token             OUT: dirId
-//   + Get dirInfo     IN: userId/dirId/token                     OUT: listaDeArchivos/listaDeSubcarpetas
-//   + Get userInfo    IN: userId/token                           OUT: name/email
-  
+  //Checkpoint #2  
+  // + Post signup     IN: name/email/pass/token                  OUT: userId
+  // + Get token       IN: email/pass                             OUT: userId/email/token
+  // + Post file       IN: binStream/filename/userId/dirId/token  OUT: fileId
+  // + Post dir        IN: dirname/userId/dirId/token             OUT: dirId
+  // + Get dirInfo     IN: userId/dirId/token                     OUT: listaDeArchivos/listaDeSubcarpetas
+  // + Get userInfo    IN: userId/token                           OUT: name/email
+
   // Init database. ¡Warning!: This test assumes an empty Database
   string db_path = "/tmp/testdb_checkpoint2";
   size_t max_quota = 9999;
@@ -424,8 +423,9 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
     cout << "Element info in JSON Format: " ;
     printf("[{ \"id\": \"%lu\",  \"name\": \"%s\","
-                                                                                                                "\"size\": \"%lu\" ,  \"type\": \"%s\",  \"cantItems\": \"%lu\", "
-                                                                                                                "\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]",ei.id,ei.name.c_str(),ei.size,ei.type.c_str(),ei.number_of_items,ei.shared.c_str(),ei.lastModDate.c_str());
+           "\"size\": \"%lu\" ,  \"type\": \"%s\",  \"cantItems\": \"%lu\", "
+           "\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]",
+           ei.id,ei.name.c_str(),ei.size,ei.type.c_str(),ei.number_of_items,ei.shared.c_str(),ei.lastModDate.c_str());
     cout << endl;
 
   }
