@@ -1,5 +1,5 @@
 #include "node.h"
-#include <string>
+
 #include <cstring>
 
 using std::string;
@@ -33,7 +33,11 @@ void Node::executeDelete(MgConnectionW& conn, const char* url){
 }
 
 void Node::methodNotAllowed(MgConnectionW& conn, const char* url){
+
+	Log(Log::LogMsgDebug) << "Method not allowed, method: " << conn->request_method << ", uri: "<< conn->uri;
 	conn.sendStatus(MgConnectionW::STATUS_CODE_METHOD_NOT_ALLOWED);
 	conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 	conn.printfData("{ \"message\":\"Method: '%s' in '%s' not allowed\"}", conn->request_method, conn->uri);
 }
+
+std::string Node::handlerError(int status){};

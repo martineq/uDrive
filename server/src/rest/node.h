@@ -2,33 +2,43 @@
 #define __NODE_H__
 
 #include "../mg_connection_w.h"
+#include <string>
+#include "../util/log.h"
 
 
 class Node {
 	public:
 		Node(const char* str);
-		
-		/** This method execute this node
+
+		/** Method execute this node
 					 */
 		void execute(MgConnectionW& conn, const char* url);
 
 	protected:
-			/** Metodo que se ejecuta si la connecion es POST
-			 */
+
+			/** 
+			/ Method that is executed if the connection is POST
+			*/
 		virtual void executePost(MgConnectionW& conn, const char* url);
-			/** Metodo que se ejecuta si la connecion es GET
-			 */
+
+			/** 
+			/ Method that is executed if the connection is POST
+			*/
 		virtual void executeGet(MgConnectionW& conn, const char* url);
 
-			/** Metodo que se ejecuta si la connecion es DELETE
-			 */
+			/** 
+			/ Method that is executed if the connection is POST
+			*/
 		virtual void executeDelete(MgConnectionW& conn, const char* url);
 
-			/** Manejador de metodo no implementado
-			 */
+			/** 
+			/ Method that is executed if the connection is POST
+			*/
 		virtual void methodNotAllowed(MgConnectionW& conn, const char* url);
 
 		std::string uri;
+
+		virtual std::string handlerError(int status);
 };
 
 
