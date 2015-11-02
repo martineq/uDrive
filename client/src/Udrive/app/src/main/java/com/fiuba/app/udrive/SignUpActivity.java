@@ -74,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         UserProfile userProfile = new UserProfile(email, password, firstname, lastname,
-                null, null, 0, null, null, null);
+                null, 0, 0, 0, null, null, null);
         // photo, lastLocation, userId, quotaTotal, quotaAvailable, quotaUsagePercent
 
         mUserService.signUp(userProfile, new ServiceCallback<GenericResult>() {

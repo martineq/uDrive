@@ -5,6 +5,7 @@ import android.telecom.Call;
 
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.GenericResult;
+import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
 import com.fiuba.app.udrive.model.UserProfile;
@@ -17,6 +18,7 @@ import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 public class UserService extends AbstractService {
@@ -31,6 +33,9 @@ public class UserService extends AbstractService {
 
         @GET("/profile/{userId}")
         void getProfile(@Path("userId") int userId, Callback<UserProfile> uProfile);
+
+        @PUT("/photo/{userId}")
+        void updatePhoto(@Path("userId") int userId, @Body MyPhoto photo, Callback<GenericResult> result);
     }
 
     private UserServiceApi mUserServiceApi;
@@ -98,6 +103,25 @@ public class UserService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 uProfile.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void updatePhoto(int userId, MyPhoto photo, final ServiceCallback<GenericResult> res){
+        mUserServiceApi.updatePhoto(userId, photo, new Callback<GenericResult>() {
+            @Override
+            public void success(GenericResult result, Response response) {
+                res.onSuccess(result, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                res.onFailure(error.getMessage(), status);
             }
         });
     }

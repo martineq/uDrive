@@ -69,7 +69,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
         mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
-        //mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
+        mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
            mDirId = 0;
@@ -101,11 +101,13 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
 
         }  else if (id == R.id.action_profile) {
             UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
-                    "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
+                    "lastname", "", -34.795713, -58.348321, mUserAccount.getUserId(),
                     "750 MB", "487.5", "35%");
             Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
             profile.putExtra("userProfile", uProfile);
+            profile.putExtra("userAccount", mUserAccount);
             startActivity(profile);
+
             mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile uProfile, int status) {
@@ -116,6 +118,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
                     "750 MB", "487.5", "35%");*/
 
                     profile.putExtra("userProfile", uProfile);
+                    profile.putExtra("userAccount", mUserAccount);
                     startActivity(profile);
                 }
 
