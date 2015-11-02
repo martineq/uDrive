@@ -19,7 +19,7 @@ import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
 import com.fiuba.app.udrive.model.Util;
-import com.fiuba.app.udrive.network.LoginService;
+import com.fiuba.app.udrive.network.UserService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
 
@@ -34,12 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String ACCOUNT_FILENAME = "account_file";
     private static final String TAG = "MainActivity";
 
-    private LoginService mLoginService = null;
+    private UserService mUserService = null;
 
 
     /**
      * Shows the structure for the main activity screen and creates
-     * a LoginService instance to make requests
+     * a UserService instance to make requests
      * @param savedInstanceState
      */
     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             // Continues showing login inputs
             setContentView(R.layout.activity_main);
 
-            //this.mLoginService = new LoginService(MainActivity.this);
+            //this.mUserService = new UserService(MainActivity.this);
 
             TextView signUpLink = (TextView) findViewById(R.id.sign_up_link);
             signUpLink.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view, is the button to perform the signing in
      */
     public void sendMessage(View view) {
-        mLoginService = new LoginService(MainActivity.this);
+        mUserService = new UserService(MainActivity.this);
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         UserData userData = new UserData(email, Util.encodePassword(password));
         System.out.println(userData.getPassword());
 
-        mLoginService.getToken(userData, new ServiceCallback<UserAccount>() {
+        mUserService.getToken(userData, new ServiceCallback<UserAccount>() {
             @Override
             public void onSuccess(UserAccount uAccount, int status) {
                 if (uAccount.getUserId() != 0) {
