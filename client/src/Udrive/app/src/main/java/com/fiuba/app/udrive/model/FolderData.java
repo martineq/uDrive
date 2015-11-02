@@ -3,18 +3,18 @@ package com.fiuba.app.udrive.model;
 import java.io.Serializable;
 
 public class FolderData implements Serializable {
-    private String name;
+    private String dirName;
 
-    public FolderData(String name){
-        this.name = name;
+    public FolderData(String dirName){
+        this.dirName = dirName;
     }
 
-    public String getName() {
-        return name;
+    public String getDirName() {
+        return dirName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDirName(String name) {
+        this.dirName = name;
     }
 }
 

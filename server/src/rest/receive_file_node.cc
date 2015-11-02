@@ -39,8 +39,21 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 		std::string dirId=lista[4];
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
 
-		int status;
+	//	int status;
 		std::string token=conn.getAuthorization();
+	//	std::string var_name;
+	//	std::string file_name;
+	//	std::string arch;
+
+	//	time_t now = time(0);
+	//	char* dt = ctime(&now);
+	//	std::string fecha(dt);
+
+
+
+		//if(this->rd->new_file(userId, token, var_name, ".jpg",fecha, const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status){
+
+
 
 		if (token.compare("be16e465de64f0d2f2d83f3cfcd6370b")!=0){
 			Log(Log::LogMsgDebug) << "[" << "invalid token" << "]";

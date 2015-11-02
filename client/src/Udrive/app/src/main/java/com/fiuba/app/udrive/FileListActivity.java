@@ -100,8 +100,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-            UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
-                            mUserAccount.getPassword(), "firstname",
+            UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
                     "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
                     "750 MB", "487.5", "35%");
             Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
@@ -125,9 +124,6 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
 
                 }
             });
-
-
-
         }  else if (id == R.id.action_upload_file) {
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);

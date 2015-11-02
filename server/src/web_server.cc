@@ -36,38 +36,38 @@ void WEBServer::run(){
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	mg_server* mgServer = (mg_server*) conn->server_param;
 	MgConnectionW mgConnection(conn);
+	//Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
   if (ev == MG_AUTH) {
-	  Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
 	  TokenNode* tn=new TokenNode();
-	  tn->setRequestDispatcher(RequestDispatcher::getInstance());
+	  tn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
 	  tn->execute(mgConnection,conn->uri);
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
  	  InfoNode* in=new InfoNode();
- 	  in->setRequestDispatcher(RequestDispatcher::getInstance());
+ 	  in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));  // TODO(martindonofrio): change hardcoded values
  	  in->execute(mgConnection,conn->uri);
      return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/file/users",11)) {
 	  		ReceiveFileNode* rfn=new ReceiveFileNode();
- 	  		rfn->setRequestDispatcher(RequestDispatcher::getInstance()); 
+ 	  		rfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
  	  		rfn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
 
    } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
 	  		CreateDirNode* cdn=new CreateDirNode();
- 	  		cdn->setRequestDispatcher(RequestDispatcher::getInstance()); 
+ 	  		cdn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
  	  		cdn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
- 	  SignupNode* sn=new SignupNode();
- 	  sn->setRequestDispatcher(RequestDispatcher::getInstance());
- 	  sn->execute(mgConnection,conn->uri);
+		 	  SignupNode* sn=new SignupNode();
+		 	  sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
+		 	  sn->execute(mgConnection,conn->uri);
      return MG_TRUE; 
      
   } else {

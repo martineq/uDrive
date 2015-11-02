@@ -26,7 +26,6 @@ set(RUTA_TEST "${RUTA_RAIZ}/test") # Ruta del directorio donde se encuentran los
 # Seteo distintos paquetes de archivos fuente, se agregan líneas nuevas según necesidad
 # Ejemplo para agregar paquetes: set(SRC_PACK_NOMBRE_DEL_PACK ${RUTA_SRC}/nombre_fuente_1.cc ${RUTA_SRC}/nombre_fuente2.cc)
 set(SRC_PACK_MAIN ${RUTA_SRC}/main.cc)
-set(SRC_PACK_TEST_BASICO ${RUTA_TEST}/test_basic.cc)
 set(SRC_PACK_WEB_SERVER ${RUTA_SRC}/web_server.cc ${RUTA_SRC}/mg_connection_w.cc ${RUTA_LIB}/mongoose/mongoose.c)
 set(SRC_PACK_LOG ${RUTA_SRC}/util/log.cc)
 set(SRC_PACK_DB ${RUTA_SRC}/db_handler.cc ${RUTA_SRC}/data_handler.cc ${RUTA_SRC}/request_dispatcher.cc)
@@ -39,10 +38,10 @@ set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc)
 
 
 # Todos los fuentes que serán testeados y tendrán análisis de code coverage. NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
-set(SRC_TESTEABLE ${SRC_PACK_TEST_BASICO})
+set(SRC_TESTEABLE ${SRC_PACK_DB} ${SRC_PACK_YAML} ${SRC_PACK_FILE} )
 
-# Fuentes que no necesiten testeo y code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
-set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_DB} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS} ${SRC_PACK_YAML} ${SRC_PACK_FILE}) 
+# Fuentes que no necesiten testeo ni code coverage (main, librerías, etc). NO AGREGAR RUTAS, sólo variables "${SRC_PACK_...}"
+set(SRC_NO_TESTEABLE ${SRC_PACK_MAIN} ${SRC_PACK_WEB_SERVER} ${SRC_PACK_LOG} ${SRC_PACK_UTILS} ${SRC_PACK_NODOS}) 
 
 # Reuno TODOS los fuentes que necesita el proyecto
 set(SRC ${SRC_NO_TESTEABLE} ${SRC_TESTEABLE}) # *NO* modificar esta línea, cargar en SRC_TESTEABLE o SRC_NO_TESTEABLE
