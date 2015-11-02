@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 public class UserProfileActivity extends AppCompatActivity {
     private UserProfile mUserProfile = null;
+    private static final int SELECT_PHOTO = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,7 @@ public class UserProfileActivity extends AppCompatActivity {
        // Picasso.with(this).load(R.drawable.user2).into((ImageView)findViewById(R.id.avatar));
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        // SELECT_PHOTO = 100
-        startActivityForResult(photoPickerIntent, 100);
+        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
     }
 
     @Override
@@ -61,6 +61,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
                     ((ImageView)findViewById(R.id.avatar)).setImageBitmap(yourSelectedImage);
+                    // Send to the server
                 }
         }
     }

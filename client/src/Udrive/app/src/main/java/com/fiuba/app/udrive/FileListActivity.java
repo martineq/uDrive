@@ -26,6 +26,7 @@ import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
+import com.fiuba.app.udrive.network.UserService;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
 
     private FilesService mFilesService;
 
+    private UserService mUserService = null;
+
     private UserAccount mUserAccount;
 
     private Integer mDirId;
@@ -58,14 +61,15 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-        mUserAccount = (UserAccount) getIntent().getSerializableExtra(this.EXTRA_USER_ACCOUNT);
-        mDirId = (Integer) getIntent().getSerializableExtra(this.EXTRA_DIR_ID);
+        mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
+        mDirId = (Integer) getIntent().getSerializableExtra(EXTRA_DIR_ID);
         Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
-        this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles);
+        mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, mFiles);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
-        this.mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
+        mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
+        //mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
            mDirId = 0;
@@ -96,20 +100,32 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-            // Do the request
-            // set response fields into next intent
-            //mUserAccount.getUserId();
-            /*
-            Set all fields incoming from response as extras
-             */
-            Intent userProfile = new Intent(FileListActivity.this, UserProfileActivity.class);
             UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
-                    mUserAccount.getPassword(), /*firstname*/ "maría eugenia",
-                    /*lastname*/ "liva", /*photo*/ "", /*lastLocation*/ "", mUserAccount.getUserId(),
-                    /*quotaTotal*/ "750 MB", /*quota disponible*/ "487.5", /*quota usado*/ "35%");
+                            mUserAccount.getPassword(), "firstname",
+                    "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
+                    "750 MB", "487.5", "35%");
+            Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
+            profile.putExtra("userProfile", uProfile);
+            startActivity(profile);
+            mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
+                @Override
+                public void onSuccess(UserProfile uProfile, int status) {
+                    Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
+                    /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
+                            mUserAccount.getPassword(), "firstname",
+                    "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
+                    "750 MB", "487.5", "35%");*/
 
-            userProfile.putExtra("userProfile", uProfile);
-            startActivity(userProfile);
+                    profile.putExtra("userProfile", uProfile);
+                    startActivity(profile);
+                }
+
+                @Override
+                public void onFailure(String message, int status) {
+
+                }
+            });
+
 
 
         }  else if (id == R.id.action_upload_file) {
