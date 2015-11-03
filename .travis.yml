@@ -12,11 +12,11 @@ dist: trusty
 # Selección del lenguaje: C++
 language: cpp
 
-# Seleeción de compiladores
+# Seleeción de compilador gcc
 compiler:
   - gcc
 
-# Solo hacer build sobre los branches elegidos
+# Solo realizo build sobre los branches elegidos
 branches:
   only:
     - master
@@ -41,3 +41,4 @@ script:
   - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
   - make
   - make coveralls
+
