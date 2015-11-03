@@ -80,8 +80,7 @@ bool RequestDispatcher::new_file(string user_id, string user_token, string name,
   // Add physical file
   if( fh_.save_file(user_id,file_id,LABEL_REVISION_1,p_file_stream,stoul(size,nullptr,10))==0 ){
     if( !dh_.delete_file(file_id,status) ){ return false; }
-    status = STATUS_FAIL_SAVING_FILE;
-    return false;
+    status = STATUS_FAIL_SAVING_FILE; return false;
   }
 
   // Add size to user quota
@@ -183,12 +182,8 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
     // Calculate number of users shared
     vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
     size_t number_of_users_shared = temp_users_shared.size();
-    if(number_of_users_shared > 0){
-      info_element.shared = LABEL_TRUE; 
-    }else{
-      info_element.shared = LABEL_FALSE; 
-    }
-    
+    if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; 
+    }else{ info_element.shared = LABEL_FALSE; }
     
     directory_element_info.push_back(info_element);
   }  
