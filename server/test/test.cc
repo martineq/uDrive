@@ -329,6 +329,12 @@ TEST(DataHandlerTest, UserDelete_AddDirFile_ModPassUserFileDir) {
   // Modify file info
   EXPECT_TRUE(dh.modify_file_info(new_file_id,"myBrabdNewFile","txt","17-10-2015-15-20","important","",user_id_jake,status));
 
+  // Delete file
+  EXPECT_TRUE(dh.delete_file(new_file_id,status));
+  
+  // Delete dir
+  EXPECT_TRUE(dh.delete_directory(new_dir_id,status));
+  
   
   // Delete used temp folder
   system("rm -rf /tmp/testdb");

@@ -60,12 +60,9 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   if(dbh_.write_batch()){
     add_email_user_id_index(email,user_id);
     return true;
-  }else{
-    // If there is an error, delete the root directory
-    delete_directory(id_dir_root,status);
-    if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
-    status = STATUS_DATABASE_ERROR;
-    return false;
+  }else{// If there is an error, delete the root directory
+    delete_directory(id_dir_root,status); if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
+    status = STATUS_DATABASE_ERROR; return false;
   }
   
 }
@@ -375,9 +372,7 @@ void DataHandler::init_id_ticket(string type_of_id){
 }
 
 
-void DataHandler::print_db_error(){
-  std::cerr << "DB error" << std::endl;
-}
+void DataHandler::print_db_error(){ std::cerr << "DB error" << std::endl; }
 
 
 bool DataHandler::dbh_get(string key, string* value, int& status){
