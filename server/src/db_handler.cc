@@ -29,16 +29,16 @@ bool DbHandler::open(std::string filename){
 
 
 bool DbHandler::put(std::string key, std::string value){
-  if(db_==nullptr) return false;
+  if(db_==nullptr){ return false; }
   
   return(check_status(db_->Put(rocksdb::WriteOptions(),key,value)));
 }
 
 
 bool DbHandler::get(std::string key, std::string* value, bool& found){
-  if(db_==nullptr){
+  if(db_==nullptr){ 
     found = false;
-    return false;
+    return false; 
   }
 
   rocksdb::Status s = db_->Get(rocksdb::ReadOptions(),key,value);
@@ -59,34 +59,30 @@ bool DbHandler::erase(std::string key){
 
 
 bool DbHandler::check_status(rocksdb::Status s){
-  if( !(s.ok()) ){
-    std::cerr << "DB Status -> |"<< s.ToString() << "|" << std::endl;
-    return false;
-  }else{
-    return true;
-  }
+  if( !(s.ok()) ){ std::cerr << "DB Status -> |"<< s.ToString() << "|" << std::endl; return false;
+  }else{ return true; }
 }
 
 
 void DbHandler::erase_batch(std::string key){
-  if(db_==nullptr) return;
+  if(db_==nullptr){ return; }
   batch_.Delete(key);
 }
 
 
 void DbHandler::put_batch(std::string key, std::string value){
-  if(db_==nullptr) return;
+  if(db_==nullptr){ return; }
   batch_.Put(key,value);
 }
 
 void DbHandler::clear_batch(){
-  if(db_==nullptr) return;
+  if(db_==nullptr){ return; }
   batch_.Clear();
 }
 
 
 bool DbHandler::write_batch(){
-  if(db_==nullptr) return false;
+  if(db_==nullptr){ return false; }
   return(check_status(db_->Write(rocksdb::WriteOptions(),&batch_)) );
 }
 

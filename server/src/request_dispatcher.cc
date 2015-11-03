@@ -1,6 +1,7 @@
 #include "request_dispatcher.h"
 
-RequestDispatcher* RequestDispatcher::myrd_ = nullptr;
+
+RequestDispatcher* RequestDispatcher::request_dispatcher_instance = nullptr;
 
 
 RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota){
@@ -34,10 +35,7 @@ bool RequestDispatcher::log_in(string email, string password, string new_token, 
   string saved_password;
   if( !dh_.get_user_password(email,saved_password,status) ){ return false; };
 
-  if( password!=saved_password ){
-    status = STATUS_WRONG_PASSWORD;
-    return false;
-  }
+  if( password!=saved_password ){ status = STATUS_WRONG_PASSWORD; return false; }
 
   return dh_.add_user_token(email,new_token,user_id,status);
 }
@@ -247,10 +245,7 @@ bool RequestDispatcher::get_file_stream(string user_id, string user_token, strin
   }
 
   size_stream = fh_.load_file(user_id,file_id,LABEL_REVISION_1,p_file_stream);
-  if( size_stream==0 ){
-    status = STATUS_FAIL_LOADING_FILE;
-    return false;
-  }
+  if( size_stream==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
 
   return true;
 }

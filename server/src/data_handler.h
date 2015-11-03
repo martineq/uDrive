@@ -13,18 +13,108 @@ class DataHandler {
   private:
     DbHandler dbh_;
     
+    /**
+    * @brief Returns the key for a query of an user item
+    * 
+    * @param email email of the user
+    * @param item_selected item selected of the user for query
+    * @return std::string
+    */
     string generate_user_key(string user_id, string item_selected);
-    string generate_dir_key(string dir_id, string item_selected);
-    string generate_file_key(string file_id, string item_selected);
-    string generate_ticket_key(string ticket_type);
-    bool create_id(string type_of_id,string& id);
-    bool add_email_user_id_index(string email, string user_id);
-    bool get_email_user_id_index(string email, string& user_id, int& status);
-    void init_id_ticket(string type_of_id);
-    void db_error();
-    bool dbh_get(string key, string* value, int& status);
-    bool dbh_put(string key, string value, int& status);
     
+    /**
+    * @brief Returns the key for a query of an directory item
+    * 
+    * @param dir_id ID of the selected directory
+    * @param item_selected item selected of the user for query
+    * @return std::string
+    */
+    string generate_dir_key(string dir_id, string item_selected);
+    
+    /**
+    * @brief Returns the key for a query of an file item
+    * 
+    * @param file_id ID of the selected file
+    * @param item_selected item selected of the user for query
+    * @return std::string
+    */
+    string generate_file_key(string file_id, string item_selected);
+    
+    /**
+    * @brief Returns the key for a query of an ticket type
+    * 
+    * @param ticket_type type of ticket selected
+    * @return std::string
+    */
+    string generate_ticket_key(string ticket_type);
+    
+    /**
+    * @brief Obtains a new id for type_of_id. Returns true on success.
+    * 
+    * @param type_of_id the type of the requested id
+    * @param id the new ID generated
+    * @return bool
+    */
+    bool create_id(string type_of_id,string& id);
+    
+    /**
+    * @brief Adds an user_id for their corresponding email in a index. Returns true if the operation was successful
+    * 
+    * @param email ...
+    * @param user_id ...
+    * @return bool
+    */
+    bool add_email_user_id_index(string email, string user_id);
+    
+    /**
+    * @brief Gets an user_id for their corresponding email from an index.
+    *        Returns true if the operation was successful and the user_id was founded.
+    *        Returns false and a status on error, or if the user_id is not found
+    * 
+    * @param email ...
+    * @param user_id ...
+    * @param status ...
+    * @return bool
+    */
+    bool get_email_user_id_index(string email, string& user_id, int& status);
+    
+    /**
+    * @brief Verifies the type_of_id ticket number (and creates if they not exist).
+    * The ticket number is used in the assignment of ID's
+    * 
+    * @return void
+    */
+    void init_id_ticket(string type_of_id);
+    
+    /**
+    * @brief Prints a message error on std::cerr
+    * 
+    * @return void
+    */
+    void print_db_error();
+    
+    /**
+    * @brief Wrapper for DbHandler::get(std::string key, std::string* value, bool& found). (used on member variable dbh_). 
+    *        Includes the status for a get operation.
+    * 
+    * @param key ...
+    * @param value ...
+    * @param status ...
+    * @return bool
+    */
+    bool dbh_get(string key, string* value, int& status);
+    
+    /**
+    * @brief Wrapper for DbHandler::put(std::string key, std::string value). (used on member variable dbh_). 
+    *        Includes the status for a put operation.
+    * 
+    * @param key ...
+    * @param value ...
+    * @param status ...
+    * @return bool
+    */
+    bool dbh_put(string key, string value, int& status);
+
   public:
     
     struct user_info_st {
