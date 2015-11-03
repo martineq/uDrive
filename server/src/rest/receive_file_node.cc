@@ -43,7 +43,7 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 
 		Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] token: " << token << " UserID: " << userId;
 		Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] userId: " << userId << " dirId: " << dirId;
-		int status;
+		int status=0;
 		std::string var_name;
 		std::string file_name;
 		std::string arch;
@@ -56,11 +56,10 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 			Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "], Var_name: " << var_name << ", file_name: " << file_name;
 			if(var_name == "arch") break;
 		}
-		Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], finished" << ", status: " << status;
+		Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], finished";
 
-
-		if(!this->rd->new_file(userId, token, var_name, ".jpg",fecha, p_file,"1024",dirId,file_id,status)){
-			Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] invalid token";
+		if(!this->rd->new_file(userId, token, var_name, ".jpg",fecha, p_file,"8",dirId,file_id,status)){
+			Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] invalid token "<< ", status: " << status;
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
@@ -69,9 +68,6 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 		}else{
 			//Autorizado
 			Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], authorized";
-			
-			
-
 			//Tomo tiempo de ultima modificacion
 			time_t now = time(0);
 			char* dt = ctime(&now);
