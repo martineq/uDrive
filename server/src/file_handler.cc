@@ -8,10 +8,9 @@ FileHandler::~FileHandler(){
 
 }
 
-size_t FileHandler::load_file(string user_id, string file_id, string revision, char*& p_file_stream){
+size_t FileHandler::load_file(string file_name, char*& p_file_stream){
 
   FILE * p_file;
-  string file_name = user_id+file_id+revision;
 
   p_file = fopen(file_name.c_str(),"rb");
   if(p_file==NULL){ std::cerr <<"File reading error." << std::endl;  return 0; }
@@ -36,10 +35,9 @@ size_t FileHandler::load_file(string user_id, string file_id, string revision, c
   return result;
 }
 
-size_t FileHandler::save_file(string user_id, string file_id, string revision, const char* p_file_stream, size_t size_stream){
+size_t FileHandler::save_file(string file_name, const char* p_file_stream, size_t size_stream){
 
   FILE * p_file;
-  string file_name = user_id+file_id+revision;
 
   p_file = fopen(file_name.c_str(),"wb");
   if(p_file==NULL){ std::cerr <<"File reading error." << std::endl; return 0; }

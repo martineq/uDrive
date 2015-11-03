@@ -401,13 +401,14 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
   string user_id = "111";
   string file_id = "222";
   string revision = "010";
+  string file_name = user_id+file_id+revision;
   const char* p_save_file_stream = "# Configuración de conexión\nip: 127.0.0.1\nport: 8080"; // Size: 54 bytes
   size_t save_size_stream = 54;
-  fh.save_file(user_id,file_id,revision,p_save_file_stream,save_size_stream);
+  fh.save_file(file_name,p_save_file_stream,save_size_stream);
     
   // Load file  
   char* p_load_file_stream = NULL;
-  size_t p_load_size_stream = fh.load_file(user_id,file_id,revision,p_load_file_stream);
+  size_t p_load_size_stream = fh.load_file(file_name,p_load_file_stream);
 
   EXPECT_NE(p_load_size_stream,0);
 

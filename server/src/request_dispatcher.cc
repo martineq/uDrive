@@ -78,7 +78,8 @@ bool RequestDispatcher::new_file(string user_id, string user_token, string name,
   if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
   
   // Add physical file
-  if( fh_.save_file(user_id,file_id,LABEL_REVISION_1,p_file_stream,stoul(size,nullptr,10))==0 ){
+  string file_name = user_id+file_id+LABEL_REVISION_1;
+  if( fh_.save_file(file_name,p_file_stream,stoul(size,nullptr,10))==0 ){
     if( !dh_.delete_file(file_id,status) ){ return false; }
     status = STATUS_FAIL_SAVING_FILE; return false;
   }
@@ -239,32 +240,34 @@ bool RequestDispatcher::get_file_stream(string user_id, string user_token, strin
     return false;
   }
 
-  size_stream = fh_.load_file(user_id,file_id,LABEL_REVISION_1,p_file_stream);
+  string file_name = user_id+file_id+LABEL_REVISION_1;
+  size_stream = fh_.load_file(file_name,p_file_stream);
   if( size_stream==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
 
   return true;
 }
 
-
+/*
 bool RequestDispatcher::delete_user(string user_id, string user_token, int& status){
-  // TODO (mart): implement
-//+ Borrar usuario -> get_user_token(), delete_user(). TODO: Verificar que el usr sea dueño. ¿Borrar todos sus archivos y carpetas?
+  // TODO(mart): implement
+//+ Borrar usuario -> get_user_token(), delete_user(). Verificar que el usr sea dueño. ¿Borrar todos sus archivos y carpetas?
   return false;
 }
 
 
 bool RequestDispatcher::delete_directory(string user_id, string user_token, string dir_id, int& status){
-  // TODO (mart): implement
-// + Borrar directorio -> get_user_token(), delete_directory(). TODO: Verificar que el usr sea dueño. Borrar todas las subcarpetas y archivos que contenga.
+  // TODO(mart): implement
+// + Borrar directorio -> get_user_token(), delete_directory(). Verificar que el usr sea dueño. Borrar todas las subcarpetas y archivos que contenga.
   return false;
 }
 
 
 bool RequestDispatcher::delete_file(string user_id, string user_token, string file_id, int& status){
-  // TODO (mart): implement
-//+ Borrar archivo -> get_user_token(), delete_file(). TODO: En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
+  // TODO(mart): implement
+//+ Borrar archivo -> get_user_token(), delete_file(). En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
   return false;
 }
+*/
 
 
 bool RequestDispatcher::check_token(string user_id, string user_token, int& status){
