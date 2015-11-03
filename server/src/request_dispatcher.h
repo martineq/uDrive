@@ -17,7 +17,7 @@ class RequestDispatcher{
     DataHandler dh_;
     FileHandler fh_;
     size_t max_user_quota_;
-    static RequestDispatcher* myrd_;
+    static RequestDispatcher* request_dispatcher_instance;
     bool init_ok_ = false;
     
     RequestDispatcher(string database_path,size_t max_user_quota);
@@ -45,14 +45,14 @@ class RequestDispatcher{
           string lastModDate;
     } ;
 
+    ~RequestDispatcher();   
+    
     // Returs nullptr if the DB is not initiated
     static RequestDispatcher *get_instance(string database_path,size_t max_user_quota){
-        if(myrd_==nullptr){ myrd_= new RequestDispatcher(database_path,max_user_quota); }
-        if( !(myrd_->db_is_initiated()) ){ return nullptr;} 
-        return myrd_;
+        if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(database_path,max_user_quota); }
+        if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;} 
+        return request_dispatcher_instance;
     }
-    
-    ~RequestDispatcher();   
         
     /**
     * @brief Adds a new user on the DB. (Used in sign up)
@@ -107,6 +107,7 @@ class RequestDispatcher{
 #endif // REQUESTDISPATCHER_H
 
 /*
+
 Clase Request Dispatcher
 
 TODO (mart): ¿Cómo se van a manejar las revisiones? Ver si hay que agregar parent_revision en cada file.
@@ -115,4 +116,5 @@ Casos de uso y funciones de Data Handler relacionadas:
 + Modificar info usr        -> get_user_token(), modify_user_info().            TODO(mart): Verificar que el usr sea dueño.
 + Modificar info dir        -> get_user_token(), modify_directory_info().       TODO(mart): Verificar que el usr sea dueño.
 + Modificar info arch       -> get_user_token(), modify_file_info().            TODO(mart): En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
+
 */

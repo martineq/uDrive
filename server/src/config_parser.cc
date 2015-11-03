@@ -13,16 +13,15 @@ ConfigParser::~ConfigParser(){
 
 bool ConfigParser::load_configuration(ConfigParser::Configuration& config){
 
-  Log(Log::LogMsgDebug) << "Loading config config.yml";
   // Open file
   std::ifstream config_file(YAML_CONFIG_FILE);
-  
   bool status_ok = true;
+  Log(Log::LogMsgDebug) << "Loading config config.yml";
 
   // Parsing file
   if(config_file.good()==true){
+    
     try{
-
       // Starts to read YAML file
       YAML::Parser parser(config_file);
       
@@ -31,16 +30,10 @@ bool ConfigParser::load_configuration(ConfigParser::Configuration& config){
       parser.GetNextDocument(root_node);
       
       // Reads the content
-      load_content(root_node,config);
-          
-    }catch(YAML::Exception& e){
-      Log(Log::LogMsgError) << "Fail config parser";
-      notify_read_error(__FILE__,__LINE__,e.what(),status_ok);
-    }
-  }else{
-    Log(Log::LogMsgError) << "Problem with config file.";
-    notify_read_error(__FILE__,__LINE__,"Error opening config file. ",status_ok);
-  }
+      load_content(root_node,config); }catch(YAML::Exception& e){ notify_read_error(__FILE__,__LINE__,e.what(),status_ok); }
+    
+  }else{ notify_read_error(__FILE__,__LINE__,"Error opening config file. ",status_ok); return false; }
+  
   return status_ok;
 }
 
@@ -75,10 +68,7 @@ std::string ConfigParser::read_yaml_node_to_string(const YAML::Node& node){
   
   // Reads the value
   try{
-    node >> value;
-  }catch(YAML::Exception& e){
-    notify_read_error(__FILE__,__LINE__,e.what(),read_ok);
-  }
+    node >> value; }catch(YAML::Exception& e){ notify_read_error(__FILE__,__LINE__,e.what(),read_ok); }
 
   if(read_ok == false){ value.assign(YAML_EMPTY_STRING); }
   
@@ -87,10 +77,10 @@ std::string ConfigParser::read_yaml_node_to_string(const YAML::Node& node){
 
 
 void ConfigParser::notify_read_error(std::string file, int line, std::string msg, bool& read_ok){
-  std::string message_error;
-  message_error.append("YAML sintax error. Report: ");
+  std::string message_error("YAML sintax error. Report: ");
   message_error.append(msg);
   std::cerr << message_error << std::endl;
   std::cerr <<"file: " << file << " - line: "<< line << message_error << std::endl;
+  Log(Log::LogMsgError) << message_error;
   read_ok = false;
 }
