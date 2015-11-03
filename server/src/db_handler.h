@@ -64,11 +64,37 @@ class DbHandler {
     */
     bool erase(std::string key);
     
+    /**
+     * @brief Batch mode of put(). Use write_batch() to make the changes.
+     * 
+     * @param key Name of the key stored in the database
+     * @param value value to put on the register
+     * @return void
+     */
     void put_batch(std::string key, std::string value);
-    void erase_batch(std::string key);
-    void clear_batch();
-    bool write_batch();
     
+    /**
+     * @brief Batch mode of erase(). Use write_batch() to make the changes.
+     * 
+     * @param key Name of the key stored in the database to be erased
+     * @return void
+     */
+    void erase_batch(std::string key);
+    
+    /**
+     * @brief Clear all updates buffered in this batch.
+     * 
+     * @return void
+     */
+    void clear_batch();
+        
+    /**
+     * @brief Apply the specified updates to the database.
+     * 
+     * @return bool
+     */
+    bool write_batch();
+
     
 }; 
 
