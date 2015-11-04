@@ -23,6 +23,7 @@ public:
 	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
 	void executeGet(MgConnectionW& conn, const char* url);
+	std::string defaultResponse();
 private:
 	RequestDispatcher* rd;
 

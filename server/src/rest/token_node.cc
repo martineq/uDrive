@@ -48,10 +48,10 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 	int status;
 
 	if (!this->rd->log_in(email, password, new_token, userId, status)){
-		Log(Log::LogMsgDebug) << "[" << "email incorrecto" << "] ";
 		conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
+		string msg=handlerError(status);
+		conn.printfData(msg.c_str());
 	}else{
 		Log(Log::LogMsgDebug) << "[" << "Valid user: userId: " << userId << "] " << "Token: " <<new_token.c_str();
 		conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
@@ -71,6 +71,10 @@ string TokenNode::CreateToken(const std::string& email){
 
 void TokenNode::setRequestDispatcher(RequestDispatcher* rd){
 	this->rd=rd;
+}
+
+std::string TokenNode::defaultResponse(){
+return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\" }";
 }
 
 

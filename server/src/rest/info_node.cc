@@ -34,23 +34,19 @@ vector<string> split(const string &s, char delim) {
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	vector<string> lista=split(conn->uri,'/');
 	string dirId="";
+	int status=11;
 
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
 		string userId=lista[3];
 		dirId=lista[5];
 		string token=conn.getAuthorization();
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
-
-		int status;
-		
 		DataHandler::dir_info_st dirInfo;
 		if (!this->rd->get_directory_info(userId, token, dirId, dirInfo, status)){
-			Log(Log::LogMsgDebug) << "[" << "Fail get get_directory_info" << "]" << "Status: " << status;
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-													"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-													"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+			string msg=handlerError(status);
+			conn.printfData(msg.c_str());
 		}
 		else{
 			vector<RequestDispatcher::info_element_st> directory_element_info;
@@ -60,7 +56,6 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			if (this->rd->get_directory_element_info_from_dir_info(userId, token, dirInfo, directory_element_info, status)){
 				vector<RequestDispatcher::info_element_st>::iterator directory_it;
 				Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
-
 				if (directory_element_info.size()!=0){
 					for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 	     				enc=true;
@@ -74,21 +69,16 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
 					}
 				}
-
 				if (directory_element_info.size()==1) enc=true;
-
-
 				if (!enc){
-					Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
+					//empty dir
+					status=12;
 					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 					conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-					conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-										"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-										"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+					string msg=handlerError(status);
+					conn.printfData(msg.c_str());
 				}else{
-
-
-					item 
+					item
 	     				<< "{\"id\":\"" << (*(directory_it)).id 
 	     				<< "\",\"name\":\"" << (*(directory_it)).name 
 	     				<< "\",\"size\":\""	<< (*(directory_it)).size	
@@ -97,9 +87,7 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	     				<< "\",\"shared\":\"" << (*(directory_it)).shared 
 	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
 	     				item << "]";
-
-
-					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size(); 
+					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size();
   					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 					conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 					const std::string tmp = item.str();
@@ -112,13 +100,10 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 			}	
 	}
 	else{
-		Log(Log::LogMsgDebug) << "[" << "invalid url" << "]";
 		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-										"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-										"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-
+		string msg=handlerError(status);
+		conn.printfData(msg.c_str());
 	}
 }
 
@@ -126,4 +111,10 @@ void InfoNode::setRequestDispatcher(RequestDispatcher* rd){
 	this->rd=rd;
 }
 
+std::string InfoNode::defaultResponse(){
+	return "[{ \"id\": \"0\",  \"name\": \"\","
+							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
+							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+
+}
 

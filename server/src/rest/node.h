@@ -39,6 +39,9 @@ class Node {
 		std::string uri;
 
 		virtual std::string handlerError(int status);
+
+        virtual std::string defaultResponse();
+
 };
 
 

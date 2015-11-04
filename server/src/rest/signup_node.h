@@ -26,6 +26,7 @@ public:
 	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
 	void executePost(MgConnectionW& conn, const char* url);
+	std::string defaultResponse();
 private:
 	RequestDispatcher* rd;
 	std::string CreateToken(const std::string& email);
