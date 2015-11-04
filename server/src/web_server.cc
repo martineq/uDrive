@@ -44,6 +44,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	  TokenNode* tn=new TokenNode();
 	  tn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
 	  tn->execute(mgConnection,conn->uri);
+
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
