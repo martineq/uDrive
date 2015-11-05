@@ -18,4 +18,14 @@
         android:textSize="10sp" android:singleLine="true"
         android:text="@string/file_lastMod" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/BtnFileContextMenu"
+        android:layout_alignBottom="@+id/imageViewFileListItem"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/imageViewFileListItem"
+        android:src="@drawable/ic_dots_vertical"
+        android:background="@android:color/transparent"/>
+
 </RelativeLayout>

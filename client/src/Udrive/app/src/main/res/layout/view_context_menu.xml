@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:id="@+id/btnDownload"
+        style="@style/ContextMenuButton"
+        android:text="DOWNLOAD" />
+
+
+    <Button
+        android:id="@+id/btnInformation"
+        style="@style/ContextMenuButton"
+        android:text="INFORMATION" />
+
+    <Button
+        android:id="@+id/btnShare"
+        style="@style/ContextMenuButton"
+        android:text="SHARE" />
+
+    <Button
+        android:id="@+id/btnTag"
+        style="@style/ContextMenuButton"
+        android:text="TAG" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        style="@style/ContextMenuButton"
+        android:text="DELETE" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eeeeee" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/ContextMenuButton"
+        android:text="CANCEL" />
+
+</merge>

@@ -25,7 +25,7 @@ public class FilesService extends AbstractService {
 
 
         @Multipart
-        @POST("/users/{userId}/dir/{dirId}")
+        @POST("/file/users/{userId}/dir/{dirId}")
         void upload(@Path("userId") int userId,
                     @Path("dirId") int dirId,
                     @Part("file") TypedFile file,
