@@ -56,6 +56,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	  		ReceiveFileNode* rfn=new ReceiveFileNode();
  	  		rfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
  	  		rfn->execute(mgConnection,conn->uri);
+	  		delete rfn;
      return MG_TRUE; 
 
    } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {

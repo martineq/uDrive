@@ -22,6 +22,7 @@ public:
 	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
 	void executePost(MgConnectionW& conn, const char* url);
+	std::string defaultResponse();
 private:
 	vector<string> split(const string &s, char delim);
 	RequestDispatcher* rd;

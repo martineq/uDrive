@@ -64,9 +64,7 @@ bool DataHandler::add_user(string email, string password, string name, string lo
     delete_directory(id_dir_root,status); if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
     status = STATUS_DATABASE_ERROR; return false;
   }
-  
 }
-
 
 bool DataHandler::add_user_token(string email, string token, string& user_id, int& status){
 
