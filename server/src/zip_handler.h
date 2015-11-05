@@ -7,25 +7,29 @@
 using namespace std;
 
 class ZipHandler{
-  
+
   public:
 
+    struct file_st {
+      string file_id;
+      string file_real_name;
+    } ;
+
     struct dir_tree_node_st {
-      string type;    
-      size_t id;
-      string name;
-      vector<ZipHandler::dir_tree_node_st> sub_elem;
+      string dir_node_name;
+      vector<ZipHandler::file_st> files_contained;
+      vector<ZipHandler::dir_tree_node_st> sub_dirs;
     } ;
 
     ZipHandler();
     ~ZipHandler();
 
-    // directory_structure must contain directory_structure
-    bool create_zip(string zip_name,ZipHandler::dir_tree_node_st dir_structure);
+    void create_zip(string zip_name, ZipHandler::dir_tree_node_st dir_structure);
+    
     
   private:
     
-    bool create_file_structure_recursive(bool is_root, ZipHandler::dir_tree_node_st dir_structure);
+    bool create_file_structure_recursive(string dir_path, ZipHandler::dir_tree_node_st dir_structure);
   
 };
 

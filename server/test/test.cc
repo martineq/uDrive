@@ -20,6 +20,7 @@
 #include "../src/config_parser.h"
 #include "../src/file_handler.h"
 #include "../src/request_dispatcher.h"
+#include "../src/zip_handler.h"
 
 
 using namespace std;
@@ -186,8 +187,6 @@ TEST(DbHandlerTest, OpenError) {
 }
 
 
-
-
 TEST(DataHandlerTest, UserAdd_GetInfoPassToken_GetDirInfo) {
 
   DataHandler dh;
@@ -341,7 +340,6 @@ TEST(DataHandlerTest, UserDelete_AddDirFile_ModPassUserFileDir) {
 }
 
 
-
 TEST(ConfigParserTest, ReadsFromFile) {
 
   // Create config file
@@ -393,6 +391,7 @@ TEST(ConfigParserTest, ErrorHandle) {
   
 }
 
+
 TEST(FileHandlerTest, SaveAndLoadFile) {
 
   FileHandler fh;
@@ -421,7 +420,7 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 }
 
 
-TEST(RequestDispatcherTest, Checkpoint2Routine) {
+TEST(RequestDispatcherTest, Checkpoint3Routine) {
 
   //Checkpoint #2  
   // + Post signup     IN: name/email/pass/token                  OUT: userId
@@ -647,21 +646,32 @@ TEST(RequestDispatcherTest, Checkpoint2Routine) {
   EXPECT_TRUE(file_id_3!="0");
   
   
+  // Create zip file
+  string root_dir_id = "0";
+  char* p_dir_stream = nullptr;
+  size_t size_stream = 0;
+  status;
+  EXPECT_TRUE(rd->get_dir_stream(user_id,token,root_dir_id,p_dir_stream,size_stream,status));
+  EXPECT_EQ(1130,size_stream);  // Size of zip file: 1130 bytes
+  
+    
   // TODO(mart): implement this functions for test
   // Use get_directory_element_info_from_dir_info() with shared files
   // Use get_file_info() from a user with a shared file (no the owner)
   // Use get_file_stream() from a user with a shared file (no the owner)
   // Use decrease_user_quota_used()
   // Use decrease_dir_size_recursive()
-  
+
   
   // Delete instance
   delete rd;
   
+  
   // Delete used temp folder
-  system("rm -rf /tmp/testdb_checkpoint2");
+  system("rm -rf /tmp/testdb_checkpoint3");
 
 }
+
 
 
 int main(int argc, char **argv) {
