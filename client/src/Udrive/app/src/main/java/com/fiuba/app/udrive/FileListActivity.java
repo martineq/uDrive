@@ -256,15 +256,12 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     }
 
     @Override
-    public void onDownloadClick(int FileItem) {
-        FileContextMenuManager.getInstance().hideContextMenu();
+    public void onDownloadClick(int FileItem) {FileContextMenuManager.getInstance().hideContextMenu();
         Log.i(TAG,"Download File position "+FileItem);
     }
 
     @Override
-    public void onInformationClick(int FileItem) {
-        Log.i(TAG,"Information File position "+FileItem);
-    }
+    public void onInformationClick(int FileItem) {Log.i(TAG,"Information File position "+FileItem);}
 
     @Override
     public void onShareClick(int FileItem) {

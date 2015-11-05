@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.fiuba.app.udrive.R;
@@ -37,12 +38,12 @@ public class FileContextMenu extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         //ButterKnife.inject(this);
-        Button btnDownload = (Button) findViewById(R.id.btnDownload);
-        Button btnInfo = (Button) findViewById(R.id.btnInformation);
-        Button btnShare = (Button) findViewById(R.id.btnShare);
-        Button btnTag = (Button) findViewById(R.id.btnTag);
-        Button btnDelete = (Button) findViewById(R.id.btnDelete);
-        Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        LinearLayout btnDownload = (LinearLayout) findViewById(R.id.lnBtnDownload);
+        LinearLayout btnInfo = (LinearLayout) findViewById(R.id.lnBtnInformation);
+        LinearLayout btnShare = (LinearLayout) findViewById(R.id.lnBtnShare);
+        LinearLayout btnTag = (LinearLayout) findViewById(R.id.lnBtnTag);
+        LinearLayout btnDelete = (LinearLayout) findViewById(R.id.lnBtnDelete);
+        LinearLayout btnCancel = (LinearLayout) findViewById(R.id.lnBtnCancel);
 
         btnDownload.setOnClickListener(new OnClickListener() {
             @Override
