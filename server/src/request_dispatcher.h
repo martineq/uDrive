@@ -8,7 +8,9 @@
 
 #include "data_handler.h"
 #include "file_handler.h"
+#include "zip_handler.h"
 #include "util/log.h"
+
 
 class RequestDispatcher{
 
@@ -16,6 +18,7 @@ class RequestDispatcher{
     
     DataHandler dh_;
     FileHandler fh_;
+    ZipHandler zh_;
     size_t max_user_quota_;
     static RequestDispatcher* request_dispatcher_instance;
     bool init_ok_ = false;
@@ -32,6 +35,7 @@ class RequestDispatcher{
     bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
     vector<string> split_string(string string_to_split, char delimiter);
     bool db_is_initiated();
+    ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string user_token, string dir_id, int& status);
     
   public:
 
@@ -148,7 +152,6 @@ class RequestDispatcher{
      */
     bool get_directory_info(string user_id, string user_token, string dir_id, DataHandler::dir_info_st& dir_info, int& status);
     
-    
     /**
      * @brief Gets the file information on a  DataHandler::file_info_st.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
@@ -178,6 +181,22 @@ class RequestDispatcher{
      */
     bool get_file_stream(string user_id, string user_token, string file_id, string revision, char*& p_file_stream, size_t& size_stream, int& status);
 
+    
+    /**
+     * @brief Gets the stream for a dir_id (in a zip file). Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param user_token ...
+     * @param dir_id ...
+     * @param p_dir_stream return the dir stream. The user must de-allocate the file.
+     * @param size_stream return the size of the stream (in bytes)
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_dir_stream(string user_id, string user_token, string dir_id, char*& p_dir_stream, size_t& size_stream, int& status);
+    
+    
 //     bool delete_user(string user_id, string user_token, int& status);
 //     bool delete_directory(string user_id, string user_token, string dir_id, int& status);
 //     bool delete_file(string user_id, string user_token, string file_id, int& status);

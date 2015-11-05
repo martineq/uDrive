@@ -247,6 +247,25 @@ bool RequestDispatcher::get_file_stream(string user_id, string user_token, strin
   return true;
 }
 
+
+bool RequestDispatcher::get_dir_stream(string user_id, string user_token, string dir_id,
+                                       char*& p_dir_stream, size_t& size_stream, int& status){
+  
+  // Gets structure info for the directory
+  ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,user_token,dir_id,status);
+  
+  // Generate the zip file
+  string zip_name = "zipfile_" + user_id;
+  zh_.create_zip(zip_name,dir_structure);
+  
+  // Load file in p_dir_stream
+  string zip_name_with_extension = zip_name + ".zip";
+  size_stream = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  
+  return true; // TODO(mart): check returns in this function
+}
+
+
 /*
 bool RequestDispatcher::delete_user(string user_id, string user_token, int& status){
   // TODO(mart): implement
@@ -376,3 +395,43 @@ bool RequestDispatcher::get_root_dir_id(string user_id, string& root_dir_id, int
 bool RequestDispatcher::db_is_initiated(){
   return init_ok_;
 }
+
+
+ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(string user_id, string user_token, string dir_id, int& status){
+
+  // Create node
+  ZipHandler::dir_tree_node_st node;
+  node.dir_node_name.clear();
+  node.files_contained.clear();
+  node.sub_dirs.clear();
+  
+  // Get directory info
+  DataHandler::dir_info_st dir_info;
+  if( !get_directory_info(user_id,user_token,dir_id,dir_info,status) ){ return node; }
+
+  // Fill dir_node_name;
+  node.dir_node_name = dir_info.name;  
+  
+  // Fill files_contained
+  vector<string> file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);  
+  for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !get_file_info(user_id,user_token,file_id,file_info,status) ){ return node; }
+    ZipHandler::file_st file_zip_info;
+    file_zip_info.file_id = user_id + file_id + file_info.revision;
+    file_zip_info.file_real_name = file_info.name + "." + file_info.extension;
+    node.files_contained.push_back(file_zip_info);
+  }
+  
+  //Fill sub_dirs recursively
+  vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
+    string subdir_id = (*it);
+    ZipHandler::dir_tree_node_st child_dir_node = get_dir_structure_recursive(user_id,user_token,subdir_id,status); // Recursive
+    node.sub_dirs.push_back(child_dir_node);
+  }  
+  
+  return node;
+}
+
