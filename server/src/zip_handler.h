@@ -24,8 +24,15 @@ class ZipHandler{
     ZipHandler();
     ~ZipHandler();
 
+    /**
+     * @brief Cretes a zip file in the root directory of the server with "zip_name.zip", base on the dir_structure.
+     * 
+     * 
+     * @param zip_name ...
+     * @param dir_structure ...
+     * @return void
+     */
     void create_zip(string zip_name, ZipHandler::dir_tree_node_st dir_structure);
-    
     
   private:
     
