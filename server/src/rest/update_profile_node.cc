@@ -35,7 +35,7 @@ void UpdateProfileNode::executePut(MgConnectionW& conn, const char* url){
         DataHandler::user_info_st user_info;
 
         // Esto hay que cambiarlo por un metodo que me permite updatear los campos del usuario
-        if (!this->rd->get_user_info(userId,/*token,*/user_info,status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
+        if (!this->rd->get_user_info(userId,/*token,*/user_info,status)){   //TODO(martindonofrio): use RequestDispatcher::check_token()
             conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
