@@ -270,23 +270,23 @@ bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
 
 
 /*
-bool RequestDispatcher::delete_user(string user_id, string user_token, int& status){
+bool RequestDispatcher::delete_user(string user_id, int& status){
   // TODO(mart): implement
-//+ Borrar usuario -> get_user_token(), delete_user(). Verificar que el usr sea dueño. ¿Borrar todos sus archivos y carpetas?
+//+ Borrar usuario -> delete_user(). Verificar que el usr sea dueño. ¿Borrar todos sus archivos y carpetas?
   return false;
 }
 
 
-bool RequestDispatcher::delete_directory(string user_id, string user_token, string dir_id, int& status){
+bool RequestDispatcher::delete_directory(string user_id, string dir_id, int& status){
   // TODO(mart): implement
-// + Borrar directorio -> get_user_token(), delete_directory(). Verificar que el usr sea dueño. Borrar todas las subcarpetas y archivos que contenga.
+// + Borrar directorio -> delete_directory(). Verificar que el usr sea dueño. Borrar todas las subcarpetas y archivos que contenga.
   return false;
 }
 
 
-bool RequestDispatcher::delete_file(string user_id, string user_token, string file_id, int& status){
+bool RequestDispatcher::delete_file(string user_id, string file_id, int& status){
   // TODO(mart): implement
-//+ Borrar archivo -> get_user_token(), delete_file(). En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
+//+ Borrar archivo ->  delete_file(). En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
   return false;
 }
 */
