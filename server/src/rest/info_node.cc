@@ -96,7 +96,6 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 					const std::string tmp = item.str();
 					const char* msg = tmp.c_str();
 					conn.printfData(msg);
-
 				}
 
 			} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";

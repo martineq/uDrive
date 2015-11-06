@@ -6,11 +6,6 @@
  */
 
 #include "signup_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-
 using std::string;
 using std::stringstream;
 using std::vector;
@@ -23,40 +18,24 @@ SignupNode::~SignupNode() {
 
 void SignupNode::executePost(MgConnectionW& conn, const char* url){
 		Log(Log::LogMsgDebug) << "[" << "SignUp " << "]";
-		const char *s = conn->content;
-		char body[1024*sizeof(char)] = "";
-		strncpy(body, s, conn->content_len);
-		body[conn->content_len] = '0';
+		std::string firstname = conn.getBodyJson("firstname");
+		std::string lastname = conn.getBodyJson("lastname");
+		std::string email = conn.getBodyJson("email");
+		std::string password = conn.getBodyJson("password");
 
-		// Parse the JSON body
-		Json::Value root;
-		Json::Reader reader;
-		bool parsedSuccess = reader.parse(body, root, false);
-		if (!parsedSuccess) {
-			// Error, do something
-		}
-		const Json::Value firstname = root["firstname"];
-		const Json::Value lastname = root["lastname"];
-		const Json::Value email = root["email"];
-		const Json::Value password = root["password"];
-
-		std::string firstnameS = firstname.asString();
-		std::string lastnameS = lastname.asString();
-		std::string emailS = email.asString();
-		std::string passwordS = password.asString();
-
-		Log(Log::LogMsgDebug) << "[" << "SignUp " << "] firstname: " << firstnameS << " Lastname: " << lastnameS << " Email: " << emailS << " Password: " << passwordS;
+		Log(Log::LogMsgDebug) << "[" << "SignUp " << "] firstname: " << firstname << ""
+		" Lastname: " << lastname << " Email: " << email << " Password: " << password;
 
 		int status=5;
-		if ( (emailS != "") && (passwordS != "") ){ 
+		if ( (email != "") && (password != "") ){
 			int status;
 			time_t now = time(0);
 			char* dt = ctime(&now);
 			std::string fecha(dt);
 			std::string userId;
-			std::string new_token=CreateToken(emailS);
+			std::string new_token=CreateToken(email);
 
-			if (!this->rd->sign_up(emailS, passwordS, firstnameS, "Caba", new_token, fecha, userId,status)){
+			if (!this->rd->sign_up(email, password, firstname, "Caba", new_token, fecha, userId,status)){
 				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
