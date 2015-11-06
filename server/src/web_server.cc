@@ -1,4 +1,5 @@
 #include "web_server.h"
+#include "rest/profile_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -36,7 +37,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
-    InfoNode* in=new InfoNode();
+    ProfileNode * in=new ProfileNode();
     in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));  // TODO(martindonofrio): change hardcoded values
     in->execute(mgConnection,conn->uri);
     delete in;
@@ -62,6 +63,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     sn->execute(mgConnection,conn->uri);
     delete sn;
     return MG_TRUE;
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/profile",8)) {
+      ProfileNode* sn=new ProfileNode();
+      sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
+      sn->execute(mgConnection,conn->uri);
+      delete sn;
+      return MG_TRUE;
      
   } else {
     return MG_FALSE;  // Rest of the events are not processed

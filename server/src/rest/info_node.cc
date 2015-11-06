@@ -6,10 +6,6 @@
  */
 
 #include "info_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
 
 using std::string;
 using std::stringstream;
@@ -21,7 +17,7 @@ InfoNode::InfoNode()  : Node("Info") {
 InfoNode::~InfoNode() {
 }
 
-vector<string> split(const string &s, char delim) {
+vector<string> InfoNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -31,11 +27,8 @@ vector<string> split(const string &s, char delim) {
     return tokens;
 }
 
-/**
- *
- */
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
-	vector<string> lista=split(url,'/');
+	vector<string> lista=InfoNode::split(url,'/');
 	string dirId="";
 	int status=11;
 
