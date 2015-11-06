@@ -58,7 +58,6 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
 
             viewHolder.imageButton = btnMenu;
 
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (FilesViewHolder) convertView.getTag();

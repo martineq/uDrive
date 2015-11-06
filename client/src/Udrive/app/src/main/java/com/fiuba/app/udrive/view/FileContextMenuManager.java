@@ -2,11 +2,15 @@ package com.fiuba.app.udrive.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+
+import com.fiuba.app.udrive.utils.Utils;
 
 public class FileContextMenuManager implements View.OnAttachStateChangeListener {
 
@@ -62,8 +66,15 @@ public class FileContextMenuManager implements View.OnAttachStateChangeListener 
         final int[] openingViewLocation = new int[2];
         openingView.getLocationOnScreen(openingViewLocation);
         int additionalBottomMargin = 16;
+        Context myContext = openingView.getContext();
+        int screenHeight = Utils.getScreenHeight(myContext);
         contextMenuView.setTranslationX(openingViewLocation[0] - contextMenuView.getWidth());
-        contextMenuView.setTranslationY(openingViewLocation[1] - contextMenuView.getHeight() - additionalBottomMargin);
+
+        if( openingViewLocation[1] <= (screenHeight/2) ){
+            contextMenuView.setTranslationY(openingViewLocation[1] - 10*additionalBottomMargin);
+        }else{
+            contextMenuView.setTranslationY(openingViewLocation[1] - contextMenuView.getHeight() - additionalBottomMargin);
+        }
     }
 
     private void performShowAnimation() {

@@ -16,9 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -70,20 +68,6 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
-        list.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                    FileContextMenuManager.getInstance().hideContextMenu();
-
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
 
         this.mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);

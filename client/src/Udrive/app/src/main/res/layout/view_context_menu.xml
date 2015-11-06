@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <LinearLayout
         android:id="@+id/lnBtnDownload"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnDownload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_download" />
 
         <TextView
@@ -36,20 +34,19 @@
 
     <LinearLayout
         android:id="@+id/lnBtnInformation"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnInformation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_alert_circle" />
 
         <TextView
@@ -68,28 +65,27 @@
 
     <LinearLayout
         android:id="@+id/lnBtnShare"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnShare"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_account_plus" />
 
         <TextView
             android:id="@+id/textViewShare"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
             android:background="@color/white"
             android:text="SHARE" />
     </LinearLayout>
@@ -101,20 +97,19 @@
 
     <LinearLayout
         android:id="@+id/lnBtnTag"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnTag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_tag" />
 
         <TextView
@@ -125,6 +120,7 @@
             android:layout_margin="5dp"
             android:text="TAG" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -132,20 +128,19 @@
 
     <LinearLayout
         android:id="@+id/lnBtnDelete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_delete" />
 
         <TextView
@@ -165,20 +160,19 @@
 
     <LinearLayout
         android:id="@+id/lnBtnCancel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/ContextMenuButton"
         android:background="@color/white"
         android:clickable="true"
-        android:orientation="horizontal"
-        style="@style/ContextMenuButton">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_close_circle" />
 
         <TextView

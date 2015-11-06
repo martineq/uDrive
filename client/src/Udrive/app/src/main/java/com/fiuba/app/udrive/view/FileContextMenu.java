@@ -4,15 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.fiuba.app.udrive.R;
 
 
 public class FileContextMenu extends LinearLayout {
-    private static final int CONTEXT_MENU_WIDTH = 480;
 
     private int fileItem = -1;
 
@@ -27,7 +24,7 @@ public class FileContextMenu extends LinearLayout {
         LayoutInflater.from(getContext()).inflate(R.layout.view_context_menu, this, true);
         setBackgroundResource(R.drawable.bg_container_shadow);
         setOrientation(VERTICAL);
-        setLayoutParams(new LayoutParams(CONTEXT_MENU_WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     public void bindToItem(int FileItem) {
@@ -37,7 +34,6 @@ public class FileContextMenu extends LinearLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        //ButterKnife.inject(this);
         LinearLayout btnDownload = (LinearLayout) findViewById(R.id.lnBtnDownload);
         LinearLayout btnInfo = (LinearLayout) findViewById(R.id.lnBtnInformation);
         LinearLayout btnShare = (LinearLayout) findViewById(R.id.lnBtnShare);
