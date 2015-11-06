@@ -31,8 +31,11 @@ vector<string> split(const string &s, char delim) {
     return tokens;
 }
 
+/**
+ *
+ */
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
-	vector<string> lista=split(conn->uri,'/');
+	vector<string> lista=split(url,'/');
 	string dirId="";
 	int status=11;
 
