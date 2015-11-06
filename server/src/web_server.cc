@@ -1,5 +1,6 @@
 #include "web_server.h"
 #include "rest/profile_node.h"
+#include "rest/update_profile_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -69,6 +70,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
       sn->execute(mgConnection,conn->uri);
       delete sn;
+      return MG_TRUE;
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/photo",6)) {
+      UpdateProfileNode* upn=new UpdateProfileNode();
+      upn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
+      upn->execute(mgConnection,conn->uri);
+      delete upn;
       return MG_TRUE;
      
   } else {

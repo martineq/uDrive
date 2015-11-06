@@ -31,6 +31,7 @@ class Node {
 			*/
 		virtual void executeDelete(MgConnectionW& conn, const char* url);
 
+		virtual void executePut(MgConnectionW& conn, const char* url);
 			/** 
 			/ Method that is executed if the connection is POST
 			*/

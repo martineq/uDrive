@@ -18,6 +18,8 @@ void Node::execute(MgConnectionW& conn, const char* url){
 		this->executePost(conn, url);
 	else if(strcmp(method, "DELETE") == 0)
 		this->executeDelete(conn, url);
+    else if(strcmp(method, "PUT") == 0)
+        this->executePut(conn, url);
 	else
 		this->methodNotAllowed(conn, url);
 }
@@ -32,6 +34,10 @@ void Node::executeGet(MgConnectionW& conn, const char* url){
 
 void Node::executeDelete(MgConnectionW& conn, const char* url){
 	this->methodNotAllowed(conn, url);
+}
+
+void Node::executePut(MgConnectionW& conn, const char* url){
+    this->methodNotAllowed(conn, url);
 }
 
 void Node::methodNotAllowed(MgConnectionW& conn, const char* url){
