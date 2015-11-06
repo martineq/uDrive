@@ -79,10 +79,9 @@ TEST(MongooseTest, CreateServeClose) {
   struct mg_server *server;
 
   // Create and configure the server
-  //server = mg_create_server(NULL, TestAux::ev_handler);
   server = mg_create_server(NULL, ev_handler);
   const char * errMsg = mg_set_option(server, "listening_port", "8080");
-  EXPECT_STREQ(NULL, errMsg);
+  EXPECT_STREQ(NULL,errMsg);
   
   // Serve request. Hit Ctrl-C to terminate the program
   printf("Starting on port %s\n", mg_get_option(server, "listening_port"));
@@ -431,7 +430,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // + Get userInfo    IN: userId/token                           OUT: name/email
 
   // Init database. ¡Warning!: This test assumes an empty Database
-  string db_path = "/tmp/testdb_checkpoint2";
+  string db_path = "/tmp/testdb_checkpoint3";
   size_t max_quota = 150;
   RequestDispatcher* rd = nullptr;
   rd = RequestDispatcher::get_instance(db_path,max_quota);
@@ -471,7 +470,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT
   string file_id = "0";
   status = 0;
-  ok = rd->new_file(user_id,token,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file_id,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->new_file(user_id,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(file_id!="0");
   
@@ -486,7 +486,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT
   string dir_id = "0";
   status = 0;
-  ok = rd->new_directory(user_id,token,dir_name,date,parent_dir_id,dir_id,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->new_directory(user_id,dir_name,date,parent_dir_id,dir_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(dir_id!="0");
   string sub_dir_id = dir_id;
@@ -506,7 +507,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT
   string file_id_2 = "0";
   status = 0;
-  ok = rd->new_file(user_id,token_2,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  ok = rd->new_file(user_id,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(file_id_2!="0");
   
@@ -519,7 +521,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT
   DataHandler::dir_info_st dir_info;
   status = 0;
-  ok = rd->get_directory_info(user_id,token,dir_id,dir_info,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
@@ -533,7 +536,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
 
   // ** For reding information of sub-directories and files contained in this directory **
   vector<RequestDispatcher::info_element_st> v_dir_elem_info;
-  rd->get_directory_element_info_from_dir_info(user_id,token,dir_info,v_dir_elem_info,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  rd->get_directory_element_info_from_dir_info(user_id,dir_info,v_dir_elem_info,status);
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
@@ -553,7 +557,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT  
   DataHandler::user_info_st user_info;
   status = 0;
-  ok = rd->get_user_info(user_id,token,user_info,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->get_user_info(user_id,user_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   
   EXPECT_EQ(user_info.dir_root,"1");                 // Internal ID of user root dir
@@ -580,7 +585,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Parameters OUT
   string file2_id = "0";
   status = 0;
-  ok = rd->new_file(user_id,token,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file2_id,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->new_file(user_id,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file2_id,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(10,status); // STATUS_MAX_QUOTA_EXCEEDED==10
   EXPECT_TRUE(file2_id=="0");
@@ -593,47 +599,59 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(user_id_second!="0");
   DataHandler::user_info_st user_info_second;
   status = 0;
-  ok = rd->get_user_info(user_id_second,"10244756",user_info_second,status);
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_user_info(user_id_second,user_info_second,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
 
   
   // Use get_directory_info() with forbidden user
   string forbidden_user_id = user_id;
   DataHandler::dir_info_st dir_info2;
-  ok = rd->get_directory_info(forbidden_user_id,token,user_info_second.dir_root,dir_info2,status);
+  EXPECT_TRUE(rd->check_token(forbidden_user_id,token,status));
+  ok = rd->get_directory_info(forbidden_user_id,user_info_second.dir_root,dir_info2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   
   // Use get_file_info() with forbidden user
   DataHandler::file_info_st file_info2;
-  ok = rd->get_file_info(user_id_second,"10244756",file_id_2,file_info2,status);
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_info(user_id_second,file_id_2,file_info2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   
   // Use get_file_info() with wrong token value. (Verifies check_token() )
   file_info2;
-  ok = rd->get_file_info(user_id_second,"00000000",file_id_2,file_info2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
-  EXPECT_EQ(6,status); // STATUS_WRONG_TOKEN==6  
+  bool token_is_ok = rd->check_token(user_id_second,"00000000",status);
+  EXPECT_FALSE(token_is_ok);
+  EXPECT_EQ(6,status); // STATUS_WRONG_TOKEN==6
+  if( token_is_ok ){
+    // Never gets in
+    //ok = rd->get_file_info(user_id_second,file_id_2,file_info2,status);
+    //EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  }
+  
   
   // Use get_file_stream() with authorized user
   char * p_file_stream_2 = nullptr;
   size_t size_2 = 0;
-  ok = rd->get_file_stream(user_id,token_2,file_id_2,"1",p_file_stream_2,size_2,status);
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  ok = rd->get_file_stream(user_id,file_id_2,"1",p_file_stream_2,size_2,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(54,size_2);
   
   // Use get_file_stream() with forbidden user
   p_file_stream_2 = nullptr;
   size_2 = 0;
-  ok = rd->get_file_stream(user_id_second,"10244756",file_id_2,"1",p_file_stream_2,size_2,status);
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   
   
   // Add sub-sub-directory
   string sub_sub_dir_id = "0";
-  ok = rd->new_directory(user_id,token,"sub_sub",date,sub_dir_id,sub_sub_dir_id,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->new_directory(user_id,"sub_sub",date,sub_dir_id,sub_sub_dir_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(sub_sub_dir_id!="0");
   
@@ -641,7 +659,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Add file in sub-sub-directory
   const char* p_bin_stream_3 = "this is file 3"; // Size: 14 bytes
   string file_id_3 = "0";
-  ok = rd->new_file(user_id,token,"file_3","txt",date,p_bin_stream_3,"14",sub_sub_dir_id,file_id_3,status);
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->new_file(user_id,"file_3","txt",date,p_bin_stream_3,"14",sub_sub_dir_id,file_id_3,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(file_id_3!="0");
   
@@ -651,7 +670,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   char* p_dir_stream = nullptr;
   size_t size_stream = 0;
   status;
-  EXPECT_TRUE(rd->get_dir_stream(user_id,token,root_dir_id,p_dir_stream,size_stream,status));
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
   EXPECT_EQ(1130,size_stream);  // Size of zip file: 1130 bytes
   
     

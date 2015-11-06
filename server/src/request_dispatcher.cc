@@ -41,10 +41,21 @@ bool RequestDispatcher::log_in(string email, string password, string new_token, 
 }
 
 
-bool RequestDispatcher::new_directory(string user_id, string user_token, string name, string date, string parent_dir_id,
-                                      string& dir_id, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
+bool RequestDispatcher::check_token(string user_id, string user_token, int& status){
+  string saved_token;
+  if( !dh_.get_user_token(user_id,saved_token,status) ){ return false; };
+  
+  if( user_token!=saved_token ){
+    status = STATUS_WRONG_TOKEN;
+    return false;
+  }  
 
+  return true;
+}
+
+
+bool RequestDispatcher::new_directory(string user_id, string name, string date, string parent_dir_id,
+                                      string& dir_id, int& status){
   if( parent_dir_id==LABEL_ZERO ){
     if( !get_root_dir_id(user_id,parent_dir_id,status) ){ return false; }
   }
@@ -58,10 +69,8 @@ bool RequestDispatcher::new_directory(string user_id, string user_token, string 
 }
 
 
-bool RequestDispatcher::new_file(string user_id, string user_token, string name, string extension, string date,
+bool RequestDispatcher::new_file(string user_id, string name, string extension, string date,
                                  const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
-
   // Check user quota
   string quota_used;
   if( !get_user_quota_used(user_id,quota_used,status) ){ return false; }
@@ -97,15 +106,12 @@ bool RequestDispatcher::new_file(string user_id, string user_token, string name,
 }
 
 
-bool RequestDispatcher::get_user_info(string user_id, string user_token, DataHandler::user_info_st& user_info, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
-
+bool RequestDispatcher::get_user_info(string user_id, DataHandler::user_info_st& user_info, int& status){
   return dh_.get_user_info(user_id,user_info,status);
 }
 
 
-bool RequestDispatcher::get_directory_info(string user_id, string user_token, string dir_id, DataHandler::dir_info_st& dir_info, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
+bool RequestDispatcher::get_directory_info(string user_id, string dir_id, DataHandler::dir_info_st& dir_info, int& status){
   
   bool is_root_dir = (dir_id==LABEL_ZERO);
   
@@ -137,7 +143,7 @@ bool RequestDispatcher::get_directory_info(string user_id, string user_token, st
 }
 
 
-bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id, string user_token, DataHandler::dir_info_st dir_info,
+bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id, DataHandler::dir_info_st dir_info,
                                                                  vector< RequestDispatcher::info_element_st >& directory_element_info, int& status){
   directory_element_info.clear();
   
@@ -148,7 +154,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
     DataHandler::dir_info_st subdir_info;
     RequestDispatcher::info_element_st info_element;
     
-    if( !get_directory_info(user_id,user_token,subdir_id,subdir_info,status) ){ return false; }
+    if( !get_directory_info(user_id,subdir_id,subdir_info,status) ){ return false; }
     info_element.id = stoul(subdir_id,nullptr,10);
     info_element.lastModDate = subdir_info.date_last_mod;
     info_element.name = subdir_info.name;
@@ -172,7 +178,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
     DataHandler::file_info_st file_info;
     RequestDispatcher::info_element_st info_element;
     
-    if( !get_file_info(user_id,user_token,file_id,file_info,status) ){ return false; }
+    if( !get_file_info(user_id,file_id,file_info,status) ){ return false; }
     info_element.id = stoul(file_id,nullptr,10);
     info_element.lastModDate = file_info.date_last_mod;
     info_element.name = file_info.name;
@@ -194,8 +200,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
 }
 
 
-bool RequestDispatcher::get_file_info(string user_id, string user_token, string file_id, DataHandler::file_info_st& file_info, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
+bool RequestDispatcher::get_file_info(string user_id, string file_id, DataHandler::file_info_st& file_info, int& status){
 
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
@@ -219,10 +224,8 @@ bool RequestDispatcher::get_file_info(string user_id, string user_token, string 
 }
 
 
-bool RequestDispatcher::get_file_stream(string user_id, string user_token, string file_id, string revision,
+bool RequestDispatcher::get_file_stream(string user_id, string file_id, string revision,
                                         char*& p_file_stream, size_t& size_stream, int& status){
-  if( !check_token(user_id,user_token,status) ){ return false; }
-  
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
 
@@ -248,11 +251,11 @@ bool RequestDispatcher::get_file_stream(string user_id, string user_token, strin
 }
 
 
-bool RequestDispatcher::get_dir_stream(string user_id, string user_token, string dir_id,
+bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
                                        char*& p_dir_stream, size_t& size_stream, int& status){
   
   // Gets structure info for the directory
-  ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,user_token,dir_id,status);
+  ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,dir_id,status);
   
   // Generate the zip file
   string zip_name = "zipfile_" + user_id;
@@ -287,19 +290,6 @@ bool RequestDispatcher::delete_file(string user_id, string user_token, string fi
   return false;
 }
 */
-
-
-bool RequestDispatcher::check_token(string user_id, string user_token, int& status){
-  string saved_token;
-  if( !dh_.get_user_token(user_id,saved_token,status) ){ return false; };
-  
-  if( user_token!=saved_token ){
-    status = STATUS_WRONG_TOKEN;
-    return false;
-  }  
-
-  return true;
-}
 
 
 vector<string> RequestDispatcher::split_string(string string_to_split, char delimiter){
@@ -397,7 +387,7 @@ bool RequestDispatcher::db_is_initiated(){
 }
 
 
-ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(string user_id, string user_token, string dir_id, int& status){
+ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(string user_id, string dir_id, int& status){
 
   // Create node
   ZipHandler::dir_tree_node_st node;
@@ -407,7 +397,7 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   
   // Get directory info
   DataHandler::dir_info_st dir_info;
-  if( !get_directory_info(user_id,user_token,dir_id,dir_info,status) ){ return node; }
+  if( !get_directory_info(user_id,dir_id,dir_info,status) ){ return node; }
 
   // Fill dir_node_name;
   node.dir_node_name = dir_info.name;  
@@ -417,7 +407,7 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
     string file_id = (*it);
     DataHandler::file_info_st file_info;
-    if( !get_file_info(user_id,user_token,file_id,file_info,status) ){ return node; }
+    if( !get_file_info(user_id,file_id,file_info,status) ){ return node; }
     ZipHandler::file_st file_zip_info;
     file_zip_info.file_id = user_id + file_id + file_info.revision;
     file_zip_info.file_real_name = file_info.name + "." + file_info.extension;
@@ -428,7 +418,7 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
     string subdir_id = (*it);
-    ZipHandler::dir_tree_node_st child_dir_node = get_dir_structure_recursive(user_id,user_token,subdir_id,status); // Recursive
+    ZipHandler::dir_tree_node_st child_dir_node = get_dir_structure_recursive(user_id,subdir_id,status); // Recursive
     node.sub_dirs.push_back(child_dir_node);
   }  
   

@@ -25,7 +25,6 @@ class RequestDispatcher{
     
     RequestDispatcher(string database_path,size_t max_user_quota);
     bool init(string database_path,size_t max_user_quota);
-    bool check_token(string user_id, string user_token, int& status);
     bool get_user_quota_used(string user_id, string& quota, int& status);
     bool increase_user_quota_used(string user_id, string quota_increased, int& status);
     bool decrease_user_quota_used(string user_id, string quota_decreased, int& status); 
@@ -35,7 +34,7 @@ class RequestDispatcher{
     bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
     vector<string> split_string(string string_to_split, char delimiter);
     bool db_is_initiated();
-    ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string user_token, string dir_id, int& status);
+    ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string dir_id, int& status);
     
   public:
 
@@ -52,7 +51,7 @@ class RequestDispatcher{
     ~RequestDispatcher();   
     
     /**
-     * @brief Returns the instance of ht e class. Returs nullptr if the DB is not initiated previously
+     * @brief Returns the instance of the class. Returs nullptr if the DB is not initiated previously
      * 
      * @return RequestDispatcher*
      */
@@ -71,7 +70,7 @@ class RequestDispatcher{
     * @param password 
     * @param name 
     * @param location 
-    * @param token 
+    * @param new_token 
     * @param date 
     * @param user_id returns user ID
     * @param status returns DataHandler status ONLY if @return==false
@@ -92,12 +91,24 @@ class RequestDispatcher{
     */
     bool log_in(string email, string password, string new_token, string& user_id, int& status);
     
+    
+    /**
+     * @brief Verifies if the user_token correspond to the user_id. 
+     *        Returns true if the token is valid, false in other case.
+     * 
+     * @param user_id ...
+     * @param user_token ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool check_token(string user_id, string user_token, int& status);
+    
+    
     /**
      * @brief Creates a new directory. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param name ...
      * @param date ...
      * @param parent_dir_id ...
@@ -105,7 +116,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool new_directory(string user_id, string user_token, string name, string date, string parent_dir_id, string& dir_id, int& status);
+    bool new_directory(string user_id, string name, string date, string parent_dir_id, string& dir_id, int& status);
     
     /**
      * @brief Saves a new file. Returns true on success.
@@ -113,7 +124,6 @@ class RequestDispatcher{
      *        TODO(mart): implement function: "If the Name and Dir ID is the same, check the hash with previous 
      *                                         revision and, if they are different, make new revision."
      * @param user_id ...
-     * @param user_token ...
      * @param name ...
      * @param extension ...
      * @param date ...
@@ -124,7 +134,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool new_file(string user_id, string user_token, string name, string extension, string date, const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status);
+    bool new_file(string user_id, string name, string extension, string date, const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status);
 
     
     /**
@@ -132,38 +142,35 @@ class RequestDispatcher{
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param user_info returns DataHandler::user_info_st
      * @param status  returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_user_info(string user_id, string user_token, DataHandler::user_info_st& user_info, int& status);
+    bool get_user_info(string user_id, DataHandler::user_info_st& user_info, int& status);
     
     /**
      * @brief Gets the directory information on a  DataHandler::dir_info_st.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param dir_id ...
      * @param dir_info returns DataHandler::dir_info_st
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_directory_info(string user_id, string user_token, string dir_id, DataHandler::dir_info_st& dir_info, int& status);
+    bool get_directory_info(string user_id, string dir_id, DataHandler::dir_info_st& dir_info, int& status);
     
     /**
      * @brief Gets the file information on a  DataHandler::file_info_st.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param file_id ...
      * @param file_info returns DataHandler::file_info_st
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_file_info(string user_id, string user_token, string file_id, DataHandler::file_info_st& file_info, int& status);
+    bool get_file_info(string user_id, string file_id, DataHandler::file_info_st& file_info, int& status);
     
     
     /**
@@ -171,7 +178,6 @@ class RequestDispatcher{
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param file_id ...
      * @param revision ...
      * @param p_file_stream return the file stream. The user must de-allocate the file.
@@ -179,7 +185,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_file_stream(string user_id, string user_token, string file_id, string revision, char*& p_file_stream, size_t& size_stream, int& status);
+    bool get_file_stream(string user_id, string file_id, string revision, char*& p_file_stream, size_t& size_stream, int& status);
 
     
     /**
@@ -187,19 +193,18 @@ class RequestDispatcher{
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param dir_id ...
      * @param p_dir_stream return the dir stream. The user must de-allocate the file.
      * @param size_stream return the size of the stream (in bytes)
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_dir_stream(string user_id, string user_token, string dir_id, char*& p_dir_stream, size_t& size_stream, int& status);
+    bool get_dir_stream(string user_id, string dir_id, char*& p_dir_stream, size_t& size_stream, int& status);
     
     
-//     bool delete_user(string user_id, string user_token, int& status);
-//     bool delete_directory(string user_id, string user_token, string dir_id, int& status);
-//     bool delete_file(string user_id, string user_token, string file_id, int& status);
+//     bool delete_user(string user_id, int& status);
+//     bool delete_directory(string user_id, string dir_id, int& status);
+//     bool delete_file(string user_id, string file_id, int& status);
 
 //  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
 //  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
@@ -210,13 +215,12 @@ class RequestDispatcher{
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param user_token ...
      * @param dir_info ...
      * @param directory_element_info return vector of RequestDispatcher::info_element_st
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_directory_element_info_from_dir_info(string user_id, string user_token, DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool get_directory_element_info_from_dir_info(string user_id, DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
 
 };
 
@@ -228,8 +232,8 @@ Clase Request Dispatcher
 
 TODO(mart): ¿Cómo se van a manejar las revisiones? Ver si hay que agregar parent_revision en cada file.
 Casos de uso y funciones de Data Handler relacionadas: 
-+ Modificar info usr        -> get_user_token(), modify_user_info().            Verificar que el usr sea dueño.
-+ Modificar info dir        -> get_user_token(), modify_directory_info().       Verificar que el usr sea dueño.
-+ Modificar info arch       -> get_user_token(), modify_file_info().            En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
++ Modificar info usr        -> modify_user_info().            Verificar que el usr sea dueño.
++ Modificar info dir        -> modify_directory_info().       Verificar que el usr sea dueño.
++ Modificar info arch       -> modify_file_info().            En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
 
 */

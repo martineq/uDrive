@@ -51,7 +51,7 @@ void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
 			if(var_name == "arch") break;
 		}
 		Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], finished";
-		if(!this->rd->new_file(userId, token, var_name, ".jpg",fecha, p_file,"8",dirId,file_id,status)){
+		if(!this->rd->new_file(userId, /*token,*/ var_name, ".jpg",fecha, p_file,"8",dirId,file_id,status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);

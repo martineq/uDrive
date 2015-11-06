@@ -63,9 +63,9 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		std::string fecha(dt);
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
-		if (this->rd->new_directory(userId, token, dirNameS, fecha, dirId, new_dirId, status)){
+		if (this->rd->new_directory(userId, /* token,*/ dirNameS, fecha, dirId, new_dirId, status)){ // TODO(martindonofrio): use RequestDispatcher::check_token()
 			DataHandler::dir_info_st dirInfo;
-			if (!this->rd->get_directory_info(userId, token, dirId, dirInfo, status)){
+			if (!this->rd->get_directory_info(userId, /*token,*/ dirId, dirInfo, status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
 				conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
@@ -76,7 +76,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 				bool enc = false;
 				std::ostringstream item;
 	  			item << "[";
-				if (this->rd->get_directory_element_info_from_dir_info(userId, token, dirInfo, directory_element_info, status)){
+				if (this->rd->get_directory_element_info_from_dir_info(userId, /*token,*/ dirInfo, directory_element_info, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
 					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
 					if (directory_element_info.size()!=0){
