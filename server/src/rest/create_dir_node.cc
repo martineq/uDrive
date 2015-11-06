@@ -32,8 +32,7 @@ vector<string> CreateDirNode::split(const string &s, char delim) {
 }
 
 void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
-	vector<string> lista=CreateDirNode::split(conn->uri,'/');
-
+	vector<string> lista=CreateDirNode::split(url,'/');
 	int status=11;
 	
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
@@ -42,20 +41,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		string token=conn.getAuthorization();
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
 
-		const char *s = conn->content;
-		char body[1024*sizeof(char)] = "";
-		strncpy(body, s, conn->content_len);
-		body[conn->content_len] = '0';
-
-		// Parse the JSON body
-		Json::Value root;
-		Json::Reader reader;
-		bool parsedSuccess = reader.parse(body, root, false);
-		if (!parsedSuccess) {
-			// Error, do something
-		}
-		const Json::Value dirName = root["dirName"];
-		std::string dirNameS = dirName.asString();
+		std::string dirNameS = conn.getBodyJson("dirName");
 		std::string new_dirId;
 
 		time_t now = time(0);

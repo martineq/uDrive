@@ -6,10 +6,6 @@
  */
 
 #include "info_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
 
 using std::string;
 using std::stringstream;
@@ -21,7 +17,7 @@ InfoNode::InfoNode()  : Node("Info") {
 InfoNode::~InfoNode() {
 }
 
-vector<string> split(const string &s, char delim) {
+vector<string> InfoNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -32,7 +28,7 @@ vector<string> split(const string &s, char delim) {
 }
 
 void InfoNode::executeGet(MgConnectionW& conn, const char* url){
-	vector<string> lista=split(conn->uri,'/');
+	vector<string> lista=InfoNode::split(url,'/');
 	string dirId="";
 	int status=11;
 
@@ -93,7 +89,6 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 					const std::string tmp = item.str();
 					const char* msg = tmp.c_str();
 					conn.printfData(msg);
-
 				}
 
 			} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";

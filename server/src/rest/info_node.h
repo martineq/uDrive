@@ -11,11 +11,11 @@
 #include "../rest/node.h"
 #include "../util/log.h"
 #include <string.h>
- #include "../request_dispatcher.h"
- #include "../db_handler.h"
+#include "../request_dispatcher.h"
+#include "../db_handler.h"
 #include "../db_constants.h"
 
-class InfoNode  : public Node {
+class InfoNode : public Node {
 
 public:
 	InfoNode();
@@ -26,6 +26,7 @@ protected:
 	std::string defaultResponse();
 private:
 	RequestDispatcher* rd;
+	vector<string> split(const string &s, char delim);
 
 };
 
