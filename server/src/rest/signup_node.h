@@ -21,14 +21,13 @@
 class SignupNode  : public Node {
 
 public:
-	SignupNode();
+	SignupNode(MgConnectionW& conn);
 	~SignupNode();
-	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-	void executePost(MgConnectionW& conn, const char* url);
+	void executePost();
 	std::string defaultResponse();
+	bool auth(int &status);
 private:
-	RequestDispatcher* rd;
 	std::string CreateToken(const std::string& email);
 
 };

@@ -85,5 +85,21 @@ size_t MgConnectionW::printfData(const char* fmt, ...){
     return ret;
 }
 
+const char* MgConnectionW::getUri(){
+	return conn->uri;
+};
+
+void MgConnectionW::setUri(string uri_aux){
+	conn->uri=uri_aux.c_str();
+}
+
+const char* MgConnectionW::getMethod(){
+	return conn->request_method;
+};
+
+void MgConnectionW::setMethod(std::string method){
+	conn->request_method=method.c_str();
+};
+
 
 

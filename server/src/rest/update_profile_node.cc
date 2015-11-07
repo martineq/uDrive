@@ -8,7 +8,7 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-UpdateProfileNode::UpdateProfileNode()  : Node("UpdateProfile") {
+UpdateProfileNode::UpdateProfileNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 UpdateProfileNode::~UpdateProfileNode() {
@@ -24,45 +24,41 @@ vector<string> UpdateProfileNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void UpdateProfileNode::executePut(MgConnectionW& conn, const char* url){
-    vector<string> lista=UpdateProfileNode::split(url,'/');
+void UpdateProfileNode::executePut() {
+    vector<string> lista=UpdateProfileNode::split(getConnection().getUri(),'/');
     int status=11;
 
     if (lista.size()==3){
         string userId=lista[2];
-        string token=conn.getAuthorization();
+        string token=getConnection().getAuthorization();
         Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
-        RequestDispatcher::user_info_st user_info;
 
-        // Esto hay que cambiarlo por un metodo que me permite updatear los campos del usuario
-        if (!this->rd->get_user_info(userId,/*token,*/user_info,status)){   //TODO(martindonofrio): use RequestDispatcher::check_token()
-            conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-            conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+        RequestDispatcher::user_info_st user_info;
+        if (!getRequestDispatcher()->get_user_info(userId, user_info,status)){
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+            getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
-            conn.printfData(msg.c_str());
+            getConnection().printfData(msg.c_str());
         }
         else{
-            std::ostringstream item;
             Log(Log::LogMsgDebug) << "[" << "updating photo profile" << "]: firstname: " << user_info.first_name;
-            conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-            conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+            getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             Log(Log::LogMsgDebug) << "[" << "update profile - resultCode: 1 ]";
-            conn.printfData("{\"resultCode\": 1}");
+            getConnection().printfData("{\"resultCode\": 1}");
         }
     }else{
-        conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-        conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+        getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+        getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
         string msg=handlerError(status);
-        conn.printfData(msg.c_str());
+        getConnection().printfData(msg.c_str());
     }
 }
-
-void UpdateProfileNode::setRequestDispatcher(RequestDispatcher* rd){
-    this->rd=rd;
-}
-
 std::string UpdateProfileNode::defaultResponse(){
     return "{\"resultCode\": 2}";
 
 }
+
+
+
 
