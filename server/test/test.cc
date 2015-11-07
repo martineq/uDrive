@@ -567,7 +567,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_EQ("222.55",user_info.gps_lon);                     // User location   
   EXPECT_EQ("jake",user_info.first_name);                    // User name   
   EXPECT_EQ("the dog",user_info.last_name);                  // User name   
-  EXPECT_EQ("42",user_info.user_quota_available);            // Size of quota used (150-108==42)
+  EXPECT_EQ("108",user_info.user_quota_used);                 // Size of quota used (150-108==42)
   EXPECT_EQ("72.00%",user_info.user_quota_used_percentage);  // User quota percentage
   EXPECT_EQ("150",user_info.user_quota_total);               // User quota total
  
