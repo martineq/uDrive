@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,6 +26,7 @@ import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
+import com.fiuba.app.udrive.network.UserService;
 import com.fiuba.app.udrive.view.FileContextMenu;
 import com.fiuba.app.udrive.view.FileContextMenuManager;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -46,6 +46,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     private FilesService mFilesService;
 
+    private UserService mUserService = null;
+
     private UserAccount mUserAccount;
 
     private Integer mDirId;
@@ -61,15 +63,15 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-        mUserAccount = (UserAccount) getIntent().getSerializableExtra(this.EXTRA_USER_ACCOUNT);
-        mDirId = (Integer) getIntent().getSerializableExtra(this.EXTRA_DIR_ID);
+        mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
+        mDirId = (Integer) getIntent().getSerializableExtra(EXTRA_DIR_ID);
         Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
-        this.mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, this.mFiles, this);
+        mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, mFiles, this);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
-
-        this.mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
+        mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
+        mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
            mDirId = 0;
@@ -100,22 +102,33 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-            // Do the request
-            // set response fields into next intent
-            //mUserAccount.getUserId();
-            /*
-            Set all fields incoming from response as extras
-             */
-            Intent userProfile = new Intent(FileListActivity.this, UserProfileActivity.class);
-            UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
-                    mUserAccount.getPassword(), /*firstname*/ "firstname",
-                    /*lastname*/ "lastname", /*photo*/ "", /*lastLocation*/ "", mUserAccount.getUserId(),
-                    /*quotaTotal*/ "750 MB", /*quota disponible*/ "487.5", /*quota usado*/ "35%");
+            /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
+                    "lastname", "", -34.795713, -58.348321, mUserAccount.getUserId(),
+                    "750 MB", "487.5", "35%");
+            Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
+            profile.putExtra("userProfile", uProfile);
+            profile.putExtra("userAccount", mUserAccount);
+            startActivity(profile);*/
 
-            userProfile.putExtra("userProfile", uProfile);
-            startActivity(userProfile);
+            mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
+                @Override
+                public void onSuccess(UserProfile uProfile, int status) {
+                    Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
+                    /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
+                            mUserAccount.getPassword(), "firstname",
+                    "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
+                    "750 MB", "487.5", "35%");*/
 
+                    profile.putExtra("userProfile", uProfile);
+                    profile.putExtra("userAccount", mUserAccount);
+                    startActivity(profile);
+                }
 
+                @Override
+                public void onFailure(String message, int status) {
+
+                }
+            });
         }  else if (id == R.id.action_upload_file) {
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);

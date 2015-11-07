@@ -6,16 +6,11 @@
  */
 
 #include "create_dir_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-
 using std::string;
 using std::stringstream;
 using std::vector;
 
-CreateDirNode::CreateDirNode()  : Node("CreateDir") {
+CreateDirNode::CreateDirNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 CreateDirNode::~CreateDirNode() {
@@ -31,17 +26,18 @@ vector<string> CreateDirNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
-	vector<string> lista=CreateDirNode::split(url,'/');
+void CreateDirNode::executePost() {
+	vector<string> lista=CreateDirNode::split(getUri(),'/');
 	int status=11;
 	
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		string userId=lista[2];
 		string dirId=lista[4];
-		string token=conn.getAuthorization();
+		string token=getConnection().getAuthorization();
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
 
-		std::string dirNameS = conn.getBodyJson("dirName");
+		//TODO(martindonofrio): Validar que no sea vacio el campo dirName
+		std::string dirNameS = getConnection().getBodyJson("dirName");
 		std::string new_dirId;
 
 		time_t now = time(0);
@@ -49,22 +45,23 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 		std::string fecha(dt);
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
-		if (this->rd->new_directory(userId, /* token,*/ dirNameS, fecha, dirId, new_dirId, status)){ // TODO(martindonofrio): use RequestDispatcher::check_token()
-			RequestDispatcher::dir_info_st dirInfo;
-			if (!this->rd->get_directory_info(userId, /*token,*/ dirId, dirInfo, status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
-				conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		if (getRequestDispatcher()->new_directory(userId, dirNameS, fecha, dirId, new_dirId, status)){
+
+			RequestDispatcher::dir_info_st dirInfo_rd;
+			if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
-				conn.printfData(msg.c_str());
+				getConnection().printfData(msg.c_str());
 			}
 			else{
 				vector<RequestDispatcher::info_element_st> directory_element_info;
 				bool enc = false;
 				std::ostringstream item;
 	  			item << "[";
-				if (this->rd->get_directory_element_info_from_dir_info(userId, /*token,*/ dirInfo, directory_element_info, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
+				if (getRequestDispatcher()->get_directory_element_info_from_dir_info(userId, dirInfo_rd, directory_element_info, status)){
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
-					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
+					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
 					if (directory_element_info.size()!=0){
 						for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 		     				enc=true;
@@ -82,10 +79,10 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 					
 					if (!enc){
 						status=12;
-						conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+						getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 						string msg=handlerError(status);
-						conn.printfData(msg.c_str());
+						getConnection().printfData(msg.c_str());
 					}else{
 						item
 	     				<< "{\"id\":\"" << (*(directory_it)).id 
@@ -97,35 +94,36 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
 	     				item << "]";
 
-						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size(); 
-	  					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
+	  					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+						getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 						const std::string tmp = item.str();
 						const char* msg = tmp.c_str();
-						conn.printfData(msg);
+						getConnection().printfData(msg);
 					}
 				} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
 				}	
 		}else{
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
-			conn.printfData(msg.c_str());
+			getConnection().printfData(msg.c_str());
 		}
 	}else{
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
-			conn.printfData(msg.c_str());
+			getConnection().printfData(msg.c_str());
 	}
 }
-void CreateDirNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
-}
-
 std::string CreateDirNode::defaultResponse(){
 	return "[{ \"id\": \"0\",\"name\": \"\",\"size\": \"0\","
 			"\"type\": \"\",\"cantItems\": \"0\",\"shared\": \"\",\"lastModDate\": \"\"}]";
+}
+
+std::string CreateDirNode::getUserId() {
+	vector<string> lista=CreateDirNode::split(getUri(),'/');
+	return lista[2];
 }
 
 

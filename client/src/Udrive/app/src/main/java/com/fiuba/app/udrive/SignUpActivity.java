@@ -11,8 +11,8 @@ import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.ServiceCallback;
-import com.fiuba.app.udrive.network.SignUpService;
 import com.fiuba.app.udrive.network.StatusCode;
+import com.fiuba.app.udrive.network.UserService;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class SignUpActivity extends AppCompatActivity {
 
-    private SignUpService mSignUpService = null;
+    private UserService mUserService = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
      * @param view, is the button to perform the signing up
      */
     public void signUp(View view) {
-        mSignUpService = new SignUpService(SignUpActivity.this);
+        mUserService = new UserService(SignUpActivity.this);
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
@@ -74,10 +74,10 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         UserProfile userProfile = new UserProfile(email, password, firstname, lastname,
-                null, null, 0, null, null, null);
+                null, 0, 0, 0, null, null, null);
         // photo, lastLocation, userId, quotaTotal, quotaAvailable, quotaUsagePercent
 
-        mSignUpService.signUp(userProfile, new ServiceCallback<GenericResult>() {
+        mUserService.signUp(userProfile, new ServiceCallback<GenericResult>() {
             @Override
             public void onSuccess(GenericResult res, int status) {
                 //res.setResultCode(1);
@@ -93,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String message, int status) {
-               progressDialog.dismiss();
+                progressDialog.dismiss();
                 if (StatusCode.isHumanReadable(status)) {
                     message = StatusCode.getMessage(SignUpActivity.this, status);
                     Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_LONG).show();

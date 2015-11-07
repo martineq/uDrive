@@ -15,15 +15,16 @@
 class ProfileNode : public Node {
 
 public:
-    ProfileNode();
+    ProfileNode(MgConnectionW& conn);
     ~ProfileNode();
-    void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-    void executeGet(MgConnectionW& conn, const char* url);
+    void executeGet();
     std::string defaultResponse();
+    std::string getUserId();
+
 private:
-    RequestDispatcher* rd;
     vector<string> split(const string &s, char delim);
+
 
 };
 

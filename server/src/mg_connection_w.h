@@ -62,10 +62,16 @@ class MgConnectionW {
          */
 		void sendContentType(MgConnectionW::ContentTypes type);
 
-
         size_t printfData(const char* fmt, ...);
 
 		struct mg_connection* operator->();
+
+		const char* getUri();
+		void setUri(string uri);
+
+		const char* getMethod();
+
+		void setMethod(std::string method);
 
 	protected:
 		struct mg_connection *conn; 

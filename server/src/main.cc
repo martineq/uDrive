@@ -41,7 +41,6 @@ int main(int argc, char** argv) {
 				Log::setOutput(outputLog);
 				}
 		}
-
 		//Set nivel de logueo.
 		Log::setLogLevel(config.loglevel);
 

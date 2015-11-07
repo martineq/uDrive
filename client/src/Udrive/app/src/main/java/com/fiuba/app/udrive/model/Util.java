@@ -64,6 +64,11 @@ public class Util {
         return b.toString();
     }
 
+    /**
+     * Returns the digits contained in a string
+     * @param src, string to be parsed
+     * @return digits.
+     */
     public static String extractDigits(String src) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < src.length(); i++) {

@@ -21,7 +21,6 @@
             android:id="@+id/avatar"
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:src="@drawable/user1"
             android:scaleType="fitXY"
             android:contentDescription="Main Image"
             android:padding="1dp"
@@ -109,10 +108,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp">
         <TextView
+            android:id="@+id/lastLocation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/textview_border"
-            android:hint="Last location:"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
             android:paddingLeft="6dp"
@@ -126,10 +125,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp">
         <TextView
+            android:id="@+id/textProgressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/textview_border"
-            android:hint="Usage 250 MB (33%) of 750 MB"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
             android:paddingLeft="6dp"
