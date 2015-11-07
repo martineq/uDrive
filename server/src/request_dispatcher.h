@@ -71,6 +71,20 @@ class RequestDispatcher{
       string size;
     } ;
     
+    struct file_info_st {
+      // TODO(mart): check if all of this variables are necesary
+      string name;
+      string extension;
+      string date_last_mod;
+      string user_last_mod;
+      string tags;
+      string owner;
+      string size;
+      string deleted_status;
+      string users_shared;
+      string revision;
+    } ;
+    
     ~RequestDispatcher();   
     
     /**
@@ -193,7 +207,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_file_info(string user_id, string file_id, DataHandler::file_info_st& file_info, int& status);
+    bool get_file_info(string user_id, string file_id, RequestDispatcher::file_info_st& file_info, int& status);
     
     /**
      * @brief Gets the file stream for a file_id. Returns true on success.

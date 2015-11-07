@@ -204,7 +204,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
   vector<string> file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);  
   for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
     string file_id = (*it);
-    DataHandler::file_info_st file_info;
+    RequestDispatcher::file_info_st file_info;
     RequestDispatcher::info_element_st info_element;
     
     if( !get_file_info(user_id,file_id,file_info,status) ){ return false; }
@@ -229,7 +229,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
 }
 
 
-bool RequestDispatcher::get_file_info(string user_id, string file_id, DataHandler::file_info_st& file_info, int& status){
+bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDispatcher::file_info_st& file_info, int& status){
 
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
@@ -248,7 +248,18 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, DataHandle
     return false;
   }
 
-  file_info = file_info_temp;
+  // Assign file_info value
+  file_info.date_last_mod = file_info_temp.date_last_mod;
+  file_info.deleted_status = file_info_temp.deleted_status;
+  file_info.extension = file_info_temp.extension;
+  file_info.name = file_info_temp.name;
+  file_info.owner = file_info_temp.owner;
+  file_info.revision = file_info_temp.revision;
+  file_info.size = file_info_temp.size;
+  file_info.tags = file_info_temp.tags;
+  file_info.user_last_mod = file_info_temp.user_last_mod;
+  file_info.users_shared = file_info_temp.users_shared;
+  
   return true;
 }
 
@@ -435,7 +446,7 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   vector<string> file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);  
   for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
     string file_id = (*it);
-    DataHandler::file_info_st file_info;
+    RequestDispatcher::file_info_st file_info;
     if( !get_file_info(user_id,file_id,file_info,status) ){ return node; }
     ZipHandler::file_st file_zip_info;
     file_zip_info.file_id = user_id + file_id + file_info.revision;
