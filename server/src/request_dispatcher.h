@@ -35,19 +35,31 @@ class RequestDispatcher{
     vector<string> split_string(string string_to_split, char delimiter);
     bool db_is_initiated();
     ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string dir_id, int& status);
+    unsigned long stoul_decimal(const string& str);
     
   public:
 
     struct info_element_st {
-          size_t id;
-          string name;
-          size_t size;
-          string type;
-          size_t number_of_items;
-          string shared;
-          string lastModDate;
+      size_t id;
+      string name;
+      size_t size;
+      string type;
+      size_t number_of_items;
+      string shared;
+      string lastModDate;
     } ;
 
+    struct user_info_st {
+      string email;
+      string first_name;
+      string last_name;
+      string gps_lat;
+      string gps_lon;
+      string user_quota_used;
+      string user_quota_percentage;
+      string user_quota_total;
+    } ;
+    
     ~RequestDispatcher();   
     
     /**
@@ -76,7 +88,7 @@ class RequestDispatcher{
     * @param status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool sign_up(string email, string password, string name, string location, string new_token, string date, string& user_id, int& status);
+    bool sign_up(string email, string password, string first_name, string last_name, string gps_lat, string gps_lon, string new_token, string date, string& user_id, int& status);
     
     /**
     * @brief Verifies email/password and saves new_token. Returns true on success.
@@ -146,7 +158,7 @@ class RequestDispatcher{
      * @param status  returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_user_info(string user_id, DataHandler::user_info_st& user_info, int& status);
+    bool get_user_info(string user_id, RequestDispatcher::user_info_st& user_info, int& status);
     
     /**
      * @brief Gets the directory information on a  DataHandler::dir_info_st.  Returns true on success.
@@ -172,7 +184,6 @@ class RequestDispatcher{
      */
     bool get_file_info(string user_id, string file_id, DataHandler::file_info_st& file_info, int& status);
     
-    
     /**
      * @brief Gets the file stream for a file_id. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
@@ -186,7 +197,6 @@ class RequestDispatcher{
      * @return bool
      */
     bool get_file_stream(string user_id, string file_id, string revision, char*& p_file_stream, size_t& size_stream, int& status);
-
     
     /**
      * @brief Gets the stream for a dir_id (in a zip file). Returns true on success.

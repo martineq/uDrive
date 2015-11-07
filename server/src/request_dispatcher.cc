@@ -25,8 +25,10 @@ bool RequestDispatcher::init(string database_path, size_t max_user_quota){
 }
 
 
-bool RequestDispatcher::sign_up(string email, string password, string name, string location, string new_token, string date,
-                                string& user_id, int& status){
+bool RequestDispatcher::sign_up(string email, string password, string first_name, string last_name, string gps_lat, string gps_lon,
+                                string new_token, string date, string& user_id, int& status){
+  string name = first_name + LABEL_STRING_DELIMITER + last_name;
+  string location = gps_lat + LABEL_STRING_DELIMITER + gps_lon;
   return dh_.add_user(email,password,name,location,new_token,date,user_id,status);
 }
 
@@ -74,7 +76,7 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
   // Check user quota
   string quota_used;
   if( !get_user_quota_used(user_id,quota_used,status) ){ return false; }
-  if( (stoul(quota_used,nullptr,10) + stoul(size,nullptr,10)) > max_user_quota_ ){
+  if( ( stoul_decimal(quota_used) + stoul_decimal(size) ) > max_user_quota_ ){
     status = STATUS_MAX_QUOTA_EXCEEDED;
     return false;
   }
@@ -88,7 +90,7 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
   
   // Add physical file
   string file_name = user_id+file_id+LABEL_REVISION_1;
-  if( fh_.save_file(file_name,p_file_stream,stoul(size,nullptr,10))==0 ){
+  if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){
     if( !dh_.delete_file(file_id,status) ){ return false; }
     status = STATUS_FAIL_SAVING_FILE; return false;
   }
@@ -106,8 +108,27 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
 }
 
 
-bool RequestDispatcher::get_user_info(string user_id, DataHandler::user_info_st& user_info, int& status){
-  return dh_.get_user_info(user_id,user_info,status);
+bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_info_st& user_info, int& status){
+  
+  DataHandler::user_info_st dh_user_info;
+  if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
+
+  // Prepare data
+  user_info.email = dh_user_info.email;
+  vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
+  cout << "name: "<< dh_user_info.name << " " << ""  << endl;
+  user_info.first_name = name.front();
+  user_info.last_name = name.back();
+  vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
+  user_info.gps_lat = location.front();
+  user_info.gps_lon = location.back();
+  user_info.user_quota_used = dh_user_info.user_quota_used;
+  user_info.user_quota_total = to_string(max_user_quota_);
+  float percentage = (stoul_decimal(dh_user_info.user_quota_used) * 100) / max_user_quota_;
+  std::string str_percentage = to_string(percentage);
+  user_info.user_quota_percentage = str_percentage.substr(0,5) + "%";
+
+  return true;
 }
 
 
@@ -155,12 +176,12 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
     RequestDispatcher::info_element_st info_element;
     
     if( !get_directory_info(user_id,subdir_id,subdir_info,status) ){ return false; }
-    info_element.id = stoul(subdir_id,nullptr,10);
+    info_element.id = stoul_decimal(subdir_id);
     info_element.lastModDate = subdir_info.date_last_mod;
     info_element.name = subdir_info.name;
     info_element.type = LABEL_D;  
     info_element.shared = LABEL_FALSE; // Directory is always shared==false 
-    info_element.size = stoul(subdir_info.size,nullptr,10);
+    info_element.size = stoul_decimal(subdir_info.size);
     
     // Calculate number of items
     vector<string> temp_subdir_ids = split_string(subdir_info.directories_contained,LABEL_STRING_DELIMITER);
@@ -179,11 +200,11 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
     RequestDispatcher::info_element_st info_element;
     
     if( !get_file_info(user_id,file_id,file_info,status) ){ return false; }
-    info_element.id = stoul(file_id,nullptr,10);
+    info_element.id = stoul_decimal(file_id);
     info_element.lastModDate = file_info.date_last_mod;
     info_element.name = file_info.name;
     info_element.type = LABEL_A;  
-    info_element.size = stoul(file_info.size,nullptr,10);
+    info_element.size = stoul_decimal(file_info.size);
     info_element.number_of_items = 0; // File is always number_of_items==0 
     
     // Calculate number of users shared
@@ -315,7 +336,7 @@ bool RequestDispatcher::increase_user_quota_used(string user_id, string quota_in
   DataHandler::user_info_st user_info;
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
   
-  size_t new_quota = stoul(user_info.user_quota_used,nullptr,10) + stoul(quota_increased,nullptr,10);
+  size_t new_quota = stoul_decimal(user_info.user_quota_used) + stoul_decimal(quota_increased);
   
   return( dh_.modify_user_info(user_id,user_info.email,user_info.name,user_info.location,
                                user_info.shared_files,to_string(new_quota),status) );
@@ -326,7 +347,7 @@ bool RequestDispatcher::decrease_user_quota_used(string user_id, string quota_de
   DataHandler::user_info_st user_info;
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
   
-  size_t new_quota = stoul(user_info.user_quota_used,nullptr,10) - stoul(quota_decreased,nullptr,10);
+  size_t new_quota = stoul_decimal(user_info.user_quota_used) - stoul_decimal(quota_decreased);
   
   return( dh_.modify_user_info(user_id,user_info.email,user_info.name,user_info.location,
                                user_info.shared_files,to_string(new_quota),status) );
@@ -355,7 +376,7 @@ bool RequestDispatcher::increase_dir_size_recursive(string dir_id, string size_i
     if( !increase_dir_size_recursive(dir_info.parent_directory,size_increased,status) ){ return false; }
   }
   
-  size_t new_size = stoul(dir_info.size,nullptr,10) + stoul(size_increased,nullptr,10) ;
+  size_t new_size = stoul_decimal(dir_info.size) + stoul_decimal(size_increased);
   return( dh_.modify_directory_info(dir_id,dir_info.name,dir_info.date_last_mod,dir_info.tags,to_string(new_size),status) );
 }
 
@@ -369,7 +390,7 @@ bool RequestDispatcher::decrease_dir_size_recursive(string dir_id, string size_d
     if( !decrease_dir_size_recursive(dir_info.parent_directory,size_decreased,status) ){ return false; }
   }
   
-  size_t new_size = stoul(dir_info.size,nullptr,10) - stoul(size_decreased,nullptr,10) ;  
+  size_t new_size = stoul_decimal(dir_info.size) - stoul_decimal(size_decreased);  
   return( dh_.modify_directory_info(dir_id,dir_info.name,dir_info.date_last_mod,dir_info.tags,to_string(new_size),status) );
 }
 
@@ -423,5 +444,10 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   }  
   
   return node;
+}
+
+
+long unsigned int RequestDispatcher::stoul_decimal(const string& str){
+  return stoul(str,nullptr,10);
 }
 
