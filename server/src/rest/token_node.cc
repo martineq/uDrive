@@ -21,14 +21,14 @@ struct email_pass{
 
 typedef struct email_pass email_pass;
 
-TokenNode::TokenNode() : Node("token") {
+TokenNode::TokenNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
-void TokenNode::executePost(MgConnectionW& conn, const char* url){
+void TokenNode::executePost() {
 	Log(Log::LogMsgDebug) << "[" << "TokenNode" << "]: parsing Json";
 
-	std::string email = conn.getBodyJson("email");
-	std::string password = conn.getBodyJson("password");
+	std::string email = getConnection().getBodyJson("email");
+	std::string password = getConnection().getBodyJson("password");
 
 	Log(Log::LogMsgDebug) << "[" << "validating user" << "] " << email << " " << password;
 
@@ -36,16 +36,16 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 	string userId="";
 	int status;
 
-	if (!this->rd->log_in(email, password, new_token, userId, status)){
-		conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+	if (!getRequestDispatcher()->log_in(email, password, new_token, userId, status)){
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		string msg=handlerError(status);
-		conn.printfData(msg.c_str());
+		getConnection().printfData(msg.c_str());
 	}else{
-		Log(Log::LogMsgDebug) << "[" << "Valid user: userId: " << userId << "] " << "Token: " <<new_token.c_str();
-		conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());
+		Log(Log::LogMsgDebug) << "[" << "Valid user!!: userId: " << userId << "] " << "Token: " <<new_token.c_str();
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		getConnection().printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());
 	}
 }
 string TokenNode::CreateToken(const std::string& email){
@@ -56,12 +56,16 @@ string TokenNode::CreateToken(const std::string& email){
 	return out;
 }
 
-void TokenNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
+std::string TokenNode::defaultResponse(){
+	return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\" }";
 }
 
-std::string TokenNode::defaultResponse(){
-return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\" }";
+bool TokenNode::auth(int &status){
+	Log(Log::LogMsgDebug) << "Auth de Token";
+	std::string email = getConnection().getBodyJson("email");
+	std::string password = getConnection().getBodyJson("password");
+	Log(Log::LogMsgDebug) << "[" << "auth-TOKEN" << "] Email:" << email << "Password" << password;
+	return true;
 }
 
 

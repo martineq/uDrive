@@ -14,16 +14,14 @@
 
 class TokenNode : public Node {
 	public:
-		TokenNode();
+		TokenNode(MgConnectionW& conn);
 		~TokenNode();
-		void setRequestDispatcher(RequestDispatcher* rd);
 	protected:
-		void executePost(MgConnectionW& conn, const char* url);
+		void executePost();
 		std::string CreateToken(const std::string& email);
 		std::string defaultResponse();
+		bool auth(int &status);
 		
-	private:
-		RequestDispatcher* rd;
 };
 
 #endif

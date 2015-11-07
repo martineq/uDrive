@@ -4,45 +4,56 @@
 #include "../mg_connection_w.h"
 #include <string>
 #include "../util/log.h"
-
+#include "../request_dispatcher.h"
 
 class Node {
 	public:
-		Node(const char* str);
-
-		/** Method execute this node
-					 */
-		void execute(MgConnectionW& conn, const char* url);
+		Node(MgConnectionW& conn);
+		void execute();
+		void setRequestDispatcher(RequestDispatcher* rd);
+		RequestDispatcher* getRequestDispatcher();
 
 	protected:
+			/**
+			/ Method that is executed if the connection is POST
+			*/
+		virtual void executePost();
 
 			/** 
 			/ Method that is executed if the connection is POST
 			*/
-		virtual void executePost(MgConnectionW& conn, const char* url);
+		virtual void executeGet();
 
 			/** 
 			/ Method that is executed if the connection is POST
 			*/
-		virtual void executeGet(MgConnectionW& conn, const char* url);
+		virtual void executeDelete();
 
+		virtual void executePut();
 			/** 
 			/ Method that is executed if the connection is POST
 			*/
-		virtual void executeDelete(MgConnectionW& conn, const char* url);
-
-		virtual void executePut(MgConnectionW& conn, const char* url);
-			/** 
-			/ Method that is executed if the connection is POST
-			*/
-		virtual void methodNotAllowed(MgConnectionW& conn, const char* url);
-
-		std::string uri;
+		virtual void methodNotAllowed();
 
 		virtual std::string handlerError(int status);
 
         virtual std::string defaultResponse();
 
+		const char* getUri();
+
+		MgConnectionW getConnection();
+
+		void setConnection(MgConnectionW& conn);
+
+        virtual bool auth(int &status);
+
+        virtual void requestForbidden(int status);
+private:
+		RequestDispatcher* rd= nullptr;
+
+		virtual std::string getUserId();
+
+		MgConnectionW connection= nullptr;
 };
 
 

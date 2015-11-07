@@ -15,14 +15,12 @@
 class UpdateProfileNode : public Node {
 
 public:
-    UpdateProfileNode();
+    UpdateProfileNode(MgConnectionW& conn);
     ~UpdateProfileNode();
-    void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-    void executePut(MgConnectionW& conn, const char* url);
+    void executePut();
     std::string defaultResponse();
 private:
-    RequestDispatcher* rd;
     vector<string> split(const string &s, char delim);
 
 };

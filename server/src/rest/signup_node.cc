@@ -10,18 +10,18 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-SignupNode::SignupNode()  : Node("SignupNode") {
+SignupNode::SignupNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 SignupNode::~SignupNode() {
 }
 
-void SignupNode::executePost(MgConnectionW& conn, const char* url){
+void SignupNode::executePost() {
 		Log(Log::LogMsgDebug) << "[" << "SignUp " << "]";
-		std::string firstname = conn.getBodyJson("firstname");
-		std::string lastname = conn.getBodyJson("lastname");
-		std::string email = conn.getBodyJson("email");
-		std::string password = conn.getBodyJson("password");
+		std::string firstname = getConnection().getBodyJson("firstname");
+		std::string lastname = getConnection().getBodyJson("lastname");
+		std::string email = getConnection().getBodyJson("email");
+		std::string password = getConnection().getBodyJson("password");
 
 		Log(Log::LogMsgDebug) << "[" << "SignUp " << "] firstname: " << firstname << ""
 		" Lastname: " << lastname << " Email: " << email << " Password: " << password;
@@ -35,23 +35,23 @@ void SignupNode::executePost(MgConnectionW& conn, const char* url){
 			std::string userId;
 			std::string new_token=CreateToken(email);
 
-			if (!this->rd->sign_up(email, password, firstname, "Caba", new_token, fecha, userId,status)){
-				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			if (!getRequestDispatcher()->sign_up(email, password, firstname, "Caba", new_token, fecha, userId,status)){
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
-				conn.printfData(msg.c_str());
+				getConnection().printfData(msg.c_str());
 			}else{
-				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 1 ]";
-				conn.printfData("{\"resultCode\": 1}");
+				getConnection().printfData("{\"resultCode\": 1}");
 			}
 		}else{
 			Log(Log::LogMsgDebug) << "[" << "empty email or password" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
-			conn.printfData(msg.c_str());
+			getConnection().printfData(msg.c_str());
 		}
 }
 
@@ -63,11 +63,13 @@ std::string SignupNode::CreateToken(const std::string& email){
 	return out;
 }
 
-void SignupNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
-}
 std::string SignupNode::defaultResponse(){
 	return "{\"resultCode\": \"2\"}";
+}
+
+bool SignupNode::auth(int &status){
+	Log(Log::LogMsgDebug) << "[" << "SignUp - always auth" << "]";
+	return true;
 }
 
 
