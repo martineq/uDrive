@@ -121,7 +121,7 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
   user_info.gps_lat = location.front();
   user_info.gps_lon = location.back();
-  user_info.user_quota_available = to_string( max_user_quota_ - stoul_decimal(dh_user_info.user_quota_used) );
+  user_info.user_quota_used = dh_user_info.user_quota_used;
   user_info.user_quota_total = to_string(max_user_quota_);
   float percentage = (stoul_decimal(dh_user_info.user_quota_used) * 100) / max_user_quota_;
   std::string str_percentage = to_string(percentage);

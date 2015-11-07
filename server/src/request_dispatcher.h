@@ -55,7 +55,7 @@ class RequestDispatcher{
       string last_name;
       string gps_lat;
       string gps_lon;
-      string user_quota_available;
+      string user_quota_used;
       string user_quota_used_percentage;
       string user_quota_total;
     } ;
