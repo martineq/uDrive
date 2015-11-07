@@ -58,3 +58,4 @@
 #define LABEL_D "d"
 #define LABEL_TRUE "true"
 #define LABEL_FALSE "false"
+#define LABEL_USER_IMAGE "user_image"
