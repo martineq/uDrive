@@ -614,7 +614,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   
   // Use get_file_info() with forbidden user
-  DataHandler::file_info_st file_info2;
+  RequestDispatcher::file_info_st file_info2;
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_info(user_id_second,file_id_2,file_info2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
