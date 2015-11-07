@@ -116,13 +116,12 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   // Prepare data
   user_info.email = dh_user_info.email;
   vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
-  cout << "name: "<< dh_user_info.name << " " << ""  << endl;
   user_info.first_name = name.front();
   user_info.last_name = name.back();
   vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
   user_info.gps_lat = location.front();
   user_info.gps_lon = location.back();
-  user_info.user_quota_available = to_string( max_user_quota_ - stoul_decimal(dh_user_info.user_quota_used) );
+  user_info.user_quota_used = dh_user_info.user_quota_used;
   user_info.user_quota_total = to_string(max_user_quota_);
   float percentage = (stoul_decimal(dh_user_info.user_quota_used) * 100) / max_user_quota_;
   std::string str_percentage = to_string(percentage);
@@ -130,6 +129,17 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
 
   return true;
 }
+
+bool RequestDispatcher::get_user_image(string user_id, char*& p_image_stream, string& size_stream, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  size_t size = fh_.load_file(user_image_name,p_image_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  
+  return true;
+}
+
 
 
 bool RequestDispatcher::get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status){
@@ -265,7 +275,7 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
 
 
 bool RequestDispatcher::get_file_stream(string user_id, string file_id, string revision,
-                                        char*& p_file_stream, size_t& size_stream, int& status){
+                                        char*& p_file_stream, string& size_stream, int& status){
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
 
@@ -284,15 +294,16 @@ bool RequestDispatcher::get_file_stream(string user_id, string file_id, string r
   }
 
   string file_name = user_id+file_id+LABEL_REVISION_1;
-  size_stream = fh_.load_file(file_name,p_file_stream);
-  if( size_stream==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  size_t size = fh_.load_file(file_name,p_file_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
 
   return true;
 }
 
 
 bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
-                                       char*& p_dir_stream, size_t& size_stream, int& status){
+                                       char*& p_dir_stream, string& size_stream, int& status){
   
   // Gets structure info for the directory
   ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,dir_id,status);
@@ -303,9 +314,20 @@ bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
   
   // Load file in p_dir_stream
   string zip_name_with_extension = zip_name + ".zip";
-  size_stream = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_t size = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
   
-  return true; // TODO(mart): check returns in this function
+  return true;
+}
+
+
+bool RequestDispatcher::set_user_image(string user_id, const char* p_image_stream, string size, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  if( fh_.save_file(user_image_name,p_image_stream,stoul_decimal(size))==0 ){ status = STATUS_FAIL_SAVING_FILE; return false; }
+
+  return true;
 }
 
 
@@ -470,3 +492,23 @@ long unsigned int RequestDispatcher::stoul_decimal(const string& str){
   return stoul(str,nullptr,10);
 }
 
+bool RequestDispatcher::HARDCODED_get_user_image(string user_id, string& image_stream, int& status){
+
+  // Create an base64 image
+  string image_base64("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAyADIDASIAAhEBAxEB/8QAGgABAQADAQEAAAAAAAAAAAAAAAcFBggDBP/EAD4QAAEDAgIGBQgHCQAAAAAAAAEAAgMEEQUGBxIhMUFhEyIyUXEIFBUWI4GT0xczQkNSU1RVgpGSobHB0eH/xAAaAQACAwEBAAAAAAAAAAAAAAAABgMEBQcB/8QALBEAAQMCBAMHBQAAAAAAAAAAAQACBAMFERMhMQZB0RIUImFxgeEyQpHB8P/aAAwDAQACEQMRAD8A7LRFPtOObfV3K7qGll1cRxEOijsdscf238thsOZvwXjjgMSoJMhkak6q/YLPUGdMDxBkslFLLURxTPhc9jRbWabHju4jvBBX0es2H/l1H8o/2uZ9GuYDg2YhS1D7UVeQx9zsZJua7/B8R3K0FIt4vdxgSCwEdk6jTl8LQ4ffGusQVTo4aOGPPofhUelnjqadk8Rux4uF6LVsnYhqSGgld1X7Y78DxC2lNNpuDZ8VtYb7HyP9qvJVA0KhZ+EREWkq68quohpKSarqZGxQQxukke7c1oFyT4ALkjSHmafNeaqrFZC4Qk9HTRn7uIdkf3J5kqr+Ujm7zWhiypRS+2qQJawtO1sd+qz3kXPIDgVAw5Vqz8TgkXiW45lQRmHRu/r8LJ5fwarzFjlHg9E3WmqpAwEg2aOLjyAuTyC6PxTCHYP0FMJZJ4hE1rZZO0+wAJPPj71gvJzyj6Pwd+Z62K1VXN1KUOG1kN+1+8f6Ad6p+N0Ir6B8I+sHWjPP/u5ZF5tXfoZDfrGo6e/RM3B9J0Bma/79/Tl1WgxyOjkbJG4tc03BHAqgYRWsr6FlQ22tueO53FT14LHFrthBsQVlsq4iKOv6KR1oZrNNzuPApJ4auvcZeW8+B+h8jyP6Ke7jFzqXabuFu6Ii6slhRbylcpecUUObaKL2tOBDWho7TCeo8+BNie4jgFAXOOwDedgXcNbSwVtFPR1UTZaeeN0UrHbnNcLEHxBXPlVoFzI3EZ3UeJ4S6l6R3QGWWQP1L7NYCMgG2+xU0KNRqyW5zsGbnp7pSu1kdVlitTGIO48x1U4w6RzYRFrHqjZtX09I78Tv4qhRaEM2MN/SGC/Gl+Wvb6Fc1fr8G+NL8tdKp3iAGgZoUDrfJx0YVNCVvWhXK/rBmltXVRa1Bh5Estxse+/UZz2i55AjisgdCmav2hgvxpflqw6P8txZWyxT4WwtfNtkqZG7nym1z4CwA5AKhd79QbGLY78XO005DmVbgWyoawdVbgBr6rPoiLnyaUREQhEREIRERCEREQhf/9k=",1512);
+  size_t size_image = 1512;
+  if(!set_user_image(user_id,image_base64.c_str(),to_string(size_image),status)){ return false; }
+  
+  // Save image
+  char* p_image_stream_temp;
+  string size_img_loaded;
+  if(!get_user_image(user_id,p_image_stream_temp,size_img_loaded,status)){ return false; }
+  
+  // Load Image
+  size_t size_obtanined = stoul(size_img_loaded,nullptr,10);
+  string p_image_stream_string(p_image_stream_temp,size_obtanined);
+  
+  // Assign image and size
+  image_stream = p_image_stream_string;
+  
+}

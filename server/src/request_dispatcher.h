@@ -55,7 +55,7 @@ class RequestDispatcher{
       string last_name;
       string gps_lat;
       string gps_lon;
-      string user_quota_available;
+      string user_quota_used;
       string user_quota_used_percentage;
       string user_quota_total;
     } ;
@@ -172,7 +172,6 @@ class RequestDispatcher{
      * @return bool
      */
     bool new_file(string user_id, string name, string extension, string date, const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status);
-
     
     /**
      * @brief Gets the user information on a DataHandler::user_info_st.  Returns true on success.
@@ -184,6 +183,18 @@ class RequestDispatcher{
      * @return bool
      */
     bool get_user_info(string user_id, RequestDispatcher::user_info_st& user_info, int& status);
+    
+    /**
+     * @brief gets the image file for a user.  Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param p_image_stream return the image stream. The user must de-allocate the file.
+     * @param size return the size of the stream (in bytes)
+     * @param status ...
+     * @return bool
+     */
+    bool get_user_image(string user_id, char*& p_image_stream, string& size, int& status);
     
     /**
      * @brief Gets the directory information on a  DataHandler::dir_info_st.  Returns true on success.
@@ -221,7 +232,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_file_stream(string user_id, string file_id, string revision, char*& p_file_stream, size_t& size_stream, int& status);
+    bool get_file_stream(string user_id, string file_id, string revision, char*& p_file_stream, string& size_stream, int& status);
     
     /**
      * @brief Gets the stream for a dir_id (in a zip file). Returns true on success.
@@ -234,7 +245,20 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_dir_stream(string user_id, string dir_id, char*& p_dir_stream, size_t& size_stream, int& status);
+    bool get_dir_stream(string user_id, string dir_id, char*& p_dir_stream, string& size_stream, int& status);
+    
+    
+    /**
+     * @brief Sets the image file for an user.  Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param p_image_stream ...
+     * @param size ...
+     * @param status ...
+     * @return bool
+     */
+    bool set_user_image(string user_id, const char* p_image_stream, string size, int& status);
     
     
 //     bool delete_user(string user_id, int& status);
@@ -257,6 +281,8 @@ class RequestDispatcher{
      */
     bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
 
+    bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
+    
 };
 
 #endif // REQUESTDISPATCHER_H

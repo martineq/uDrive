@@ -30,16 +30,17 @@ void ProfileNode::executeGet() {
         }
         else{
             std::ostringstream item;
+            /*TODO(martindonofrio): temporary line >>> */ string user_image; getRequestDispatcher()->HARDCODED_get_user_image(userId,user_image,status);
             Log(Log::LogMsgDebug) << "[" << "printing profile" << "]: firstname: " << user_info.first_name;
             item
             << "{\"firstname\":\""  << user_info.first_name
             << "\",\"lastname\":\"" << user_info.last_name
             << "\",\"email\":\""	<< user_info.email
-            << "\",\"photo\":\""	""
+            << "\",\"photo\":\""	<< user_image
             << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
             << "\",\"userId\":\"" << userId
-            << "\",\"quotaUsed\":\"" << user_info.user_quota_available
+            << "\",\"quotaUsed\":\"" << user_info.user_quota_used
             << "\",\"quotaTotal\":\"" << user_info.user_quota_total
             << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_used_percentage
             << "\"}";
