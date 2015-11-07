@@ -50,9 +50,9 @@ void ProfileNode::executeGet(MgConnectionW& conn, const char* url){
             << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
             << "\",\"userId\":\"" << userId
-            << "\",\"quotaAvailable\":\"" << user_info.user_quota_used
+            << "\",\"quotaAvailable\":\"" << user_info.user_quota_available
             << "\",\"quotaTotal\":\"" << user_info.user_quota_total
-            << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_percentage
+            << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_used_percentage
             << "\"}";
             conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
             conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
