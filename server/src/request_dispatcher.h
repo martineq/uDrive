@@ -281,6 +281,8 @@ class RequestDispatcher{
      */
     bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
 
+    bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
+    
 };
 
 #endif // REQUESTDISPATCHER_H

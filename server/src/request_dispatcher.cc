@@ -492,3 +492,23 @@ long unsigned int RequestDispatcher::stoul_decimal(const string& str){
   return stoul(str,nullptr,10);
 }
 
+bool RequestDispatcher::HARDCODED_get_user_image(string user_id, string& image_stream, int& status){
+
+  // Create an base64 image
+  string image_base64("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAyADIDASIAAhEBAxEB/8QAGgABAQADAQEAAAAAAAAAAAAAAAcFBggDBP/EAD4QAAEDAgIGBQgHCQAAAAAAAAEAAgMEEQUGBxIhMUFhEyIyUXEIFBUWI4GT0xczQkNSU1RVgpGSobHB0eH/xAAaAQACAwEBAAAAAAAAAAAAAAAABgMEBQcB/8QALBEAAQMCBAMHBQAAAAAAAAAAAQACBAMFERMhMQZB0RIUImFxgeEyQpHB8P/aAAwDAQACEQMRAD8A7LRFPtOObfV3K7qGll1cRxEOijsdscf238thsOZvwXjjgMSoJMhkak6q/YLPUGdMDxBkslFLLURxTPhc9jRbWabHju4jvBBX0es2H/l1H8o/2uZ9GuYDg2YhS1D7UVeQx9zsZJua7/B8R3K0FIt4vdxgSCwEdk6jTl8LQ4ffGusQVTo4aOGPPofhUelnjqadk8Rux4uF6LVsnYhqSGgld1X7Y78DxC2lNNpuDZ8VtYb7HyP9qvJVA0KhZ+EREWkq68quohpKSarqZGxQQxukke7c1oFyT4ALkjSHmafNeaqrFZC4Qk9HTRn7uIdkf3J5kqr+Ujm7zWhiypRS+2qQJawtO1sd+qz3kXPIDgVAw5Vqz8TgkXiW45lQRmHRu/r8LJ5fwarzFjlHg9E3WmqpAwEg2aOLjyAuTyC6PxTCHYP0FMJZJ4hE1rZZO0+wAJPPj71gvJzyj6Pwd+Z62K1VXN1KUOG1kN+1+8f6Ad6p+N0Ir6B8I+sHWjPP/u5ZF5tXfoZDfrGo6e/RM3B9J0Bma/79/Tl1WgxyOjkbJG4tc03BHAqgYRWsr6FlQ22tueO53FT14LHFrthBsQVlsq4iKOv6KR1oZrNNzuPApJ4auvcZeW8+B+h8jyP6Ke7jFzqXabuFu6Ii6slhRbylcpecUUObaKL2tOBDWho7TCeo8+BNie4jgFAXOOwDedgXcNbSwVtFPR1UTZaeeN0UrHbnNcLEHxBXPlVoFzI3EZ3UeJ4S6l6R3QGWWQP1L7NYCMgG2+xU0KNRqyW5zsGbnp7pSu1kdVlitTGIO48x1U4w6RzYRFrHqjZtX09I78Tv4qhRaEM2MN/SGC/Gl+Wvb6Fc1fr8G+NL8tdKp3iAGgZoUDrfJx0YVNCVvWhXK/rBmltXVRa1Bh5Estxse+/UZz2i55AjisgdCmav2hgvxpflqw6P8txZWyxT4WwtfNtkqZG7nym1z4CwA5AKhd79QbGLY78XO005DmVbgWyoawdVbgBr6rPoiLnyaUREQhEREIRERCEREQhf/9k=",1512);
+  size_t size_image = 1512;
+  if(!set_user_image(user_id,image_base64.c_str(),to_string(size_image),status)){ return false; }
+  
+  // Save image
+  char* p_image_stream_temp;
+  string size_img_loaded;
+  if(!get_user_image(user_id,p_image_stream_temp,size_img_loaded,status)){ return false; }
+  
+  // Load Image
+  size_t size_obtanined = stoul(size_img_loaded,nullptr,10);
+  string p_image_stream_string(p_image_stream_temp,size_obtanined);
+  
+  // Assign image and size
+  image_stream = p_image_stream_string;
+  
+}
