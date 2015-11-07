@@ -25,21 +25,10 @@ TokenNode::TokenNode() : Node("token") {
 }
 
 void TokenNode::executePost(MgConnectionW& conn, const char* url){
-	const char *s = conn->content;
-	char body[1024*sizeof(char)] = "";
-	strncpy(body, s, conn->content_len);
-	body[conn->content_len] = '0';
-	// Parse the JSON body
-	Json::Value root;
-	Json::Reader reader;
-	bool parsedSuccess = reader.parse(body, root, false);
-	if (!parsedSuccess) {
-		// Error, do something
-	}
-	const Json::Value mail = root["email"];
-	const Json::Value pass = root["password"];
-	std::string email = mail.asString();
-	std::string password = pass.asString();
+	Log(Log::LogMsgDebug) << "[" << "TokenNode" << "]: parsing Json";
+
+	std::string email = conn.getBodyJson("email");
+	std::string password = conn.getBodyJson("password");
 
 	Log(Log::LogMsgDebug) << "[" << "validating user" << "] " << email << " " << password;
 
@@ -48,10 +37,10 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 	int status;
 
 	if (!this->rd->log_in(email, password, new_token, userId, status)){
-		Log(Log::LogMsgDebug) << "[" << "email incorrecto" << "] ";
 		conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
+		string msg=handlerError(status);
+		conn.printfData(msg.c_str());
 	}else{
 		Log(Log::LogMsgDebug) << "[" << "Valid user: userId: " << userId << "] " << "Token: " <<new_token.c_str();
 		conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
@@ -59,8 +48,6 @@ void TokenNode::executePost(MgConnectionW& conn, const char* url){
 		conn.printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());
 	}
 }
-
-
 string TokenNode::CreateToken(const std::string& email){
 	stringstream ss;
 	ss << randomNumber(1000) << email << time(NULL) << randomNumber(9999) ;
@@ -71,6 +58,10 @@ string TokenNode::CreateToken(const std::string& email){
 
 void TokenNode::setRequestDispatcher(RequestDispatcher* rd){
 	this->rd=rd;
+}
+
+std::string TokenNode::defaultResponse(){
+return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\" }";
 }
 
 

@@ -20,6 +20,7 @@ class TokenNode : public Node {
 	protected:
 		void executePost(MgConnectionW& conn, const char* url);
 		std::string CreateToken(const std::string& email);
+		std::string defaultResponse();
 		
 	private:
 		RequestDispatcher* rd;

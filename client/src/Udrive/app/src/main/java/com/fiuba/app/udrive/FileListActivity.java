@@ -27,12 +27,14 @@ import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
 import com.fiuba.app.udrive.network.UserService;
+import com.fiuba.app.udrive.view.FileContextMenu;
+import com.fiuba.app.udrive.view.FileContextMenuManager;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class FileListActivity extends AppCompatActivity implements FilesArrayAdapter.OnContextMenuClickListener, AdapterView.OnItemClickListener, FileContextMenu.OnFileContextMenuItemClickListener {
 
     public static final String TAG = "FileListActivity";
 
@@ -64,7 +66,7 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
         mDirId = (Integer) getIntent().getSerializableExtra(EXTRA_DIR_ID);
         Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
-        mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, mFiles);
+        mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, mFiles, this);
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
@@ -248,5 +250,38 @@ public class FileListActivity extends AppCompatActivity implements AdapterView.O
                 }
             });
         }
+    }
+
+    @Override
+    public void onDownloadClick(int FileItem) {FileContextMenuManager.getInstance().hideContextMenu();
+        Log.i(TAG,"Download File position "+FileItem);
+    }
+
+    @Override
+    public void onInformationClick(int FileItem) {Log.i(TAG,"Information File position "+FileItem);}
+
+    @Override
+    public void onShareClick(int FileItem) {
+        Log.i(TAG,"Share File position "+FileItem);
+    }
+
+    @Override
+    public void onTagClick(int FileItem) {
+        Log.i(TAG,"Tag File position "+FileItem);
+    }
+
+    @Override
+    public void onDeleteClick(int FileItem) {
+        Log.i(TAG,"Delete File position "+FileItem);
+    }
+
+    @Override
+    public void onCancelClick(int FileItem) {
+
+    }
+
+    @Override
+    public void onClick(View v, int position) {
+        FileContextMenuManager.getInstance().toggleContextMenuFromView(v,position,this);
     }
 }

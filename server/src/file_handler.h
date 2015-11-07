@@ -13,8 +13,24 @@ class FileHandler {
     FileHandler();
     ~FileHandler();
 
-    size_t load_file(string user_id, string file_id, string revision, char*& p_file_stream);
-    size_t save_file(string user_id, string file_id, string revision, const char* p_file_stream, size_t size_stream); 
+    /**
+     * @brief ...
+     * 
+     * @param file_name ...
+     * @param p_file_stream ...
+     * @return size_t
+     */
+    size_t load_file(string file_name, char*& p_file_stream);
+    
+    /**
+     * @brief ...
+     * 
+     * @param file_name ...
+     * @param p_file_stream ...
+     * @param size_stream ...
+     * @return size_t
+     */
+    size_t save_file(string file_name, const char* p_file_stream, size_t size_stream); 
 
 };
 

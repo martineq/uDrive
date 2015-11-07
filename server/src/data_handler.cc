@@ -10,30 +10,20 @@ DataHandler::~DataHandler(void){
 
 }
 
-/**
- * @brief Initiates the database. 
- * Returns true if the DB is successfully open. On error returns false.
- * 
- * @param  ...
- * @return bool
- */
+
 bool DataHandler::init(string database_path){
   Log(Log::LogMsgDebug) << "Opening bd... " <<database_path;
   if(dbh_.open(database_path)){
-     
 
     // user_id ticket
     init_id_ticket(SUFFIX_USER_ID);
-    
+
     // dir_id ticket
     init_id_ticket(SUFFIX_DIR_ID);
-    
+
     // file_id ticket
     init_id_ticket(SUFFIX_FILE_ID);
-  }else{
-    db_error();
-    return false;
-  }
+  }else{ print_db_error(); return false; }
 
   return true;
 }
@@ -43,18 +33,13 @@ bool DataHandler::add_user(string email, string password, string name, string lo
 
   // Verifies if the user exists
   string temp_user_id;
-  if( get_email_user_id_index(email,temp_user_id,status) ){
-    status = STATUS_USER_ALREADY_EXISTS;
-    return false;
+  if( get_email_user_id_index(email,temp_user_id,status) ){ status = STATUS_USER_ALREADY_EXISTS; return false;
   }else{
     if( status == STATUS_DATABASE_ERROR ){ return false; }
   }
   
   // Creates the user_id
-  if( !create_id(SUFFIX_USER_ID,user_id) ){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if( !create_id(SUFFIX_USER_ID,user_id) ){ status = STATUS_DATABASE_ERROR; return false; }
   
   // Creates the root directory
   string id_dir_root;
@@ -75,16 +60,11 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   if(dbh_.write_batch()){
     add_email_user_id_index(email,user_id);
     return true;
-  }else{
-    // If there is an error, delete the root directory
-    delete_directory(id_dir_root,status);
-    if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
-    status = STATUS_DATABASE_ERROR;
-    return false;
+  }else{// If there is an error, delete the root directory
+    delete_directory(id_dir_root,status); if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
+    status = STATUS_DATABASE_ERROR; return false;
   }
-  
 }
-
 
 bool DataHandler::add_user_token(string email, string token, string& user_id, int& status){
 
@@ -99,12 +79,8 @@ bool DataHandler::add_user_token(string email, string token, string& user_id, in
 bool DataHandler::add_directory(string user_id, string name, string date, string parent_dir_id, string& dir_id, int& status){
   
   // Generates ID
-  if( !create_id(SUFFIX_DIR_ID,dir_id) ){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  } 
+  if( !create_id(SUFFIX_DIR_ID,dir_id) ){ status = STATUS_DATABASE_ERROR; return false; } 
 
-  
   // Add dir_id to parent dir
   string directories_contained;
   if( parent_dir_id != LABEL_NO_PARENT_DIR ){
@@ -129,10 +105,7 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
   }
   
   // Saves all data
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
 }
@@ -146,10 +119,7 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),&dir_files_contained,status) ) return false;
   
   // Generates ID for the new file
-  if( !create_id(SUFFIX_FILE_ID,file_id) ){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if( !create_id(SUFFIX_FILE_ID,file_id) ){ status = STATUS_DATABASE_ERROR; return false; }
   
   // Add file_id to directory container
   dir_files_contained.append(";"+file_id);
@@ -169,10 +139,7 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),dir_files_contained);
   
   // Saves data to new file
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
   
   return true;
 }
@@ -257,11 +224,7 @@ bool DataHandler::delete_user(string user_id, int& status){
   dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email);
    
   // Saves data
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
-
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
   
   return true;
 }
@@ -279,18 +242,14 @@ bool DataHandler::delete_directory(string dir_id, int& status){
   dbh_.erase_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED));
   
   // Erases data
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
   
   return true;
 }
 
 
 bool DataHandler::delete_file(string file_id, int& status){
-  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_ERASED) );  
-  return true;
+  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_ERASED) );
 }
 
 
@@ -317,10 +276,7 @@ bool DataHandler::modify_user_info(string user_id, string email, string name, st
     dbh_.put_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,user_id);  // Refresh index email-user_id
   }
   
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
 }
@@ -334,10 +290,7 @@ bool DataHandler::modify_directory_info(string dir_id, string name, string date,
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_TAGS),tags);
   dbh_.put_batch(generate_dir_key(dir_id,SUFFIX_SIZE),size);
   
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
 }
@@ -354,68 +307,32 @@ bool DataHandler::modify_file_info(string file_id, string name, string extension
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_USERS_SHARED),users_shared);
 
   // Saves data to file
-  if(!dbh_.write_batch()){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
 }
 
 
-/**
- * @brief Returns the key for a query of an user item
- * 
- * @param email email of the user
- * @param item_selected item selected of the user for query
- * @return std::string
- */
 string DataHandler::generate_user_key(string user_id, string item_selected){
   return (PREFIX_USER+user_id+item_selected);
 }
 
 
-/**
- * @brief Returns the key for a query of an directory item
- * 
- * @param dir_id ID of the selected directory
- * @param item_selected item selected of the user for query
- * @return std::string
- */
 string DataHandler::generate_dir_key(string dir_id, string item_selected){
   return (PREFIX_DIR+dir_id+item_selected);
 }
 
-/**
- * @brief Returns the key for a query of an file item
- * 
- * @param file_id ID of the selected file
- * @param item_selected item selected of the user for query
- * @return std::string
- */
+
 string DataHandler::generate_file_key(string file_id, string item_selected){
   return (PREFIX_FILE+file_id+item_selected);
 }
 
 
-/**
- * @brief Returns the key for a query of an ticket type
- * 
- * @param ticket_type type of ticket selected
- * @return std::string
- */
 string DataHandler::generate_ticket_key(string ticket_type){
   return (PREFIX_TICKET_LAST+ticket_type);
 }
 
 
-/**
- * @brief Obtains a new id for type_of_id. Returns true on success.
- * 
- * @param type_of_id the type of the requested id
- * @param id the new ID generated
- * @return bool
- */
 bool DataHandler::create_id(string type_of_id, string& id){
   bool found = false;
   
@@ -423,46 +340,21 @@ bool DataHandler::create_id(string type_of_id, string& id){
   if( (dbh_.get(generate_ticket_key(type_of_id),&id,found) && found==true) ){
     unsigned long new_id = ( (stoul(id,nullptr,10)) + 1 ); // Increment ticket
     return( dbh_.put(generate_ticket_key(type_of_id),to_string(new_id)) );
-  }else{
-    return false;
-  }
+  }else{ return false; }
 
 }
 
 
-/**
- * @brief Adds an user_id for their corresponding email in a index. Returns true if the operation was successful
- * 
- * @param email ...
- * @param user_id ...
- * @return bool
- */
 bool DataHandler::add_email_user_id_index(string email, string user_id){
   return( dbh_.put(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,user_id) );
 }
 
 
-/**
- * @brief Gets an user_id for their corresponding email from an index.
- *        Returns true if the operation was successful and the user_id was founded.
- *        Returns false and a status on error, or if the user_id is not found
- * 
- * @param email ...
- * @param user_id ...
- * @param status ...
- * @return bool
- */
 bool DataHandler::get_email_user_id_index(string email, string& user_id, int& status){
   return( dbh_get(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,&user_id,status) );
 }
 
 
-/**
- * @brief Verifies the type_of_id ticket number (and creates if they not exist).
- * The ticket number is used in the assignment of ID's
- * 
- * @return void
- */
 void DataHandler::init_id_ticket(string type_of_id){
   // Verifies the indexes
   string value;
@@ -471,33 +363,16 @@ void DataHandler::init_id_ticket(string type_of_id){
   
   if( dbh_.get(generate_ticket_key(type_of_id),&value,found) ){
     if(!found){
-      if( !(dbh_.put(generate_ticket_key(type_of_id),to_string(id))) ) { db_error();}
+      if( !(dbh_.put(generate_ticket_key(type_of_id),to_string(id))) ) { print_db_error();}
     }
-  }else{
-      db_error();
-  }
+  }else{ print_db_error(); }
   
 }
 
-/**
- * @brief Prints an error on std::cerr
- * 
- * @return void
- */
-void DataHandler::db_error(){
-  std::cerr << "DB error" << std::endl;
-}
+
+void DataHandler::print_db_error(){ std::cerr << "DB error" << std::endl; }
 
 
-/**
- * @brief Wrapper for DbHandler::get(std::string key, std::string* value, bool& found). (used on member variable dbh_). 
- *        Includes the status for a get operation.
- * 
- * @param key ...
- * @param value ...
- * @param status ...
- * @return bool
- */
 bool DataHandler::dbh_get(string key, string* value, int& status){
   bool found = false;
   
@@ -506,28 +381,13 @@ bool DataHandler::dbh_get(string key, string* value, int& status){
       status = STATUS_KEY_NOT_FOUND;
       return false;
     }
-  }else{
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  }else{ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
 }
 
 
-/**
- * @brief Wrapper for DbHandler::put(std::string key, std::string value). (used on member variable dbh_). 
- *        Includes the status for a put operation.
- * 
- * @param key ...
- * @param value ...
- * @param status ...
- * @return bool
- */
 bool DataHandler::dbh_put(string key, string value, int& status){
-  if( !dbh_.put(key,value) ){
-    status = STATUS_DATABASE_ERROR;
-    return false;
-  }
+  if( !dbh_.put(key,value) ){ status = STATUS_DATABASE_ERROR; return false; }
   return true;
 }

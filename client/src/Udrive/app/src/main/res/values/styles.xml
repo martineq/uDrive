@@ -71,6 +71,14 @@
         <item name="android:textColor">@color/white </item>
         <item name="android:background">@color/primary</item>
     </style>
+    <!-- **** Context Menu styles ****-->
+    <style name="ContextMenuButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/btn_context_menu</item>
+    </style>
+
+
     <style name="MyTheme.Base.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout" android:layout_width="fill_parent"
-    android:layout_height="wrap_content" android:padding="6dip">
+    android:layout_height="wrap_content" android:padding="6dip" android:descendantFocusability="blocksDescendants">
 
 
     <ImageView android:id="@+id/imageViewFileListItem" android:layout_width="60dp" android:layout_height="60dp"
@@ -17,5 +17,15 @@
         android:layout_toRightOf="@+id/imageViewFileListItem" android:layout_below="@id/textViewFileListName"
         android:textSize="10sp" android:singleLine="true"
         android:text="@string/file_lastMod" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/BtnFileContextMenu"
+        android:layout_alignBottom="@+id/imageViewFileListItem"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/imageViewFileListItem"
+        android:src="@drawable/ic_dots_vertical"
+        android:background="@android:color/transparent"/>
 
 </RelativeLayout>

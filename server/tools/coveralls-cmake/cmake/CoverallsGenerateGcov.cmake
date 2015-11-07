@@ -277,8 +277,7 @@ set(JSON_TEMPLATE
 }"
 )
 
-# "name": "src/file_handler.cc" 
-#TODO: Originalmente la línea de name era name\":        \"name\": \"\@GCOV_SRC_REL_PATH\@\",
+#TODO(mart): Originalmente la línea de name era:         \"name\": \"\@GCOV_SRC_REL_PATH\@\",
 # y fue cambiada (solo para este proyecto) por:          \"name\": \"server/\@GCOV_SRC_REL_PATH\@\",
 set(SRC_FILE_TEMPLATE
 "{
