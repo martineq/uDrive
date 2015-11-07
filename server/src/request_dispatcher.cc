@@ -132,7 +132,7 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
 }
 
 
-bool RequestDispatcher::get_directory_info(string user_id, string dir_id, DataHandler::dir_info_st& dir_info, int& status){
+bool RequestDispatcher::get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status){
   
   bool is_root_dir = (dir_id==LABEL_ZERO);
   
@@ -149,7 +149,15 @@ bool RequestDispatcher::get_directory_info(string user_id, string dir_id, DataHa
   }
 
   // Assign dir_info value
-  dir_info = dir_info_temp;
+  dir_info.date_last_mod = dir_info_temp.date_last_mod;
+  dir_info.directories_contained = dir_info_temp.directories_contained;
+  dir_info.files_contained = dir_info_temp.files_contained;
+  dir_info.name = dir_info_temp.name;
+  dir_info.owner = dir_info_temp.owner;
+  dir_info.parent_directory = dir_info_temp.parent_directory;
+  dir_info.size = dir_info_temp.size;
+  dir_info.tags = dir_info_temp.tags;
+  
   
   if( !is_root_dir ){
     // Check if the parent dir is the root dir, and then, format the root dir ID (change to id==0)
@@ -164,7 +172,7 @@ bool RequestDispatcher::get_directory_info(string user_id, string dir_id, DataHa
 }
 
 
-bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id, DataHandler::dir_info_st dir_info,
+bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,
                                                                  vector< RequestDispatcher::info_element_st >& directory_element_info, int& status){
   directory_element_info.clear();
   
@@ -172,7 +180,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(string user_id,
   vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
     string subdir_id = (*it);
-    DataHandler::dir_info_st subdir_info;
+    RequestDispatcher::dir_info_st subdir_info;
     RequestDispatcher::info_element_st info_element;
     
     if( !get_directory_info(user_id,subdir_id,subdir_info,status) ){ return false; }
@@ -417,7 +425,7 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
   node.sub_dirs.clear();
   
   // Get directory info
-  DataHandler::dir_info_st dir_info;
+  RequestDispatcher::dir_info_st dir_info;
   if( !get_directory_info(user_id,dir_id,dir_info,status) ){ return node; }
 
   // Fill dir_node_name;

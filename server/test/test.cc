@@ -519,7 +519,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   dir_id = "0"; // 0 == ROOT DIR
   token;
   // Parameters OUT
-  DataHandler::dir_info_st dir_info;
+  RequestDispatcher::dir_info_st dir_info;
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
@@ -607,7 +607,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   
   // Use get_directory_info() with forbidden user
   string forbidden_user_id = user_id_second;
-  DataHandler::dir_info_st dir_info2;
+  RequestDispatcher::dir_info_st dir_info2;
   EXPECT_TRUE(rd->check_token(forbidden_user_id,"10244756",status));
   ok = rd->get_directory_info(forbidden_user_id,sub_dir_id,dir_info2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }

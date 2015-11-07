@@ -60,6 +60,17 @@ class RequestDispatcher{
       string user_quota_total;
     } ;
     
+    struct dir_info_st {
+      string name;
+      string date_last_mod;
+      string tags;
+      string owner;
+      string parent_directory;
+      string files_contained;
+      string directories_contained;
+      string size;
+    } ;
+    
     ~RequestDispatcher();   
     
     /**
@@ -170,7 +181,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_directory_info(string user_id, string dir_id, DataHandler::dir_info_st& dir_info, int& status);
+    bool get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status);
     
     /**
      * @brief Gets the file information on a  DataHandler::file_info_st.  Returns true on success.
@@ -230,7 +241,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_directory_element_info_from_dir_info(string user_id, DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
 
 };
 
