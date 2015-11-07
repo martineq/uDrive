@@ -54,13 +54,10 @@
 
     <!-- Strings related to User Profile Activity -->
     <string name="userprofile_title">My profile</string>
-    <string name="title_activity_main2">Main2Activity</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <!-- User profile -->
     <string name="screen_name">Edit firstname and lastname</string>
     <string name="save_changes">Save changes</string>
+    <string name="unknown_state">Unknown state</string>
+    <string name="unknown_country">Unknown country</string>
+    <string name="last_location">Last location</string>
 
 </resources>

@@ -59,7 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 Util.capitalize(mUserProfile.getFirstname()) + " " + Util.capitalize(
                         mUserProfile.getLastname()));
         // Sets email
-        ((TextView)findViewById(R.id.email)).setText(mUserProfile.getEmail());
+        ((TextView)findViewById(R.id.email)).setText(getString(R.string.email)+": "+mUserProfile.getEmail());
 
         // Last location city
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -77,18 +77,18 @@ public class UserProfileActivity extends AppCompatActivity {
                 // do something
             }
         } else {
-            stateName = "Undefined state";
-            countryName = "Undefined country";
+            stateName = getString(R.string.unknown_state);
+            countryName = getString(R.string.unknown_country);
         }
 
         //String cityName = addresses.get(0).getAddressLine(0);
 
-        ((TextView)findViewById(R.id.lastLocation)).setText("Last location: " + stateName+", "+countryName);
+        ((TextView)findViewById(R.id.lastLocation)).setText(getString(R.string.last_location)+": "+stateName+", "+countryName);
 
         // Builds bar for quota information
         // Convert quota to MB.
-        double usedMB = Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20);
-        double totalMB = Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2, 20);
+        double usedMB = Math.round(Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20));
+        double totalMB = Math.round(Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2, 20));
         ((TextView) findViewById(R.id.textProgressBar)).setText("Usage: "+usedMB
             +" MB ("+mUserProfile.getQuotaUsagePercent()+") of "+totalMB+" MB");
         ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
