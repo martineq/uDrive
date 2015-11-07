@@ -64,19 +64,33 @@ public class UserProfileActivity extends AppCompatActivity {
         // Last location city
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
-        try {
-            //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
-            addresses = geocoder.getFromLocation(mUserProfile.getGPSLatitude(),
-                    mUserProfile.getGPSLongitude(), 1);
-        } catch (IOException e){
-            // Do something
+        String stateName = null;
+        String countryName = null;
+        if ((mUserProfile.getGPSLatitude()!=0.00)&&(mUserProfile.getGPSLongitude()!=0.00)) {
+            try {
+                //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
+                addresses = geocoder.getFromLocation(mUserProfile.getGPSLatitude(),
+                        mUserProfile.getGPSLongitude(), 1);
+                stateName = addresses.get(0).getAddressLine(1);
+                countryName = addresses.get(0).getAddressLine(2);
+            } catch (IOException e) {
+                // do something
+            }
+        } else {
+            stateName = "Undefined state";
+            countryName = "Undefined country";
         }
+
         //String cityName = addresses.get(0).getAddressLine(0);
-        String stateName = addresses.get(0).getAddressLine(1);
-        String countryName = addresses.get(0).getAddressLine(2);
-        ((TextView)findViewById(R.id.lastLocation)).setText("Last location: "+stateName+", "+countryName);
+
+        ((TextView)findViewById(R.id.lastLocation)).setText("Last location: " + stateName+", "+countryName);
 
         // Builds bar for quota information
+        // Convert quota to MB.
+        double usedMB = Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20);
+        double totalMB = Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2, 20);
+        ((TextView) findViewById(R.id.textProgressBar)).setText("Usage: "+usedMB
+            +" ("+mUserProfile.getQuotaUsagePercent()+") of "+totalMB);
         ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
         progressbar.setProgress(Integer.parseInt(Util.extractDigits(mUserProfile.getQuotaUsagePercent())));
     }

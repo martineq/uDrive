@@ -1,7 +1,6 @@
 package com.fiuba.app.udrive.model;
 
 
-// Represents coordinates for GPS location
 public class MyPhoto{
     private String photoStream;
 

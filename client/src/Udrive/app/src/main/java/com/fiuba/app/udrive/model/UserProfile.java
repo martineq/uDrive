@@ -9,7 +9,7 @@ public class UserProfile extends UserData implements Serializable {
     private double GPSLatitude;
     private double GPSLongitude;
     private int userId = 0;
-    private String quotaAvailable = null;
+    private String quotaUsed = null;
     private String quotaTotal = null;
     private String quotaUsagePercent = null;
 
@@ -25,7 +25,7 @@ public class UserProfile extends UserData implements Serializable {
         GPSLongitude = _GPSLongitude;
         userId = _userId;
         quotaTotal = _quotaTotal;
-        quotaAvailable = _quotaAvailable;
+        quotaUsed = _quotaAvailable;
         quotaUsagePercent = _quotaUsagePercent;
     }
 
@@ -77,12 +77,12 @@ public class UserProfile extends UserData implements Serializable {
         quotaTotal = _quotaTotal;
     }
 
-    public String getQuotaAvailable(){
-        return quotaAvailable;
+    public String getQuotaUsed(){
+        return quotaUsed;
     }
 
-    public void setQuotaAvailable(String _quotaAvailable){
-        quotaAvailable = _quotaAvailable;
+    public void setQuotaUsed(String _quotaUsed){
+        quotaUsed = _quotaUsed;
     }
 
     public String getQuotaUsagePercent(){

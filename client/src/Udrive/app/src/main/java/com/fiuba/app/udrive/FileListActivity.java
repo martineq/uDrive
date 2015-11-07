@@ -102,13 +102,13 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-            UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
+            /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
                     "lastname", "", -34.795713, -58.348321, mUserAccount.getUserId(),
                     "750 MB", "487.5", "35%");
             Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
             profile.putExtra("userProfile", uProfile);
             profile.putExtra("userAccount", mUserAccount);
-            startActivity(profile);
+            startActivity(profile);*/
 
             mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
                 @Override
