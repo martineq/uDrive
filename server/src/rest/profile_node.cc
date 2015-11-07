@@ -39,7 +39,7 @@ void ProfileNode::executeGet() {
             << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
             << "\",\"userId\":\"" << userId
-            << "\",\"quotaAvailable\":\"" << user_info.user_quota_available
+            << "\",\"quotaUsed\":\"" << user_info.user_quota_available
             << "\",\"quotaTotal\":\"" << user_info.user_quota_total
             << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_used_percentage
             << "\"}";
