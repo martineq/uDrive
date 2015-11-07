@@ -18,14 +18,13 @@
 class InfoNode : public Node {
 
 public:
-	InfoNode();
+	InfoNode(MgConnectionW& conn);
 	~InfoNode();
-	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-	void executeGet(MgConnectionW& conn, const char* url);
+	void executeGet();
 	std::string defaultResponse();
+	std::string getUserId();
 private:
-	RequestDispatcher* rd;
 	vector<string> split(const string &s, char delim);
 
 };

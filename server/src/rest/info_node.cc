@@ -11,7 +11,7 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-InfoNode::InfoNode()  : Node("Info") {
+InfoNode::InfoNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 InfoNode::~InfoNode() {
@@ -27,31 +27,31 @@ vector<string> InfoNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void InfoNode::executeGet(MgConnectionW& conn, const char* url){
-	vector<string> lista=InfoNode::split(url,'/');
+void InfoNode::executeGet() {
+	vector<string> lista=InfoNode::split(getUri(),'/');
 	string dirId="";
 	int status=11;
 
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
-		string userId=lista[3];
+		string userId=getUserId();
 		dirId=lista[5];
-		string token=conn.getAuthorization();
-		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
-		RequestDispatcher::dir_info_st dirInfo;
-		if (!this->rd->get_directory_info(userId, /*token,*/ dirId, dirInfo, status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
-			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+
+        RequestDispatcher::dir_info_st dirInfo_rd;
+
+		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
-			conn.printfData(msg.c_str());
+			getConnection().printfData(msg.c_str());
 		}
 		else{
 			vector<RequestDispatcher::info_element_st> directory_element_info;
 			bool enc = false;
 			std::ostringstream item;
   			item << "[";
-			if (this->rd->get_directory_element_info_from_dir_info(userId, /*token,*/ dirInfo, directory_element_info, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
+			if (getRequestDispatcher()->get_directory_element_info_from_dir_info(userId, dirInfo_rd, directory_element_info, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
 				vector<RequestDispatcher::info_element_st>::iterator directory_it;
-				Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
+				Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
 				if (directory_element_info.size()!=0){
 					for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 	     				enc=true;
@@ -69,10 +69,10 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 				if (!enc){
 					//empty dir
 					status=12;
-					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-					conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+					getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 					string msg=handlerError(status);
-					conn.printfData(msg.c_str());
+					getConnection().printfData(msg.c_str());
 				}else{
 					item
 	     				<< "{\"id\":\"" << (*(directory_it)).id 
@@ -83,33 +83,33 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 	     				<< "\",\"shared\":\"" << (*(directory_it)).shared 
 	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
 	     				item << "]";
-					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size();
-  					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-					conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
+					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+					getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 					const std::string tmp = item.str();
 					const char* msg = tmp.c_str();
-					conn.printfData(msg);
+					getConnection().printfData(msg);
 				}
 
 			} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
 			}	
 	}
 	else{
-		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		string msg=handlerError(status);
-		conn.printfData(msg.c_str());
+		getConnection().printfData(msg.c_str());
 	}
-}
-
-void InfoNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
 }
 
 std::string InfoNode::defaultResponse(){
 	return "[{ \"id\": \"0\",  \"name\": \"\","
 							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
 							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+}
 
+std::string InfoNode::getUserId(){
+	vector<string> lista=InfoNode::split(getUri(),'/');
+	return lista[3];
 }
 
