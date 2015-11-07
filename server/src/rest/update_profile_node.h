@@ -20,6 +20,7 @@ public:
 protected:
     void executePut();
     std::string defaultResponse();
+    std::string getUserId();
 private:
     vector<string> split(const string &s, char delim);
 

@@ -30,9 +30,8 @@ void UpdateProfileNode::executePut() {
 
     if (lista.size()==3){
         string userId=lista[2];
-        string token=getConnection().getAuthorization();
-        Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
 
+        Log(Log::LogMsgDebug) << "[ Not Implemented ]: HARCODEADO EL ACCESO A LA BASEEEEEE";
         RequestDispatcher::user_info_st user_info;
         if (!getRequestDispatcher()->get_user_info(userId, user_info,status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
@@ -54,11 +53,15 @@ void UpdateProfileNode::executePut() {
         getConnection().printfData(msg.c_str());
     }
 }
+
 std::string UpdateProfileNode::defaultResponse(){
     return "{\"resultCode\": 2}";
-
 }
 
+std::string UpdateProfileNode::getUserId() {
+    vector<string> lista=UpdateProfileNode::split(getUri(),'/');
+    return lista[2];
+}
 
 
 
