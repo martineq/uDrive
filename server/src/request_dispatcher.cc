@@ -116,7 +116,6 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   // Prepare data
   user_info.email = dh_user_info.email;
   vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
-  cout << "name: "<< dh_user_info.name << " " << ""  << endl;
   user_info.first_name = name.front();
   user_info.last_name = name.back();
   vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
@@ -130,6 +129,17 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
 
   return true;
 }
+
+bool RequestDispatcher::get_user_image(string user_id, char*& p_image_stream, string& size_stream, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  size_t size = fh_.load_file(user_image_name,p_image_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  
+  return true;
+}
+
 
 
 bool RequestDispatcher::get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status){
@@ -265,7 +275,7 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
 
 
 bool RequestDispatcher::get_file_stream(string user_id, string file_id, string revision,
-                                        char*& p_file_stream, size_t& size_stream, int& status){
+                                        char*& p_file_stream, string& size_stream, int& status){
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
 
@@ -284,15 +294,16 @@ bool RequestDispatcher::get_file_stream(string user_id, string file_id, string r
   }
 
   string file_name = user_id+file_id+LABEL_REVISION_1;
-  size_stream = fh_.load_file(file_name,p_file_stream);
-  if( size_stream==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  size_t size = fh_.load_file(file_name,p_file_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
 
   return true;
 }
 
 
 bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
-                                       char*& p_dir_stream, size_t& size_stream, int& status){
+                                       char*& p_dir_stream, string& size_stream, int& status){
   
   // Gets structure info for the directory
   ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,dir_id,status);
@@ -303,9 +314,20 @@ bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
   
   // Load file in p_dir_stream
   string zip_name_with_extension = zip_name + ".zip";
-  size_stream = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_t size = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
   
-  return true; // TODO(mart): check returns in this function
+  return true;
+}
+
+
+bool RequestDispatcher::set_user_image(string user_id, const char* p_image_stream, string size, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  if( fh_.save_file(user_image_name,p_image_stream,stoul_decimal(size))==0 ){ status = STATUS_FAIL_SAVING_FILE; return false; }
+
+  return true;
 }
 
 
