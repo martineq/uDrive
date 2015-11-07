@@ -439,10 +439,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // + Post signup     IN: name/email/pass/token             OUT: userId  
   // Parameters IN
   string email="mail@mail.com"; string password="1234"; string name="jake";
-  string location="152.08;121.55"; string generated_token="1029384756"; string date="27/10/2015";
+  string locationX="111.08"; string locationY="222.55"; string generated_token="1029384756"; string date="27/10/2015";
   // Parameters OUT
   string user_id="0"; int status=0;
-  bool ok = rd->sign_up(email,password,name,location,generated_token,date,user_id,status);
+  bool ok = rd->sign_up(email,password,name,"the dog",locationX,locationY,generated_token,date,user_id,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(user_id!="0");
   
@@ -538,6 +538,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   vector<RequestDispatcher::info_element_st> v_dir_elem_info;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   rd->get_directory_element_info_from_dir_info(user_id,dir_info,v_dir_elem_info,status);
+
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
@@ -547,7 +548,6 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
            "\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]",
            ei.id,ei.name.c_str(),ei.size,ei.type.c_str(),ei.number_of_items,ei.shared.c_str(),ei.lastModDate.c_str());
     cout << endl;
-
   }
   
   // + Get userInfo    IN: userId/token                           OUT: name/email
@@ -555,20 +555,21 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   user_id;
   token;
   // Parameters OUT  
-  DataHandler::user_info_st user_info;
+  RequestDispatcher::user_info_st user_info;
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_user_info(user_id,user_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   
-  EXPECT_EQ(user_info.dir_root,"1");                 // Internal ID of user root dir
-  EXPECT_EQ(user_info.email,"mail@mail.com");        // User mail   
-  EXPECT_EQ(user_info.location,"152.08;121.55");     // User location   
-  EXPECT_EQ(user_info.name,"jake");                  // User name   
-  EXPECT_EQ(user_info.shared_files,"");              // IDs of shared files, separated by semicolon
-  EXPECT_EQ(user_info.user_quota_used,"108");        // Size of quota used (54*2==108)
-
-  
+  EXPECT_EQ("mail@mail.com",user_info.email);            // User mail   
+  EXPECT_EQ("111.08",user_info.gps_lat);                 // User location   
+  EXPECT_EQ("222.55",user_info.gps_lon);                 // User location   
+  EXPECT_EQ("jake",user_info.first_name);                // User name   
+  EXPECT_EQ("the dog",user_info.last_name);              // User name   
+  EXPECT_EQ("108",user_info.user_quota_used);            // Size of quota used (54*2==108)
+  EXPECT_EQ("72.00%",user_info.user_quota_percentage);   // User quota percentage
+  EXPECT_EQ("150",user_info.user_quota_total);           // User quota total
+ 
   // *******************
   // *** Other tests *** 
   // *******************
@@ -594,10 +595,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
 
   // Add second user and add new dir
   string user_id_second="0"; status=0;
-  ok = rd->sign_up("mailsecond@mail.com","1234","finn","152.08;121.55","10244756","02/11/2015",user_id_second,status);
+  ok = rd->sign_up("mailsecond@mail.com","1234","finn","the human","152.08","121.55","10244756","02/11/2015",user_id_second,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_TRUE(user_id_second!="0");
-  DataHandler::user_info_st user_info_second;
+  RequestDispatcher::user_info_st user_info_second;
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_user_info(user_id_second,user_info_second,status);
@@ -605,10 +606,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
 
   
   // Use get_directory_info() with forbidden user
-  string forbidden_user_id = user_id;
+  string forbidden_user_id = user_id_second;
   DataHandler::dir_info_st dir_info2;
-  EXPECT_TRUE(rd->check_token(forbidden_user_id,token,status));
-  ok = rd->get_directory_info(forbidden_user_id,user_info_second.dir_root,dir_info2,status);
+  EXPECT_TRUE(rd->check_token(forbidden_user_id,"10244756",status));
+  ok = rd->get_directory_info(forbidden_user_id,sub_dir_id,dir_info2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   

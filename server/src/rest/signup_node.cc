@@ -35,7 +35,7 @@ void SignupNode::executePost(MgConnectionW& conn, const char* url){
 			std::string userId;
 			std::string new_token=CreateToken(email);
 
-			if (!this->rd->sign_up(email, password, firstname, "Caba", new_token, fecha, userId,status)){
+			if (!this->rd->sign_up(email, password, firstname, lastname,"15.23","20.43", new_token, fecha, userId,status)){
 				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
 				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
