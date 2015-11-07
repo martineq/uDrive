@@ -37,7 +37,7 @@ void InfoNode::executeGet(MgConnectionW& conn, const char* url){
 		dirId=lista[5];
 		string token=conn.getAuthorization();
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
-		DataHandler::dir_info_st dirInfo;
+		RequestDispatcher::dir_info_st dirInfo;
 		if (!this->rd->get_directory_info(userId, /*token,*/ dirId, dirInfo, status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
 			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);

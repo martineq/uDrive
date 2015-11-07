@@ -50,7 +50,7 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
 		if (this->rd->new_directory(userId, /* token,*/ dirNameS, fecha, dirId, new_dirId, status)){ // TODO(martindonofrio): use RequestDispatcher::check_token()
-			DataHandler::dir_info_st dirInfo;
+			RequestDispatcher::dir_info_st dirInfo;
 			if (!this->rd->get_directory_info(userId, /*token,*/ dirId, dirInfo, status)){ //TODO(martindonofrio): use RequestDispatcher::check_token()
 				conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
