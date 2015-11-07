@@ -90,7 +90,7 @@ public class UserProfileActivity extends AppCompatActivity {
         double usedMB = Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20);
         double totalMB = Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2, 20);
         ((TextView) findViewById(R.id.textProgressBar)).setText("Usage: "+usedMB
-            +" ("+mUserProfile.getQuotaUsagePercent()+") of "+totalMB);
+            +" MB ("+mUserProfile.getQuotaUsagePercent()+") of "+totalMB+" MB");
         ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
         progressbar.setProgress(Integer.parseInt(Util.extractDigits(mUserProfile.getQuotaUsagePercent())));
     }
