@@ -23,8 +23,7 @@ void Node::execute() {
 std::string Node::getUserId() {return "0";}
 
 bool Node::auth(int &status) {
-    Log(Log::LogMsgDebug) << "Auth de NODE";
-    Log(Log::LogMsgDebug) << "[" << "auth" << "] UserId: " <<getUserId() <<" Token: "<<getConnection().getAuthorization();
+    Log(Log::LogMsgDebug) << "[" << "Auth node" << "] UserId: " <<getUserId() <<" Token: "<<getConnection().getAuthorization();
     return getRequestDispatcher()->check_token(getUserId(),getConnection().getAuthorization(),status);
 }
 

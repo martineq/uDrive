@@ -527,8 +527,6 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
-  EXPECT_EQ(dir_info.directories_contained,";2");       // IDs of directories contained, separated by semicolon
-  EXPECT_EQ(dir_info.files_contained,";1;2");           // IDs of files contained, separated by semicolon
   EXPECT_EQ(dir_info.name,"root");                      // Dir name
   EXPECT_EQ(dir_info.owner,"1");                        // ID of owner
   EXPECT_EQ(dir_info.parent_directory,"no_parent");     // ID of parent dir. Special case: Root Dir.
@@ -536,10 +534,9 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_EQ(dir_info.size,"108");                       // Dir size (54*2==108)
 
   // ** For reding information of sub-directories and files contained in this directory **
-  vector<RequestDispatcher::info_element_st> v_dir_elem_info;
-  EXPECT_TRUE(rd->check_token(user_id,token,status));
-  rd->get_directory_element_info_from_dir_info(user_id,dir_info,v_dir_elem_info,status);
-
+  vector<RequestDispatcher::info_element_st> v_dir_elem_info = dir_info.directory_element_info;
+  EXPECT_EQ(3,v_dir_elem_info.size());                        // Number of elements in this directory == 3
+  
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
@@ -676,6 +673,8 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files2,status));
   EXPECT_EQ(0,shared_files2.size()); 
   
+  
+  
   // Add sub-sub-directory
   string sub_sub_dir_id = "0";
   EXPECT_TRUE(rd->check_token(user_id,token,status));
@@ -701,6 +700,33 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
   EXPECT_EQ("1130",size_stream);  // Size of zip file: 1130 bytes
+
+
+  // Share the file...
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  user_owner_id;
+  file_to_share_id;
+  user_shared_id;
+  EXPECT_TRUE(rd->set_file_share(user_owner_id,file_to_share_id,user_shared_id,"06/11/15",status));
+  // ...check if the user shared can acces the file
+  shared_files.clear();
+  EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
+  EXPECT_EQ(1,shared_files.size()); 
+  // ...Delete the file from the user shared
+  EXPECT_TRUE(rd->delete_file(user_shared_id,file_to_share_id,status));
+  // ...Check file deleted  from user shared (file forbidden)
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_stream(user_id_second,file_to_share_id,"1",p_file_stream_2,size_2,status);
+  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
+  // ...Check file non-deleted from user owner (the owner can still have the file)
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  ok = rd->get_file_stream(user_id,file_to_share_id,"1",p_file_stream_2,size_2,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }  
+  // ...Delete the file from the user owner
+  EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
+  // ...Check file non-deleted from user owner  (the owner can NOT have the file)
+
   
   // Create the user image, and then save and load in the RequestDispatcher
   string data;

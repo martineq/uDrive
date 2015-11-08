@@ -2,19 +2,19 @@
 // Created by martin on 06/11/15.
 //
 
-#include "update_profile_node.h"
+#include "update_photo_node.h"
 
 using std::string;
 using std::stringstream;
 using std::vector;
 
-UpdateProfileNode::UpdateProfileNode(MgConnectionW&  conn)  : Node(conn) {
+UpdatePhotoNode::UpdatePhotoNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
-UpdateProfileNode::~UpdateProfileNode() {
+UpdatePhotoNode::~UpdatePhotoNode() {
 }
 
-vector<string> UpdateProfileNode::split(const string &s, char delim) {
+vector<string> UpdatePhotoNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -24,23 +24,25 @@ vector<string> UpdateProfileNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void UpdateProfileNode::executePut() {
-    vector<string> lista=UpdateProfileNode::split(getConnection().getUri(),'/');
+void UpdatePhotoNode::executePut() {
+    vector<string> lista= UpdatePhotoNode::split(getConnection().getUri(),'/');
     int status=11;
 
     if (lista.size()==3){
         string userId=lista[2];
+        Log(Log::LogMsgDebug) << "[UpdatePhotoNode] ";
 
-        Log(Log::LogMsgDebug) << "[ Not Implemented ]: HARCODEADO EL ACCESO A LA BASEEEEEE";
-        RequestDispatcher::user_info_st user_info;
-        if (!getRequestDispatcher()->get_user_info(userId, user_info,status)){
+        std::string photoStream=getConnection().getBodyJson("photoStream");
+
+        //TODO (martin): Ver de pasarle el tamaño del archivo al metodo. Ahora HARDCODEADO
+        if (( photoStream == "") or (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),"1024",status))){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());
         }
         else{
-            Log(Log::LogMsgDebug) << "[" << "updating photo profile" << "]: firstname: " << user_info.first_name;
+            Log(Log::LogMsgDebug) << "[" << "updating photo profile" << "]: UserID: " << userId;
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             Log(Log::LogMsgDebug) << "[" << "update profile - resultCode: 1 ]";
@@ -54,12 +56,12 @@ void UpdateProfileNode::executePut() {
     }
 }
 
-std::string UpdateProfileNode::defaultResponse(){
+std::string UpdatePhotoNode::defaultResponse(){
     return "{\"resultCode\": 2}";
 }
 
-std::string UpdateProfileNode::getUserId() {
-    vector<string> lista=UpdateProfileNode::split(getUri(),'/');
+std::string UpdatePhotoNode::getUserId() {
+    vector<string> lista= UpdatePhotoNode::split(getUri(),'/');
     return lista[2];
 }
 

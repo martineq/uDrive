@@ -2,8 +2,8 @@
 // Created by martin on 06/11/15.
 //
 
-#ifndef UPDATE_PROFILE_NODE_H_
-#define UPDATE_PROFILE_NODE_H_
+#ifndef UPDATE_PHOTO_NODE_H_
+#define UPDATE_PHOTO_NODE_H_
 
 #include "../rest/node.h"
 #include "../util/log.h"
@@ -12,11 +12,11 @@
 #include "../db_handler.h"
 #include "../db_constants.h"
 
-class UpdateProfileNode : public Node {
+class UpdatePhotoNode : public Node {
 
 public:
-    UpdateProfileNode(MgConnectionW& conn);
-    ~UpdateProfileNode();
+    UpdatePhotoNode(MgConnectionW& conn);
+    ~UpdatePhotoNode();
 protected:
     void executePut();
     std::string defaultResponse();
@@ -26,5 +26,5 @@ private:
 
 };
 
-#endif /* UPDATE_PROFILE_NODE_H_ */
+#endif /* UPDATE_PHOTO_NODE_H_ */
 

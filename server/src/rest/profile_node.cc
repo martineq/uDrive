@@ -30,7 +30,9 @@ void ProfileNode::executeGet() {
         }
         else{
             std::ostringstream item;
-            /*TODO(martindonofrio): temporary line >>> */ string user_image; getRequestDispatcher()->HARDCODED_get_user_image(userId,user_image,status);
+            char* user_image;
+            std::string size_image;
+            getRequestDispatcher()->get_user_image(userId,user_image,size_image,status);
             Log(Log::LogMsgDebug) << "[" << "printing profile" << "]: firstname: " << user_info.first_name;
             item
             << "{\"firstname\":\""  << user_info.first_name

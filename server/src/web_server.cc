@@ -1,6 +1,4 @@
 #include "web_server.h"
-#include "rest/profile_node.h"
-#include "rest/update_profile_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -25,7 +23,6 @@ void WEBServer::run(){
  * Method that handles server request.
  */
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
-    // mg_server* mgServer = (mg_server*) conn->server_param;
     MgConnectionW mgConnection(conn);
 
     Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
@@ -53,11 +50,21 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;
 
    } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
-    CreateDirNode* cdn=new CreateDirNode(mgConnection);
-    cdn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
-      cdn->execute();
-    delete cdn;
-    return MG_TRUE;
+
+      if (!strncmp(mgConnection.getMethod(),"DELETE",6)){
+          DeleteFileNode* dfn=new DeleteFileNode(mgConnection);
+          dfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
+          dfn->execute();
+          delete dfn;
+          return MG_TRUE;
+
+      }else if (!strncmp(mgConnection.getMethod(),"POST",4)){
+          CreateDirNode* cdn=new CreateDirNode(mgConnection);
+          cdn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
+          cdn->execute();
+          delete cdn;
+          return MG_TRUE;
+      }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
     SignupNode* sn=new SignupNode(mgConnection);
@@ -74,15 +81,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/photo",6)) {
-      UpdateProfileNode* upn=new UpdateProfileNode(mgConnection);
+      UpdatePhotoNode * upn=new UpdatePhotoNode(mgConnection);
       upn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
       upn->execute();
       delete upn;
       return MG_TRUE;
-     
-  } else {
-    return MG_FALSE;  // Rest of the events are not processed
-  }
+  } else return MG_FALSE;  // Rest of the events are not processed
 }
 
 void* WEBServer::threadHandler(void* arg){

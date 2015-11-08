@@ -55,11 +55,11 @@ void CreateDirNode::executePost() {
 				getConnection().printfData(msg.c_str());
 			}
 			else{
-				vector<RequestDispatcher::info_element_st> directory_element_info;
+				vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;  // Assign value
 				bool enc = false;
 				std::ostringstream item;
 	  			item << "[";
-				if (getRequestDispatcher()->get_directory_element_info_from_dir_info(userId, dirInfo_rd, directory_element_info, status)){
+				if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
 					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
 					if (directory_element_info.size()!=0){

@@ -66,7 +66,10 @@ std::string MgConnectionW::getBodyJson(string field){
     }
     const Json::Value value = root[field];
     if (value != value.null) return value.asString();
-    else return "";
+    else {
+        Log(Log::LogMsgDebug) << "[getBodyJson]: No se encontro el campo: "<<field;
+		return "";
+	}
 }
 
 struct mg_connection* MgConnectionW::operator->(){
