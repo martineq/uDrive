@@ -38,18 +38,18 @@ void InfoNode::executeGet() {
 
         RequestDispatcher::dir_info_st dirInfo_rd;
 
-		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
+		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}
 		else{
-			vector<RequestDispatcher::info_element_st> directory_element_info;
+			vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;   // Assign value
 			bool enc = false;
 			std::ostringstream item;
   			item << "[";
-			if (getRequestDispatcher()->get_directory_element_info_from_dir_info(userId, dirInfo_rd, directory_element_info, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
+			if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
 				vector<RequestDispatcher::info_element_st>::iterator directory_it;
 				Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
 				if (directory_element_info.size()!=0){
