@@ -126,7 +126,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
                 @Override
                 public void onFailure(String message, int status) {
-
+                    Toast.makeText(FileListActivity.this, getString(R.string.error_profile), Toast.LENGTH_LONG).show();
                 }
             });
         }  else if (id == R.id.action_upload_file) {

@@ -73,5 +73,6 @@
     <string name="tag_action">Tag</string>
     <string name="delete_action">Delete</string>
     <string name="cancel_action">Cancel</string>
+    <string name="error_profile">Error loading profile</string>
 
 </resources>
