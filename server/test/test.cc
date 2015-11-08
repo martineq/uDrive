@@ -328,7 +328,7 @@ TEST(DataHandlerTest, UserDelete_AddDirFile_ModPassUserFileDir) {
   EXPECT_TRUE(dh.modify_file_info(new_file_id,"myBrabdNewFile","txt","17-10-2015-15-20","important","",user_id_jake,status));
 
   // Delete file
-  EXPECT_TRUE(dh.delete_file(new_file_id,status));
+  EXPECT_TRUE(dh.modify_file_deleted_status(new_file_id,DELETED_FILE_STATUS_ERASED,status));
   
   // Delete dir
   EXPECT_TRUE(dh.delete_directory(new_dir_id,status));
@@ -396,7 +396,7 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
   FileHandler fh;
   
   // Save file
-  string user_id = "111";
+  string user_id = "999";
   string file_id = "222";
   string revision = "010";
   string file_name = user_id+file_id+revision;
@@ -710,7 +710,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   status;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("1130",size_stream);  // Size of zip file: 1130 bytes
+  EXPECT_EQ("1130",size_stream);  // Size of zip file (3 files): 1130 bytes
 
   // Create zip file with forbidden user
   sub_sub_dir_id;
@@ -743,7 +743,25 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // ...Delete the file from the user owner
   EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
   // ...Check file non-deleted from user owner  (the owner can NOT have the file)
-
+  ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(2,dir_info.directory_element_info.size());   // Number of elements in this directory: 3-1==2
+  
+  // Recover deleted file
+  EXPECT_TRUE(rd->recover_deleted_files(user_id,status));
+  // Check again for the files recovered
+  ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(3,dir_info.directory_element_info.size());   // Number of elements in this directory: 2+1=3
+  
+  
+  // Delete file logically and physically
+  EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
+  EXPECT_TRUE(rd->purge_deleted_files(user_id,status));
+  // ...And get zip file without the file deleted
+  EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
+  EXPECT_EQ("912",size_stream);  // Size of zip file (2 files): 912 bytes
+  
   
   // Create the user image, and then save and load in the RequestDispatcher
   string data;

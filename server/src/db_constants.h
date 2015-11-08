@@ -13,6 +13,7 @@
 // Deleted file status
 #define DELETED_FILE_STATUS_EXISTS "file_exists"
 #define DELETED_FILE_STATUS_ERASED "file_erased"
+#define DELETED_FILE_STATUS_PHYSICALLY_ERASED "file_physically_erased"
 
 // DataHandler prefixes for key construction
 #define PREFIX_USER "user_"

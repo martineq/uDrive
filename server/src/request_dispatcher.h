@@ -85,19 +85,9 @@ class RequestDispatcher{
     unsigned long stoul_decimal(const string& str);
     string add_key_to_string_list(string list, string key);
     string remove_key_from_string_list(string list, string key);
-
-
-    /**
-     * @brief Gets a vector of elements (files or subdirectories) contained in a directory DataHandler::dir_info_st. Returns true on success.
-     *        On error returns false and a DataHandler status (see db_constants.h)
-     * 
-     * @param user_id ...
-     * @param dir_info ...
-     * @param directory_element_info return vector of RequestDispatcher::info_element_st
-     * @param status returns DataHandler status ONLY if @return==false
-     * @return bool
-     */
     bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool purge_files_from_dir_recursive(string dir_id, int& status);
+    bool recover_files_from_dir_recursive(string dir_id, int& status);
     
   public:  
     
@@ -325,7 +315,7 @@ class RequestDispatcher{
     
     
     /**
-     * @brief Sets deleted status flag to "logical" deleted. Returns true on success.
+     * @brief Sets deleted status flag to "logical" deleted (the file will not be informed to the user). Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
@@ -335,6 +325,26 @@ class RequestDispatcher{
      */
     bool delete_file(string user_id, string file_id, int& status);  
 
+    
+    /**
+     * @brief Deletes physically all files (and their revisions) in "deleted" status
+     * 
+     * @param user_id ...
+     * @param status ...
+     * @return bool
+     */
+    bool purge_deleted_files(string user_id, int& status);
+    
+    
+   /**
+     * @brief Reverts the status i the files with "deleted" flag, making files visible
+     * 
+     * @param user_id ...
+     * @param status ...
+     * @return bool
+     */
+    bool recover_deleted_files(string user_id, int& status);
+    
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
     
@@ -358,5 +368,7 @@ TODO(mart): Casos de uso y funciones de Data Handler relacionadas:
 + Modificar info usr        -> modify_user_info().            Verificar que el usr sea dueño.
 + Modificar info dir        -> modify_directory_info().       Verificar que el usr sea dueño.
 + Modificar info arch       -> modify_file_info().            En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
+
+TODO(mart): remember: deleted files cant be asked by the client
 
 */
