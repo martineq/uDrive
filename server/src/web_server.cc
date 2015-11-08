@@ -81,22 +81,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/photo",6)) {
-      UpdateProfileNode* upn=new UpdateProfileNode(mgConnection);
+      UpdatePhotoNode * upn=new UpdatePhotoNode(mgConnection);
       upn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
       upn->execute();
       delete upn;
       return MG_TRUE;
-
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/photo",6)) {
-      UpdateProfileNode* upn=new UpdateProfileNode(mgConnection);
-      upn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values
-      upn->execute();
-      delete upn;
-      return MG_TRUE;
-     
-  } else {
-    return MG_FALSE;  // Rest of the events are not processed
-  }
+  } else return MG_FALSE;  // Rest of the events are not processed
 }
 
 void* WEBServer::threadHandler(void* arg){

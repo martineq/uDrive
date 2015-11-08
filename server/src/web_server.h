@@ -15,7 +15,7 @@ using std::string;
 #include "rest/create_dir_node.h"
 #include "request_dispatcher.h"
 #include "rest/profile_node.h"
-#include "rest/update_profile_node.h"
+#include "rest/update_photo_node.h"
 #include "rest/delete_file_node.h"
 
 extern "C" {

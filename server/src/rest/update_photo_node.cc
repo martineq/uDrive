@@ -30,17 +30,18 @@ void UpdatePhotoNode::executePut() {
 
     if (lista.size()==3){
         string userId=lista[2];
+        Log(Log::LogMsgDebug) << "[UpdatePhotoNode] ";
 
-        Log(Log::LogMsgDebug) << "[ Not Implemented ]: HARCODEADO EL ACCESO A LA BASEEEEEE";
-        RequestDispatcher::user_info_st user_info;
-        if (!getRequestDispatcher()->get_user_info(userId, user_info,status)){
+        std::string photoStream=getConnection().getBodyJson("photoStream");
+        //TODO (martin): Ver de pasarle el tamaño del archivo al metodo. Ahora HARDCODEADO
+        if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),"1024",status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());
         }
         else{
-            Log(Log::LogMsgDebug) << "[" << "updating photo profile" << "]: firstname: " << user_info.first_name;
+            Log(Log::LogMsgDebug) << "[" << "updating photo profile" << "]: UserID: " << userId;
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             Log(Log::LogMsgDebug) << "[" << "update profile - resultCode: 1 ]";
