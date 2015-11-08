@@ -290,6 +290,17 @@ class RequestDispatcher{
     bool unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
     
     
+    /**
+     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param shared_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
+    
 //  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
 //  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
 //  bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
@@ -310,7 +321,7 @@ class RequestDispatcher{
      * @return bool
      */
     bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
-
+    
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
     
 };

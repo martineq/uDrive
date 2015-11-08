@@ -385,6 +385,41 @@ bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, s
 }
 
 
+bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatcher::info_element_st >& shared_files, int& status){
+
+  DataHandler::user_info_st dh_user_info;
+  if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
+
+  // Prepare data
+  shared_files.clear();
+  vector<string> shared_file_ids = split_string(dh_user_info.shared_files,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = shared_file_ids.begin() ; it!=shared_file_ids.end() ; ++it) {
+    string shared_file_id = (*it);
+    RequestDispatcher::file_info_st file_info;
+    RequestDispatcher::info_element_st info_element;
+
+    if( !get_file_info(user_id,shared_file_id,file_info,status) ){ return false; }
+    info_element.id = stoul_decimal(shared_file_id);
+    info_element.lastModDate = file_info.date_last_mod;
+    info_element.name = file_info.name;
+    info_element.type = LABEL_A;  
+    info_element.size = stoul_decimal(file_info.size);
+    info_element.number_of_items = 0; // File is always number_of_items==0 
+    
+    // Calculate number of users shared
+    vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+    size_t number_of_users_shared = temp_users_shared.size();
+    if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; 
+    }else{ info_element.shared = LABEL_FALSE; }
+    
+    shared_files.push_back(info_element);
+  }
+  
+  return true;
+}
+
+
+
 /*
 bool RequestDispatcher::delete_user(string user_id, int& status){
   // TODO(mart): implement
