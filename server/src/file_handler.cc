@@ -50,3 +50,11 @@ size_t FileHandler::save_file(string file_name, const char* p_file_stream, size_
   
   return size_write;
 }
+
+void FileHandler::delete_file(string file_name){
+  
+  string remove_file = "rm -f " + file_name;  // Example: "rm -f 111"
+  system(remove_file.c_str());
+  
+}
+
