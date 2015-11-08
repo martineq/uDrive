@@ -659,6 +659,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  // ...List the shared files from an user
+  vector< RequestDispatcher::info_element_st > shared_files;
+  EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
+  EXPECT_EQ(1,shared_files.size()); 
   // ...Unshare the file from the same user...
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   EXPECT_TRUE(rd->unset_file_share(user_owner_id,file_to_share_id,user_shared_id,"07/11/15",status));
@@ -667,7 +671,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
-  
+  // ... List the shared files from an user (now the user have 0 file shared)
+  vector< RequestDispatcher::info_element_st > shared_files2;
+  EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files2,status));
+  EXPECT_EQ(0,shared_files2.size()); 
   
   // Add sub-sub-directory
   string sub_sub_dir_id = "0";
