@@ -673,6 +673,33 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files2,status));
   EXPECT_EQ(0,shared_files2.size()); 
   
+  // Share the file...
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  user_owner_id;
+  file_to_share_id;
+  user_shared_id;
+  EXPECT_TRUE(rd->set_file_share(user_owner_id,file_to_share_id,user_shared_id,"06/11/15",status));
+  // ...check if the user shared can acces the file
+  shared_files.clear();
+  EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
+  EXPECT_EQ(1,shared_files.size()); 
+  // ...Delete the file from the user shared
+  EXPECT_TRUE(rd->delete_file(user_shared_id,file_to_share_id,status));
+  // ...Check file deleted  from user shared (file forbidden)
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_stream(user_id_second,file_to_share_id,"1",p_file_stream_2,size_2,status);
+  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
+  // ...Check file non-deleted from user owner (the owner can still have the file)
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  ok = rd->get_file_stream(user_id,file_to_share_id,"1",p_file_stream_2,size_2,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }  
+  // ...Delete the file from the user owner
+  EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
+  // ...Check file non-deleted from user owner  (the owner can NOT have the file)
+  
+  
+  
   // Add sub-sub-directory
   string sub_sub_dir_id = "0";
   EXPECT_TRUE(rd->check_token(user_id,token,status));

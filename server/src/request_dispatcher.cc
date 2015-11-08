@@ -554,10 +554,15 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
     string file_id = (*it);
     DataHandler::file_info_st file_info;
     if( !dh_.get_file_info(file_id,file_info,status) ){ return node; }
-    ZipHandler::file_st file_zip_info;
-    file_zip_info.file_id = file_info.owner + file_id + file_info.revision;
-    file_zip_info.file_real_name = file_info.name + "." + file_info.extension;
-    node.files_contained.push_back(file_zip_info);
+    
+    // Add only non-deleted files
+    if( file_info.deleted_status.compare(DELETED_FILE_STATUS_EXISTS)==0 ){
+      ZipHandler::file_st file_zip_info;
+      file_zip_info.file_id = file_info.owner + file_id + file_info.revision;
+      file_zip_info.file_real_name = file_info.name + "." + file_info.extension;
+      node.files_contained.push_back(file_zip_info);
+    }
+
   }
   
   //Fill sub_dirs recursively
