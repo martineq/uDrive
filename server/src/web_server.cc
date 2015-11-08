@@ -66,8 +66,6 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           return MG_TRUE;
       }else return MG_FALSE;
 
-
-
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
     SignupNode* sn=new SignupNode(mgConnection);
     sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999)); // TODO(martindonofrio): change hardcoded values

@@ -28,7 +28,7 @@ vector<string> DeleteFileNode::split(const string &s, char delim) {
 
 void DeleteFileNode::executeDelete() {
 	vector<string> lista = DeleteFileNode::split(getUri(), '/');
-	int status = 11;
+	int status = 3;
 
 	if ((!lista[3].compare("file")) && (lista.size() == 5)) {
 		string userId = lista[2];
