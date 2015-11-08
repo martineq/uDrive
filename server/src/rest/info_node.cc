@@ -55,13 +55,13 @@ void InfoNode::executeGet() {
 				if (directory_element_info.size()!=0){
 					for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 	     				enc=true;
-	     					item 
-		     				<< "{\"id\":\"" << (*directory_it).id 
-		     				<< "\",\"name\":\"" << (*directory_it).name 
-		     				<< "\",\"size\":\""	<< (*directory_it).size	
-		     				<< "\",\"type\":\""	<< (*directory_it).type 
-		     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items 
-		     				<< "\",\"shared\":\"" << (*directory_it).shared 
+	     					item
+		     				<< "{\"id\":\"" << (*directory_it).id
+		     				<< "\",\"name\":\"" << (*directory_it).name
+		     				<< "\",\"size\":\""	<< (*directory_it).size
+		     				<< "\",\"type\":\""	<< (*directory_it).type
+		     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items
+		     				<< "\",\"shared\":\"" << (*directory_it).shared
 		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
 					}
 				}
@@ -75,12 +75,12 @@ void InfoNode::executeGet() {
 					getConnection().printfData(msg.c_str());
 				}else{
 					item
-	     				<< "{\"id\":\"" << (*(directory_it)).id 
-	     				<< "\",\"name\":\"" << (*(directory_it)).name 
-	     				<< "\",\"size\":\""	<< (*(directory_it)).size	
-	     				<< "\",\"type\":\""	<< (*(directory_it)).type 
-	     				<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items 
-	     				<< "\",\"shared\":\"" << (*(directory_it)).shared 
+	     				<< "{\"id\":\"" << (*(directory_it)).id
+	     				<< "\",\"name\":\"" << (*(directory_it)).name
+	     				<< "\",\"size\":\""	<< (*(directory_it)).size
+	     				<< "\",\"type\":\""	<< (*(directory_it)).type
+	     				<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items
+	     				<< "\",\"shared\":\"" << (*(directory_it)).shared
 	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
 	     				item << "]";
 					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
@@ -92,7 +92,7 @@ void InfoNode::executeGet() {
 				}
 
 			} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
-			}	
+			}
 	}
 	else{
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
