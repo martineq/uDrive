@@ -206,12 +206,10 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
   file_info.date_last_mod = file_info_temp.date_last_mod;
   file_info.extension = file_info_temp.extension;
   file_info.name = file_info_temp.name;
-  file_info.owner = file_info_temp.owner;
   file_info.revision = file_info_temp.revision;
   file_info.size = file_info_temp.size;
   file_info.tags = file_info_temp.tags;
   file_info.user_last_mod = file_info_temp.user_last_mod;
-  file_info.users_shared = file_info_temp.users_shared;
   
   return true;
 }

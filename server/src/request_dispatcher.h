@@ -48,15 +48,12 @@ class RequestDispatcher{
     } ;
     
     struct file_info_st {
-      // TODO(mart): check if all of this variables are necesary
       string name;
       string extension;
       string date_last_mod;
       string user_last_mod;
       string tags;
-      string owner;
       string size;
-      string users_shared;
       string revision;
     } ;
   

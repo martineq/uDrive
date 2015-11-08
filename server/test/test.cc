@@ -765,8 +765,6 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_EQ("912",size_stream);  // Size of zip file (2 files): 912 bytes
   
   
-  
-  
   // Create the user image, and then save and load in the RequestDispatcher
   string data;
   size_t size_img;
@@ -801,14 +799,16 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_STREQ(data2.c_str(),p_image_stream3.c_str());
   
   // TODO(mart): implement this functions for test
-  // Use get_directory_element_info_from_dir_info() with shared files
   // Use get_file_info() from a user with a shared file (no the owner)
   // Use get_file_stream() from a user with a shared file (no the owner)
   
+  
+  
+  
+  
   // Delete instance
   delete rd;
-  
-  
+    
   // Delete used temp folder
   system("rm -rf /tmp/testdb_checkpoint3");
 
