@@ -36,19 +36,17 @@ int main(int argc, char** argv) {
 		std::ofstream outputLog;
 		if(config.logfile != "-"){
 			outputLog.open(config.logfile);
-			std::cout << "open outputLog" << std::endl;
-			if(outputLog.is_open()){
-				Log::setOutput(outputLog);
-				}
+			if(outputLog.is_open()) Log::setOutput(outputLog);
 		}
 		//Set nivel de logueo.
 		Log::setLogLevel(config.loglevel);
 
-		Log(Log::LogMsgInfo) << "Starting server...";
+
 		Log(Log::LogMsgInfo) << "Bindport: " << config.bindport;
 		Log(Log::LogMsgInfo) << "Bindip: " << config.bindip;
 		Log(Log::LogMsgInfo) << "Loglevel: " << config.loglevel;
 		Log(Log::LogMsgInfo) << "Logfile: " << config.logfile;
+	    Log(Log::LogMsgInfo) << "Starting server...";
 		//Log(Log::LogMsgInfo) << "Dbpath: " << config.dbpath;
 
 		//close signals
