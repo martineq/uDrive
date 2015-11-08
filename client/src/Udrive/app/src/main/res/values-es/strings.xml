@@ -72,5 +72,6 @@
     <string name="tag_action">Etiquetar</string>
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
+    <string name="error_profile">Error al intentar mostrar el perfil</string>
 
 </resources>

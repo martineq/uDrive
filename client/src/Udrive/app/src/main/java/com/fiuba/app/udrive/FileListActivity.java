@@ -31,6 +31,7 @@ import com.fiuba.app.udrive.view.FileContextMenu;
 import com.fiuba.app.udrive.view.FileContextMenuManager;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +53,11 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     private Integer mDirId;
 
+    private File selectedFileForDownload;
 
     public static final int FILE_CODE = 1;
+
+    public static final int DIR_CODE = 2;
 
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
 
@@ -126,7 +130,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
                 @Override
                 public void onFailure(String message, int status) {
-
+                    Toast.makeText(FileListActivity.this, getString(R.string.error_profile), Toast.LENGTH_LONG).show();
                 }
             });
         }  else if (id == R.id.action_upload_file) {
@@ -230,35 +234,77 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == FILE_CODE && resultCode == Activity.RESULT_OK) {
+            uploadSelectedFile(data);
+        } else if (requestCode == DIR_CODE && resultCode == Activity.RESULT_OK) {
+            downloadFileIntoSelectedDir(data);
+        }
+    }
 
-            Uri uri = data.getData();
-            //Toast.makeText(this, uri.getPath(), Toast.LENGTH_LONG).show();
-            mFilesService.upload(mUserAccount.getUserId(), mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
+    private void downloadFileIntoSelectedDir(Intent data) {
+        final File selectedFileForDownload = getSelectedFileForDownload();
+        if (selectedFileForDownload != null) {
+            final String fullPath = data.getData().getPath() + "/" + selectedFileForDownload.getName();
+
+            ServiceCallback<FileOutputStream> callback = new ServiceCallback<FileOutputStream>() {
                 @Override
-                public void onSuccess(List<File> files, int status) {
-                    mFilesAdapter.updateFiles(files);
-                    Log.d(TAG, "Number of files received " + files.size());
+                public void onSuccess(FileOutputStream outputStream, int status) {
+                    Log.i(TAG, "File downloaded to " + fullPath);
+                    setSelectedFileForDownload(null);
                 }
 
                 @Override
                 public void onFailure(String message, int status) {
-                    if (StatusCode.isHumanReadable(status)) {
-                        message = StatusCode.getMessage(FileListActivity.this, status);
-                        Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
-                    }
                     Log.e(TAG, message);
+                    setSelectedFileForDownload(null);
                 }
-            });
+            };
+
+            if (selectedFileForDownload.isFile()) {
+                mFilesService.downloadFile(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
+            } else {
+                mFilesService.downloadDir(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
+            }
         }
+    }
+
+    private void uploadSelectedFile(Intent data) {
+        Uri uri = data.getData();
+        //Toast.makeText(this, uri.getPath(), Toast.LENGTH_LONG).show();
+        mFilesService.upload(mUserAccount.getUserId(), mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
+            @Override
+            public void onSuccess(List<File> files, int status) {
+                mFilesAdapter.updateFiles(files);
+                Log.d(TAG, "Number of files received " + files.size());
+            }
+
+            @Override
+            public void onFailure(String message, int status) {
+                if (StatusCode.isHumanReadable(status)) {
+                    message = StatusCode.getMessage(FileListActivity.this, status);
+                    Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+                Log.e(TAG, message);
+            }
+        });
     }
 
     @Override
     public void onDownloadClick(int FileItem) {FileContextMenuManager.getInstance().hideContextMenu();
-        Log.i(TAG,"Download File position "+FileItem);
+        setSelectedFileForDownload(mFiles.get(FileItem));
+
+        FileContextMenuManager.getInstance().hideContextMenu();
+        Intent i = new Intent(this, FilePickerActivity.class);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+
+        startActivityForResult(i, DIR_CODE);
     }
 
     @Override
-    public void onInformationClick(int FileItem) {Log.i(TAG,"Information File position "+FileItem);}
+    public void onInformationClick(int FileItem) {
+        Log.i(TAG, "Information File position " + FileItem);}
 
     @Override
     public void onShareClick(int FileItem) {
@@ -283,5 +329,14 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     @Override
     public void onClick(View v, int position) {
         FileContextMenuManager.getInstance().toggleContextMenuFromView(v,position,this);
+    }
+
+
+    public File getSelectedFileForDownload() {
+        return selectedFileForDownload;
+    }
+
+    public void setSelectedFileForDownload(File selectedFileForDownload) {
+        this.selectedFileForDownload = selectedFileForDownload;
     }
 }

@@ -3,7 +3,9 @@ import android.content.Context;
 
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FolderData;
+import com.fiuba.app.udrive.utils.Utils;
 
+import java.io.FileOutputStream;
 import java.net.ContentHandler;
 import java.util.List;
 import retrofit.Callback;
@@ -41,10 +43,24 @@ public class FilesService extends AbstractService {
                        Callback<List<File>> files);
     }
 
+    private interface FileDownloadServiceApi {
+        @GET("/users/{userId}/file/{fileId}")
+        void downloadFile(@Path("userId") int userId,
+                          @Path("fileId") int fileId,
+                          Callback<FileOutputStream> callback);
+
+        @GET("/users/{userId}/dir/{dirId}")
+        void downloadDir(@Path("userId") int userId,
+                         @Path("dirId") int dirId,
+                         Callback<FileOutputStream> callback);
+    }
+
     private FilesServiceApi mFilesServiceApi;
+    private String mToken;
 
     public FilesService(final String token, Context context) {
         super(context);
+        this.mToken = token;
         this.mFilesServiceApi = createService(FilesServiceApi.class, token);
     }
 
@@ -73,9 +89,9 @@ public class FilesService extends AbstractService {
             TypedFile typedFile = new TypedFile("multipart/form-data", file);
             String  name = file.getName();
             long fileSizeInBytes= file.length();
-            String ext = getExtension(name);
+            String ext = Utils.getExtension(name);
 
-            mFilesServiceApi.upload(userId,dirId,typedFile,name,ext,fileSizeInBytes, new Callback<List<File>>() {
+            mFilesServiceApi.upload(userId, dirId, typedFile, name, ext, fileSizeInBytes, new Callback<List<File>>() {
                 @Override
                 public void success(List<File> files, Response response) {
                     serviceCallback.onSuccess(files, response.getStatus());
@@ -122,13 +138,44 @@ public class FilesService extends AbstractService {
 
     }
 
-    private String getExtension(String fileName){
-        String extension = "";
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = fileName.substring(i+1);
-        }
-        return extension;
+    public void downloadFile(int userId, int fileId, String fullPath, final ServiceCallback<FileOutputStream> serviceCallback) {
+        FileDownloadServiceApi fileDownloadServiceApi = createService(FileDownloadServiceApi.class, mToken, new FileOutputStreamConverter(fullPath));
+        fileDownloadServiceApi.downloadFile(userId, fileId, new Callback<FileOutputStream>() {
+            @Override
+            public void success(FileOutputStream outputStream, Response response) {
+                serviceCallback.onSuccess(outputStream, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void downloadDir(int userId, int dirId, String fullPath, final ServiceCallback<FileOutputStream> serviceCallback) {
+        FileDownloadServiceApi fileDownloadServiceApi = createService(FileDownloadServiceApi.class, mToken, new FileOutputStreamConverter(fullPath));
+        fileDownloadServiceApi.downloadDir(userId, dirId, new Callback<FileOutputStream>() {
+            @Override
+            public void success(FileOutputStream outputStream, Response response) {
+                serviceCallback.onSuccess(outputStream, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
     }
 
 }
