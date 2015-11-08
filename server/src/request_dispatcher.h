@@ -14,31 +14,6 @@
 
 class RequestDispatcher{
 
-  private:
-    
-    DataHandler dh_;
-    FileHandler fh_;
-    ZipHandler zh_;
-    size_t max_user_quota_;
-    static RequestDispatcher* request_dispatcher_instance;
-    bool init_ok_ = false;
-    
-    RequestDispatcher(string database_path,size_t max_user_quota);
-    bool init(string database_path,size_t max_user_quota);
-    bool get_user_quota_used(string user_id, string& quota, int& status);
-    bool increase_user_quota_used(string user_id, string quota_increased, int& status);
-    bool decrease_user_quota_used(string user_id, string quota_decreased, int& status); 
-    bool change_dir_date_recursive(string dir_id, string new_date, int& status);
-    bool increase_dir_size_recursive(string dir_id, string size_increased, int& status);
-    bool decrease_dir_size_recursive(string dir_id, string size_decreased, int& status);
-    bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
-    vector<string> split_string(string string_to_split, char delimiter);
-    bool db_is_initiated();
-    ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string dir_id, int& status);
-    unsigned long stoul_decimal(const string& str);
-    string add_key_to_string_list(string list, string key);
-    string remove_key_from_string_list(string list, string key);
-    
   public:
 
     struct info_element_st {
@@ -68,9 +43,8 @@ class RequestDispatcher{
       string tags;
       string owner;
       string parent_directory;
-      string files_contained;
-      string directories_contained;
       string size;
+      vector<RequestDispatcher::info_element_st> directory_element_info;
     } ;
     
     struct file_info_st {
@@ -82,10 +56,50 @@ class RequestDispatcher{
       string tags;
       string owner;
       string size;
-      string deleted_status;
       string users_shared;
       string revision;
     } ;
+  
+  
+  private:
+    
+    DataHandler dh_;
+    FileHandler fh_;
+    ZipHandler zh_;
+    size_t max_user_quota_;
+    static RequestDispatcher* request_dispatcher_instance;
+    bool init_ok_ = false;
+    
+    RequestDispatcher(string database_path,size_t max_user_quota);
+    bool init(string database_path,size_t max_user_quota);
+    bool get_user_quota_used(string user_id, string& quota, int& status);
+    bool increase_user_quota_used(string user_id, string quota_increased, int& status);
+    bool decrease_user_quota_used(string user_id, string quota_decreased, int& status); 
+    bool change_dir_date_recursive(string dir_id, string new_date, int& status);
+    bool increase_dir_size_recursive(string dir_id, string size_increased, int& status);
+    bool decrease_dir_size_recursive(string dir_id, string size_decreased, int& status);
+    bool get_root_dir_id(string user_id, string& root_dir_id, int& status);
+    vector<string> split_string(string string_to_split, char delimiter);
+    bool db_is_initiated();
+    ZipHandler::dir_tree_node_st get_dir_structure_recursive(string dir_id, int& status);
+    unsigned long stoul_decimal(const string& str);
+    string add_key_to_string_list(string list, string key);
+    string remove_key_from_string_list(string list, string key);
+
+
+    /**
+     * @brief Gets a vector of elements (files or subdirectories) contained in a directory DataHandler::dir_info_st. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param dir_info ...
+     * @param directory_element_info return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    
+  public:  
     
     ~RequestDispatcher();   
     
@@ -301,26 +315,26 @@ class RequestDispatcher{
      */
     bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
     
+    
 //  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
 //  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
 //  bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
 
 //  bool delete_user(string user_id, int& status);
 //  bool delete_directory(string user_id, string dir_id, int& status);
-//  bool delete_file(string user_id, string file_id, int& status);  
-
-
+    
+    
     /**
-     * @brief Gets a vector of elements (files or subdirectories) contained in a directory DataHandler::dir_info_st. Returns true on success.
+     * @brief Sets deleted status flag to "logical" deleted. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param dir_info ...
-     * @param directory_element_info return vector of RequestDispatcher::info_element_st
+     * @param file_id ...
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool delete_file(string user_id, string file_id, int& status);  
+
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
     
@@ -332,8 +346,15 @@ class RequestDispatcher{
 
 Clase Request Dispatcher
 
-TODO(mart): ¿Cómo se van a manejar las revisiones? Ver si hay que agregar parent_revision en cada file.
-Casos de uso y funciones de Data Handler relacionadas: 
+TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
+
+TODO(mart): Tener un método "borrar papelera" que borre físicamente y definitivamente 
+            los archivos (libreando espacio para el usuario) 
+            Por cada archivo: verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso
+            de ser compartido, quitarse de la lista de compartidos de otros usuarios.
+
+
+TODO(mart): Casos de uso y funciones de Data Handler relacionadas: 
 + Modificar info usr        -> modify_user_info().            Verificar que el usr sea dueño.
 + Modificar info dir        -> modify_directory_info().       Verificar que el usr sea dueño.
 + Modificar info arch       -> modify_file_info().            En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
