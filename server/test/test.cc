@@ -527,8 +527,6 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
-  EXPECT_EQ(dir_info.directories_contained,";2");       // IDs of directories contained, separated by semicolon
-  EXPECT_EQ(dir_info.files_contained,";1;2");           // IDs of files contained, separated by semicolon
   EXPECT_EQ(dir_info.name,"root");                      // Dir name
   EXPECT_EQ(dir_info.owner,"1");                        // ID of owner
   EXPECT_EQ(dir_info.parent_directory,"no_parent");     // ID of parent dir. Special case: Root Dir.
@@ -536,10 +534,9 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_EQ(dir_info.size,"108");                       // Dir size (54*2==108)
 
   // ** For reding information of sub-directories and files contained in this directory **
-  vector<RequestDispatcher::info_element_st> v_dir_elem_info;
-  EXPECT_TRUE(rd->check_token(user_id,token,status));
-  rd->get_directory_element_info_from_dir_info(user_id,dir_info,v_dir_elem_info,status);
-
+  vector<RequestDispatcher::info_element_st> v_dir_elem_info = dir_info.directory_element_info;
+  EXPECT_EQ(3,v_dir_elem_info.size());                        // Number of elements in this directory == 3
+  
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
