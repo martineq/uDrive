@@ -2,19 +2,19 @@
 // Created by martin on 06/11/15.
 //
 
-#include "update_profile_node.h"
+#include "update_photo_node.h"
 
 using std::string;
 using std::stringstream;
 using std::vector;
 
-UpdateProfileNode::UpdateProfileNode(MgConnectionW&  conn)  : Node(conn) {
+UpdatePhotoNode::UpdatePhotoNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
-UpdateProfileNode::~UpdateProfileNode() {
+UpdatePhotoNode::~UpdatePhotoNode() {
 }
 
-vector<string> UpdateProfileNode::split(const string &s, char delim) {
+vector<string> UpdatePhotoNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -24,8 +24,8 @@ vector<string> UpdateProfileNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void UpdateProfileNode::executePut() {
-    vector<string> lista=UpdateProfileNode::split(getConnection().getUri(),'/');
+void UpdatePhotoNode::executePut() {
+    vector<string> lista= UpdatePhotoNode::split(getConnection().getUri(),'/');
     int status=11;
 
     if (lista.size()==3){
@@ -54,12 +54,12 @@ void UpdateProfileNode::executePut() {
     }
 }
 
-std::string UpdateProfileNode::defaultResponse(){
+std::string UpdatePhotoNode::defaultResponse(){
     return "{\"resultCode\": 2}";
 }
 
-std::string UpdateProfileNode::getUserId() {
-    vector<string> lista=UpdateProfileNode::split(getUri(),'/');
+std::string UpdatePhotoNode::getUserId() {
+    vector<string> lista= UpdatePhotoNode::split(getUri(),'/');
     return lista[2];
 }
 

@@ -12,11 +12,11 @@
 #include "../db_handler.h"
 #include "../db_constants.h"
 
-class UpdateProfileNode : public Node {
+class UpdatePhotoNode : public Node {
 
 public:
-    UpdateProfileNode(MgConnectionW& conn);
-    ~UpdateProfileNode();
+    UpdatePhotoNode(MgConnectionW& conn);
+    ~UpdatePhotoNode();
 protected:
     void executePut();
     std::string defaultResponse();
