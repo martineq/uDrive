@@ -56,8 +56,14 @@
     <string name="userprofile_title">My profile</string>
     <string name="screen_name">Edit firstname and lastname</string>
     <string name="save_changes">Save changes</string>
-    <string name="unknown_state">Unknown state</string>
-    <string name="unknown_country">Unknown country</string>
-    <string name="last_location">Last location</string>
+    <string name="unknown_location">Unknown</string>
+    <string name="last_location"><![CDATA[<b>Last location</b>]]></string>
+    <string name="email_profile"><![CDATA[<b>E-mail</b>]]></string>
+    <string name="quota_usage"><![CDATA[<b>Usage</b>]]></string>
+    <string name="quota_of">of</string>
+    <string name="picture_ok">Profile picture updated!</string>
+    <string name="picture_error">Error updating profile picture</string>
+    <string name="fullname_ok">Full name updated!</string>
+    <string name="fullname_error">Error updating the full name</string>
 
 </resources>

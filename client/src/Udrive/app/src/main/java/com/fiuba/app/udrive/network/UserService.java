@@ -8,6 +8,7 @@ import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
+import com.fiuba.app.udrive.model.UserFullName;
 import com.fiuba.app.udrive.model.UserProfile;
 
 import java.util.List;
@@ -36,6 +37,9 @@ public class UserService extends AbstractService {
 
         @PUT("/photo/{userId}")
         void updatePhoto(@Path("userId") int userId, @Body MyPhoto photo, Callback<GenericResult> result);
+
+        @PUT("/userfullname/{userId}")
+        void updateFullName(@Path("userId") int userId, @Body UserFullName uFullName, Callback<GenericResult> result);
     }
 
     private UserServiceApi mUserServiceApi;
@@ -109,6 +113,25 @@ public class UserService extends AbstractService {
 
     public void updatePhoto(int userId, MyPhoto photo, final ServiceCallback<GenericResult> res){
         mUserServiceApi.updatePhoto(userId, photo, new Callback<GenericResult>() {
+            @Override
+            public void success(GenericResult result, Response response) {
+                res.onSuccess(result, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                res.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void updateFullName(int userId, UserFullName userFullName, final ServiceCallback<GenericResult> res){
+        mUserServiceApi.updateFullName(userId, userFullName, new Callback<GenericResult>() {
             @Override
             public void success(GenericResult result, Response response) {
                 res.onSuccess(result, response.getStatus());

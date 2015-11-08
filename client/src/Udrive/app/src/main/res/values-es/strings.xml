@@ -55,8 +55,14 @@
     <string name="userprofile_title">Mi perfil</string>
     <string name="screen_name">Modificar nombre y apellido</string>
     <string name="save_changes">Guardar cambios</string>
-    <string name="unknown_state">Estado desconodido</string>
-    <string name="unknown_country">País desconocido</string>
-    <string name="last_location">Última ubicación</string>
+    <string name="unknown_location">Desconocido</string>
+    <string name="last_location"><![CDATA[<strong>Última ubicación</strong>]]></string>
+    <string name="email_profile"><![CDATA[<b>Correo electrónico</b>]]></string>
+    <string name="quota_usage"><![CDATA[<b>Uso</b>]]></string>
+    <string name="quota_of">de</string>
+    <string name="picture_ok">¡Imagen de perfil actualizada!</string>
+    <string name="picture_error">Error al actualizar imagen de perfil</string>
+    <string name="fullname_ok">¡Nombre actualizado!</string>
+    <string name="fullname_error">Error actualizando el nombre</string>
 
 </resources>
