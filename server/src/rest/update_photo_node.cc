@@ -33,6 +33,7 @@ void UpdatePhotoNode::executePut() {
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode] ";
 
         std::string photoStream=getConnection().getBodyJson("photoStream");
+
         //TODO (martin): Ver de pasarle el tamaño del archivo al metodo. Ahora HARDCODEADO
         if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),"1024",status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
