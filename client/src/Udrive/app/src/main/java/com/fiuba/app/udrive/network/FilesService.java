@@ -30,6 +30,8 @@ public class FilesService extends AbstractService {
                     @Path("dirId") int dirId,
                     @Part("file") TypedFile file,
                     @Part("filename") String name,
+                    @Part("extension") String ext,
+                    @Part("size") long size,
                     Callback<List<File>> files);
 
         @POST("/users/{userId}/dir/{dirId}")
@@ -70,7 +72,10 @@ public class FilesService extends AbstractService {
             java.io.File file = new java.io.File(filePath);
             TypedFile typedFile = new TypedFile("multipart/form-data", file);
             String  name = file.getName();
-            mFilesServiceApi.upload(userId,dirId,typedFile,name, new Callback<List<File>>() {
+            long fileSizeInBytes= file.length();
+            String ext = getExtension(name);
+
+            mFilesServiceApi.upload(userId,dirId,typedFile,name,ext,fileSizeInBytes, new Callback<List<File>>() {
                 @Override
                 public void success(List<File> files, Response response) {
                     serviceCallback.onSuccess(files, response.getStatus());
@@ -116,4 +121,14 @@ public class FilesService extends AbstractService {
         }
 
     }
+
+    private String getExtension(String fileName){
+        String extension = "";
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i+1);
+        }
+        return extension;
+    }
+
 }
