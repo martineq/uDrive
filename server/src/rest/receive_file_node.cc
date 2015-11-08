@@ -23,7 +23,7 @@ void ReceiveFileNode::executePost() {
 
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
 		std::string userId=lista[3];
-		std::string dirId=lista[4];
+		std::string dirId=lista[5];
 		std::string file_id;
 		std::string p_file;
 		std::string p_file_aux;

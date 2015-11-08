@@ -9,6 +9,7 @@ import com.squareup.okhttp.OkHttpClient;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+import retrofit.converter.Converter;
 
 public abstract class AbstractService {
 
@@ -27,6 +28,10 @@ public abstract class AbstractService {
 
 
     protected <T> T createService(Class<T> service, final String token) {
+        return createService(service, token, null);
+    }
+
+    protected <T> T createService(Class<T> service, final String token, Converter converter) {
         if (token != null){
             builder.setRequestInterceptor(new RequestInterceptor() {
                 @Override
@@ -36,8 +41,12 @@ public abstract class AbstractService {
                 }
             });
         }
+        if (converter != null) {
+            builder.setConverter(converter);
+        }
         return builder.build().create(service);
     }
+
 
     protected static String getURL(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences("connection", Context.MODE_PRIVATE);
@@ -46,5 +55,6 @@ public abstract class AbstractService {
         String serverPort = sharedPref.getString("server_port", "8055");
         return "http://"+serverIP+":"+serverPort;
     }
+
 
 }
