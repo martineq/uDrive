@@ -367,23 +367,6 @@ class RequestDispatcher{
 
 #endif // REQUESTDISPATCHER_H
 
-/*
+// TODO(mart): remember: deleted files cant be asked by the client
+// TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
 
-Clase Request Dispatcher
-
-TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
-
-TODO(mart): Tener un método "borrar papelera" que borre físicamente y definitivamente 
-            los archivos (libreando espacio para el usuario) 
-            Por cada archivo: verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso
-            de ser compartido, quitarse de la lista de compartidos de otros usuarios.
-
-
-TODO(mart): Casos de uso y funciones de Data Handler relacionadas: 
-+ Modificar info usr        -> modify_user_info().            Verificar que el usr sea dueño.
-+ Modificar info dir        -> modify_directory_info().       Verificar que el usr sea dueño.
-+ Modificar info arch       -> modify_file_info().            En caso de ser dueño, verificar si el archivo está compartido y quitar ese estado a los demás usuarios. En caso de ser compartido sólo quitarse de la lista de compartidos.
-
-TODO(mart): remember: deleted files cant be asked by the client
-
-*/

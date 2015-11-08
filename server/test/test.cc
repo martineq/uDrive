@@ -804,9 +804,6 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Use get_directory_element_info_from_dir_info() with shared files
   // Use get_file_info() from a user with a shared file (no the owner)
   // Use get_file_stream() from a user with a shared file (no the owner)
-  // Use decrease_user_quota_used()
-  // Use decrease_dir_size_recursive()
-
   
   // Delete instance
   delete rd;

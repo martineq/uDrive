@@ -728,12 +728,21 @@ bool RequestDispatcher::purge_files_from_dir_recursive(string dir_id, int& statu
         fh_.delete_file(file_name);  
       }
       dir_info.files_contained = remove_key_from_string_list(dir_info.files_contained,file_id);
+            
+      // Change size to user quota
+      if( !decrease_user_quota_used(file_info.owner,file_info.size,status) ){ return false; }
+      
+      // Change parent_dir_id date & add size
+      if( !change_dir_date_recursive(dir_id,file_info.date_last_mod,status) ){ return false; }
+
+      // Change size to directory
+      if( !decrease_dir_size_recursive(dir_id,file_info.size,status) ){ return false; }
     }
   }
   
   // Update register of files deleted from database
   if( !dh_.modify_directory_files_contained(dir_id,dir_info.files_contained,status) ){ return false; }
-  
+
   // Gets sub_dirs recursively
   vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
