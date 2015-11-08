@@ -94,8 +94,7 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
   // Add physical file
   string file_name = user_id+file_id+LABEL_REVISION_1;
   if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){
-    if( !dh_.delete_file(file_id,status) ){ return false; }
-    status = STATUS_FAIL_SAVING_FILE; return false;
+    if( !dh_.delete_file(file_id,status) ){ return false; }  status = STATUS_FAIL_SAVING_FILE; return false;
   }
 
   // Add size to user quota
@@ -173,14 +172,11 @@ bool RequestDispatcher::get_directory_info(string user_id, string dir_id, Reques
   dir_info.size = dir_info_temp.size;
   dir_info.tags = dir_info_temp.tags;
   
-  
   if( !is_root_dir ){
     // Check if the parent dir is the root dir, and then, format the root dir ID (change to id==0)
     DataHandler::dir_info_st parent_dir_info_temp;
     if( !dh_.get_directory_info(dir_info.parent_directory,parent_dir_info_temp,status) ){ return false; }
-    if( parent_dir_info_temp.parent_directory == LABEL_NO_PARENT_DIR ){
-      dir_info.parent_directory = LABEL_ZERO;
-    }   
+    if( parent_dir_info_temp.parent_directory == LABEL_NO_PARENT_DIR ){ dir_info.parent_directory = LABEL_ZERO; }   
   }
   
   return true;
@@ -373,8 +369,7 @@ bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatch
       // Calculate number of users shared
       vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
       size_t number_of_users_shared = temp_users_shared.size();
-      if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; 
-      }else{ info_element.shared = LABEL_FALSE; }
+      if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; }else{ info_element.shared = LABEL_FALSE; }
       
       shared_files.push_back(info_element);
     }

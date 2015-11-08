@@ -537,6 +537,11 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   vector<RequestDispatcher::info_element_st> v_dir_elem_info = dir_info.directory_element_info;
   EXPECT_EQ(3,v_dir_elem_info.size());                        // Number of elements in this directory == 3
   
+  // Get dir info from a non-root dir
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->get_directory_info(user_id,sub_dir_id,dir_info,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
     // *** For use in info_node.cc ***  Note: %lu=long unsigned 
@@ -629,6 +634,12 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
     //EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   }
   
+  // Use get_file_info() with correct user and token
+  file_info2;
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  ok = rd->get_file_info(user_id,file_id_2,file_info2,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+
   
   // Use get_file_stream() with authorized user
   char * p_file_stream_2 = nullptr;
@@ -701,7 +712,13 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
   EXPECT_EQ("1130",size_stream);  // Size of zip file: 1130 bytes
 
-
+  // Create zip file with forbidden user
+  sub_sub_dir_id;
+  EXPECT_TRUE(rd->check_token(user_id,token,status));
+  EXPECT_FALSE(rd->get_dir_stream(user_id_second,sub_sub_dir_id,p_dir_stream,size_stream,status));
+  EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
+  
+  
   // Share the file...
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   user_owner_id;
