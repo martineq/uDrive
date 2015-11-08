@@ -65,4 +65,12 @@
     <string name="fullname_ok">¡Nombre actualizado!</string>
     <string name="fullname_error">Error actualizando el nombre</string>
 
+    <!-- Strings related to Context Menu -->
+    <string name="download_action">Descargar</string>
+    <string name="info_action">Información</string>
+    <string name="share_action">Compartir</string>
+    <string name="tag_action">Etiquetar</string>
+    <string name="delete_action">Eliminar</string>
+    <string name="cancel_action">Cancelar</string>
+
 </resources>
