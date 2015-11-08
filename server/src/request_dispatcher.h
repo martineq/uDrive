@@ -36,6 +36,8 @@ class RequestDispatcher{
     bool db_is_initiated();
     ZipHandler::dir_tree_node_st get_dir_structure_recursive(string user_id, string dir_id, int& status);
     unsigned long stoul_decimal(const string& str);
+    string add_key_to_string_list(string list, string key);
+    string remove_key_from_string_list(string list, string key);
     
   public:
 
@@ -255,19 +257,58 @@ class RequestDispatcher{
      * @param user_id ...
      * @param p_image_stream ...
      * @param size ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool set_user_image(string user_id, const char* p_image_stream, string size, int& status);
     
+    /**
+     * @brief Sets a new user to share a file. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_owner_id ...
+     * @param file_id ...
+     * @param user_shared_id ...
+     * @param date ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool set_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
     
-//     bool delete_user(string user_id, int& status);
-//     bool delete_directory(string user_id, string dir_id, int& status);
-//     bool delete_file(string user_id, string file_id, int& status);
-
+    
+    /**
+     * @brief Remove a user from file sharing. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_owner_id ...
+     * @param file_id ...
+     * @param user_shared_id ...
+     * @param date ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
+    
+    
+    /**
+     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param shared_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
+    
 //  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
 //  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
 //  bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
+
+//  bool delete_user(string user_id, int& status);
+//  bool delete_directory(string user_id, string dir_id, int& status);
+//  bool delete_file(string user_id, string file_id, int& status);  
+
 
     /**
      * @brief Gets a vector of elements (files or subdirectories) contained in a directory DataHandler::dir_info_st. Returns true on success.
@@ -280,7 +321,7 @@ class RequestDispatcher{
      * @return bool
      */
     bool get_directory_element_info_from_dir_info(string user_id, RequestDispatcher::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
-
+    
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
     
 };

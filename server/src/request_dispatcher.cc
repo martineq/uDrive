@@ -293,7 +293,7 @@ bool RequestDispatcher::get_file_stream(string user_id, string file_id, string r
     return false;
   }
 
-  string file_name = user_id+file_id+LABEL_REVISION_1;
+  string file_name = file_info_temp.owner+file_id+LABEL_REVISION_1;
   size_t size = fh_.load_file(file_name,p_file_stream);
   size_stream = to_string(size);
   if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
@@ -329,6 +329,95 @@ bool RequestDispatcher::set_user_image(string user_id, const char* p_image_strea
 
   return true;
 }
+
+
+bool RequestDispatcher::set_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status){
+  
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info.owner.compare(user_owner_id)==0);
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Add file to user shared
+  DataHandler::user_info_st user_shared_info;
+  if( !dh_.get_user_info(user_shared_id,user_shared_info,status)){ return false; }
+  user_shared_info.shared_files = add_key_to_string_list(user_shared_info.shared_files,file_id);
+  bool ok = dh_.modify_user_info(user_shared_id,user_shared_info.email,user_shared_info.name,
+                       user_shared_info.location,user_shared_info.shared_files,user_shared_info.user_quota_used,status);
+  if( !ok ){ return false; }
+  
+  // Add user shared to file
+  file_info.users_shared = add_key_to_string_list(file_info.users_shared,user_shared_id);
+  ok = dh_.modify_file_info(file_id,file_info.name,file_info.extension,date,file_info.tags,
+                            file_info.users_shared,user_owner_id,status);
+  if( !ok ){ return false; }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status){
+
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info.owner.compare(user_owner_id)==0);
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Remove file from user shared
+  DataHandler::user_info_st user_shared_info;
+  if( !dh_.get_user_info(user_shared_id,user_shared_info,status)){ return false; }
+  user_shared_info.shared_files = remove_key_from_string_list(user_shared_info.shared_files,file_id);
+  bool ok = dh_.modify_user_info(user_shared_id,user_shared_info.email,user_shared_info.name,
+                       user_shared_info.location,user_shared_info.shared_files,user_shared_info.user_quota_used,status);
+  if( !ok ){ return false; }
+  
+  // Add user shared to file
+  file_info.users_shared = remove_key_from_string_list(file_info.users_shared,user_shared_id);
+  ok = dh_.modify_file_info(file_id,file_info.name,file_info.extension,date,file_info.tags,
+                            file_info.users_shared,user_owner_id,status);
+  if( !ok ){ return false; }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatcher::info_element_st >& shared_files, int& status){
+
+  DataHandler::user_info_st dh_user_info;
+  if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
+
+  // Prepare data
+  shared_files.clear();
+  vector<string> shared_file_ids = split_string(dh_user_info.shared_files,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = shared_file_ids.begin() ; it!=shared_file_ids.end() ; ++it) {
+    string shared_file_id = (*it);
+    RequestDispatcher::file_info_st file_info;
+    RequestDispatcher::info_element_st info_element;
+
+    if( !get_file_info(user_id,shared_file_id,file_info,status) ){ return false; }
+    info_element.id = stoul_decimal(shared_file_id);
+    info_element.lastModDate = file_info.date_last_mod;
+    info_element.name = file_info.name;
+    info_element.type = LABEL_A;  
+    info_element.size = stoul_decimal(file_info.size);
+    info_element.number_of_items = 0; // File is always number_of_items==0 
+    
+    // Calculate number of users shared
+    vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+    size_t number_of_users_shared = temp_users_shared.size();
+    if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; 
+    }else{ info_element.shared = LABEL_FALSE; }
+    
+    shared_files.push_back(info_element);
+  }
+  
+  return true;
+}
+
 
 
 /*
@@ -491,6 +580,35 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
 long unsigned int RequestDispatcher::stoul_decimal(const string& str){
   return stoul(str,nullptr,10);
 }
+
+
+string RequestDispatcher::add_key_to_string_list(string list, string key){
+  
+  vector<string> list_splited = split_string(list,LABEL_STRING_DELIMITER);
+  bool founded = false;
+  for(vector<string>::iterator it = list_splited.begin() ; it!=list_splited.end() ; ++it) {
+    if( (*it).compare(key)==0 ){ founded = true; }
+  }
+
+  if(!founded){
+    string new_key = LABEL_STRING_DELIMITER + key;
+    list.append(new_key);
+  }
+  
+  return list;
+}
+
+string RequestDispatcher::remove_key_from_string_list(string list, string key){
+  
+  vector<string> list_splited = split_string(list,LABEL_STRING_DELIMITER);
+  string new_list;
+  for(vector<string>::iterator it = list_splited.begin() ; it!=list_splited.end() ; ++it) {
+    if( (*it).compare(key)!=0 ){ new_list.append( LABEL_STRING_DELIMITER + (*it) ); }
+  }
+  
+  return new_list;
+}
+
 
 bool RequestDispatcher::HARDCODED_get_user_image(string user_id, string& image_stream, int& status){
 
