@@ -649,6 +649,25 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   
+  // Share the file...
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  string user_owner_id = user_id;
+  string file_to_share_id = file_id_2;
+  string user_shared_id = user_id_second;
+  EXPECT_TRUE(rd->set_file_share(user_owner_id,file_to_share_id,user_shared_id,"06/11/15",status));
+  // ...and get the file from te new user shared
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  // ...Unshare the file from the same user...
+  EXPECT_TRUE(rd->check_token(user_id,token_2,status));
+  EXPECT_TRUE(rd->unset_file_share(user_owner_id,file_to_share_id,user_shared_id,"07/11/15",status));
+  // ...and get the file from te new user un-shared (now is a forbidden user)
+  EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
+  ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
+  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
+  
   
   // Add sub-sub-directory
   string sub_sub_dir_id = "0";
