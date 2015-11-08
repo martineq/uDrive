@@ -308,8 +308,23 @@ class RequestDispatcher{
     
 //  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
 //  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
-//  bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
+    
+    /**
+     * @brief Modifies information of the file. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param file_id ...
+     * @param name ...
+     * @param extension ...
+     * @param date ...
+     * @param tags ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status);
 
+    
 //  bool delete_user(string user_id, int& status);
 //  bool delete_directory(string user_id, string dir_id, int& status);
     

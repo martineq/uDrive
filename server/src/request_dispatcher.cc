@@ -383,6 +383,30 @@ bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatch
 }
 
 
+bool RequestDispatcher::modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status){
+
+  DataHandler::file_info_st file_info_temp;
+  if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info_temp.owner.compare(user_id)==0);
+  if( !user_authorized ){
+    vector<string> users_authorized = split_string(file_info_temp.users_shared,LABEL_STRING_DELIMITER);
+    for(vector<string>::iterator it = users_authorized.begin() ; ( it!=users_authorized.end() && !user_authorized ) ; ++it) {
+      if( (*it).compare(user_id)==0 ){ user_authorized = true; }
+    }
+  }
+  
+  if( !user_authorized ){
+    status = STATUS_USER_FORBIDDEN;
+    return false;
+  }
+
+  if( !dh_.modify_file_info(file_id,name,extension,date,tags,file_info_temp.users_shared,user_id,status)){ return false; }
+  
+  return true;
+}
+
 
 /*
 bool RequestDispatcher::delete_user(string user_id, int& status){
