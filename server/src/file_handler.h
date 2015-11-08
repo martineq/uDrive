@@ -14,24 +14,32 @@ class FileHandler {
     ~FileHandler();
 
     /**
-     * @brief ...
+     * @brief Reads a file saved previously
      * 
      * @param file_name ...
-     * @param p_file_stream ...
-     * @return size_t
+     * @param p_file_stream retunrs the file stream
+     * @return size_t the size of the file readed (in Bytes)
      */
     size_t load_file(string file_name, char*& p_file_stream);
     
     /**
-     * @brief ...
+     * @brief Saves a file 
      * 
      * @param file_name ...
      * @param p_file_stream ...
      * @param size_stream ...
-     * @return size_t
+     * @return size_t the size of the file readed (in Bytes)
      */
     size_t save_file(string file_name, const char* p_file_stream, size_t size_stream); 
 
+    /**
+     * @brief Deletes the file from disk
+     * 
+     * @param file_name ...
+     * @return void
+     */
+    void delete_file(string file_name);
+    
 };
 
 #endif // FILEHANDLER_H

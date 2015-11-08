@@ -291,7 +291,6 @@ class DataHandler {
     bool get_file_info(string file_id, file_info_st& file_info, int& status);
     
     
-    
     /**
     * @brief Deletes all information for the user ID and their Index entry. Returns true on success.
     *        On error returns false and a DataHandler status (see db_constants.h)
@@ -315,15 +314,14 @@ class DataHandler {
     bool delete_directory(string dir_id, int& status);
     
     /**
-    * @brief Sets deleted status flag to "DH_DELETED_STATUS_ERASED" (AKA deleted). Returns true on success.
+    * @brief Sets deleted status flag to new_status. Returns true on success.
     *        On error returns false and a DataHandler status (see db_constants.h)
     * 
     * @param file_id ...
     * @param status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool delete_file(string file_id, int& status);
-
+    bool modify_file_deleted_status(string file_id, string new_status, int& status);
     
     
     /**
@@ -364,6 +362,17 @@ class DataHandler {
     * @return bool
     */
     bool modify_directory_info(string dir_id, string name, string date, string tags, string size, int& status);
+    
+    /**
+     * @brief Modifies the list of files contained. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param dir_id ...
+     * @param files_contained ...
+     * @param status ...
+     * @return bool
+     */
+    bool modify_directory_files_contained(string dir_id, string files_contained, int& status);
     
     /**
     * @brief Modifies file information for an file_id. Returns true on success.

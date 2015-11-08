@@ -122,7 +122,7 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   if( !create_id(SUFFIX_FILE_ID,file_id) ){ status = STATUS_DATABASE_ERROR; return false; }
   
   // Add file_id to directory container
-  dir_files_contained.append(";"+file_id);
+  dir_files_contained.append(LABEL_STRING_DELIMITER+file_id);
 
   // Add info to new file and add file to directory
   dbh_.clear_batch();
@@ -248,8 +248,8 @@ bool DataHandler::delete_directory(string dir_id, int& status){
 }
 
 
-bool DataHandler::delete_file(string file_id, int& status){
-  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_ERASED) );
+bool DataHandler::modify_file_deleted_status(string file_id, string new_status, int& status){
+  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),new_status) );
 }
 
 
@@ -293,6 +293,11 @@ bool DataHandler::modify_directory_info(string dir_id, string name, string date,
   if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
 
   return true;
+}
+
+
+bool DataHandler::modify_directory_files_contained(string dir_id, string files_contained, int& status){
+  return( dbh_.put(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED),files_contained) );
 }
 
 
