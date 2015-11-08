@@ -116,13 +116,12 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   // Prepare data
   user_info.email = dh_user_info.email;
   vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
-  cout << "name: "<< dh_user_info.name << " " << ""  << endl;
   user_info.first_name = name.front();
   user_info.last_name = name.back();
   vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
   user_info.gps_lat = location.front();
   user_info.gps_lon = location.back();
-  user_info.user_quota_available = to_string( max_user_quota_ - stoul_decimal(dh_user_info.user_quota_used) );
+  user_info.user_quota_used = dh_user_info.user_quota_used;
   user_info.user_quota_total = to_string(max_user_quota_);
   float percentage = (stoul_decimal(dh_user_info.user_quota_used) * 100) / max_user_quota_;
   std::string str_percentage = to_string(percentage);
@@ -130,6 +129,17 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
 
   return true;
 }
+
+bool RequestDispatcher::get_user_image(string user_id, char*& p_image_stream, string& size_stream, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  size_t size = fh_.load_file(user_image_name,p_image_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  
+  return true;
+}
+
 
 
 bool RequestDispatcher::get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status){
@@ -265,7 +275,7 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
 
 
 bool RequestDispatcher::get_file_stream(string user_id, string file_id, string revision,
-                                        char*& p_file_stream, size_t& size_stream, int& status){
+                                        char*& p_file_stream, string& size_stream, int& status){
   DataHandler::file_info_st file_info_temp;
   if( !dh_.get_file_info(file_id,file_info_temp,status) ){ return false; }
 
@@ -283,16 +293,17 @@ bool RequestDispatcher::get_file_stream(string user_id, string file_id, string r
     return false;
   }
 
-  string file_name = user_id+file_id+LABEL_REVISION_1;
-  size_stream = fh_.load_file(file_name,p_file_stream);
-  if( size_stream==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
+  string file_name = file_info_temp.owner+file_id+LABEL_REVISION_1;
+  size_t size = fh_.load_file(file_name,p_file_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
 
   return true;
 }
 
 
 bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
-                                       char*& p_dir_stream, size_t& size_stream, int& status){
+                                       char*& p_dir_stream, string& size_stream, int& status){
   
   // Gets structure info for the directory
   ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(user_id,dir_id,status);
@@ -303,10 +314,110 @@ bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
   
   // Load file in p_dir_stream
   string zip_name_with_extension = zip_name + ".zip";
-  size_stream = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_t size = fh_.load_file(zip_name_with_extension,p_dir_stream);
+  size_stream = to_string(size);
+  if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
   
-  return true; // TODO(mart): check returns in this function
+  return true;
 }
+
+
+bool RequestDispatcher::set_user_image(string user_id, const char* p_image_stream, string size, int& status){
+
+  string user_image_name = LABEL_USER_IMAGE + user_id;
+  if( fh_.save_file(user_image_name,p_image_stream,stoul_decimal(size))==0 ){ status = STATUS_FAIL_SAVING_FILE; return false; }
+
+  return true;
+}
+
+
+bool RequestDispatcher::set_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status){
+  
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info.owner.compare(user_owner_id)==0);
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Add file to user shared
+  DataHandler::user_info_st user_shared_info;
+  if( !dh_.get_user_info(user_shared_id,user_shared_info,status)){ return false; }
+  user_shared_info.shared_files = add_key_to_string_list(user_shared_info.shared_files,file_id);
+  bool ok = dh_.modify_user_info(user_shared_id,user_shared_info.email,user_shared_info.name,
+                       user_shared_info.location,user_shared_info.shared_files,user_shared_info.user_quota_used,status);
+  if( !ok ){ return false; }
+  
+  // Add user shared to file
+  file_info.users_shared = add_key_to_string_list(file_info.users_shared,user_shared_id);
+  ok = dh_.modify_file_info(file_id,file_info.name,file_info.extension,date,file_info.tags,
+                            file_info.users_shared,user_owner_id,status);
+  if( !ok ){ return false; }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status){
+
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info.owner.compare(user_owner_id)==0);
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Remove file from user shared
+  DataHandler::user_info_st user_shared_info;
+  if( !dh_.get_user_info(user_shared_id,user_shared_info,status)){ return false; }
+  user_shared_info.shared_files = remove_key_from_string_list(user_shared_info.shared_files,file_id);
+  bool ok = dh_.modify_user_info(user_shared_id,user_shared_info.email,user_shared_info.name,
+                       user_shared_info.location,user_shared_info.shared_files,user_shared_info.user_quota_used,status);
+  if( !ok ){ return false; }
+  
+  // Add user shared to file
+  file_info.users_shared = remove_key_from_string_list(file_info.users_shared,user_shared_id);
+  ok = dh_.modify_file_info(file_id,file_info.name,file_info.extension,date,file_info.tags,
+                            file_info.users_shared,user_owner_id,status);
+  if( !ok ){ return false; }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatcher::info_element_st >& shared_files, int& status){
+
+  DataHandler::user_info_st dh_user_info;
+  if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
+
+  // Prepare data
+  shared_files.clear();
+  vector<string> shared_file_ids = split_string(dh_user_info.shared_files,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = shared_file_ids.begin() ; it!=shared_file_ids.end() ; ++it) {
+    string shared_file_id = (*it);
+    RequestDispatcher::file_info_st file_info;
+    RequestDispatcher::info_element_st info_element;
+
+    if( !get_file_info(user_id,shared_file_id,file_info,status) ){ return false; }
+    info_element.id = stoul_decimal(shared_file_id);
+    info_element.lastModDate = file_info.date_last_mod;
+    info_element.name = file_info.name;
+    info_element.type = LABEL_A;  
+    info_element.size = stoul_decimal(file_info.size);
+    info_element.number_of_items = 0; // File is always number_of_items==0 
+    
+    // Calculate number of users shared
+    vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+    size_t number_of_users_shared = temp_users_shared.size();
+    if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; 
+    }else{ info_element.shared = LABEL_FALSE; }
+    
+    shared_files.push_back(info_element);
+  }
+  
+  return true;
+}
+
 
 
 /*
@@ -470,3 +581,52 @@ long unsigned int RequestDispatcher::stoul_decimal(const string& str){
   return stoul(str,nullptr,10);
 }
 
+
+string RequestDispatcher::add_key_to_string_list(string list, string key){
+  
+  vector<string> list_splited = split_string(list,LABEL_STRING_DELIMITER);
+  bool founded = false;
+  for(vector<string>::iterator it = list_splited.begin() ; it!=list_splited.end() ; ++it) {
+    if( (*it).compare(key)==0 ){ founded = true; }
+  }
+
+  if(!founded){
+    string new_key = LABEL_STRING_DELIMITER + key;
+    list.append(new_key);
+  }
+  
+  return list;
+}
+
+string RequestDispatcher::remove_key_from_string_list(string list, string key){
+  
+  vector<string> list_splited = split_string(list,LABEL_STRING_DELIMITER);
+  string new_list;
+  for(vector<string>::iterator it = list_splited.begin() ; it!=list_splited.end() ; ++it) {
+    if( (*it).compare(key)!=0 ){ new_list.append( LABEL_STRING_DELIMITER + (*it) ); }
+  }
+  
+  return new_list;
+}
+
+
+bool RequestDispatcher::HARDCODED_get_user_image(string user_id, string& image_stream, int& status){
+
+  // Create an base64 image
+  string image_base64("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAyADIDASIAAhEBAxEB/8QAGgABAQADAQEAAAAAAAAAAAAAAAcFBggDBP/EAD4QAAEDAgIGBQgHCQAAAAAAAAEAAgMEEQUGBxIhMUFhEyIyUXEIFBUWI4GT0xczQkNSU1RVgpGSobHB0eH/xAAaAQACAwEBAAAAAAAAAAAAAAAABgMEBQcB/8QALBEAAQMCBAMHBQAAAAAAAAAAAQACBAMFERMhMQZB0RIUImFxgeEyQpHB8P/aAAwDAQACEQMRAD8A7LRFPtOObfV3K7qGll1cRxEOijsdscf238thsOZvwXjjgMSoJMhkak6q/YLPUGdMDxBkslFLLURxTPhc9jRbWabHju4jvBBX0es2H/l1H8o/2uZ9GuYDg2YhS1D7UVeQx9zsZJua7/B8R3K0FIt4vdxgSCwEdk6jTl8LQ4ffGusQVTo4aOGPPofhUelnjqadk8Rux4uF6LVsnYhqSGgld1X7Y78DxC2lNNpuDZ8VtYb7HyP9qvJVA0KhZ+EREWkq68quohpKSarqZGxQQxukke7c1oFyT4ALkjSHmafNeaqrFZC4Qk9HTRn7uIdkf3J5kqr+Ujm7zWhiypRS+2qQJawtO1sd+qz3kXPIDgVAw5Vqz8TgkXiW45lQRmHRu/r8LJ5fwarzFjlHg9E3WmqpAwEg2aOLjyAuTyC6PxTCHYP0FMJZJ4hE1rZZO0+wAJPPj71gvJzyj6Pwd+Z62K1VXN1KUOG1kN+1+8f6Ad6p+N0Ir6B8I+sHWjPP/u5ZF5tXfoZDfrGo6e/RM3B9J0Bma/79/Tl1WgxyOjkbJG4tc03BHAqgYRWsr6FlQ22tueO53FT14LHFrthBsQVlsq4iKOv6KR1oZrNNzuPApJ4auvcZeW8+B+h8jyP6Ke7jFzqXabuFu6Ii6slhRbylcpecUUObaKL2tOBDWho7TCeo8+BNie4jgFAXOOwDedgXcNbSwVtFPR1UTZaeeN0UrHbnNcLEHxBXPlVoFzI3EZ3UeJ4S6l6R3QGWWQP1L7NYCMgG2+xU0KNRqyW5zsGbnp7pSu1kdVlitTGIO48x1U4w6RzYRFrHqjZtX09I78Tv4qhRaEM2MN/SGC/Gl+Wvb6Fc1fr8G+NL8tdKp3iAGgZoUDrfJx0YVNCVvWhXK/rBmltXVRa1Bh5Estxse+/UZz2i55AjisgdCmav2hgvxpflqw6P8txZWyxT4WwtfNtkqZG7nym1z4CwA5AKhd79QbGLY78XO005DmVbgWyoawdVbgBr6rPoiLnyaUREQhEREIRERCEREQhf/9k=",1512);
+  size_t size_image = 1512;
+  if(!set_user_image(user_id,image_base64.c_str(),to_string(size_image),status)){ return false; }
+  
+  // Save image
+  char* p_image_stream_temp;
+  string size_img_loaded;
+  if(!get_user_image(user_id,p_image_stream_temp,size_img_loaded,status)){ return false; }
+  
+  // Load Image
+  size_t size_obtanined = stoul(size_img_loaded,nullptr,10);
+  string p_image_stream_string(p_image_stream_temp,size_obtanined);
+  
+  // Assign image and size
+  image_stream = p_image_stream_string;
+  
+}

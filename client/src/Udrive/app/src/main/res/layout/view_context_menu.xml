@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="DOWNLOAD" />
+            android:text="@string/download_action" />
     </LinearLayout>
 
     <View
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="INFO" />
+            android:text="@string/info_action" />
     </LinearLayout>
 
     <View
@@ -87,7 +87,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:background="@color/white"
-            android:text="SHARE" />
+            android:text="@string/share_action" />
     </LinearLayout>
 
     <View
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="TAG" />
+            android:text="@string/tag_action" />
     </LinearLayout>
 
     <View
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="DELETE" />
+            android:text="@string/delete_action" />
     </LinearLayout>
 
 
@@ -181,7 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="CANCEL" />
+            android:text="@string/cancel_action" />
     </LinearLayout>
 
 </merge>

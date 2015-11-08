@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
@@ -18,10 +19,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.UserAccount;
+import com.fiuba.app.udrive.model.UserFullName;
 import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.ServiceCallback;
@@ -36,6 +39,7 @@ import java.util.Locale;
 
 public class UserProfileActivity extends AppCompatActivity {
     private UserProfile mUserProfile = null;
+    private UserService mUserService = null;
     private static final int SELECT_PHOTO = 100;
 
     @Override
@@ -43,7 +47,8 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         mUserProfile = (UserProfile)getIntent().getSerializableExtra("userProfile");
-
+        String token = ((UserAccount)getIntent().getSerializableExtra("userAccount")).getToken();
+        mUserService = new UserService(token, UserProfileActivity.this);
         // If there is not an image from server, sets one by default.
         if (mUserProfile.getPhoto().compareTo("") == 0)
             ((ImageView)findViewById(R.id.avatar)).setImageResource(R.drawable.user1);
@@ -59,38 +64,48 @@ public class UserProfileActivity extends AppCompatActivity {
                 Util.capitalize(mUserProfile.getFirstname()) + " " + Util.capitalize(
                         mUserProfile.getLastname()));
         // Sets email
-        ((TextView)findViewById(R.id.email)).setText(mUserProfile.getEmail());
+        ((TextView)findViewById(R.id.email)).setText(Html.fromHtml(getString(R.string.email_profile)));
+        ((TextView)findViewById(R.id.email)).append(": "+mUserProfile.getEmail());
 
         // Last location city
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
-        String stateName = null;
-        String countryName = null;
+        String location = null;
         if ((mUserProfile.getGPSLatitude()!=0.00)&&(mUserProfile.getGPSLongitude()!=0.00)) {
             try {
                 //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
                 addresses = geocoder.getFromLocation(mUserProfile.getGPSLatitude(),
                         mUserProfile.getGPSLongitude(), 1);
-                stateName = addresses.get(0).getAddressLine(1);
-                countryName = addresses.get(0).getAddressLine(2);
+                location = addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2);
             } catch (IOException e) {
                 // do something
             }
         } else {
-            stateName = "Undefined state";
-            countryName = "Undefined country";
+            location = getString(R.string.unknown_location);
         }
 
         //String cityName = addresses.get(0).getAddressLine(0);
 
-        ((TextView)findViewById(R.id.lastLocation)).setText("Last location: " + stateName+", "+countryName);
+        ((TextView)findViewById(R.id.lastLocation)).setText(Html.fromHtml(getString(R.string.last_location)));
+        ((TextView)findViewById(R.id.lastLocation)).append(": "+location);
 
         // Builds bar for quota information
         // Convert quota to MB.
-        double usedMB = Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20);
-        double totalMB = Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2, 20);
-        ((TextView) findViewById(R.id.textProgressBar)).setText("Usage: "+usedMB
-            +" ("+mUserProfile.getQuotaUsagePercent()+") of "+totalMB);
+        String used = null;
+        String total = null;
+        if (Double.parseDouble(mUserProfile.getQuotaUsed())>=Math.pow(2,20))
+            used = Math.round(Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,20))+" MB";
+        else
+            used = Math.round(Double.parseDouble(mUserProfile.getQuotaUsed())/Math.pow(2,10))+" KB";
+
+        if (Double.parseDouble(mUserProfile.getQuotaTotal())>=Math.pow(2,20))
+            total = Math.round(Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2,20))+" MB";
+        else
+            total = Math.round(Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2,10))+" KB";
+
+        ((TextView) findViewById(R.id.textProgressBar)).setText(Html.fromHtml(getString(R.string.quota_usage)));
+        ((TextView) findViewById(R.id.textProgressBar)).append(": "+used+" ("+mUserProfile.getQuotaUsagePercent()+") "+
+                getString(R.string.quota_of)+" "+ total);
         ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
         progressbar.setProgress(Integer.parseInt(Util.extractDigits(mUserProfile.getQuotaUsagePercent())));
     }
@@ -107,7 +122,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
-            case 100: // TODO: replace with corresponding var name
+            case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
                     InputStream imageStream = null;
@@ -126,21 +141,17 @@ public class UserProfileActivity extends AppCompatActivity {
                     String strBase64= Base64.encodeToString(byteArray, 0);
                     //System.out.println(strBase64);
 
-                    String token = ((UserAccount)getIntent().getSerializableExtra("userAccount")).getToken();
-                    UserService userService = new UserService(token, UserProfileActivity.this);
-                    userService.updatePhoto(mUserProfile.getUserId(), new MyPhoto(strBase64), new ServiceCallback<GenericResult>() {
+                    mUserService.updatePhoto(mUserProfile.getUserId(), new MyPhoto(strBase64), new ServiceCallback<GenericResult>() {
                         @Override
                         public void onSuccess(GenericResult object, int status) {
-
+                            Toast.makeText(UserProfileActivity.this, getString(R.string.picture_ok), Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onFailure(String message, int status) {
-
+                            Toast.makeText(UserProfileActivity.this, getString(R.string.picture_error), Toast.LENGTH_LONG).show();
                         }
                     });
-
-
                 }
         }
     }
@@ -167,11 +178,28 @@ public class UserProfileActivity extends AppCompatActivity {
                 .setView(layout)
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mUserProfile.setFirstname(firstname.getText().toString());
-                        mUserProfile.setLastname(lastname.getText().toString());
-                        ((TextView)findViewById(R.id.name)).setText(
-                                Util.capitalize(mUserProfile.getFirstname()) + " " + Util.capitalize(
-                                        mUserProfile.getLastname()));
+                        mUserService.updateFullName(mUserProfile.getUserId(), new UserFullName(firstname.getText().toString(),
+                                lastname.getText().toString()), new ServiceCallback<GenericResult>() {
+                            @Override
+                            public void onSuccess(GenericResult object, int status) {
+                                if (object.getResultCode() != 1){
+                                    Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_error), Toast.LENGTH_LONG).show();
+                                } else {
+                                    // If Request OK:
+                                    mUserProfile.setFirstname(firstname.getText().toString());
+                                    mUserProfile.setLastname(lastname.getText().toString());
+                                    ((TextView) findViewById(R.id.name)).setText(
+                                            Util.capitalize(mUserProfile.getFirstname()) + " " + Util.capitalize(
+                                                    mUserProfile.getLastname()));
+                                    Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_ok), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            @Override
+                            public void onFailure(String message, int status) {
+                                Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_error), Toast.LENGTH_LONG).show();
+                            }
+                        });
+
                     }
                 })
                 .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
