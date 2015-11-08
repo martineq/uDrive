@@ -14,6 +14,9 @@ using std::string;
 #include "rest/signup_node.h"
 #include "rest/create_dir_node.h"
 #include "request_dispatcher.h"
+#include "rest/profile_node.h"
+#include "rest/update_profile_node.h"
+#include "rest/delete_file_node.h"
 
 extern "C" {
 	#include <pthread.h>
@@ -26,7 +29,6 @@ class WEBServer {
 		~WEBServer();
 
 		const char* setPort(string port);
-		const char* setDocumentRoot(string path);
 		void run();
 		void stop();
 		
