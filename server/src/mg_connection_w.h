@@ -4,7 +4,7 @@
 #include "mongoose/mongoose.h"
 #include <map>
 #include <string>
-#include "../util/log.h"
+#include "./util/log.h"
 
 using std::string;
 
