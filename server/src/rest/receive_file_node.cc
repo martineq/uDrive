@@ -26,7 +26,6 @@ void ReceiveFileNode::executePost() {
 		std::string dirId=lista[5];
 		std::string file_id;
 		std::string p_file;
-		std::string p_file_aux;
 
 		Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] userId: " << userId << " dirId: " << dirId;
 		std::string variable;
@@ -39,28 +38,25 @@ void ReceiveFileNode::executePost() {
 		char* dt = ctime(&now);
 		std::string fecha(dt);
 
-		while((p_file_aux = getConnection().getMultipartData(variable, contenido)) != ""){
-			if (variable == "file") {
-				Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "], Contenido de file: ...";
-				p_file=p_file_aux;
+        p_file = getConnection().getMultipartData(variable, contenido);
+       // Log(Log::LogMsgDebug) << "[p_file: " <<p_file;
+		while(p_file!= "") {
+         //   Log(Log::LogMsgDebug) << "[CONTENIDO: " <<getConnection()->content;
+            if (variable == "file") {
+                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Tamaño de archivo: " << "" << ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
                 break;
-			}
-			if(variable == "fileName") {
-				Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "], Contenido de fileName: " << p_file_aux;
-				nombre_archivo=p_file;
-			}
-			if(variable == "extension") {
-				Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "], Contenido de extension: " << p_file_aux;
-				nombre_archivo=p_file;
-			}
-			if(variable == "size") {
-				Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "], Contenido de size: " << p_file_aux;
-				nombre_archivo=p_file;
-			}
-		}
+            };
 
-		Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
-		if(!getRequestDispatcher()->new_file(userId,nombre_archivo, extension,fecha, p_file.c_str(), size,dirId,file_id,status)){
+            if (variable == "filename") {
+                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Tamaño de archivo: " << "" << p_file;
+                break;
+            };
+            p_file = getConnection().getMultipartData(variable, contenido);
+        }
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
+      /*
+
+		if ( (p_file_aux.size() <= 0) or (!getRequestDispatcher()->new_file(userId,nombre_archivo, extension,fecha, p_file.c_str(), size,dirId,file_id,status)) ){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
@@ -76,6 +72,8 @@ void ReceiveFileNode::executePost() {
 			getConnection().setUri(uri);
 			in->execute();
 		}
+
+       */
 	}else{
 		status=11;
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
