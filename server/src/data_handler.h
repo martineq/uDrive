@@ -116,7 +116,7 @@ class DataHandler {
     bool dbh_put(string key, string value, int& status);
 
   public:
-    
+
     struct user_info_st {
       string email;
       string name;
@@ -124,6 +124,7 @@ class DataHandler {
       string dir_root;
       string shared_files;
       string user_quota_used;
+      string files_deleted;
     } ;
 
     struct dir_info_st {
@@ -145,9 +146,9 @@ class DataHandler {
       string tags;
       string owner;
       string size;
-      string deleted_status;
       string users_shared;
       string revision;
+      string parent_directory;
     } ;
     
     DataHandler();
@@ -314,14 +315,14 @@ class DataHandler {
     bool delete_directory(string dir_id, int& status);
     
     /**
-    * @brief Sets deleted status flag to new_status. Returns true on success.
+    * @brief Deletes all information for the file ID. Returns true on success.
     *        On error returns false and a DataHandler status (see db_constants.h)
     * 
     * @param file_id ...
     * @param status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool modify_file_deleted_status(string file_id, string new_status, int& status);
+    bool delete_file(string file_id, int& status);
     
     
     /**
@@ -347,7 +348,7 @@ class DataHandler {
     * @param status status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, int& status);
+    bool modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, string files_deleted, int& status);
     
     /**
     * @brief Modifies directory information for an dir_id. Returns true on success.
@@ -385,10 +386,11 @@ class DataHandler {
     * @param tags ...
     * @param users_shared user_id's of user that have shared de file
     * @param user_id_modifier ID of the user that modifies the info
+    * @param users_deleted
     * @param status ...
     * @return bool
     */
-    bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status);
+    bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status);
 
 };
 

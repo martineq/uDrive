@@ -319,16 +319,16 @@ TEST(DataHandlerTest, UserDelete_AddDirFile_ModPassUserFileDir) {
   EXPECT_TRUE(dh.modify_user_password(user_id_jake,"0303",status));
   
   // Modify user info (change mail)
-  EXPECT_TRUE(dh.modify_user_info(user_id_jake,"newMail@mail.com","Jake","11.22;33.44",user_info_jack.shared_files,user_info_jack.user_quota_used,status));
+  EXPECT_TRUE(dh.modify_user_info(user_id_jake,"newMail@mail.com","Jake","11.22;33.44",user_info_jack.shared_files,user_info_jack.user_quota_used,user_info_jack.files_deleted,status));
   
   // Modify dir info
   EXPECT_TRUE(dh.modify_directory_info(new_dir_id,"copy&paste","17-10-2015-15-20","favorite;most used","512",status));
   
   // Modify file info
-  EXPECT_TRUE(dh.modify_file_info(new_file_id,"myBrabdNewFile","txt","17-10-2015-15-20","important","",user_id_jake,status));
-
+  EXPECT_TRUE(dh.modify_file_info(new_file_id,"myBrabdNewFile","txt","17-10-2015-15-20","important","",user_id_jake,new_dir_id,status));
+  
   // Delete file
-  EXPECT_TRUE(dh.modify_file_deleted_status(new_file_id,DELETED_FILE_STATUS_ERASED,status));
+  EXPECT_TRUE(dh.delete_file(new_file_id,status));
   
   // Delete dir
   EXPECT_TRUE(dh.delete_directory(new_dir_id,status));
@@ -420,7 +420,7 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 
 
 void generate_image(string &data, size_t &size); // Auxiliar function used by RequestDispatcherTest
-TEST(RequestDispatcherTest, Checkpoint3Routine) {
+TEST(RequestDispatcherTest, Checkpoint4Routine) {
 
   //Checkpoint #3  
   // + Post signup     IN: name/email/pass/token                  OUT: userId
@@ -431,7 +431,7 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // + Get userInfo    IN: userId/token                           OUT: name/email
 
   // Init database. ¡Warning!: This test assumes an empty Database
-  string db_path = "/tmp/testdb_checkpoint3";
+  string db_path = "/tmp/testdb_checkpoint4";
   size_t max_quota = 150;
   RequestDispatcher* rd = nullptr;
   rd = RequestDispatcher::get_instance(db_path,max_quota);
@@ -740,8 +740,10 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   ok = rd->get_file_stream(user_id,file_to_share_id,"1",p_file_stream_2,size_2,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }  
+  
   // ...Delete the file from the user owner
   EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
+  
   // ...Check file non-deleted from user owner  (the owner can NOT have the file)
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
   EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
@@ -803,14 +805,11 @@ TEST(RequestDispatcherTest, Checkpoint3Routine) {
   // Use get_file_stream() from a user with a shared file (no the owner)
   
   
-  
-  
-  
   // Delete instance
   delete rd;
     
   // Delete used temp folder
-  system("rm -rf /tmp/testdb_checkpoint3");
+  system("rm -rf /tmp/testdb_checkpoint4");
 
 }
 
