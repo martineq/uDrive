@@ -20,8 +20,9 @@ class InfoNode : public Node {
 public:
 	InfoNode(MgConnectionW& conn);
 	~InfoNode();
-protected:
 	void executeGet();
+protected:
+
 	std::string defaultResponse();
 	std::string getUserId();
 private:

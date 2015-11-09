@@ -32,7 +32,7 @@ void ReceiveFileNode::executePost() {
 		std::string contenido;
 		std::string nombre_archivo;
 		std::string extension="";
-		std::string size="";
+		std::string size="1024";
 
 		time_t now = time(0);
 		char* dt = ctime(&now);
@@ -46,17 +46,16 @@ void ReceiveFileNode::executePost() {
                 Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Tamaño de archivo: " << "" << ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
                 break;
             };
-
-            if (variable == "filename") {
-                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Tamaño de archivo: " << "" << p_file;
-                break;
-            };
             p_file = getConnection().getMultipartData(variable, contenido);
         }
         Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
-      /*
 
-		if ( (p_file_aux.size() <= 0) or (!getRequestDispatcher()->new_file(userId,nombre_archivo, extension,fecha, p_file.c_str(), size,dirId,file_id,status)) ){
+        vector<string> partesArchivo=ReceiveFileNode::split(contenido,'.');
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "]Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
+        //size=sizeof(p_file)* sizeof(char);
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "]Contenido del Archivo:  "<<p_file;
+
+        if ( (p_file.size() <= 0) or (!getRequestDispatcher()->new_file(userId,contenido, partesArchivo[1],fecha, p_file.c_str(), size,dirId,file_id,status)) ){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
@@ -64,16 +63,17 @@ void ReceiveFileNode::executePost() {
 		}else{
 			Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], file accepted, parent folder printing";
 			MgConnectionW mg=getConnection();
+            Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "] Metodo: "<< mg.getMethod();
 			InfoNode* in=new InfoNode(mg);
-			in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));
+            in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));
 			std::string uri;
 			uri = "/info/users/"+ userId + "/dir/" + dirId;
-			getConnection().setMethod("GET");
-			getConnection().setUri(uri);
-			in->execute();
+            mg.setMethod("GET");
+            Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "] Metodo: "<< mg.getMethod();
+            mg.setUri(uri);
+			in->executeGet();
+            delete in;
 		}
-
-       */
 	}else{
 		status=11;
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);

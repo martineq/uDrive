@@ -100,7 +100,8 @@ const char* MgConnectionW::getMethod(){
 };
 
 void MgConnectionW::setMethod(std::string method){
-	conn->request_method=method.c_str();
+    const char* metodo=method.c_str();
+	conn->request_method=metodo;
 };
 
 std::string MgConnectionW::getContentLength(){
