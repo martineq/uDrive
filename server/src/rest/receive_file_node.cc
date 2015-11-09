@@ -28,11 +28,10 @@ void ReceiveFileNode::executePost() {
 		std::string p_file;
 
 		Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] userId: " << userId << " dirId: " << dirId;
-		std::string variable;
-		std::string contenido;
-		std::string nombre_archivo;
+		std::string variable="";
+		std::string contenido="";
 		std::string extension="";
-		std::string size="1024";
+		std::string size="";
 
 		time_t now = time(0);
 		char* dt = ctime(&now);
@@ -41,21 +40,22 @@ void ReceiveFileNode::executePost() {
         p_file = getConnection().getMultipartData(variable, contenido);
        // Log(Log::LogMsgDebug) << "[p_file: " <<p_file;
 		while(p_file!= "") {
-         //   Log(Log::LogMsgDebug) << "[CONTENIDO: " <<getConnection()->content;
             if (variable == "file") {
-                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Tamaño de archivo: " << "" << ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
+                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
                 break;
             };
             p_file = getConnection().getMultipartData(variable, contenido);
         }
         Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
-
         vector<string> partesArchivo=ReceiveFileNode::split(contenido,'.');
-        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "]Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
         //size=sizeof(p_file)* sizeof(char);
-        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "]Contenido del Archivo:  "<<p_file;
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Tamaño de Archivo:  "<<p_file.size();
 
-        if ( (p_file.size() <= 0) or (!getRequestDispatcher()->new_file(userId,contenido, partesArchivo[1],fecha, p_file.c_str(), size,dirId,file_id,status)) ){
+        stringstream tamanio;
+        tamanio << p_file.size();
+
+        if ( (p_file.size() <= 0) or (!getRequestDispatcher()->new_file(userId,contenido, partesArchivo[1],fecha, p_file.c_str(), tamanio.str(),dirId,file_id,status)) ){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
@@ -63,13 +63,11 @@ void ReceiveFileNode::executePost() {
 		}else{
 			Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], file accepted, parent folder printing";
 			MgConnectionW mg=getConnection();
-            Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "] Metodo: "<< mg.getMethod();
 			InfoNode* in=new InfoNode(mg);
             in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));
 			std::string uri;
 			uri = "/info/users/"+ userId + "/dir/" + dirId;
             mg.setMethod("GET");
-            Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "] Metodo: "<< mg.getMethod();
             mg.setUri(uri);
 			in->executeGet();
             delete in;
