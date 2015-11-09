@@ -5,10 +5,8 @@
  *      Author: martin
  */
 
-#include "receive_file_node.h"
-#include "info_node.h"
+#include "send_file_node.h"
 using std::string;
-using std::stringstream;
 
 SendFileNode::SendFileNode(MgConnectionW&  conn)  : Node(conn) {
 }
@@ -16,61 +14,29 @@ SendFileNode::SendFileNode(MgConnectionW&  conn)  : Node(conn) {
 SendFileNode::~SendFileNode() {
 }
 
-void SendFileNode::executePost() {
+void SendFileNode::executeGet() {
 	vector<string> lista=SendFileNode::split(getConnection().getUri(),'/');
 	Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] ";
 	int status=11;
 
-	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
-		std::string userId=lista[3];
-		std::string dirId=lista[5];
-		std::string file_id;
-		std::string p_file;
+	if ( (!lista[3].compare("file")) && (lista.size()==5)){
+		std::string userId=lista[2];
+		std::string fileId=lista[4];
+        std::string revision="1";
+		char* p_file;
+        std::string size="";
 
-		Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] userId: " << userId << " dirId: " << dirId;
-		std::string variable="";
-		std::string contenido="";
-		std::string extension="";
-		std::string size="";
-
-		time_t now = time(0);
-		char* dt = ctime(&now);
-		std::string fecha(dt);
-
-        p_file = getConnection().getMultipartData(variable, contenido);
-       // Log(Log::LogMsgDebug) << "[p_file: " <<p_file;
-		while(p_file!= "") {
-            if (variable == "file") {
-                Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "]: Variable: "<<variable<< ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
-                break;
-            };
-            p_file = getConnection().getMultipartData(variable, contenido);
-        }
-        Log(Log::LogMsgInfo) << "[" << "SendFileNode " << "], multipart receive finished";
-        vector<string> partesArchivo=SendFileNode::split(contenido,'.');
-        Log(Log::LogMsgInfo) << "[" << "SendFileNode " << "], Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
-        //size=sizeof(p_file)* sizeof(char);
-        Log(Log::LogMsgInfo) << "[" << "SendFileNode " << "], Tamaño de Archivo:  "<<p_file.size();
-
-        stringstream tamanio;
-        tamanio << p_file.size();
-
-        if ( (p_file.size() <= 0) or (!getRequestDispatcher()->new_file(userId,contenido, partesArchivo[1],fecha, p_file.c_str(), tamanio.str(),dirId,file_id,status)) ){
+		Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] userId: " << userId << " dirId: " << fileId;
+        if (!getRequestDispatcher()->get_file_stream(userId,fileId,revision,p_file,size,status)  ){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else{
-			Log(Log::LogMsgInfo) << "[" << "SendFileNode " << "], file accepted, parent folder printing";
-			MgConnectionW mg=getConnection();
-			InfoNode* in=new InfoNode(mg);
-            in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));
-			std::string uri;
-			uri = "/info/users/"+ userId + "/dir/" + dirId;
-            mg.setMethod("GET");
-            mg.setUri(uri);
-			in->executeGet();
-            delete in;
+            Log(Log::LogMsgInfo) << "[" << "SendFileNode " << "], multipart send inited";
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+			getConnection().sendContentType(MgConnectionW::ContentTypes::CONTENT_TYPE_MULTIPART);
+            getConnection().setMultipartData("file","dsa",p_file,atoi(size.c_str()));
 		}
 	}else{
 		status=11;
@@ -97,5 +63,5 @@ vector<string> SendFileNode::split(const string &s, char delim) {
 }
 std::string SendFileNode::getUserId() {
 	vector<string> lista=SendFileNode::split(getUri(),'/');
-	return lista[3];
+	return lista[2];
 }

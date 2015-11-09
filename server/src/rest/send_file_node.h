@@ -19,7 +19,7 @@ public:
 	SendFileNode(MgConnectionW& conn);
 	~SendFileNode();
 protected:
-	void executePost();
+	void executeGet();
 	std::string defaultResponse();
 	std::string getUserId();
 private:

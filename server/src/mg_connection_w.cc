@@ -15,6 +15,7 @@ using std::strlen;
 static const char* CONTENT_TYPES[] = {
 	"application/json", // CONTENT_TYPE_JSON
 	"text/html" // CONTENT_TYPE_HTML
+    "multipart/form-data" // CONTENT_TYPE_MULTIPART
 };
 
 MgConnectionW::MgConnectionW(struct mg_connection *c) : conn(c),multipartOffset(0) {
@@ -41,6 +42,19 @@ std::string MgConnectionW::getMultipartData(string& var_name, string& file_name)
 	file_name.resize(strlen(file_name.data()));
 
 	return string(data, data_len);
+}
+
+size_t MgConnectionW::setMultipartData(string var_name, string file_name,const void *data, int data_len){
+    var_name.resize(100);
+    file_name.resize(100);
+    var_name[0] = 0;
+    file_name[0] = 0;
+    Log(Log::LogMsgDebug) << "[OFFSET]: "<<this->multipartOffset << "[DATA_LEN]: "<<data_len;
+    this->multipartOffset = mg_send_data(this->conn, data, data_len);
+    var_name.resize(strlen(var_name.data()));
+    file_name.resize(strlen(file_name.data()));
+
+    return this->multipartOffset;
 }
 
 string MgConnectionW::getAuthorization(){

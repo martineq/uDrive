@@ -35,7 +35,8 @@ class MgConnectionW {
 		typedef enum ContentTypes {
 			CONTENT_TYPE_JSON=0,
 			CONTENT_TYPE_HTML,
-			CONTENT_TYPE_TOTAL
+			CONTENT_TYPE_TOTAL,
+            CONTENT_TYPE_MULTIPART
 		} ContentTypes;
 
 		/**
@@ -47,6 +48,8 @@ class MgConnectionW {
 		 * Get transfer file with multipart mode.
 		 */
 		std::string getMultipartData(string& var_name, string& file_name);
+
+	    size_t setMultipartData(string var_name, string file_name,const void *data, int data_len);
 
 		/**
 		 * takes the token header

@@ -64,6 +64,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           cdn->execute();
           delete cdn;
           return MG_TRUE;
+
+      }else if (!strncmp(mgConnection.getMethod(),"GET",3)){
+          SendFileNode* sfn=new SendFileNode(mgConnection);
+          sfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          sfn->execute();
+          delete sfn;
+          return MG_TRUE;
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
