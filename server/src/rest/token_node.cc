@@ -64,7 +64,7 @@ bool TokenNode::auth(int &status){
 	Log(Log::LogMsgDebug) << "Auth de Token";
 	std::string email = getConnection().getBodyJson("email");
 	std::string password = getConnection().getBodyJson("password");
-	Log(Log::LogMsgDebug) << "[" << "auth-TOKEN" << "] Email:" << email << "Password" << password;
+	Log(Log::LogMsgDebug) << "[" << "auth-TOKEN" << "] Email: " << email << ", Password: "  << password;
 	return true;
 }
 

@@ -44,7 +44,7 @@ void Node::executePut() {
 }
 
 void Node::methodNotAllowed() {
-	Log(Log::LogMsgDebug) << "Method not allowed, method: " << getConnection().getMethod() << ", connection: "<< getConnection().getUri();
+	Log(Log::LogMsgDebug) << "Method not allowed, method: " << getConnection().getMethod()<< ", connection: "<< getConnection().getUri();
     getConnection().sendStatus(MgConnectionW::STATUS_CODE_METHOD_NOT_ALLOWED);
     getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
     getConnection().printfData("{ \"message\":\"Method: '%s' in '%s' not allowed\"}", getConnection().getMethod(), getConnection().getUri());

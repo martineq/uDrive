@@ -25,7 +25,7 @@ void WEBServer::run(){
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     MgConnectionW mgConnection(conn);
 
-    Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+   // Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
   if (ev == MG_AUTH) {
     return MG_TRUE;   // Authorize all requests

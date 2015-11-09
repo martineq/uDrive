@@ -17,8 +17,7 @@ static const char* CONTENT_TYPES[] = {
 	"text/html" // CONTENT_TYPE_HTML
 };
 
-MgConnectionW::MgConnectionW(struct mg_connection *c) : conn(c) {
-	multipartOffset=0;
+MgConnectionW::MgConnectionW(struct mg_connection *c) : conn(c),multipartOffset(0) {
 }
 
 void MgConnectionW::sendStatus(int code){
@@ -32,6 +31,7 @@ std::string MgConnectionW::getMultipartData(string& var_name, string& file_name)
 	file_name.resize(100);
 	var_name[0] = 0;
 	file_name[0] = 0;
+    Log(Log::LogMsgDebug) << "[OFFSET]: "<<this->multipartOffset << "[DATA_LEN]: "<<data_len;
 	this->multipartOffset = mg_parse_multipart(this->conn->content + this->multipartOffset,this->conn->content_len - this->multipartOffset,
 		(char*) var_name.data(), 100,
 		(char*) file_name.data(), 100,
@@ -49,27 +49,26 @@ string MgConnectionW::getAuthorization(){
 	return my_string;
 }
 
-std::string MgConnectionW::getBodyJson(string field){
-    const char *s;
-    s = this->conn->content;
+std::string MgConnectionW::getBodyJson(string field) {
+    char body[1024 * 1024 * sizeof(char)] = "";
 
-    char body[1024*sizeof(char)] = "";
-    strncpy(body, s, this->conn->content_len);
+    strncpy(body, this->conn->content, this->conn->content_len);
+    Log(Log::LogMsgDebug) << "[getBodyJson]";
     body[this->conn->content_len] = '0';
 
-    // Parse the JSON body
+// Parse the JSON body
     Json::Value root;
     Json::Reader reader;
     bool parsedSuccess = reader.parse(body, root, false);
     if (!parsedSuccess) {
-        // Error, do something
+        Log(Log::LogMsgDebug) << "[getBodyJson]: Error parseando Body";
+        return "";
     }
-    const Json::Value value = root[field];
-    if (value != value.null) return value.asString();
+    if (root != "") return root[field].asString();
     else {
         Log(Log::LogMsgDebug) << "[getBodyJson]: No se encontro el campo: "<<field;
-		return "";
-	}
+        return "";
+    }
 }
 
 struct mg_connection* MgConnectionW::operator->(){
@@ -101,8 +100,14 @@ const char* MgConnectionW::getMethod(){
 };
 
 void MgConnectionW::setMethod(std::string method){
-	conn->request_method=method.c_str();
+    const char* metodo=method.c_str();
+	conn->request_method=metodo;
 };
+
+std::string MgConnectionW::getContentLength(){
+    return std::to_string((size_t)conn->content_len);
+
+}
 
 
 
