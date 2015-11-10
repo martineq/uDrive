@@ -62,11 +62,14 @@ string MgConnectionW::getAuthorization(){
 	std::string my_string(dar);
 	return my_string;
 }
-
+/**
+ *
+ */
 std::string MgConnectionW::getBodyJson(string field) {
+    Log(Log::LogMsgDebug) << "[getBodyJson]: Recuperando campo Json";
     std::string content_string(this->conn->content);
-    Log(Log::LogMsgDebug) << "[getBodyJson]: largo contenido: "<<getContentLength();
-    Log(Log::LogMsgDebug) << "[getBodyJson]: Buscando campo: "<<field;
+    Log(Log::LogMsgDebug) << "[getBodyJson]: Tamaño body: "<<getContentLength();
+    Log(Log::LogMsgDebug) << "[getBodyJson]: Campo: "<<field;
 
     Json::Value root;
     Json::Reader reader;
@@ -76,7 +79,7 @@ std::string MgConnectionW::getBodyJson(string field) {
         return "";
     }
     if (root != "") {
-        Log(Log::LogMsgDebug) << "[getBodyJson], Valor: " <<root[field].asString();
+        Log(Log::LogMsgDebug) << "[getBodyJson], recuperando valor correctamente";
         return root[field].asString();
     }
     else {
