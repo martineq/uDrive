@@ -66,6 +66,7 @@
     <string name="fullname_ok">Full name updated!</string>
     <string name="fullname_error">Error updating the full name</string>
     <string name="error_profile">Error loading profile</string>
+    <string name="picture_size_error">Your picture size must not be greater than 150 KB</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Download</string>
@@ -78,6 +79,7 @@
     <!-- Strings related to Delete option -->
     <string name="delete_option_title">Delete</string>
     <string name="delete_option_message">Do you want to Delete?</string>
+
 
 
 </resources>

@@ -12,6 +12,16 @@
 #include "util/log.h"
 
 
+// TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
+// deleted files cant be asked by the client
+
+// TODO(mart): Ver el caso donde borro un archivo y el usuario sube a la misma carpeta un archivo con el mismo nombre
+// (posible conflicto de revisiones). Se podría resolver renombrando el viejo archivo recuperado (agregando el nombre "restored" o "(1)" )
+
+/**
+ * @brief Request Dispatcher
+ * 
+ */
 class RequestDispatcher{
 
   public:
@@ -83,8 +93,7 @@ class RequestDispatcher{
     string add_key_to_string_list(string list, string key);
     string remove_key_from_string_list(string list, string key);
     bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
-    bool purge_files_from_dir_recursive(string dir_id, int& status);
-    bool recover_files_from_dir_recursive(string dir_id, int& status);
+    bool delete_dir_recursive(string dir_id, int& status);
     
   public:  
     
@@ -200,7 +209,8 @@ class RequestDispatcher{
     bool get_user_image(string user_id, char*& p_image_stream, string& size, int& status);
     
     /**
-     * @brief Gets the directory information on a  DataHandler::dir_info_st.  Returns true on success.
+     * @brief Gets the directory information on a DataHandler::dir_info_st (only non-deleted files)
+     *        Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
@@ -303,9 +313,12 @@ class RequestDispatcher{
     bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
     
     
-//  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
-//  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
+// TODO(mart): bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
     
+    
+    bool modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status);
+    
+
     /**
      * @brief Modifies information of the file. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
@@ -322,13 +335,17 @@ class RequestDispatcher{
     bool modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status);
 
     
-//  bool delete_user(string user_id, int& status);
-//  bool delete_directory(string user_id, string dir_id, int& status);
+// TODO(mart): bool delete_user(string user_id, int& status);
+    
+    
+    bool delete_directory(string user_id, string dir_id, int& status);
     
     
     /**
-     * @brief Sets deleted status flag to "logical" deleted (the file will not be informed to the user). Returns true on success.
-     *        On error returns false and a DataHandler status (see db_constants.h)
+     * @brief Deletes reference of the file from their parent directory (the file will not be informed to the user). 
+     *        Also puts file into a "user deleted files" sector, fo a future purge or recover.
+     *        Deleted files must not be asked by the client.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
      * @param file_id ...
@@ -339,7 +356,7 @@ class RequestDispatcher{
 
     
     /**
-     * @brief Deletes physically all files (and their revisions) in "deleted" status
+     * @brief Deletes physically all files (and their revisions) previously deleted
      * 
      * @param user_id ...
      * @param status ...
@@ -347,9 +364,10 @@ class RequestDispatcher{
      */
     bool purge_deleted_files(string user_id, int& status);
     
-    
+
    /**
-     * @brief Reverts the status i the files with "deleted" flag, making files visible
+     * @brief Recover files deleted, making files visible. If the original parent dir not exists, move the file to the root dir.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
      * @param status ...
@@ -363,7 +381,4 @@ class RequestDispatcher{
 };
 
 #endif // REQUESTDISPATCHER_H
-
-// TODO(mart): remember: deleted files cant be asked by the client
-// TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
 

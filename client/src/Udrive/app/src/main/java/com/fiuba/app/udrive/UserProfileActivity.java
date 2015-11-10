@@ -111,7 +111,6 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void changePic(View view){
-       // Picasso.with(this).load(R.drawable.user2).into((ImageView)findViewById(R.id.avatar));
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
@@ -132,26 +131,33 @@ public class UserProfileActivity extends AppCompatActivity {
                         // Do something
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-                   ((ImageView)findViewById(R.id.avatar)).setImageBitmap(yourSelectedImage);
+                    // Put picture if size is less than 150 KB
+                    int size = getPictureSize(yourSelectedImage);
+                    System.out.println("Avatar size >>>> "+size);
+                    if (size <= 153600) {
+                        ((ImageView) findViewById(R.id.avatar)).setImageBitmap(yourSelectedImage);
 
-                    // Encode to Base64 and Send to the server
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    yourSelectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    String strBase64= Base64.encodeToString(byteArray, 0);
-                    //System.out.println(strBase64);
+                        // Encode to Base64 and Send to the server
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        yourSelectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+                        String strBase64 = Base64.encodeToString(byteArray, 0);
+                        //System.out.println(strBase64);
 
-                    mUserService.updatePhoto(mUserProfile.getUserId(), new MyPhoto(strBase64), new ServiceCallback<GenericResult>() {
-                        @Override
-                        public void onSuccess(GenericResult object, int status) {
-                            Toast.makeText(UserProfileActivity.this, getString(R.string.picture_ok), Toast.LENGTH_LONG).show();
-                        }
+                        mUserService.updatePhoto(mUserProfile.getUserId(), new MyPhoto(strBase64), new ServiceCallback<GenericResult>() {
+                            @Override
+                            public void onSuccess(GenericResult object, int status) {
+                                Toast.makeText(UserProfileActivity.this, getString(R.string.picture_ok), Toast.LENGTH_LONG).show();
+                            }
 
-                        @Override
-                        public void onFailure(String message, int status) {
-                            Toast.makeText(UserProfileActivity.this, getString(R.string.picture_error), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(String message, int status) {
+                                Toast.makeText(UserProfileActivity.this, getString(R.string.picture_error), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(UserProfileActivity.this, getString(R.string.picture_size_error), Toast.LENGTH_LONG).show();
+                    }
                 }
         }
     }
@@ -209,6 +215,27 @@ public class UserProfileActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private int getPictureSize(Bitmap bitmap){
+        int pixels = bitmap.getHeight() * bitmap.getWidth();
+        int bytesPerPixel = 0;
+        switch(bitmap.getConfig()) {
+            case ARGB_8888:
+                bytesPerPixel = 4;
+                break;
+            case RGB_565:
+                bytesPerPixel = 2;
+                break;
+            case ARGB_4444:
+                bytesPerPixel = 2;
+                break;
+            case ALPHA_8 :
+                bytesPerPixel = 1;
+            break;
+        }
+        int byteCount = pixels / bytesPerPixel;
+        return byteCount;
     }
 
 

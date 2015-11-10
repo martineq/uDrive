@@ -55,6 +55,7 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT),id_dir_root);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES),LABEL_EMPTY_STRING);  
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),LABEL_ZERO);  
+  dbh_.put_batch(generate_user_key(user_id,SUFFIX_FILES_DELETED),LABEL_EMPTY_STRING);  
   
   // Saves data
   if(dbh_.write_batch()){
@@ -114,11 +115,11 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
 bool DataHandler::add_file(string user_id, string name, string extension, string date, string size, string revision, string parent_dir_id,
                            string& file_id, int& status){
   
-  // Searches for parent directory
+  // Search for parent directory
   string dir_files_contained;
   if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),&dir_files_contained,status) ) return false;
   
-  // Generates ID for the new file
+  // Generate ID for the new file
   if( !create_id(SUFFIX_FILE_ID,file_id) ){ status = STATUS_DATABASE_ERROR; return false; }
   
   // Add file_id to directory container
@@ -133,9 +134,9 @@ bool DataHandler::add_file(string user_id, string name, string extension, string
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_TAGS),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_OWNER),user_id);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_SIZE),size);
-  dbh_.put_batch(generate_file_key(file_id,SUFFIX_DELETED_STATUS),DELETED_FILE_STATUS_EXISTS);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_USERS_SHARED),LABEL_EMPTY_STRING);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_FILE_REVISION),revision);
+  dbh_.put_batch(generate_file_key(file_id,SUFFIX_PARENT_DIRECTORY),parent_dir_id);
   dbh_.put_batch(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),dir_files_contained);
   
   // Saves data to new file
@@ -169,7 +170,7 @@ bool DataHandler::get_user_info(string user_id, user_info_st& user_info, int& st
   if( !dbh_get(generate_user_key(user_id,SUFFIX_DIR_ROOT),&(user_info.dir_root),status) ) return false;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_SHARED_FILES),&(user_info.shared_files),status) ) return false;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_QUOTA_USED),&(user_info.user_quota_used),status) ) return false;
-  
+  if( !dbh_get(generate_user_key(user_id,SUFFIX_FILES_DELETED),&(user_info.files_deleted),status) ) return false;
   
   return true;
 }
@@ -199,9 +200,9 @@ bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& st
   if( !dbh_get(generate_file_key(file_id,SUFFIX_TAGS),&(file_info.tags),status) ) return false; 
   if( !dbh_get(generate_file_key(file_id,SUFFIX_OWNER),&(file_info.owner),status) ) return false; 
   if( !dbh_get(generate_file_key(file_id,SUFFIX_SIZE),&(file_info.size),status) ) return false; 
-  if( !dbh_get(generate_file_key(file_id,SUFFIX_DELETED_STATUS),&(file_info.deleted_status),status) ) return false; 
   if( !dbh_get(generate_file_key(file_id,SUFFIX_USERS_SHARED),&(file_info.users_shared),status) ) return false; 
   if( !dbh_get(generate_file_key(file_id,SUFFIX_FILE_REVISION),&(file_info.revision),status) ) return false; 
+  if( !dbh_get(generate_file_key(file_id,SUFFIX_PARENT_DIRECTORY),&(file_info.parent_directory),status) ) return false; 
 
   return true;
 }
@@ -248,8 +249,25 @@ bool DataHandler::delete_directory(string dir_id, int& status){
 }
 
 
-bool DataHandler::modify_file_deleted_status(string file_id, string new_status, int& status){
-  return( dbh_.put(generate_file_key(file_id,SUFFIX_DELETED_STATUS),new_status) );
+bool DataHandler::delete_file(string file_id, int& status){
+
+  dbh_.clear_batch();
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_NAME));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_EXTENSION));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_DATE_LAST_MOD));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_USER_LAST_MOD));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_TAGS));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_OWNER));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_SIZE));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_USERS_SHARED));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_FILE_REVISION));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_PARENT_DIRECTORY));
+  dbh_.erase_batch(generate_file_key(file_id,SUFFIX_FILES_CONTAINED));
+
+  // Erases data
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
+  
+  return true;
 }
 
 
@@ -258,7 +276,7 @@ bool DataHandler::modify_user_password(string user_id, string password, int& sta
 }
 
 
-bool DataHandler::modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, int& status){
+bool DataHandler::modify_user_info(string user_id, string email, string name, string location, string files_shared, string quota, string files_deleted, int& status){
   
   string old_email;
   if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(old_email),status) ) return false;
@@ -269,6 +287,7 @@ bool DataHandler::modify_user_info(string user_id, string email, string name, st
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_LOCATION),location);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES),files_shared);
   dbh_.put_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED),quota);
+  dbh_.put_batch(generate_user_key(user_id,SUFFIX_FILES_DELETED),files_deleted);
   
   // Update index (if necessary)
   if( email.compare(old_email)!=0 ){
@@ -301,7 +320,12 @@ bool DataHandler::modify_directory_files_contained(string dir_id, string files_c
 }
 
 
-bool DataHandler::modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, int& status){
+bool DataHandler::modify_directory_dirs_contained(string dir_id, string directories_contained, int& status){
+  return( dbh_.put(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained) );
+}
+
+
+bool DataHandler::modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status){
 
   dbh_.clear_batch();
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_NAME),name);
@@ -310,6 +334,7 @@ bool DataHandler::modify_file_info(string file_id, string name, string extension
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_USER_LAST_MOD),user_id_modifier);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_TAGS),tags);
   dbh_.put_batch(generate_file_key(file_id,SUFFIX_USERS_SHARED),users_shared);
+  dbh_.put_batch(generate_file_key(file_id,SUFFIX_PARENT_DIRECTORY),parent_dir);
 
   // Saves data to file
   if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
