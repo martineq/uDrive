@@ -64,6 +64,8 @@
     <string name="picture_error">Error al actualizar imagen de perfil</string>
     <string name="fullname_ok">¡Nombre actualizado!</string>
     <string name="fullname_error">Error actualizando el nombre</string>
+    <string name="error_profile">Error al intentar mostrar el perfil</string>
+    <string name="picture_size_error">El tamaño de la imagen no puede superar 150 KB</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Descargar</string>
@@ -72,8 +74,8 @@
     <string name="tag_action">Etiquetar</string>
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
-    <string name="error_profile">Error al intentar mostrar el perfil</string>
     <string name="delete_option_title">Delete</string>
     <string name="delete_option_message">Do you want to Delete?</string>
+
 
 </resources>
