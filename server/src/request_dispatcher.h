@@ -15,6 +15,8 @@
 // TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
 // deleted files cant be asked by the client
 
+// TODO(mart): Ver el caso donde borro un archivo y el usuario sube a la misma carpeta un archivo con el mismo nombre
+// (posible conflicto de revisiones). Se podría resolver renombrando el viejo archivo recuperado (agregando el nombre "restored" o "(1)" )
 
 /**
  * @brief Request Dispatcher
@@ -311,8 +313,10 @@ class RequestDispatcher{
     bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
     
     
-//  bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
-//  bool modify_directory_info(string dir_id, string name, string date, string tags, int& status);
+// TODO(mart): bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
+    
+    
+    bool modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status);
     
 
     /**
@@ -331,7 +335,7 @@ class RequestDispatcher{
     bool modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status);
 
     
-//  bool delete_user(string user_id, int& status);
+// TODO(mart): bool delete_user(string user_id, int& status);
     
     
     bool delete_directory(string user_id, string dir_id, int& status);

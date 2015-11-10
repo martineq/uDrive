@@ -12,7 +12,7 @@ RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota)
   }
 
 }
- 
+
  
 RequestDispatcher::~RequestDispatcher(){
 
@@ -87,7 +87,7 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
 
   // TODO(mart): Check if there is an previous revision (Search in the parent_dir_id for a file with the samen name)
   //             and if there is, change the label_revision (dont make an new logical file) and Add physical file
-  
+
   // Add logical file
   if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
   
@@ -379,6 +379,25 @@ bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatch
 }
 
 
+bool RequestDispatcher::modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status){
+  
+  bool is_root_dir = (dir_id==LABEL_ZERO);
+  
+  // The user cant modify info for the root directory
+  if( is_root_dir ){ status = STATUS_DELETE_ROOT_DIR_FORBIDDEN; return false; }
+  
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+  
+  if( user_id!=dir_info.owner ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  if( !dh_.modify_directory_info(dir_id,name,date,tags,dir_info.size,status) ){ return false; }
+     
+  return true;
+}
+
+
+
 bool RequestDispatcher::modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status){
 
   DataHandler::file_info_st file_info_temp;
@@ -404,32 +423,28 @@ bool RequestDispatcher::modify_file_info(string user_id, string file_id, string 
 }
 
 
-/*
-bool RequestDispatcher::delete_user(string user_id, int& status){
-  // TODO(mart): implement
-//+ Borrar usuario -> delete_user(). Verificar que el usr sea dueño. 
-                                     Borrar el root dir y toddos sus subdirectorios y archivos contenidos
-
-return false;
-}
-*/
-
-
 bool RequestDispatcher::delete_directory(string user_id, string dir_id, int& status){
-  // TODO(mart): implement
-  // + Borrar directorio -> delete_directory(). Verificar que el usr sea dueño. Borrar todas las subcarpetas y archivos que contenga.
   
   bool is_root_dir = (dir_id==LABEL_ZERO);
   
   // The user cant delete the root directory
   if( is_root_dir ){ status = STATUS_DELETE_ROOT_DIR_FORBIDDEN; return false; }
   
-  DataHandler::dir_info_st dir_info_temp;
-  if( !dh_.get_directory_info(dir_id,dir_info_temp,status) ){ return false; }
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
   
-  if( user_id!=dir_info_temp.owner ){ status = STATUS_USER_FORBIDDEN; return false; }
+  if( user_id!=dir_info.owner ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Delete directory, and their sub-directories and files contained
+  if( !delete_dir_recursive(dir_id,status) ){ return false; }
   
-  return false;
+  // Delete link with their parent directory
+  DataHandler::dir_info_st parent_dir_info;
+  if( !dh_.get_directory_info(dir_info.parent_directory,parent_dir_info,status) ){ return false; }
+  parent_dir_info.directories_contained = remove_key_from_string_list(parent_dir_info.directories_contained,dir_id);
+  if( !dh_.modify_directory_dirs_contained(dir_info.parent_directory,parent_dir_info.directories_contained,status) ){ return false; }
+  
+  return true;
 }
 
 
@@ -782,6 +797,24 @@ bool RequestDispatcher::delete_dir_recursive(string dir_id, int& status){
   DataHandler::dir_info_st dir_info;
   if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
 
+  // Delete sub_dirs recursively
+  vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
+    string subdir_id = (*it);
+    if( !delete_dir_recursive(subdir_id,status) ){ return false; }
+  }
+  
+  // Delete files_contained
+  vector<string> file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);  
+  for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+    if( !delete_file(file_info.owner,file_id,status) ){ return false; }
+  }
+  
+  // Delete dir info
+  if( !dh_.delete_directory(dir_id,status) ){ return false; }
   
   return true;
 }

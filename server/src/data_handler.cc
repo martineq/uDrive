@@ -320,6 +320,11 @@ bool DataHandler::modify_directory_files_contained(string dir_id, string files_c
 }
 
 
+bool DataHandler::modify_directory_dirs_contained(string dir_id, string directories_contained, int& status){
+  return( dbh_.put(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED),directories_contained) );
+}
+
+
 bool DataHandler::modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status){
 
   dbh_.clear_batch();

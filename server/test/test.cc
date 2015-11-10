@@ -762,10 +762,26 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Delete file logically and physically
   EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
   EXPECT_TRUE(rd->purge_deleted_files(user_id,status));
-  // ...And get zip file without the file deleted
+  // ...And get zip file without the file
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
   EXPECT_EQ("912",size_stream);  // Size of zip file (2 files): 912 bytes
   
+  // Change directory information
+  EXPECT_TRUE(rd->modify_directory_info(user_id,sub_dir_id,"dir_renombrado","09/11/15","importante",status));
+  
+  // Delete a directory with files and sub-directories
+  EXPECT_TRUE(rd->delete_directory(user_id,sub_dir_id,status));
+  // ...Check the directory obtained after directory delete
+  ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
+  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_EQ(1,dir_info.directory_element_info.size());   // Number of elements in this directory: 2-1=1
+  // ...And get zip file without the sub-dir
+  EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
+  EXPECT_EQ("372",size_stream);  // Size of zip file (1 file): 372 bytes
+  // Save the zip file
+  FileHandler fh;
+  EXPECT_EQ(372,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 372 bytes
+
   
   // Create the user image, and then save and load in the RequestDispatcher
   string data;

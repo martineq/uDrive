@@ -331,7 +331,7 @@ class DataHandler {
     * 
     * @param user_id ...
     * @param password ...
-    * @param status ...
+    * @param status status returns DataHandler status ONLY if @return==false
     * @return bool
     */
     bool modify_user_password(string user_id, string password, int& status);
@@ -370,10 +370,22 @@ class DataHandler {
      * 
      * @param dir_id ...
      * @param files_contained ...
-     * @param status ...
+     * @param status status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool modify_directory_files_contained(string dir_id, string files_contained, int& status);
+    
+    
+    /**
+     * @brief Modifies the list of directories contained. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param dir_id ...
+     * @param directories_contained ...
+     * @param status status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool modify_directory_dirs_contained(string dir_id, string directories_contained, int& status);
     
     /**
     * @brief Modifies file information for an file_id. Returns true on success.
@@ -387,7 +399,7 @@ class DataHandler {
     * @param users_shared user_id's of user that have shared de file
     * @param user_id_modifier ID of the user that modifies the info
     * @param users_deleted
-    * @param status ...
+    * @param status status returns DataHandler status ONLY if @return==false
     * @return bool
     */
     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status);
