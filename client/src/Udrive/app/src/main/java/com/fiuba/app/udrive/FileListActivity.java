@@ -316,7 +316,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     @Override
     public void onTagClick(int FileItem) {
-        Log.i(TAG,"Tag File position "+FileItem);
+        Log.i(TAG,"FileTag File position "+FileItem);
     }
 
     @Override

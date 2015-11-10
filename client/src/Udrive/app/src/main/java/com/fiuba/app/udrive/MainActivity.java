@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Shows the structure for the main activity screen and creates
-     * a UserService instance to make requests
+     * a FileMetadataService instance to make requests
      * @param savedInstanceState
      */
     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             // Continues showing login inputs
             setContentView(R.layout.activity_main);
 
-            //this.mUserService = new UserService(MainActivity.this);
+            //this.mUserService = new FileMetadataService(MainActivity.this);
 
             TextView signUpLink = (TextView) findViewById(R.id.sign_up_link);
             signUpLink.setOnClickListener(new View.OnClickListener() {
