@@ -64,21 +64,21 @@ string MgConnectionW::getAuthorization(){
 }
 
 std::string MgConnectionW::getBodyJson(string field) {
-    char body[1024 * 1024 * sizeof(char)] = "";
+    std::string content_string(this->conn->content);
+    Log(Log::LogMsgDebug) << "[getBodyJson]: largo contenido: "<<getContentLength();
+    Log(Log::LogMsgDebug) << "[getBodyJson]: Buscando campo: "<<field;
 
-    strncpy(body, this->conn->content, this->conn->content_len);
-    Log(Log::LogMsgDebug) << "[getBodyJson]";
-    body[this->conn->content_len] = '0';
-
-// Parse the JSON body
     Json::Value root;
     Json::Reader reader;
-    bool parsedSuccess = reader.parse(body, root, false);
+    bool parsedSuccess = reader.parse(content_string, root, false);
     if (!parsedSuccess) {
         Log(Log::LogMsgDebug) << "[getBodyJson]: Error parseando Body";
         return "";
     }
-    if (root != "") return root[field].asString();
+    if (root != "") {
+        Log(Log::LogMsgDebug) << "[getBodyJson], Valor: " <<root[field].asString();
+        return root[field].asString();
+    }
     else {
         Log(Log::LogMsgDebug) << "[getBodyJson]: No se encontro el campo: "<<field;
         return "";

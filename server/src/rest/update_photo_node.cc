@@ -43,7 +43,6 @@ void UpdatePhotoNode::executePut() {
 
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: Tome photoStream ";
 
-        //TODO (martin): Ver de pasarle el tamaño del archivo al metodo. Ahora HARDCODEADO
         if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),mystring,status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
