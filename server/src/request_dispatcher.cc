@@ -557,6 +557,10 @@ bool RequestDispatcher::recover_deleted_files(string user_id, int& status){
     // Add file id to files_contained
     dir_info.files_contained = add_key_to_string_list(dir_info.files_contained,file_deleted_id);
     if( !dh_.modify_directory_files_contained(new_dir_id,dir_info.files_contained,status) ){ return false; }
+
+    // Change size to directory container of the file
+    if( !increase_dir_size_recursive(new_dir_id,file_info.size,status) ){ return false; }
+    
   }
 
   // Delete all owner_info.files_deleted

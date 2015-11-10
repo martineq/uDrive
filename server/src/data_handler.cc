@@ -115,7 +115,7 @@ bool DataHandler::add_directory(string user_id, string name, string date, string
 bool DataHandler::add_file(string user_id, string name, string extension, string date, string size, string revision, string parent_dir_id,
                            string& file_id, int& status){
   
-  // Searche for parent directory
+  // Search for parent directory
   string dir_files_contained;
   if( !dbh_get(generate_dir_key(parent_dir_id,SUFFIX_FILES_CONTAINED),&dir_files_contained,status) ) return false;
   
