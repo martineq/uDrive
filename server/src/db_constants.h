@@ -9,11 +9,7 @@
 #define STATUS_FAIL_LOADING_FILE 8
 #define STATUS_USER_FORBIDDEN 9
 #define STATUS_MAX_QUOTA_EXCEEDED 10
-
-// Deleted file status
-#define DELETED_FILE_STATUS_EXISTS "file_exists"
-#define DELETED_FILE_STATUS_ERASED "file_erased"
-#define DELETED_FILE_STATUS_PHYSICALLY_ERASED "file_physically_erased"
+#define STATUS_DELETE_ROOT_DIR_FORBIDDEN 11
 
 // DataHandler prefixes for key construction
 #define PREFIX_USER "user_"
@@ -29,7 +25,6 @@
 #define SUFFIX_NAME "_name"
 #define SUFFIX_LOCATION "_location"
 #define SUFFIX_QUOTA_USED "_quota_used"
-#define SUFFIX_AVATAR_FILE "_avatar_file"
 #define SUFFIX_DIR_ROOT "_dir_root"
 #define SUFFIX_SHARED_FILES "_shared_files"
 #define SUFFIX_DATE_LAST_MOD "_date_last_mod"
@@ -47,6 +42,7 @@
 #define SUFFIX_USER_ID "user_id"
 #define SUFFIX_DIR_ID "dir_id"
 #define SUFFIX_FILE_ID "file_id"
+#define SUFFIX_FILES_DELETED "_files_deleted"
 
 // Labels
 #define LABEL_ROOT "root"
