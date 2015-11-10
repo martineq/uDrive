@@ -46,8 +46,8 @@
     <string name="action_upload_file">Subir archivo</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">OK</string>
-    <string name="new_folder_cancel">Cancelar</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancelar</string>
     <string name="action_add_folder">Crear carpeta</string>
     <string name="folder_name">Nombre de carpeta: </string>
 
@@ -73,5 +73,7 @@
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
     <string name="error_profile">Error al intentar mostrar el perfil</string>
+    <string name="delete_option_title">Delete</string>
+    <string name="delete_option_message">Do you want to Delete?</string>
 
 </resources>

@@ -47,8 +47,8 @@
     <string name="action_upload_file">Upload file</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">OK</string>
-    <string name="new_folder_cancel">Cancel</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancel</string>
     <string name="action_add_folder">Add folder</string>
     <string name="folder_name">Folder name: </string>
 
@@ -65,6 +65,7 @@
     <string name="picture_error">Error updating profile picture</string>
     <string name="fullname_ok">Full name updated!</string>
     <string name="fullname_error">Error updating the full name</string>
+    <string name="error_profile">Error loading profile</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Download</string>
@@ -73,6 +74,10 @@
     <string name="tag_action">Tag</string>
     <string name="delete_action">Delete</string>
     <string name="cancel_action">Cancel</string>
-    <string name="error_profile">Error loading profile</string>
+
+    <!-- Strings related to Delete option -->
+    <string name="delete_option_title">Delete</string>
+    <string name="delete_option_message">Do you want to Delete?</string>
+
 
 </resources>

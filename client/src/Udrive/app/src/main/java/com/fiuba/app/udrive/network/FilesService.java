@@ -12,6 +12,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -41,6 +42,11 @@ public class FilesService extends AbstractService {
                        @Path("dirId") int dirId,
                        @Body FolderData folderData,
                        Callback<List<File>> files);
+
+        @DELETE("/users/{userId}/file/{fileId}")
+        void deleteFile(@Path("userId") int userId,
+                        @Path("fileId") int fileId,
+                        Callback<List<File>> files);
     }
 
     private interface FileDownloadServiceApi {
@@ -176,6 +182,30 @@ public class FilesService extends AbstractService {
                 serviceCallback.onFailure(error.getMessage(), status);
             }
         });
+    }
+
+    public void deleteFile(int userId, int fileId,final ServiceCallback<List<File>> serviceCallback) {
+        try{
+            mFilesServiceApi.deleteFile(userId, fileId, new Callback<List<File>>() {
+                @Override
+                public void success(List<File> files, Response response) {
+                    serviceCallback.onSuccess(files, response.getStatus());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    int status;
+                    if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                        status = 503;
+                    } else
+                        status = error.getResponse().getStatus();
+                    serviceCallback.onFailure(error.getMessage(), status);
+                }
+            });
+        }catch (Exception e){
+            serviceCallback.onFailure("No se pudo eliminar el archivo",1);
+        }
+
     }
 
 }

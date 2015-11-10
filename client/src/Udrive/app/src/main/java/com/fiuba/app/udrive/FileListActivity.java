@@ -53,6 +53,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     private Integer mDirId;
 
+    private Integer mFileId;
+
     private File selectedFileForDownload;
 
     public static final int FILE_CODE = 1;
@@ -150,9 +152,11 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             alertDialogBuilder.setView(newFolderView);
 
             final EditText userInput = (EditText) newFolderView.findViewById(R.id.editTextDialogUserInput);
+            String ok_option = getString(R.string.alert_ok);
+            String cancel_option = getString(R.string.alert_cancel);
 
             // set dialog message
-            alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            alertDialogBuilder.setCancelable(false).setPositiveButton(ok_option, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog,int id) {
                     // get user input and set it to result
                     // edit text
@@ -176,7 +180,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
                 }
             });
-            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            alertDialogBuilder.setNegativeButton(cancel_option, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.cancel();
                 }
@@ -289,10 +293,9 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     }
 
     @Override
-    public void onDownloadClick(int FileItem) {FileContextMenuManager.getInstance().hideContextMenu();
-        setSelectedFileForDownload(mFiles.get(FileItem));
-
+    public void onDownloadClick(int FileItem) {
         FileContextMenuManager.getInstance().hideContextMenu();
+        setSelectedFileForDownload(mFiles.get(FileItem));
         Intent i = new Intent(this, FilePickerActivity.class);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -318,7 +321,47 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     @Override
     public void onDeleteClick(int FileItem) {
-        Log.i(TAG,"Delete File position "+FileItem);
+        FileContextMenuManager.getInstance().hideContextMenu();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        String title = getString(R.string.delete_option_title);
+        String message = getString(R.string.delete_option_message);
+        String ok_option = getString(R.string.alert_ok);
+        String cancel_option = getString(R.string.alert_cancel);
+        alertDialogBuilder.setTitle(title).setMessage(message);
+        mFileId = mFiles.get(FileItem).getId();
+
+        alertDialogBuilder.setCancelable(false).setPositiveButton(ok_option, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int id) {
+                mFilesService.deleteFile(mUserAccount.getUserId(), mFileId, new ServiceCallback<List<File>>() {
+                    @Override
+                    public void onSuccess(List<File> files, int status) {
+                        mFilesAdapter.updateFiles(files);
+                        Log.d(TAG, "Number of files received " + files.size());
+                    }
+
+                    @Override
+                    public void onFailure(String message, int status) {
+                        if (StatusCode.isHumanReadable(status)) {
+                            message = StatusCode.getMessage(FileListActivity.this, status);
+                            Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                        }
+                        Log.e(TAG, message);
+                    }
+                });
+
+            }
+        });
+        alertDialogBuilder.setNegativeButton(cancel_option, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     @Override
@@ -339,4 +382,5 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     public void setSelectedFileForDownload(File selectedFileForDownload) {
         this.selectedFileForDownload = selectedFileForDownload;
     }
+
 }
