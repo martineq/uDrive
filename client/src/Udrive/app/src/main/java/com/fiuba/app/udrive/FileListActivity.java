@@ -9,20 +9,28 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.ObjectStream;
+import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserProfile;
+import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
@@ -311,12 +319,105 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     @Override
     public void onShareClick(int FileItem) {
-        Log.i(TAG,"Share File position "+FileItem);
+        Log.i(TAG, "Share File position " + FileItem);
     }
 
     @Override
     public void onTagClick(int FileItem) {
-        Log.i(TAG,"FileTag File position "+FileItem);
+        Log.i(TAG, "FileTag File position " + FileItem);
+        String name = mFiles.get(FileItem).getName();
+        String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
+        LayoutInflater inflater = getLayoutInflater();
+        final View layout = inflater.inflate(R.layout.file_tag_layout, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileListActivity.this);
+        builder.setView(layout);
+        builder.setIcon(R.drawable.ic_tag);
+        ((TextView)layout.findViewById(R.id.file_name)).setText(Html.fromHtml(type));
+        ((TextView)layout.findViewById(R.id.file_name)).append(": " + name);
+        final ArrayList<Tag> tagList = new ArrayList<Tag>(); // TODO: get from request
+        layout.findViewById(R.id.button_add_tag).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                TextView input = ((TextView) layout.findViewById(R.id.tag_input));
+                String newTag = input.getText().toString();
+                ArrayList<String> wrong = new ArrayList<String>();
+                wrong.add("");
+                wrong.add(" ");
+                wrong.add(null);
+                if (!Util.matchString(newTag, wrong))
+                    tagList.add(new Tag(newTag));
+                String html = "<script type=\"text/javascript\">" +
+                        "    function callRemoveTag(tagIndex) {" +
+                        "        Android.removeTag(tagIndex);" +
+                        "    }" +
+                        "</script>";
+                int index;
+                String tagCSS = "style=\"font-size:11pt; padding:4px; border:1px solid black; background-color:#f19c47" +
+                        "; border-radius:2px; font-family:monospace; margin-top:4px; margin-bottom:4px; display:inline-block;\"";
+                for (index = 0; index < tagList.size(); index++) {
+                    System.out.println("TagName >>>> " + tagList.get(index).getTagName());
+                    html = html + "<span " + tagCSS + " onClick=\"callRemoveTag(" + index + ");\">" +
+                            tagList.get(index).getTagName() + "<img src=\"ic_close_black_18dp.png\" width=\"12px\" /></span>  ";
+                }
+                final WebView panel = ((WebView) layout.findViewById(R.id.tagView));
+                WebSettings webSettings = panel.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                panel.addJavascriptInterface(new Object() {
+                    @JavascriptInterface
+                    public void removeTag(final int tagIndex) {
+                        //System.out.println("Removing tag >>>>> " + tagList.get(tagIndex).getTagName());
+                        //tagList.remove(tagIndex);
+                        FileListActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                System.out.println("Removing tag >>>>> " + tagList.get(tagIndex).getTagName());
+                                tagList.remove(tagIndex);
+                                panel.loadDataWithBaseURL("file:///android_asset/",
+                                        getPanelHTML(tagList), "text/html", "utf-8", null);
+                            }
+                        });
+                    }
+                }, "Android");
+                panel.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", null);
+                input.setText("");
+            }
+        });
+
+        builder.setCancelable(false)
+                .setTitle(getString(R.string.file_tag_title))
+                .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do something
+                        // TODO: send tagList to server
+                    }
+                })
+                .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = builder.create();
+        alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        alert.show();
+    }
+
+
+
+    private String getPanelHTML(ArrayList<Tag> tagList){
+        String html = "<script type=\"text/javascript\">" +
+                "    function callRemoveTag(tagIndex) {" +
+                "        Android.removeTag(tagIndex);" +
+                "    }" +
+                "</script>";
+        int index;
+        String tagCSS = "style=\"font-size:11pt; padding:4px; border:1px solid black; background-color:#f19c47" +
+                "; border-radius:2px; font-family:monospace; margin-top:4px; margin-bottom:4px; display:inline-block;\"";
+        for (index = 0; index < tagList.size(); index++) {
+            System.out.println("TagName >>>> " + tagList.get(index).getTagName());
+            html = html + "<span " + tagCSS + " onClick=\"callRemoveTag(" + index + ");\">" +
+                    tagList.get(index).getTagName() + "<img src=\"ic_close_black_18dp.png\" width=\"12px\" /></span>  ";
+        }
+        return html;
     }
 
     @Override

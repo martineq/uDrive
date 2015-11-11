@@ -25,21 +25,13 @@ public class FileMetadataService extends AbstractService {
 
     private interface FileTagServiceApi {
 
-        // Gets the user's tag set
-        @GET("/filetags/{userId}")
-        void getTags(@Path("userId") int userId, Callback<List<Tag>> tags);
+        // Gets the file or folder tags
+        @GET("/filetags/files/{fileId}")
+        void getTags(@Path("fileId") int fileId, Callback<List<Tag>> tags);
 
-        // Updates tag set for the given user ID
-        @PUT("/filetags/{userId}")
-        void addTag(@Path("userId") int userId, @Body Tag tag, Callback<Tag> tagNew);
-
-        // Deletes a tag specified by the tag ID for the given user ID
-        @DELETE("/filetags/tags/{tagId}/users/{userId}")
-        void deleteTag(@Path("tagId") int tagId, @Path("userId") int userId, Callback<GenericResult> result);
-
-        // Updates the tag set for the given user ID and file ID
-        @PUT("/filetags/files/{fileId}/users/{userId}")
-        void updateFileTags(@Path("fileId") int fileId, @Path("userId") int userId, @Body List<Tag> tagList,
+        // Updates the tag set for the given file ID
+        @PUT("/filetags/files/{fileId}")
+        void updateTags(@Path("fileId") int fileId, @Body List<Tag> tagList,
                         Callback<GenericResult> result);
 
     }
@@ -56,8 +48,8 @@ public class FileMetadataService extends AbstractService {
         this.mFileTagServiceApi = createService(FileTagServiceApi.class, token);
     }
 
-    public void getTags(int userId, final ServiceCallback<List<Tag>> tags){
-        mFileTagServiceApi.getTags(userId, new Callback<List<Tag>>() {
+    public void getTags(int fileId, final ServiceCallback<List<Tag>> tags){
+        mFileTagServiceApi.getTags(fileId, new Callback<List<Tag>>() {
             @Override
             public void success(List<Tag> tagList, Response response) {
                 tags.onSuccess(tagList, response.getStatus());
@@ -76,49 +68,10 @@ public class FileMetadataService extends AbstractService {
     }
 
 
-    public void addTag(int userId, Tag tag, final ServiceCallback<Tag> tagNew){
-        mFileTagServiceApi.addTag(userId, tag, new Callback<Tag>() {
-            @Override
-            public void success(Tag tNew, Response response) {
-                tagNew.onSuccess(tNew, response.getStatus());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                int status;
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    status = 503;
-                } else
-                    status = error.getResponse().getStatus();
-                tagNew.onFailure(error.getMessage(), status);
-            }
-        });
-    }
-
-    public void deleteTag(int tagId, int userId, final ServiceCallback<GenericResult> result){
-        mFileTagServiceApi.deleteTag(tagId, userId, new Callback<GenericResult>() {
-            @Override
-            public void success(GenericResult res, Response response) {
-                result.onSuccess(res, response.getStatus());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                int status;
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    status = 503;
-                } else
-                    status = error.getResponse().getStatus();
-                result.onFailure(error.getMessage(), status);
-            }
-        });
-    }
-
     // Passes the final tag list corresponding to a file.
-    // So the server just updates the tag list associated to a file instead of removing one by one of them.
-    public void updateFileTags(int fileId, int userId, @Body List<Tag> tagList,
+    public void updateFileTags(int fileId, @Body List<Tag> tagList,
                         final ServiceCallback<GenericResult> result){
-        mFileTagServiceApi.updateFileTags(fileId, userId, tagList, new Callback<GenericResult>() {
+        mFileTagServiceApi.updateTags(fileId, tagList, new Callback<GenericResult>() {
             @Override
             public void success(GenericResult genericResult, Response response) {
                 result.onSuccess(genericResult, response.getStatus());
