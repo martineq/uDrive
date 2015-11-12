@@ -90,7 +90,7 @@ public class UserProfileActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.lastLocation)).append(": "+location);
 
         // Builds bar for quota information
-        // Convert quota to MB.
+        // Convert quota to KB or MB.
         String used = null;
         String total = null;
         if (Double.parseDouble(mUserProfile.getQuotaUsed())>=Math.pow(2,20))

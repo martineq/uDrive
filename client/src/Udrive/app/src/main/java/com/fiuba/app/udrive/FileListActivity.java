@@ -320,8 +320,6 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         Log.i(TAG, "FileTag File position " + FileItem);
         String name = mFiles.get(FileItem).getName();
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
-        /*if (!mFiles.get(FileItem).isDir())
-            name = name+"."+mFiles.get(FileItem).getExtension();*/
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.file_tag_layout, null);
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileListActivity.this);
