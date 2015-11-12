@@ -783,6 +783,16 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_EQ(372,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 372 bytes
 
   
+  // Change user info
+  EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","chihiro","IceK","122.34;45.33",status));
+  
+  // Delete user
+  EXPECT_TRUE(rd->delete_user(user_id_second,status));
+  // Check deleted user
+  RequestDispatcher::user_info_st user_info_deleted;
+  EXPECT_FALSE(rd->get_user_info(user_id_second,user_info_deleted,status));
+  EXPECT_EQ(4,status); // STATUS_KEY_NOT_FOUND==4
+  
   // Create the user image, and then save and load in the RequestDispatcher
   string data;
   size_t size_img;

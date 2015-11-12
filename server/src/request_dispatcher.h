@@ -312,10 +312,34 @@ class RequestDispatcher{
      */
     bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
     
+        
+    /**
+     * @brief Modifies information of the user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param email ...
+     * @param password ...
+     * @param name ...
+     * @param location ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool modify_user_info(string user_id, string email, string password, string name, string location, int& status);
     
-// TODO(mart): bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
     
-    
+    /**
+     * @brief Modifies information of the directory. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param dir_id ...
+     * @param name ...
+     * @param date ...
+     * @param tags ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     bool modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status);
     
 
@@ -335,9 +359,30 @@ class RequestDispatcher{
     bool modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status);
 
     
-// TODO(mart): bool delete_user(string user_id, int& status);
+    /**
+     * @brief Deletes all info linked to the user: deletes the root directory, sub-directories and 
+     *        files contanined (logically and physically). Also removes the profile info of the user
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     
+    bool delete_user(string user_id, int& status);
     
+
+    /**
+     * @brief Deletes the directory, sub-directories and files contanined (logically). 
+     *        Puts file into a "user deleted files" sector, fo a future purge or recover.
+     *        Deleted files must not be asked by the client.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param dir_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     bool delete_directory(string user_id, string dir_id, int& status);
     
     
