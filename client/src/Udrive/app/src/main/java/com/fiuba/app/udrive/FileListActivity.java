@@ -122,23 +122,10 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-            /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),mUserAccount.getPassword(), "firstname",
-                    "lastname", "", -34.795713, -58.348321, mUserAccount.getUserId(),
-                    "750 MB", "487.5", "35%");
-            Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
-            profile.putExtra("userProfile", uProfile);
-            profile.putExtra("userAccount", mUserAccount);
-            startActivity(profile);*/
-
-            mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
+               mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile uProfile, int status) {
                     Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
-                    /*UserProfile uProfile = new UserProfile(mUserAccount.getEmail(),
-                            mUserAccount.getPassword(), "firstname",
-                    "lastname", "photo", "lastLocation", mUserAccount.getUserId(),
-                    "750 MB", "487.5", "35%");*/
-
                     profile.putExtra("userProfile", uProfile);
                     profile.putExtra("userAccount", mUserAccount);
                     startActivity(profile);
@@ -333,6 +320,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         Log.i(TAG, "FileTag File position " + FileItem);
         String name = mFiles.get(FileItem).getName();
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
+        /*if (!mFiles.get(FileItem).isDir())
+            name = name+"."+mFiles.get(FileItem).getExtension();*/
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.file_tag_layout, null);
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileListActivity.this);
@@ -340,15 +329,31 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         builder.setIcon(R.drawable.ic_tag);
         ((TextView)layout.findViewById(R.id.file_name)).setText(Html.fromHtml(type));
         ((TextView)layout.findViewById(R.id.file_name)).append(": " + name);
-        final ArrayList<Tag> tagList = new ArrayList<Tag>(); // TODO: get from request
+
+        final ArrayList<Tag> tagList = new ArrayList<Tag>();
+
+        final WebView panel = ((WebView) layout.findViewById(R.id.tagView));
+        WebSettings webSettings = panel.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        panel.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void removeTag(final int tagIndex) {
+                Log.i(TAG, "Removing tag >>>>> " + tagList.get(tagIndex).getTagName());
+                tagList.remove(tagIndex);
+                updatePanel(panel, tagList);
+            }
+        }, "Android");
+        // Get tags from server
         mFileMetadataService.getTags(mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
             @Override
             public void onSuccess(ArrayList<Tag> object, int status) {
                 int i;
-                for (i=0; i<object.size();i++)
+                for (i = 0; i < object.size(); i++)
                     tagList.add(object.get(i));
+                if (object.size() > 0) {
+                    updatePanel(panel, tagList);
+                }
             }
-
             @Override
             public void onFailure(String message, int status) {
                 // Do something
@@ -363,53 +368,35 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                 wrong.add("");
                 wrong.add(" ");
                 wrong.add(null);
+
                 int i;
-               
-                if (!Util.matchString(newTag, wrong))
-                    tagList.add(new Tag(newTag));
-                String html = "<script type=\"text/javascript\">" +
-                        "    function callRemoveTag(tagIndex) {" +
-                        "        Android.removeTag(tagIndex);" +
-                        "    }" +
-                        "</script>";
-                int index;
-                String tagCSS = "style=\"font-size:11pt; padding:4px; border:1px solid black; background-color:#f19c47" +
-                        "; border-radius:2px; font-family:monospace; margin-top:4px; margin-bottom:4px; display:inline-block;\"";
-                for (index = 0; index < tagList.size(); index++) {
-                    System.out.println("TagName >>>> " + tagList.get(index).getTagName());
-                    html = html + "<span " + tagCSS + " onClick=\"callRemoveTag(" + index + ");\">" +
-                            tagList.get(index).getTagName() + "<img src=\"ic_close_black_18dp.png\" width=\"12px\" /></span>  ";
-                }
-                final WebView panel = ((WebView) layout.findViewById(R.id.tagView));
-                WebSettings webSettings = panel.getSettings();
-                webSettings.setJavaScriptEnabled(true);
-                panel.addJavascriptInterface(new Object() {
-                    @JavascriptInterface
-                    public void removeTag(final int tagIndex) {
-                        FileListActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                System.out.println("Removing tag >>>>> " + tagList.get(tagIndex).getTagName());
-                                tagList.remove(tagIndex);
-                                panel.loadDataWithBaseURL("file:///android_asset/",
-                                        getPanelHTML(tagList), "text/html", "utf-8", null);
-                            }
-                        });
+                boolean tagExists = false;
+                if (tagList.size()>0) {
+                    // Check tag was not repeated in list
+                    for (i = 0; i < tagList.size(); i++) {
+                        if (tagList.get(i).getTagName().toLowerCase().compareTo(newTag.toLowerCase()) == 0) {
+                            tagExists = true;
+                            break;
+                        }
                     }
-                }, "Android");
-                panel.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", null);
+                    if (!tagExists)
+                        if (!Util.matchString(newTag, wrong))
+                            tagList.add(new Tag(newTag));
+                } else { // Tag list is empty so add the tag directly
+                    if (!Util.matchString(newTag, wrong))
+                        tagList.add(new Tag(newTag));
+                }
+                updatePanel(panel, tagList);
                 input.setText("");
             }
         });
-
         builder.setCancelable(false)
                 .setTitle(getString(R.string.file_tag_title))
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Do something
-                        // TODO: send tagList to server
                         final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(), null, getString(R.string.loading), true);
                         progressDialog.setCancelable(false);
+                        // Send tag list to be updated on the server
                         mFileMetadataService.updateFileTags(mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
@@ -441,21 +428,35 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     }
 
 
+    public void updatePanel(final WebView panel, final ArrayList<Tag> tagList) {
+        FileListActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                panel.loadDataWithBaseURL("file:///android_asset/",
+                        getPanelHTML(tagList), "text/html", "utf-8", null);
+            }
+        });
+    }
+
 
     private String getPanelHTML(ArrayList<Tag> tagList){
         String html = "<script type=\"text/javascript\">" +
                 "    function callRemoveTag(tagIndex) {" +
                 "        Android.removeTag(tagIndex);" +
                 "    }" +
-                "</script>";
+                "</script>" +
+                "<html>" +
+                "   <body style=\"text-align:center;\">";
         int index;
         String tagCSS = "style=\"font-size:11pt; padding:4px; border:1px solid black; background-color:#f19c47" +
-                "; border-radius:2px; font-family:monospace; margin-top:4px; margin-bottom:4px; display:inline-block;\"";
+                "; border-radius:2px; font-family:monospace; margin-top:4px; margin-bottom:4px; display:inline-block; " +
+                "text-align:center\"";
         for (index = 0; index < tagList.size(); index++) {
             System.out.println("TagName >>>> " + tagList.get(index).getTagName());
             html = html + "<span " + tagCSS + " onClick=\"callRemoveTag(" + index + ");\">" +
                     tagList.get(index).getTagName() + "<img src=\"ic_close_black_18dp.png\" width=\"12px\" /></span>  ";
         }
+        html = html + "</body></html>";
         return html;
     }
 
