@@ -3,9 +3,6 @@
 
 #include <string>
 #include <vector>
-
-using std::string;
-
 #include "mongoose/mongoose.h"
 #include "util/log.h"
 #include "rest/token_node.h"
@@ -16,12 +13,15 @@ using std::string;
 #include "request_dispatcher.h"
 #include "rest/profile_node.h"
 #include "rest/update_photo_node.h"
+#include "rest/update_userfullname_node.h"
 #include "rest/delete_file_node.h"
 #include "rest/send_file_node.h"
 
 extern "C" {
 	#include <pthread.h>
 }
+
+using std::string;
 
 class WEBServer {
 	public:

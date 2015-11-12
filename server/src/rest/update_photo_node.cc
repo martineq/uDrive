@@ -31,20 +31,18 @@ void UpdatePhotoNode::executePut() {
     if (lista.size()==3){
         string userId=lista[2];
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: userid: "<<userId;
-
         std::string photoStream=getConnection().getBodyJson("photoStream");
         int size=photoStream.size();
 
-        long mylong = size * sizeof(char);
-        string mystring;
+        long tam_long = size * sizeof(char);
+        string tam_string;
         stringstream mystream;
-        mystream << mylong;
-        mystring = mystream.str();
+        mystream << tam_long;
+        tam_string = mystream.str();
 
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: Tome photoStream ";
 
-        //TODO (martin): Ver de pasarle el tamaño del archivo al metodo. Ahora HARDCODEADO
-        if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),mystring,status)){
+        if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(), tam_string,status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);

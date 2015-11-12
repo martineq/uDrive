@@ -379,6 +379,20 @@ bool RequestDispatcher::get_shared_files(string user_id, vector< RequestDispatch
 }
 
 
+bool RequestDispatcher::modify_user_info(string user_id, string email, string password, string name, string location, int& status){
+
+  DataHandler::user_info_st user_info;
+  if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
+
+  if( !dh_.modify_user_password(user_id,password,status) ){ return false; }
+  
+  if( !dh_.modify_user_info(user_id,email,name,location,user_info.shared_files,
+    user_info.user_quota_used,user_info.files_deleted,status) ){ return false; }
+  
+  
+}
+
+
 bool RequestDispatcher::modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status){
   
   bool is_root_dir = (dir_id==LABEL_ZERO);
@@ -418,6 +432,24 @@ bool RequestDispatcher::modify_file_info(string user_id, string file_id, string 
   }
 
   if( !dh_.modify_file_info(file_id,name,extension,date,tags,file_info_temp.users_shared,user_id,file_info_temp.parent_directory,status)){ return false; }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::delete_user(string user_id, int& status){
+  
+  DataHandler::user_info_st user_info;
+  if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
+  
+  // Delete root directory, and their sub-directories and files contained
+  if( !delete_dir_recursive(user_info.dir_root,status) ){ return false; }
+  
+  // Delete physical of the files deleted logically
+  if( !purge_deleted_files(user_id,status) ){ return false; }
+  
+  // Delete info of the user
+  if( !dh_.delete_user(user_id,status) ){ return false; }
   
   return true;
 }
