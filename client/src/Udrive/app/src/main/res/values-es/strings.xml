@@ -74,13 +74,15 @@
     <string name="tag_action">Etiquetar</string>
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
-    <string name="delete_option_title">Delete</string>
-    <string name="delete_option_message">Do you want to Delete?</string>
+    <string name="delete_option_title">Eliminar</string>
+    <string name="delete_option_message">Desea eliminar?</string>
 
     <!-- Strings related to file tagging dialog -->
-    <string name="file_tag_title">Etiquetando el archivo</string>
+    <string name="file_tag_title">Etiquetar</string>
     <string name="tag_hint"><i>Ingresa el tag aquí...</i></string>
     <string name="file_type"><![CDATA[<b>Archivo</b>]]></string>
     <string name="dir_type"><![CDATA[<b>Carpeta</b>]]></string>
+    <string name="error_savetags">Error al guardar las etiquetas</string>
+    <string name="ok_savetags">¡Etiquetas actualizadas correctamente!</string>
 
 </resources>

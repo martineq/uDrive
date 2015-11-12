@@ -26,11 +26,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.File;
+import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserProfile;
 import com.fiuba.app.udrive.model.Util;
+import com.fiuba.app.udrive.network.FileMetadataService;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 import com.fiuba.app.udrive.network.StatusCode;
@@ -41,6 +43,7 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileListActivity extends AppCompatActivity implements FilesArrayAdapter.OnContextMenuClickListener, AdapterView.OnItemClickListener, FileContextMenu.OnFileContextMenuItemClickListener {
@@ -56,6 +59,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     private FilesService mFilesService;
 
     private UserService mUserService = null;
+
+    private FileMetadataService mFileMetadataService = null;
 
     private UserAccount mUserAccount;
 
@@ -86,6 +91,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         list.setOnItemClickListener(this);
         mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
         mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
+        mFileMetadataService = new FileMetadataService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
            mDirId = 0;
@@ -323,7 +329,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     }
 
     @Override
-    public void onTagClick(int FileItem) {
+    public void onTagClick(final int FileItem) {
         Log.i(TAG, "FileTag File position " + FileItem);
         String name = mFiles.get(FileItem).getName();
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
@@ -335,6 +341,19 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         ((TextView)layout.findViewById(R.id.file_name)).setText(Html.fromHtml(type));
         ((TextView)layout.findViewById(R.id.file_name)).append(": " + name);
         final ArrayList<Tag> tagList = new ArrayList<Tag>(); // TODO: get from request
+        mFileMetadataService.getTags(mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
+            @Override
+            public void onSuccess(ArrayList<Tag> object, int status) {
+                int i;
+                for (i=0; i<object.size();i++)
+                    tagList.add(object.get(i));
+            }
+
+            @Override
+            public void onFailure(String message, int status) {
+                // Do something
+            }
+        });
         layout.findViewById(R.id.button_add_tag).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -344,6 +363,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                 wrong.add("");
                 wrong.add(" ");
                 wrong.add(null);
+                int i;
+               
                 if (!Util.matchString(newTag, wrong))
                     tagList.add(new Tag(newTag));
                 String html = "<script type=\"text/javascript\">" +
@@ -365,8 +386,6 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                 panel.addJavascriptInterface(new Object() {
                     @JavascriptInterface
                     public void removeTag(final int tagIndex) {
-                        //System.out.println("Removing tag >>>>> " + tagList.get(tagIndex).getTagName());
-                        //tagList.remove(tagIndex);
                         FileListActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -389,6 +408,26 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something
                         // TODO: send tagList to server
+                        final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(), null, getString(R.string.loading), true);
+                        progressDialog.setCancelable(false);
+                        mFileMetadataService.updateFileTags(mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
+                            @Override
+                            public void onSuccess(GenericResult object, int status) {
+                                if (object.getResultCode() != 1)
+                                    Toast.makeText(FileListActivity.this, getString(R.string.error_savetags), Toast.LENGTH_LONG).show();
+                                else
+                                    Toast.makeText(FileListActivity.this, getString(R.string.ok_savetags), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailure(String message, int status) {
+                                progressDialog.dismiss();
+                                if (StatusCode.isHumanReadable(status)) {
+                                    message = StatusCode.getMessage(FileListActivity.this, status);
+                                    Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
                 })
                 .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {

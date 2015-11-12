@@ -10,6 +10,7 @@ import com.fiuba.app.udrive.model.UserData;
 import com.fiuba.app.udrive.model.UserFullName;
 import com.fiuba.app.udrive.model.UserProfile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -27,11 +28,11 @@ public class FileMetadataService extends AbstractService {
 
         // Gets the file or folder tags
         @GET("/filetags/files/{fileId}")
-        void getTags(@Path("fileId") int fileId, Callback<List<Tag>> tags);
+        void getTags(@Path("fileId") int fileId, Callback<ArrayList<Tag>> tags);
 
         // Updates the tag set for the given file ID
         @PUT("/filetags/files/{fileId}")
-        void updateTags(@Path("fileId") int fileId, @Body List<Tag> tagList,
+        void updateTags(@Path("fileId") int fileId, @Body ArrayList<Tag> tagList,
                         Callback<GenericResult> result);
 
     }
@@ -48,10 +49,10 @@ public class FileMetadataService extends AbstractService {
         this.mFileTagServiceApi = createService(FileTagServiceApi.class, token);
     }
 
-    public void getTags(int fileId, final ServiceCallback<List<Tag>> tags){
-        mFileTagServiceApi.getTags(fileId, new Callback<List<Tag>>() {
+    public void getTags(int fileId, final ServiceCallback<ArrayList<Tag>> tags){
+        mFileTagServiceApi.getTags(fileId, new Callback<ArrayList<Tag>>() {
             @Override
-            public void success(List<Tag> tagList, Response response) {
+            public void success(ArrayList<Tag> tagList, Response response) {
                 tags.onSuccess(tagList, response.getStatus());
             }
 
@@ -69,7 +70,7 @@ public class FileMetadataService extends AbstractService {
 
 
     // Passes the final tag list corresponding to a file.
-    public void updateFileTags(int fileId, @Body List<Tag> tagList,
+    public void updateFileTags(int fileId, @Body ArrayList<Tag> tagList,
                         final ServiceCallback<GenericResult> result){
         mFileTagServiceApi.updateTags(fileId, tagList, new Callback<GenericResult>() {
             @Override

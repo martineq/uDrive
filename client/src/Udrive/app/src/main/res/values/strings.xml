@@ -86,6 +86,7 @@
     <string name="tag_hint"><i>Type your tag here...</i></string>
     <string name="file_type"><![CDATA[<b>File</b>]]></string>
     <string name="dir_type"><![CDATA[<b>Folder</b>]]></string>
-
+    <string name="error_savetags">Error on saving tags</string>
+    <string name="ok_savetags">Tags updated successfully!</string>
 
 </resources>
