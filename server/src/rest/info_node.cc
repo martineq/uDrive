@@ -36,9 +36,11 @@ void InfoNode::executeGet() {
 		string userId=getUserId();
 		dirId=lista[5];
 
+		Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], UserId: " <<userId <<" dirId: "<<dirId;
+
         RequestDispatcher::dir_info_st dirInfo_rd;
 
-		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){  //TODO(martindonofrio): use RequestDispatcher::check_token()
+		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
@@ -49,49 +51,46 @@ void InfoNode::executeGet() {
 			bool enc = false;
 			std::ostringstream item;
   			item << "[";
-			if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
-				vector<RequestDispatcher::info_element_st>::iterator directory_it;
-				Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
-				if (directory_element_info.size()!=0){
-					for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
-	     				enc=true;
-	     					item
-		     				<< "{\"id\":\"" << (*directory_it).id
-		     				<< "\",\"name\":\"" << (*directory_it).name
-		     				<< "\",\"size\":\""	<< (*directory_it).size
-		     				<< "\",\"type\":\""	<< (*directory_it).type
-		     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items
-		     				<< "\",\"shared\":\"" << (*directory_it).shared
-		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
-					}
+			vector<RequestDispatcher::info_element_st>::iterator directory_it;
+			Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], touring list: dirInfo: " << dirInfo_rd.name;
+			if (directory_element_info.size()!=0){
+				for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
+					enc=true;
+						item
+						<< "{\"id\":\"" << (*directory_it).id
+						<< "\",\"name\":\"" << (*directory_it).name
+						<< "\",\"size\":\""	<< (*directory_it).size
+						<< "\",\"type\":\""	<< (*directory_it).type
+						<< "\",\"cantItems\":\"" << (*directory_it).number_of_items
+						<< "\",\"shared\":\"" << (*directory_it).shared
+						<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
 				}
-				if (directory_element_info.size()==1) enc=true;
-				if (!enc){
-					//empty dir
-					status=12;
-					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
-					getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-					string msg=handlerError(status);
-					getConnection().printfData(msg.c_str());
-				}else{
-					item
-	     				<< "{\"id\":\"" << (*(directory_it)).id
-	     				<< "\",\"name\":\"" << (*(directory_it)).name
-	     				<< "\",\"size\":\""	<< (*(directory_it)).size
-	     				<< "\",\"type\":\""	<< (*(directory_it)).type
-	     				<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items
-	     				<< "\",\"shared\":\"" << (*(directory_it)).shared
-	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
-	     				item << "]";
-					Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
-					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
-					getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-					const std::string tmp = item.str();
-					const char* msg = tmp.c_str();
-					getConnection().printfData(msg);
-				}
+			}
+			if (directory_element_info.size()==1) enc=true;
+			if (!enc){
+				//empty dir
+				Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], dirInfo: " << dirInfo_rd.name << ", -- Empty dir.";
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				getConnection().printfData(defaultResponse().c_str());
+			}else{
+				item
+					<< "{\"id\":\"" << (*(directory_it)).id
+					<< "\",\"name\":\"" << (*(directory_it)).name
+					<< "\",\"size\":\""	<< (*(directory_it)).size
+					<< "\",\"type\":\""	<< (*(directory_it)).type
+					<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items
+					<< "\",\"shared\":\"" << (*(directory_it)).shared
+					<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
+					item << "]";
+				Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], listing directory,  dirInfo: " << dirInfo_rd.name << ", --Number of items: " << directory_element_info.size();
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				const std::string tmp = item.str();
+				const char* msg = tmp.c_str();
+				getConnection().printfData(msg);
+		}
 
-			} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
 			}
 	}
 	else{
