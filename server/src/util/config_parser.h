@@ -13,7 +13,7 @@
 #define YAML_LABEL_LOGFILE "logfile"
 #define YAML_LABEL_LOGLEVEL "loglevel"
 #define YAML_LABEL_DBPATH "dbpath"
-#define YAML_LABEL_QUOTAUSER "quotauser"
+#define YAML_LABEL_MAXQUOTAUSER "maxquotauser"
 #define YAML_EMPTY_STRING ""
 
 class ConfigParser {

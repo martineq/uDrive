@@ -49,8 +49,6 @@ int main(int argc, char** argv) {
 		// Init web server
 		WEBServer* server=new WEBServer();
 		server->setPort(config.bindport);
-		server->setDbPath(config.dbpath);
-		server->setQuotaUser(config.maxquotauser);
 		server->run();
 
 		Log(Log::LogMsgInfo) << "Server started";
