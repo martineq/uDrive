@@ -25,7 +25,7 @@ void WEBServer::run(){
 int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     MgConnectionW mgConnection(conn);
 
-   // Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+   Log(Log::LogMsgInfo) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
   if (ev == MG_AUTH) {
     return MG_TRUE;   // Authorize all requests
@@ -51,22 +51,34 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
    } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/users",6)) {
 
-      if (!strncmp(mgConnection.getMethod(),"DELETE",6)){
+      vector<string> lista = WEBServer::split(conn->uri, '/');
+      string field = lista[3];
+
+      Log(Log::LogMsgDebug) << "[" << "URI: /users" << "], field: " <<field <<" Method: "<<conn->request_method;
+
+      if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) ){
           DeleteFileNode* dfn=new DeleteFileNode(mgConnection);
           dfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
           dfn->execute();
           delete dfn;
           return MG_TRUE;
 
-      }else if (!strncmp(mgConnection.getMethod(),"POST",4)){
+      }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"POST",4)) ){
           CreateDirNode* cdn=new CreateDirNode(mgConnection);
           cdn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
           cdn->execute();
           delete cdn;
           return MG_TRUE;
 
-      }else if (!strncmp(mgConnection.getMethod(),"GET",3)){
+      }else if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           SendFileNode* sfn=new SendFileNode(mgConnection);
+          sfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          sfn->execute();
+          delete sfn;
+          return MG_TRUE;
+
+      }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
+          SendDirNode* sfn=new SendDirNode(mgConnection);
           sfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
           sfn->execute();
           delete sfn;
@@ -102,6 +114,16 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
 
   } else return MG_FALSE;  // Rest of the events are not processed
+}
+
+vector<string> WEBServer::split(const string &s, char delim) {
+    stringstream ss(s);
+    string item;
+    vector<string> tokens;
+    while (getline(ss, item, delim)) {
+        tokens.push_back(item);
+    }
+    return tokens;
 }
 
 void* WEBServer::threadHandler(void* arg){

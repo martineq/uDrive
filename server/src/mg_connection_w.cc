@@ -78,7 +78,7 @@ std::string MgConnectionW::getBodyJson(string field) {
         Log(Log::LogMsgDebug) << "[getBodyJson]: Error parseando Body";
         return "";
     }
-    if (root != "") {
+    if (root.size()!=0) {
         Log(Log::LogMsgDebug) << "[getBodyJson], recuperando valor correctamente";
         return root[field].asString();
     }
