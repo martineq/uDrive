@@ -5,7 +5,7 @@
 #include <string>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
-#include "util/log.h"
+#include "log.h"
 
 #define YAML_CONFIG_FILE "config.yml"
 #define YAML_LABEL_BINDIP "bindip"
@@ -13,12 +13,12 @@
 #define YAML_LABEL_LOGFILE "logfile"
 #define YAML_LABEL_LOGLEVEL "loglevel"
 #define YAML_LABEL_DBPATH "dbpath"
+#define YAML_LABEL_QUOTAUSER "quotauser"
 #define YAML_EMPTY_STRING ""
 
 class ConfigParser {
   
   public:
-
     typedef struct Configuration {
       Configuration() : bindport("8080"), bindip("0.0.0.0"), logfile("-"), loglevel("debug"), dbpath("/tmp/db_test")
       {}
@@ -27,6 +27,7 @@ class ConfigParser {
       std::string logfile;
       std::string loglevel;
       std::string dbpath;
+      std::string maxquotauser;
     } Configuration;
     
     ConfigParser();
@@ -39,6 +40,7 @@ class ConfigParser {
     * @return bool
     */
     bool load_configuration(ConfigParser::Configuration& config);
+    static int takeConfFromFile(ConfigParser::Configuration& config);
   
   private:
     

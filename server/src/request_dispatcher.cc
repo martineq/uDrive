@@ -13,11 +13,9 @@ RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota)
 
 }
 
- 
 RequestDispatcher::~RequestDispatcher(){
 
 }
-
 
 bool RequestDispatcher::init(string database_path, size_t max_user_quota){
   max_user_quota_ = max_user_quota;

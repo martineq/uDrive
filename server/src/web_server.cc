@@ -31,20 +31,20 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
     return MG_TRUE;   // Authorize all requests
   } else if (ev == MG_REQUEST && !strcmp(conn->uri, "/token")) {
     TokenNode* tn=new TokenNode(mgConnection);
-    tn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+    tn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
       tn->execute();
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
     InfoNode * in=new InfoNode(mgConnection);
-    in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999));  // TODO(martindonofrio): change hardcoded values
+    in->setRequestDispatcher(RequestDispatcher::get_instance());  // TODO(martindonofrio): change hardcoded values
       in->execute();
     delete in;
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/file/users",11)) {
     ReceiveFileNode* rfn=new ReceiveFileNode(mgConnection);
-    rfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded valuesrfn->execute();
+    rfn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded valuesrfn->execute();
      rfn->execute();
     delete rfn;
     return MG_TRUE;
@@ -58,28 +58,28 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
       if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) ){
           DeleteFileNode* dfn=new DeleteFileNode(mgConnection);
-          dfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          dfn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
           dfn->execute();
           delete dfn;
           return MG_TRUE;
 
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"POST",4)) ){
           CreateDirNode* cdn=new CreateDirNode(mgConnection);
-          cdn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          cdn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
           cdn->execute();
           delete cdn;
           return MG_TRUE;
 
       }else if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           SendFileNode* sfn=new SendFileNode(mgConnection);
-          sfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          sfn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
           sfn->execute();
           delete sfn;
           return MG_TRUE;
 
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           SendDirNode* sfn=new SendDirNode(mgConnection);
-          sfn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+          sfn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
           sfn->execute();
           delete sfn;
           return MG_TRUE;
@@ -87,28 +87,28 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
     SignupNode* sn=new SignupNode(mgConnection);
-    sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+    sn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
       sn->execute();
     delete sn;
     return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/profile",8)) {
       ProfileNode* sn=new ProfileNode(mgConnection);
-      sn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+      sn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
       sn->execute();
       delete sn;
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/photo",6)) {
       UpdatePhotoNode* upn=new UpdatePhotoNode(mgConnection);
-      upn->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+      upn->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
       upn->execute();
       delete upn;
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/userfullname",12)) {
       UpdateUserFullNameNode* uun=new UpdateUserFullNameNode(mgConnection);
-      uun->setRequestDispatcher(RequestDispatcher::get_instance("db_test",999999)); // TODO(martindonofrio): change hardcoded values
+      uun->setRequestDispatcher(RequestDispatcher::get_instance()); // TODO(martindonofrio): change hardcoded values
       uun->execute();
       delete uun;
       return MG_TRUE;
@@ -127,15 +127,30 @@ vector<string> WEBServer::split(const string &s, char delim) {
 }
 
 void* WEBServer::threadHandler(void* arg){
-	struct WEBServer * webserver = (struct WEBServer*) arg;
+	struct WEBServer* webserver = (struct WEBServer*) arg;
 	while(webserver->running)
 		mg_poll_server(webserver->server,1000);
 	return NULL;
 }
 
 void WEBServer::stop(){
-		this->running = 0;
-		mg_destroy_server(&server);
+    this->running = 0;
+    mg_destroy_server(&server);
+}
+
+void WEBServer::setDbPath(std::string path){
+    this->dbPath=path;
+}
+std::string WEBServer::getDbPath(){
+    return this->dbPath;
+}
+
+void WEBServer::setQuotaUser(std::string quota){
+    this->quotaUser=quota;
+
+}
+std::string WEBServer::getQuotaUser(){
+    return this->quotaUser;
 }
 
 

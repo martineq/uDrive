@@ -64,7 +64,7 @@ void ReceiveFileNode::executePost() {
 			Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], file accepted, parent folder printing";
 			MgConnectionW mg=getConnection();
 			InfoNode* in=new InfoNode(mg);
-            in->setRequestDispatcher(RequestDispatcher::get_instance("db_test",9999));
+            in->setRequestDispatcher(RequestDispatcher::get_instance());
 			std::string uri;
 			uri = "/info/users/"+ userId + "/dir/" + dirId;
             mg.setMethod("GET");

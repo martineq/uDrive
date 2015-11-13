@@ -5,11 +5,11 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
 #include "data_handler.h"
 #include "file_handler.h"
 #include "zip_handler.h"
 #include "util/log.h"
+#include "./util/config_parser.h"
 
 
 // TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
@@ -104,8 +104,11 @@ class RequestDispatcher{
      * 
      * @return RequestDispatcher*
      */
-    static RequestDispatcher *get_instance(string database_path,size_t max_user_quota){
-        if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(database_path,max_user_quota); }
+    static RequestDispatcher *get_instance() {
+        ConfigParser::Configuration config;
+        int result=ConfigParser::takeConfFromFile(config);
+
+        if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(config.dbpath,atoi(config.maxquotauser.c_str()) ); }
         if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;} 
         return request_dispatcher_instance;
     }

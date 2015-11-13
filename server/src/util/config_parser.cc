@@ -1,18 +1,25 @@
 #include "config_parser.h"
-
+#include "log.h"
 
 ConfigParser::ConfigParser(){
 
 }
-
-
 ConfigParser::~ConfigParser(){
 
 }
-
+int ConfigParser::takeConfFromFile(ConfigParser::Configuration& config){
+  //Take params from yml file
+  ConfigParser yp;
+  if (!yp.load_configuration(config)){
+    std::cout << "Load configuration fail: not open config.yml." << std::endl;
+    return 1;
+  }else {
+    std::cout << "Read configuration ok" << std::endl;
+    return 0;
+  }
+}
 
 bool ConfigParser::load_configuration(ConfigParser::Configuration& config){
-
   // Open file
   std::ifstream config_file(YAML_CONFIG_FILE);
   bool status_ok = true;
@@ -39,7 +46,6 @@ bool ConfigParser::load_configuration(ConfigParser::Configuration& config){
 
 
 void ConfigParser::load_content(YAML::Node& root_node, ConfigParser::Configuration& config){
-
   Log(Log::LogMsgDebug) << "Reading content config.yml";
 
   // Iterate nodes, reading information
@@ -52,9 +58,9 @@ void ConfigParser::load_content(YAML::Node& root_node, ConfigParser::Configurati
     }else if ( key.compare(YAML_LABEL_BINDPORT) == 0 ){ config.bindport = read_yaml_node_to_string(it.second());
     }else if ( key.compare(YAML_LABEL_LOGFILE) == 0 ){ config.logfile = read_yaml_node_to_string(it.second());
     }else if ( key.compare(YAML_LABEL_LOGLEVEL) == 0 ){ config.loglevel = read_yaml_node_to_string(it.second()); 
-    }else if ( key.compare(YAML_LABEL_DBPATH) == 0 ){ config.dbpath = read_yaml_node_to_string(it.second()); 
+    }else if ( key.compare(YAML_LABEL_DBPATH) == 0 ){ config.dbpath = read_yaml_node_to_string(it.second());
+    }else if ( key.compare(YAML_LABEL_QUOTAUSER) == 0 ){ config.maxquotauser = read_yaml_node_to_string(it.second());
     }
-   
   }
 
   return void();
@@ -62,19 +68,18 @@ void ConfigParser::load_content(YAML::Node& root_node, ConfigParser::Configurati
 
 
 std::string ConfigParser::read_yaml_node_to_string(const YAML::Node& node){
-  
   std::string value;
   bool read_ok = true;
   
   // Reads the value
   try{
-    node >> value; }catch(YAML::Exception& e){ notify_read_error(__FILE__,__LINE__,e.what(),read_ok); }
+    node >> value;
+  }catch(YAML::Exception& e){ notify_read_error(__FILE__,__LINE__,e.what(),read_ok); }
 
   if(read_ok == false){ value.assign(YAML_EMPTY_STRING); }
   
   return value;
 }
-
 
 void ConfigParser::notify_read_error(std::string file, int line, std::string msg, bool& read_ok){
   std::string message_error("YAML sintax error. Report: ");

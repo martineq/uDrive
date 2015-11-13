@@ -32,8 +32,13 @@ class WEBServer {
 		const char* setPort(string port);
 		void run();
 		void stop();
-		
-	protected:
+        void setDbPath(std::string path);
+        std::string getDbPath();
+
+        void setQuotaUser(std::string quota);
+        std::string getQuotaUser();
+
+    protected:
 		struct mg_server *server;
 		pthread_t hilo;
 		static void* threadHandler(void*);
@@ -42,6 +47,8 @@ class WEBServer {
 
 	private:
 		static vector<string> split(const string &s, char delim);
-};
+		string quotaUser="0";
+		string dbPath="db_test";
+	};
 
 #endif
