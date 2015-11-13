@@ -19,7 +19,7 @@ void SendDirNode::executeGet() {
 	Log(Log::LogMsgDebug) << "[" << "SendDirNode " << "] ";
 	int status=11;
 
-	if ( (!lista[3].compare("file")) && (lista.size()==5)){
+	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		std::string userId=lista[2];
 		std::string dirId=lista[4];
         std::string revision="1";
