@@ -434,7 +434,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   string db_path = "/tmp/testdb_checkpoint4";
   size_t max_quota = 150;
   RequestDispatcher* rd = nullptr;
-  rd = RequestDispatcher::get_instance();
+  rd = RequestDispatcher::get_instance_test(db_path,max_quota);
   EXPECT_NE(rd,nullptr);
   
   // + Post signup     IN: name/email/pass/token             OUT: userId  

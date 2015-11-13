@@ -112,6 +112,12 @@ class RequestDispatcher{
         if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;} 
         return request_dispatcher_instance;
     }
+
+    static RequestDispatcher *get_instance_test(string database_path,size_t max_user_quota) {
+      if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(database_path,max_user_quota ); }
+      if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;}
+      return request_dispatcher_instance;
+    }
         
     /**
     * @brief Adds a new user on the DB. (Used in sign up)

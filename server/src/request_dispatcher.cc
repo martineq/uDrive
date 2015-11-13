@@ -5,13 +5,12 @@ RequestDispatcher* RequestDispatcher::request_dispatcher_instance = nullptr;
 
 
 RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota){
-  
   if( !init_ok_){
     init_ok_ = init(database_path,max_user_quota);
     if (!init_ok_){ Log(Log::LogMsgError) << "DB init fail"; }
   }
-
 }
+
 
 RequestDispatcher::~RequestDispatcher(){
 
