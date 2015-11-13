@@ -22,7 +22,6 @@ void SendDirNode::executeGet() {
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		std::string userId=lista[2];
 		std::string dirId=lista[4];
-        std::string revision="1";
 		char* p_file;
         std::string size="";
 

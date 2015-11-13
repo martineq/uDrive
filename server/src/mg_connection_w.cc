@@ -58,7 +58,10 @@ size_t MgConnectionW::setMultipartData(string var_name, string file_name,const v
 }
 
 string MgConnectionW::getAuthorization(){
+    Log(Log::LogMsgDebug) << "[getAuthorization]: Recuperando token Header";
 	const char* dar=mg_get_header(this->conn,"Authorization");
+    Log(Log::LogMsgDebug) << "[getAuthorization]: Token: "<<dar;
+    if (dar==NULL) return "";
 	std::string my_string(dar);
 	return my_string;
 }
