@@ -137,20 +137,3 @@ void WEBServer::stop(){
     this->running = 0;
     mg_destroy_server(&server);
 }
-
-void WEBServer::setDbPath(std::string path){
-    this->dbPath=path;
-}
-std::string WEBServer::getDbPath(){
-    return this->dbPath;
-}
-
-void WEBServer::setQuotaUser(std::string quota){
-    this->quotaUser=quota;
-
-}
-std::string WEBServer::getQuotaUser(){
-    return this->quotaUser;
-}
-
-

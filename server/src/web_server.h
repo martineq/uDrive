@@ -32,11 +32,6 @@ class WEBServer {
 		const char* setPort(string port);
 		void run();
 		void stop();
-        void setDbPath(std::string path);
-        std::string getDbPath();
-
-        void setQuotaUser(std::string quota);
-        std::string getQuotaUser();
 
     protected:
 		struct mg_server *server;
