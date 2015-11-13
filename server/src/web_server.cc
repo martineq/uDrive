@@ -39,10 +39,11 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       vector<string> lista = WEBServer::split(conn->uri, '/');
       string field = lista[4];
       Log(Log::LogMsgDebug) << "[" << "URI: /users" << "], field: " <<field <<" Method: "<<conn->request_method;
+
       if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
 
 
-      }else if ( ( field == "") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
+      }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           InfoNode * in=new InfoNode(mgConnection);
           in->setRequestDispatcher(RequestDispatcher::get_instance());
           in->execute();

@@ -5,7 +5,6 @@
 #include "profile_node.h"
 
 using std::string;
-using std::stringstream;
 using std::vector;
 
 ProfileNode::ProfileNode(MgConnectionW&  conn)  : Node(conn) {
@@ -20,6 +19,7 @@ void ProfileNode::executeGet() {
 
     if (lista.size()==3){
         string userId=getUserId();
+        Log(Log::LogMsgDebug) << "[" << "ProfileNode" << "] UserId: "<<userId;
         RequestDispatcher::user_info_st user_info;
 
         if (!getRequestDispatcher()->get_user_info(userId,user_info,status)){
@@ -37,19 +37,26 @@ void ProfileNode::executeGet() {
             item
             << "{\"firstname\":\""  << user_info.first_name
             << "\",\"lastname\":\"" << user_info.last_name
-            << "\",\"email\":\""	<< user_info.email
-            << "\",\"photo\":\""	<< user_image
-            << "\",\"GPSLatitude\":\"" << user_info.gps_lat
+            << "\",\"email\":\""	<< user_info.email;
+
+            if (user_image!=NULL) item << "\",\"photo\":\""	<< user_image;
+            else item << "\",\"photo\":\"\"\"";
+
+            item << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
             << "\",\"userId\":\"" << userId
             << "\",\"quotaUsed\":\"" << user_info.user_quota_used
             << "\",\"quotaTotal\":\"" << user_info.user_quota_total
             << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_used_percentage
             << "\"}";
+
+
+
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             const std::string tmp = item.str();
             const char* msg = tmp.c_str();
+            Log(Log::LogMsgDebug) << "[" << "ProfileNode" << "] item: " << msg;
             getConnection().printfData(msg);
         }
     }else{
