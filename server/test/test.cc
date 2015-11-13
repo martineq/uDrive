@@ -17,7 +17,7 @@
 // Source included in code coverage
 #include "../src/db_handler.h"
 #include "../src/data_handler.h"
-#include "../src/config_parser.h"
+#include "../src/util/config_parser.h"
 #include "../src/file_handler.h"
 #include "../src/request_dispatcher.h"
 #include "../src/zip_handler.h"
