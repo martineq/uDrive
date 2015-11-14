@@ -1,7 +1,7 @@
 #include "request_dispatcher.h"
 
 
-RequestDispatcher* RequestDispatcher::request_dispatcher_instance = nullptr;
+RequestDispatcher* RequestDispatcher::request_dispatcher_instance_ = nullptr;
 
 
 RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota){
@@ -13,8 +13,9 @@ RequestDispatcher::RequestDispatcher(string database_path,size_t max_user_quota)
 
 
 RequestDispatcher::~RequestDispatcher(){
-
+  
 }
+
 
 bool RequestDispatcher::init(string database_path, size_t max_user_quota){
   max_user_quota_ = max_user_quota;
@@ -129,6 +130,7 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   return true;
 }
 
+
 bool RequestDispatcher::get_user_image(string user_id, char*& p_image_stream, string& size_stream, int& status){
 
   string user_image_name = LABEL_USER_IMAGE + user_id;
@@ -138,7 +140,6 @@ bool RequestDispatcher::get_user_image(string user_id, char*& p_image_stream, st
   
   return true;
 }
-
 
 
 bool RequestDispatcher::get_directory_info(string user_id, string dir_id, RequestDispatcher::dir_info_st& dir_info, int& status){
@@ -406,7 +407,6 @@ bool RequestDispatcher::modify_directory_info(string user_id, string dir_id, str
      
   return true;
 }
-
 
 
 bool RequestDispatcher::modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status){

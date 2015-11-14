@@ -422,19 +422,15 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 void generate_image(string &data, size_t &size); // Auxiliar function used by RequestDispatcherTest
 TEST(RequestDispatcherTest, Checkpoint4Routine) {
 
-  //Checkpoint #3  
-  // + Post signup     IN: name/email/pass/token                  OUT: userId
-  // + Get token       IN: email/pass                             OUT: userId/email/token
-  // + Post file       IN: binStream/filename/userId/dirId/token  OUT: fileId
-  // + Post dir        IN: dirname/userId/dirId/token             OUT: dirId
-  // + Get dirInfo     IN: userId/dirId/token                     OUT: listaDeArchivos/listaDeSubcarpetas
-  // + Get userInfo    IN: userId/token                           OUT: name/email
-
+  // Create a config file
+  ofstream myfile;
+  myfile.open ("config.yml");
+  myfile << "# Configuración de conexión\nbindip: 127.0.0.1\nbindport: 8080\nlogfile: mylog.txt\nloglevel: debug\ndbpath: /tmp/testdb_checkpoint4\nmaxquotauser: 150";
+  myfile.close();
+  
   // Init database. ¡Warning!: This test assumes an empty Database
-  string db_path = "/tmp/testdb_checkpoint4";
-  size_t max_quota = 150;
   RequestDispatcher* rd = nullptr;
-  rd = RequestDispatcher::get_instance_test(db_path,max_quota);
+  rd = RequestDispatcher::get_instance();
   EXPECT_NE(rd,nullptr);
   
   // + Post signup     IN: name/email/pass/token             OUT: userId  
@@ -836,7 +832,9 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
     
   // Delete used temp folder
   system("rm -rf /tmp/testdb_checkpoint4");
-
+  
+  // Delete used file
+  remove("config.yml");
 }
 
 

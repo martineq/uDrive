@@ -5,11 +5,13 @@
 #include <string>
 #include <vector>
 #include <sstream>
+
+
 #include "data_handler.h"
 #include "file_handler.h"
 #include "zip_handler.h"
 #include "util/log.h"
-#include "./util/config_parser.h"
+#include "util/config_parser.h"
 
 
 // TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
@@ -74,7 +76,7 @@ class RequestDispatcher{
     FileHandler fh_;
     ZipHandler zh_;
     size_t max_user_quota_;
-    static RequestDispatcher* request_dispatcher_instance;
+    static RequestDispatcher* request_dispatcher_instance_;
     bool init_ok_ = false;
     
     RequestDispatcher(string database_path,size_t max_user_quota);
@@ -105,20 +107,16 @@ class RequestDispatcher{
      * @return RequestDispatcher*
      */
     static RequestDispatcher *get_instance() {
-        ConfigParser::Configuration config;
-        int result=ConfigParser::takeConfFromFile(config);
-
-        if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(config.dbpath,atoi(config.maxquotauser.c_str()) ); }
-        if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;} 
-        return request_dispatcher_instance;
+        if(request_dispatcher_instance_==nullptr){ 
+          ConfigParser::Configuration config;
+          if ( (ConfigParser::takeConfFromFile(config))!=0 ){ return nullptr;} 
+          request_dispatcher_instance_= new RequestDispatcher(config.dbpath,config.maxquotauser); 
+        }
+        if( !(request_dispatcher_instance_->db_is_initiated()) ){ return nullptr;} 
+        return request_dispatcher_instance_;
     }
 
-    static RequestDispatcher *get_instance_test(string database_path,size_t max_user_quota) {
-      if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(database_path,max_user_quota ); }
-      if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;}
-      return request_dispatcher_instance;
-    }
-        
+    
     /**
     * @brief Adds a new user on the DB. (Used in sign up)
     *        Creates a "root" directory and user ID. Root directory is always id=0. Returns true on success.

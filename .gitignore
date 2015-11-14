@@ -15,3 +15,6 @@ build_kdev/
 
 # Ignoro un archivo main alternativo
 main.cc.alt
+
+# Ignoro directorio .idea
+.idea/

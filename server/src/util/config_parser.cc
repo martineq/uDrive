@@ -59,7 +59,7 @@ void ConfigParser::load_content(YAML::Node& root_node, ConfigParser::Configurati
     }else if ( key.compare(YAML_LABEL_LOGFILE) == 0 ){ config.logfile = read_yaml_node_to_string(it.second());
     }else if ( key.compare(YAML_LABEL_LOGLEVEL) == 0 ){ config.loglevel = read_yaml_node_to_string(it.second()); 
     }else if ( key.compare(YAML_LABEL_DBPATH) == 0 ){ config.dbpath = read_yaml_node_to_string(it.second());
-    }else if ( key.compare(YAML_LABEL_MAXQUOTAUSER) == 0 ){ config.maxquotauser = read_yaml_node_to_string(it.second());
+    }else if ( key.compare(YAML_LABEL_MAXQUOTAUSER) == 0 ){ config.maxquotauser = stoul(read_yaml_node_to_string(it.second()),nullptr,10);
     }
   }
 
