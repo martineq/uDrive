@@ -546,29 +546,36 @@ bool RequestDispatcher::purge_deleted_files(string user_id, int& status){
   if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
 
   // Delete files
-  vector<string> files_deleted = split_string(owner_info.files_deleted,LABEL_STRING_DELIMITER);
-  for(vector<string>::iterator it = files_deleted.begin() ; it!=files_deleted.end() ; ++it) {
-    string file_id = (*it);
-    DataHandler::file_info_st file_info;
-    if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
-    
-    // Physical delete file (with all revisions)
-    for (int i = stoi(file_info.revision) ; i > 0; --i) {
-      string file_name = file_info.owner + file_id + to_string(i);
-      fh_.delete_file(file_name);  
-    }
-    
-    // Delete file information on DataBase
-    if( !dh_.delete_file(file_id,status) ){ return false; }
-    
-    // Change size to user quota
-    if( !decrease_user_quota_used(user_id,file_info.size,status) ){ return false; }
-  }
+  if( !purge_deleted_files_from_user_info(owner_info,status) ){ return false; }
 
   // Delete all owner_info.files_deleted
   if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
     owner_info.shared_files,owner_info.user_quota_used,LABEL_EMPTY_STRING,status) ){ return false; }
 
+  return true;
+}
+
+
+bool RequestDispatcher::purge_deleted_files(string user_id, vector<string> selected_files_id, int& status){
+
+  // Get owner info
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+
+  // Select files to recover
+  string files_to_purge;
+  string files_untouched;
+  divide_selected_ids(owner_info.files_deleted,selected_files_id,files_to_purge,files_untouched);
+
+  // Delete files
+  owner_info.files_deleted = files_to_purge; // Add only selected files
+  if( !purge_deleted_files_from_user_info(owner_info,status) ){ return false; }
+
+  // Delete all owner_info.files_deleted
+  if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
+    owner_info.shared_files,owner_info.user_quota_used,files_untouched,status) ){ return false; }
+  
+  
   return true;
 }
 
@@ -580,32 +587,36 @@ bool RequestDispatcher::recover_deleted_files(string user_id, int& status){
   if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
   
   // Recover files
-  vector<string> files_deleted = split_string(owner_info.files_deleted,LABEL_STRING_DELIMITER);
-  for(vector<string>::iterator it = files_deleted.begin() ; it!=files_deleted.end() ; ++it) {
-    string file_deleted_id = (*it);
-    DataHandler::file_info_st file_info;
-    if( !dh_.get_file_info(file_deleted_id,file_info,status) ){ return false; }
-    string new_dir_id = file_info.parent_directory;
-    DataHandler::dir_info_st dir_info;
-    // If the old parent directory is deleted, assign the root directory
-    if( !dh_.get_directory_info(file_info.parent_directory,dir_info,status) ){
-      new_dir_id = owner_info.dir_root;
-      if( !dh_.get_directory_info(new_dir_id,dir_info,status) ){ return false; }
-    }
-    // Add file id to files_contained
-    dir_info.files_contained = add_key_to_string_list(dir_info.files_contained,file_deleted_id);
-    if( !dh_.modify_directory_files_contained(new_dir_id,dir_info.files_contained,status) ){ return false; }
-
-    // Change size to directory container of the file
-    if( !increase_dir_size_recursive(new_dir_id,file_info.size,status) ){ return false; }
-    
-  }
+  if( !recover_deleted_files_from_user_info(owner_info,status) ){ return false; }
 
   // Delete all owner_info.files_deleted
   if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
     owner_info.shared_files,owner_info.user_quota_used,LABEL_EMPTY_STRING,status) ){ return false; }
 
   return true;
+}
+
+
+bool RequestDispatcher::recover_deleted_files(string user_id, vector<string> selected_files_id, int& status){
+
+  // Get owner info
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+
+  // Select files to recover
+  string files_to_recover;
+  string files_untouched;
+  divide_selected_ids(owner_info.files_deleted,selected_files_id,files_to_recover,files_untouched);
+
+  // Recover files
+  owner_info.files_deleted = files_to_recover; // Add only selected files
+  if( !recover_deleted_files_from_user_info(owner_info,status) ){ return false; }
+  
+  // Save all file untouched
+  if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
+    owner_info.shared_files,owner_info.user_quota_used,files_untouched,status) ){ return false; }
+
+    return true;
 }
 
 
@@ -900,6 +911,73 @@ bool RequestDispatcher::add_info_dirs_from_id_list(string dir_id_list,
   
   
   return true;  
+}
+
+
+bool RequestDispatcher::recover_deleted_files_from_user_info(DataHandler::user_info_st user_info, int status){
+  vector<string> files_deleted = split_string(user_info.files_deleted,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = files_deleted.begin() ; it!=files_deleted.end() ; ++it) {
+    string file_deleted_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !dh_.get_file_info(file_deleted_id,file_info,status) ){ return false; }
+    string new_dir_id = file_info.parent_directory;
+    DataHandler::dir_info_st dir_info;
+    // If the old parent directory is deleted, assign the root directory
+    if( !dh_.get_directory_info(file_info.parent_directory,dir_info,status) ){
+      new_dir_id = user_info.dir_root;
+      if( !dh_.get_directory_info(new_dir_id,dir_info,status) ){ return false; }
+    }
+    // Add file id to files_contained
+    dir_info.files_contained = add_key_to_string_list(dir_info.files_contained,file_deleted_id);
+    if( !dh_.modify_directory_files_contained(new_dir_id,dir_info.files_contained,status) ){ return false; }
+
+    // Change size to directory container of the file
+    if( !increase_dir_size_recursive(new_dir_id,file_info.size,status) ){ return false; }
+    
+  }
+  return true;
+}
+
+
+void RequestDispatcher::divide_selected_ids(string original_ids, vector<string> selected_ids,
+                                            string& coincidence_ids, string& no_coincidence_ids){
+  vector<string> original_ids_v = split_string(original_ids,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = original_ids_v.begin() ; it!=original_ids_v.end() ; ++it) {
+    string original_id = (*it);
+    bool id_found = false;
+    for(vector<string>::iterator it2 = selected_ids.begin() ; ( it2!=selected_ids.end() && !id_found ) ; ++it2) {
+      string id_selected = (*it2);
+      if( original_id.compare(id_selected)==0 ){ coincidence_ids.append(LABEL_STRING_DELIMITER+original_id); id_found = true; }
+    }
+    if( !id_found ){ no_coincidence_ids.append(LABEL_STRING_DELIMITER+original_id); }
+  }
+  return void();
+}
+
+
+bool RequestDispatcher::purge_deleted_files_from_user_info(DataHandler::user_info_st user_info, int status){
+
+  // Delete files
+  vector<string> files_deleted = split_string(user_info.files_deleted,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = files_deleted.begin() ; it!=files_deleted.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+    
+    // Physical delete file (with all revisions)
+    for (int i = stoi(file_info.revision) ; i > 0; --i) {
+      string file_name = file_info.owner + file_id + to_string(i);
+      fh_.delete_file(file_name);  
+    }
+    
+    // Delete file information on DataBase
+    if( !dh_.delete_file(file_id,status) ){ return false; }
+    
+    // Change size to user quota
+    if( !decrease_user_quota_used(file_info.owner,file_info.size,status) ){ return false; }
+  }
+  
+  return true;
 }
 
 

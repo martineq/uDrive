@@ -821,6 +821,34 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_STREQ(p_bin_stream_4,file_4_r1_obtanied.c_str());
   
   
+  // Delete file (and check)
+  EXPECT_TRUE(rd->delete_file(user_id_second,file_id_4,status));
+  RequestDispatcher::dir_info_st dir_info_second_user;
+  EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
+  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  // ...Recover just one file  (and check)
+  vector<string> files_to_recover;
+  files_to_recover.push_back(file_id_4);
+  EXPECT_TRUE(rd->recover_deleted_files(user_id_second,files_to_recover,status));
+  EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
+  EXPECT_EQ(1,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 0+1=1
+  // ...delete again  (and check)
+  EXPECT_TRUE(rd->delete_file(user_id_second,file_id_4,status));
+  EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
+  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  // Verify deleted files (recycle bin)
+  vector<RequestDispatcher::info_element_st> vector_info_4;
+  EXPECT_TRUE(rd->get_deleted_files(user_id_second,vector_info_4,status));
+  EXPECT_EQ(1,vector_info_4.size());   // Number of elements in recycle bin: 0+1=1
+  // ...purge just one file  (and check)
+  EXPECT_TRUE(rd->purge_deleted_files(user_id_second,files_to_recover,status));
+  EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
+  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  // Verify deleted files (recycle bin)
+  EXPECT_TRUE(rd->get_deleted_files(user_id_second,vector_info_4,status));
+  EXPECT_EQ(0,vector_info_4.size());   // Number of elements in recycle bin: 1-1=0
+  
+  
   // Delete user 2
   EXPECT_TRUE(rd->delete_user(user_id_second,status));
   // Check deleted user

@@ -100,6 +100,9 @@ class RequestDispatcher{
     bool increase_file_revision(string file_id, int& status);
     bool add_info_files_from_id_list(string file_id_list, vector<RequestDispatcher::info_element_st>& files_vector, int& status);    
     bool add_info_dirs_from_id_list(string dir_id_list, vector<RequestDispatcher::info_element_st>& directories_vector, int& status);    
+    bool recover_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
+    void divide_selected_ids(string original_ids, vector<string> selected_ids, string &coincidence_ids, string &no_coincidence_ids);
+    bool purge_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
     
   public:  
     
@@ -424,23 +427,49 @@ class RequestDispatcher{
     
     /**
      * @brief Deletes physically all files (and their revisions) previously deleted
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool purge_deleted_files(string user_id, int& status);
     
+    
+    /**
+     * @brief Deletes physically all files (and their revisions) previously deleted
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param selected_files_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool purge_deleted_files(string user_id, vector<string> selected_files_id, int& status);
 
-   /**
+    
+    /**
      * @brief Recover files deleted, making files visible. If the original parent dir not exists, move the file to the root dir.
      *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool recover_deleted_files(string user_id, int& status);
+    
+    
+    /**
+     * @brief Recover files deleted, making files visible. If the original parent dir not exists, move the file to the root dir.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param selected_files_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool recover_deleted_files(string user_id, vector<string> selected_files_id, int& status);
+    
     
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
