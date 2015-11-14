@@ -96,6 +96,9 @@ class RequestDispatcher{
     string remove_key_from_string_list(string list, string key);
     bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
     bool delete_dir_recursive(string dir_id, int& status);
+    bool search_revision_file(string parent_dir_id, string name, string extension, bool &revision_found, string &revision_file_id, DataHandler::file_info_st &revision_file_info, int status);
+    bool increase_file_revision(string file_id, int& status);
+    
     
   public:  
     
@@ -177,8 +180,7 @@ class RequestDispatcher{
     /**
      * @brief Saves a new file. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
-     *        TODO(mart): implement function: "If the Name and Dir ID is the same, check the hash with previous 
-     *                                         revision and, if they are different, make new revision."
+     *        
      * @param user_id ...
      * @param name ...
      * @param extension ...

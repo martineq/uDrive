@@ -82,28 +82,46 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
   if( parent_dir_id==LABEL_ZERO ){
     if( !get_root_dir_id(user_id,parent_dir_id,status) ){ return false; }
   }
-
-  // TODO(mart): Check if there is an previous revision (Search in the parent_dir_id for a file with the samen name)
-  //             and if there is, change the label_revision (dont make an new logical file) and Add physical file
-
-  // Add logical file
-  if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
   
-  // Add physical file
-  string file_name = user_id+file_id+LABEL_REVISION_1;
-  if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){
-    if( !dh_.delete_file(file_id,status) ){ return false; }  status = STATUS_FAIL_SAVING_FILE; return false;
+  // Search for a existent file revision in the same directory
+  bool revision_found = false;
+  string revision_file_id = "0";
+  DataHandler::file_info_st revision_file_info;
+  if( !search_revision_file(parent_dir_id,name,extension,revision_found,revision_file_id,revision_file_info,status) ){ return false; }
+  
+  // Case: Existent file revision
+  if( revision_found ){  
+    // Add physical file revision
+    string new_revision = to_string( stoul_decimal(revision_file_info.revision) + 1 );
+    string file_name = user_id+file_id+new_revision;
+    if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){ status = STATUS_FAIL_SAVING_FILE; return false; }
+    // Update information of file revision
+    if( !increase_file_revision(revision_file_id,status) ){ return false; }
   }
+  
+  // Case: New file (no previous file revision)
+  if( !revision_found ){
+     // Add logical file
+    if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
+    // Add physical file
+    string file_name = user_id+file_id+LABEL_REVISION_1;
+    if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){
+      if( !dh_.delete_file(file_id,status) ){ return false; }  status = STATUS_FAIL_SAVING_FILE; return false;
+    }
+  }  
 
   // Add size to user quota
   if( !increase_user_quota_used(user_id,size,status) ){ return false; }
-  
-  // Change parent_dir_id date & add size
+
+  // Change parent_dir_id date
   if( !change_dir_date_recursive(parent_dir_id,date,status) ){ return false; }
 
-  // Recursive size add
-  if( !increase_dir_size_recursive(parent_dir_id,size,status) ){ return false; }
+  // If there is a previous revision, decrease directory size for the old revision
+  if( revision_found ){ if( !decrease_dir_size_recursive(parent_dir_id,revision_file_info.size,status) ){ return false; } } 
   
+  // Recursive size add to directory
+  if( !increase_dir_size_recursive(parent_dir_id,size,status) ){ return false; }
+    
   return true;
 }
 
@@ -227,12 +245,11 @@ bool RequestDispatcher::get_file_stream(string user_id, string file_id, string r
     }
   }
   
-  if( !user_authorized ){
-    status = STATUS_USER_FORBIDDEN;
-    return false;
-  }
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
 
-  string file_name = file_info_temp.owner+file_id+LABEL_REVISION_1;
+  if( stoul_decimal(file_info_temp.revision) < stoul_decimal(revision) ){ status = STATUS_REVISION_NOT_EXISTS; return false; }
+  
+  string file_name = file_info_temp.owner+file_id+revision;
   size_t size = fh_.load_file(file_name,p_file_stream);
   size_stream = to_string(size);
   if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
@@ -850,6 +867,31 @@ bool RequestDispatcher::delete_dir_recursive(string dir_id, int& status){
   if( !dh_.delete_directory(dir_id,status) ){ return false; }
   
   return true;
+}
+
+
+bool RequestDispatcher::search_revision_file(string parent_dir_id, string name, string extension, bool &revision_found,
+                                             string &revision_file_id, DataHandler::file_info_st &revision_file_info, int status){
+  revision_found = false;
+  DataHandler::dir_info_st parent_dir_info;
+  if( !dh_.get_directory_info(parent_dir_id,parent_dir_info,status) ){ return false; }
+  vector<string> existent_files = split_string(parent_dir_info.files_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = existent_files.begin() ; ( it!=existent_files.end() && !revision_found ) ; ++it) {
+    revision_file_id = (*it);
+    if( !dh_.get_file_info(revision_file_id,revision_file_info,status) ){ return false; }
+    if( revision_file_info.name.compare(name)==0 && revision_file_info.extension.compare(extension)==0 ){ revision_found = true; }
+  }
+  return true;
+}
+
+
+bool RequestDispatcher::increase_file_revision(string file_id, int& status){
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+  
+  size_t revision = stoul_decimal(file_info.revision) + 1;
+  
+  return( dh_.modify_file_revision(file_id,to_string(revision),status) );
 }
 
 
