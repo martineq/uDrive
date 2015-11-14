@@ -10,6 +10,7 @@
 #define STATUS_USER_FORBIDDEN 9
 #define STATUS_MAX_QUOTA_EXCEEDED 10
 #define STATUS_DELETE_ROOT_DIR_FORBIDDEN 11
+#define STATUS_REVISION_NOT_EXISTS 12
 
 // DataHandler prefixes for key construction
 #define PREFIX_USER "user_"

@@ -440,7 +440,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Parameters OUT
   string user_id="0"; int status=0;
   bool ok = rd->sign_up(email,password,name,"the dog",locationX,locationY,generated_token,date,user_id,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(user_id!="0");
   
   
@@ -450,7 +450,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Parameters OUT
   string user_id_readed="0"; status=0;
   ok = rd->log_in(email,password,generated_token,user_id_readed,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(user_id,user_id_readed);
 
   
@@ -469,7 +469,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->new_file(user_id,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file_id,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(file_id!="0");
   
   
@@ -485,7 +485,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->new_directory(user_id,dir_name,date,parent_dir_id,dir_id,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(dir_id!="0");
   string sub_dir_id = dir_id;
   
@@ -506,7 +506,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   ok = rd->new_file(user_id,file_name_2,file_ext_2,date,p_bin_stream_2,save_size_stream_2,parent_dir_id_2,file_id_2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(file_id_2!="0");
   
   
@@ -520,7 +520,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
 
   EXPECT_EQ(dir_info.date_last_mod,"29/10/2015");       // Last date saved
   EXPECT_EQ(dir_info.name,"root");                      // Dir name
@@ -536,7 +536,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Get dir info from a non-root dir
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_directory_info(user_id,sub_dir_id,dir_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   
   for(vector<RequestDispatcher::info_element_st>::iterator it = v_dir_elem_info.begin() ; it!=v_dir_elem_info.end() ; ++it) {
     RequestDispatcher::info_element_st ei = (*it);
@@ -558,7 +558,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_user_info(user_id,user_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   
   EXPECT_EQ("mail@mail.com",user_info.email);                // User mail   
   EXPECT_EQ("111.08",user_info.gps_lat);                     // User location   
@@ -587,7 +587,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->new_file(user_id,file_name,file_ext,date,p_bin_stream,save_size_stream,parent_dir_id,file2_id,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(10,status); // STATUS_MAX_QUOTA_EXCEEDED==10
   EXPECT_TRUE(file2_id=="0");
 
@@ -595,13 +595,13 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Add second user and add new dir
   string user_id_second="0"; status=0;
   ok = rd->sign_up("mailsecond@mail.com","1234","finn","the human","152.08","121.55","10244756","02/11/2015",user_id_second,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(user_id_second!="0");
   RequestDispatcher::user_info_st user_info_second;
   status = 0;
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_user_info(user_id_second,user_info_second,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
 
   
   // Use get_directory_info() with forbidden user
@@ -609,14 +609,14 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   RequestDispatcher::dir_info_st dir_info2;
   EXPECT_TRUE(rd->check_token(forbidden_user_id,"10244756",status));
   ok = rd->get_directory_info(forbidden_user_id,sub_dir_id,dir_info2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   
   // Use get_file_info() with forbidden user
   RequestDispatcher::file_info_st file_info2;
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_info(user_id_second,file_id_2,file_info2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9
   
   // Use get_file_info() with wrong token value. (Verifies check_token() )
@@ -627,14 +627,14 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   if( token_is_ok ){
     // Never gets in
     //ok = rd->get_file_info(user_id_second,file_id_2,file_info2,status);
-    //EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+    //EXPECT_FALSE(ok); 
   }
   
   // Use get_file_info() with correct user and token
   file_info2;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->get_file_info(user_id,file_id_2,file_info2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
 
   
   // Use get_file_stream() with authorized user
@@ -642,7 +642,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   string size_2 = "0";
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   ok = rd->get_file_stream(user_id,file_id_2,"1",p_file_stream_2,size_2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ("54",size_2);
   
   // Use get_file_stream() with forbidden user
@@ -650,7 +650,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   size_2 = "0";
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   
   // Share the file...
@@ -662,7 +662,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // ...and get the file from te new user shared
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   // ...List the shared files from an user
   vector< RequestDispatcher::info_element_st > shared_files;
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
@@ -673,7 +673,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // ...and get the file from te new user un-shared (now is a forbidden user)
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_stream(user_id_second,file_id_2,"1",p_file_stream_2,size_2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   // ... List the shared files from an user (now the user have 0 file shared)
   vector< RequestDispatcher::info_element_st > shared_files2;
@@ -686,7 +686,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   string sub_sub_dir_id = "0";
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->new_directory(user_id,"sub_sub",date,sub_dir_id,sub_sub_dir_id,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(sub_sub_dir_id!="0");
   
    
@@ -695,7 +695,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   string file_id_3 = "0";
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->new_file(user_id,"file_3","txt",date,p_bin_stream_3,"14",sub_sub_dir_id,file_id_3,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_TRUE(file_id_3!="0");
   
   
@@ -730,26 +730,26 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // ...Check file deleted  from user shared (file forbidden)
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_file_stream(user_id_second,file_to_share_id,"1",p_file_stream_2,size_2,status);
-  EXPECT_FALSE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   // ...Check file non-deleted from user owner (the owner can still have the file)
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   ok = rd->get_file_stream(user_id,file_to_share_id,"1",p_file_stream_2,size_2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }  
+  EXPECT_TRUE(ok);   
   
   // ...Delete the file from the user owner
   EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
   
   // ...Check file non-deleted from user owner  (the owner can NOT have the file)
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(2,dir_info.directory_element_info.size());   // Number of elements in this directory: 3-1==2
   
   // Recover deleted file
   EXPECT_TRUE(rd->recover_deleted_files(user_id,status));
   // Check again for the files recovered
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(3,dir_info.directory_element_info.size());   // Number of elements in this directory: 2+1=3
   
   // Modify file info
@@ -769,7 +769,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_TRUE(rd->delete_directory(user_id,sub_dir_id,status));
   // ...Check the directory obtained after directory delete
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(1,dir_info.directory_element_info.size());   // Number of elements in this directory: 2-1=1
   // ...And get zip file without the sub-dir
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
@@ -782,7 +782,39 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Change user info
   EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","chihiro","IceK","122.34;45.33",status));
   
-  // Delete user
+  // Add new file...
+  const char* p_bin_stream_4 = "# Configuración de conexión\nip: 444.0.0.4\nport: 4444"; // Size: 54 bytes
+  save_size_stream = "54";
+  string file_name_4 = "archivo_4";
+  string file_ext_4 = "txt";
+  user_id_second;
+  parent_dir_id = "0"; // 0 == ROOT DIR
+  date="28/10/2015";
+  // Parameters OUT
+  string file_id_4 = "0";
+  ok = rd->new_file(user_id_second,file_name_4,file_ext_4,date,p_bin_stream_4,save_size_stream,parent_dir_id,file_id_4,status);
+  EXPECT_TRUE(ok); 
+  EXPECT_TRUE(file_id!="0");
+  // ..and add a revision for the same file
+  const char* p_bin_stream_4_bis = "# Configuración de conexión\nip: 444.4.4.4\nport: 4444"; // Size: 54 bytes
+  ok = rd->new_file(user_id_second,file_name_4,file_ext_4,date,p_bin_stream_4_bis,save_size_stream,parent_dir_id,file_id_4,status);
+  EXPECT_TRUE(ok); 
+  EXPECT_TRUE(file_id!="0");
+  // ..and check the file revision
+  RequestDispatcher::file_info_st file_info_4;
+  EXPECT_TRUE(rd->get_file_info(user_id_second,file_id_4,file_info_4,status));
+  EXPECT_EQ("2",file_info_4.revision);
+  // .. recover the file, "revision 1", and check the file content
+  char* p_file_stream_4;
+  string size_file_4;
+  string file_4_revision = "1";
+  ok = rd->get_file_stream(user_id_second,file_id_4,file_4_revision,p_file_stream_4,size_file_4,status);
+  EXPECT_TRUE(ok); 
+  string file_4_r1_obtanied(p_file_stream_4,stoul(size_file_4,nullptr,10));
+  EXPECT_STREQ(p_bin_stream_4,file_4_r1_obtanied.c_str());
+  
+  
+  // Delete user 2
   EXPECT_TRUE(rd->delete_user(user_id_second,status));
   // Check deleted user
   RequestDispatcher::user_info_st user_info_deleted;
@@ -795,11 +827,11 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   generate_image(data,size_img); // Create a binary file (jpg image)
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->set_user_image(user_id,data.c_str(),to_string(size_img),status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   char* p_image_stream;
   string size_img_loaded;
   ok = rd->get_user_image(user_id,p_image_stream,size_img_loaded,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(to_string(size_img),size_img_loaded);
 
   // Save an image with base64 format
@@ -807,11 +839,11 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   size_t size_img2 = 1512;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->set_user_image(user_id,data2.c_str(),to_string(size_img2),status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   char* p_image_stream2;
   string size_img_loaded2;
   ok = rd->get_user_image(user_id,p_image_stream2,size_img_loaded2,status);
-  EXPECT_TRUE(ok); if(!ok){ /* Check "status" */ std::cout <<"status ID: "<< status << std::endl; }
+  EXPECT_TRUE(ok); 
   EXPECT_EQ(to_string(size_img2),size_img_loaded2);
   size_t size_obtanined = stoul(size_img_loaded2,nullptr,10);
   string p_image_stream2_string(p_image_stream2,size_obtanined);
