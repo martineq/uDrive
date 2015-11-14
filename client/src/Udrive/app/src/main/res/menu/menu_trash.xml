@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.fiuba.app.udrive.TrashActivity">
+    <item
+        android:id="@+id/action_empty_trash" android:title="@string/action_empty_trash"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_restore_all" android:title="@string/action_restore_all"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete_selected" android:title="@string/action_delete_selected"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_restore_selected" android:title="@string/action_restore_selected"
+        app:showAsAction="never" />
+</menu>

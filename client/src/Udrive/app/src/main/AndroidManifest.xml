@@ -54,6 +54,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fiuba.app.udrive.FileListActivity" />
         </activity>
+        <activity
+            android:name=".TrashActivity"
+            android:label="@string/title_activity_trash" >
+        </activity>
     </application>
 
 </manifest>

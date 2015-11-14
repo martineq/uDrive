@@ -6,8 +6,8 @@ import com.fiuba.app.udrive.model.FolderData;
 import com.fiuba.app.udrive.utils.Utils;
 
 import java.io.FileOutputStream;
-import java.net.ContentHandler;
 import java.util.List;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -18,6 +18,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 public class FilesService extends AbstractService {
@@ -47,6 +48,22 @@ public class FilesService extends AbstractService {
         void deleteFile(@Path("userId") int userId,
                         @Path("fileId") int fileId,
                         Callback<List<File>> files);
+
+        @GET("/info/users/{userId}/trash")
+        void getTrashedFiles(@Path("userId") int userId, Callback<List<File>> callback);
+
+        @DELETE("/info/users/{userId}/trash")
+        void deleteAllTrashedFiles(@Path("userId") int userId, Callback<Void> callback);
+
+        @DELETE("/info/users/{userId}/trash")
+        void deleteTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
+
+        @POST("/info/users/{userId}/trash/restored")
+        void restoreAllTrashedFiles(@Path("userId") int userId, Callback<Void> callback);
+
+        @POST("/info/users/{userId}/trash/restored")
+        void restoreTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
+
     }
 
     private interface FileDownloadServiceApi {
@@ -206,6 +223,101 @@ public class FilesService extends AbstractService {
             serviceCallback.onFailure("No se pudo eliminar el archivo",1);
         }
 
+    }
+
+    public void getTrashedFiles(int userId, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.getTrashedFiles(userId, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void deleteAllTrashedFiles(int userId, final ServiceCallback<Void> serviceCallback) {
+        mFilesServiceApi.deleteAllTrashedFiles(userId, new Callback<Void>() {
+            @Override
+            public void success(Void v, Response response) {
+                serviceCallback.onSuccess(v, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void deleteTrashedFiles(int userId, String csvFileIds, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.deleteTrashedFiles(userId, csvFileIds, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void restoreAllTrashedFiles(int userId, final ServiceCallback<Void> serviceCallback) {
+        mFilesServiceApi.restoreAllTrashedFiles(userId, new Callback<Void>() {
+            @Override
+            public void success(Void v, Response response) {
+                serviceCallback.onSuccess(v, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void restoreTrashedFiles(int userId, String csvFileIds, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.restoreTrashedFiles(userId, csvFileIds, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
     }
 
 }

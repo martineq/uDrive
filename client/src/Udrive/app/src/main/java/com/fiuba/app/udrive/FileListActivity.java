@@ -80,7 +80,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
-           mDirId = 0;
+            mDirId = 0;
         loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
     }
 
@@ -192,6 +192,10 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             // show it
             alertDialog.show();
 
+        } else if (id == R.id.action_show_trash) {
+            Intent i = new Intent(this, TrashActivity.class);
+            i.putExtra(TrashActivity.EXTRA_USER_ACCOUNT, mUserAccount);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -212,8 +216,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             @Override
             public void onFailure(String message, int status) {
                 if (StatusCode.isHumanReadable(status)){
-                   message = StatusCode.getMessage(FileListActivity.this, status);
-                   Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                    message = StatusCode.getMessage(FileListActivity.this, status);
+                    Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
                 }
                 progressDialog.dismiss();
                 Log.e(TAG, message);

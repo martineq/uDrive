@@ -74,8 +74,17 @@
     <string name="tag_action">Etiquetar</string>
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
-    <string name="delete_option_title">Delete</string>
-    <string name="delete_option_message">Do you want to Delete?</string>
-
+    <string name="delete_option_title">Eliminar</string>
+    <string name="delete_option_message">¿Quieres eliminar?</string>
+    <string name="title_activity_trash">Papelera</string>
+    <string name="action_empty_trash">Vaciar</string>
+    <string name="action_restore_all">Restaurar todo</string>
+    <string name="action_delete_selected">Eliminar selección</string>
+    <string name="action_restore_selected">Restaurar selección</string>
+    <string name="trash_is_empty">La papelera está vacía</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">¿Está seguro?</string>
+    <string name="action_show_trash">Papelera</string>
 
 </resources>

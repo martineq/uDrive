@@ -27,7 +27,7 @@
     <!-- Strings related to Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_item_connection">Connection settings</string>
-    <string name="settings_save">Save</string>
+    <string name="ssettings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
 
@@ -80,6 +80,16 @@
     <string name="delete_option_title">Delete</string>
     <string name="delete_option_message">Do you want to Delete?</string>
 
+    <string name="title_activity_trash">Trash</string>
+    <string name="action_empty_trash">Empty trash</string>
+    <string name="action_restore_all">Restore all</string>
+    <string name="action_delete_selected">Delete selected</string>
+    <string name="action_restore_selected">Restore selected</string>
+    <string name="trash_is_empty">Trash is empty</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="action_show_trash">Trash</string>
 
 
 </resources>
