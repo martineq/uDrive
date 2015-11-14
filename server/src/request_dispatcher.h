@@ -94,11 +94,12 @@ class RequestDispatcher{
     unsigned long stoul_decimal(const string& str);
     string add_key_to_string_list(string list, string key);
     string remove_key_from_string_list(string list, string key);
-    bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector<RequestDispatcher::info_element_st>& directory_element_info, int& status);
     bool delete_dir_recursive(string dir_id, int& status);
     bool search_revision_file(string parent_dir_id, string name, string extension, bool &revision_found, string &revision_file_id, DataHandler::file_info_st &revision_file_info, int status);
     bool increase_file_revision(string file_id, int& status);
-    
+    bool add_info_files_from_id_list(string file_id_list, vector<RequestDispatcher::info_element_st>& files_vector, int& status);    
+    bool add_info_dirs_from_id_list(string dir_id_list, vector<RequestDispatcher::info_element_st>& directories_vector, int& status);    
     
   public:  
     
@@ -271,6 +272,30 @@ class RequestDispatcher{
     
     
     /**
+     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param shared_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_shared_files(string user_id,vector<RequestDispatcher::info_element_st>& shared_files, int& status);
+    
+   
+    /**
+     * @brief Gets a vector of elements (files) contained in deleted files for an user (recycle bin). 
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param deleted_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_deleted_files(string user_id,vector<RequestDispatcher::info_element_st>& deleted_files, int& status);
+    
+    
+    /**
      * @brief Sets the image file for an user.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
@@ -308,18 +333,6 @@ class RequestDispatcher{
      * @return bool
      */
     bool unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
-    
-    
-    /**
-     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
-     *        On error returns false and a DataHandler status (see db_constants.h)
-     * 
-     * @param user_id ...
-     * @param shared_files return vector of RequestDispatcher::info_element_st
-     * @param status returns DataHandler status ONLY if @return==false
-     * @return bool
-     */
-    bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
     
         
     /**

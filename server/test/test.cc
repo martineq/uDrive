@@ -755,9 +755,16 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Modify file info
   EXPECT_TRUE(rd->modify_file_info(user_id,file_to_share_id,"file_renombrado","txt","08/11/15","favorito;público",status));
   
-  // Delete file logically and physically
+  // Delete file logically
   EXPECT_TRUE(rd->delete_file(user_id,file_to_share_id,status));
+  // Check files deleted
+  vector< RequestDispatcher::info_element_st > deleted_files;
+  EXPECT_TRUE(rd->get_deleted_files(user_id,deleted_files,status));
+  EXPECT_EQ(1,deleted_files.size());
+  // Delete file physically (and check the empty list of deleted files)
   EXPECT_TRUE(rd->purge_deleted_files(user_id,status));
+  EXPECT_TRUE(rd->get_deleted_files(user_id,deleted_files,status));
+  EXPECT_EQ(0,deleted_files.size());
   // ...And get zip file without the file
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
   EXPECT_EQ("912",size_stream);  // Size of zip file (2 files): 912 bytes
