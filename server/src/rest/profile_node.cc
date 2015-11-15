@@ -30,7 +30,7 @@ void ProfileNode::executeGet() {
         }
         else{
             std::ostringstream item;
-            char* user_image;
+            char* user_image=nullptr;
             std::string size_image;
             getRequestDispatcher()->get_user_image(userId,user_image,size_image,status);
             Log(Log::LogMsgDebug) << "[" << "printing profile" << "]: firstname: " << user_info.first_name;
@@ -39,8 +39,9 @@ void ProfileNode::executeGet() {
             << "\",\"lastname\":\"" << user_info.last_name
             << "\",\"email\":\""	<< user_info.email;
 
-            if (user_image!=NULL) item << "\",\"photo\":\""	<< user_image;
-            else item << "\",\"photo\":\"\"\"";
+
+            if (user_image!= nullptr) item << "\",\"photo\":\""	<< user_image;
+            else item << "\",\"photo\":\"";
 
             item << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
@@ -49,8 +50,6 @@ void ProfileNode::executeGet() {
             << "\",\"quotaTotal\":\"" << user_info.user_quota_total
             << "\",\"quotaUsagePercent\":\"" << user_info.user_quota_used_percentage
             << "\"}";
-
-
 
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);

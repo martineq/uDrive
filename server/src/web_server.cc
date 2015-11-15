@@ -38,7 +38,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
       vector<string> lista = WEBServer::split(conn->uri, '/');
       string field = lista[4];
-      Log(Log::LogMsgDebug) << "[" << "URI: /users" << "], field: " <<field <<" Method: "<<conn->request_method;
+      Log(Log::LogMsgDebug) << "[" << "URI: /info/users" << "], field: " <<field <<" Method: "<<conn->request_method;
 
       if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
 
