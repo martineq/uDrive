@@ -372,13 +372,24 @@ class RequestDispatcher{
      * 
      * @param user_id ...
      * @param email ...
-     * @param password ...
      * @param name ...
      * @param location ...
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool modify_user_info(string user_id, string email, string password, string name, string location, int& status);
+    bool modify_user_info(string user_id, string email, string first_name, string last_name, string gps_lat, string gps_lon, int& status);
+
+    
+    /**
+     * @brief Modifies the password of the user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param password ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool modify_user_password(string user_id, string password, int& status);
     
     
     /**

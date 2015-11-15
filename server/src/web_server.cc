@@ -41,8 +41,11 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       Log(Log::LogMsgDebug) << "[" << "URI: /info/users" << "], field: " <<field <<" Method: "<<conn->request_method;
 
       if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
-
-
+          InfoTrashNode * itn=new InfoTrashNode(mgConnection);
+          itn->setRequestDispatcher(RequestDispatcher::get_instance());
+          itn->execute();
+          delete itn;
+          return MG_TRUE;
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           InfoNode * in=new InfoNode(mgConnection);
           in->setRequestDispatcher(RequestDispatcher::get_instance());

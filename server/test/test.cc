@@ -783,9 +783,10 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   FileHandler fh;
   EXPECT_EQ(372,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 372 bytes
 
-  
   // Change user info
-  EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","chihiro","IceK","122.34;45.33",status));
+  EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","Ice","Kng","122.34","45.33",status));
+  // Change user password
+  EXPECT_TRUE(rd->modify_user_password(user_id_second,"bmo",status));
   
   // Add new file...
   const char* p_bin_stream_4 = "# Configuración de conexión\nip: 444.0.0.4\nport: 4444"; // Size: 54 bytes

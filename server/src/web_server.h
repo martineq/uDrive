@@ -7,6 +7,7 @@
 #include "util/log.h"
 #include "rest/token_node.h"
 #include "rest/info_node.h"
+#include "rest/info_trash_node.h"
 #include "rest/receive_file_node.h"
 #include "rest/signup_node.h"
 #include "rest/create_dir_node.h"
