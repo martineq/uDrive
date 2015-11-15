@@ -36,7 +36,7 @@ void InfoNode::executeGet() {
 		string userId=getUserId();
 		dirId=lista[5];
 
-		Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], UserId: " <<userId <<" dirId: "<<dirId;
+		Log(Log::LogMsgDebug) << "[InfoNode], UserId: " <<userId <<" dirId: "<<dirId;
 
         RequestDispatcher::dir_info_st dirInfo_rd;
 
