@@ -70,7 +70,7 @@ std::string ProfileNode::defaultResponse(){
     return "[{ \"firstname\": \"0\",  \"lastname\": \"\","
             "\"email\": \"\" ,  \"photo\": \"\",  \"GPSLatitude\": \"0\", "
             "\"GPSLongitude\": \"0\",  \"userId\": \"0\""
-            ",  \"quotaAvailable\": \"0\",  \"quotaTotal\": \"0\",  \"quotaUsagePercent\": \"0\"}]";
+            ",  \"quotaUsed\": \"0\",  \"quotaTotal\": \"0\",  \"quotaUsagePercent\": \"0\"}]";
 }
 
 vector<string> ProfileNode::split(const string &s, char delim) {
