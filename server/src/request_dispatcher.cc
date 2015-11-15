@@ -422,17 +422,20 @@ bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, s
 }
 
 
-bool RequestDispatcher::modify_user_info(string user_id, string email, string password, string name, string location, int& status){
+bool RequestDispatcher::modify_user_info(string user_id, string email, string name, string location, int& status){
 
   DataHandler::user_info_st user_info;
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
 
-  if( !dh_.modify_user_password(user_id,password,status) ){ return false; }
-  
   if( !dh_.modify_user_info(user_id,email,name,location,user_info.shared_files,
     user_info.user_quota_used,user_info.files_deleted,status) ){ return false; }
   
   return true;
+}
+
+
+bool RequestDispatcher::modify_user_password(string user_id, string password, int& status){
+  return dh_.modify_user_password(user_id,password,status);
 }
 
 
