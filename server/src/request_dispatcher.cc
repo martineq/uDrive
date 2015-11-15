@@ -31,13 +31,19 @@ bool RequestDispatcher::sign_up(string email, string password, string first_name
 }
 
 
-bool RequestDispatcher::log_in(string email, string password, string new_token, string& user_id, int& status){
+bool RequestDispatcher::log_in(string email, string password, string new_token, string& user_id, string& quota_available , int& status){
   string saved_password;
-  if( !dh_.get_user_password(email,saved_password,status) ){ return false; };
+  if( !dh_.get_user_password(email,saved_password,status) ){ return false; }
 
   if( password!=saved_password ){ status = STATUS_WRONG_PASSWORD; return false; }
 
-  return dh_.add_user_token(email,new_token,user_id,status);
+  if( !dh_.add_user_token(email,new_token,user_id,status) ){ return false; }
+  
+  DataHandler::user_info_st user_info;
+  if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
+  quota_available = to_string( max_user_quota_ - stoul_decimal(user_info.user_quota_used) );
+  
+  return true; 
 }
 
 
