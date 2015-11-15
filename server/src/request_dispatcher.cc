@@ -147,9 +147,10 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   user_info.gps_lon = location.back();
   user_info.user_quota_used = dh_user_info.user_quota_used;
   user_info.user_quota_total = to_string(max_user_quota_);
-  float percentage = (stoul_decimal(dh_user_info.user_quota_used) * 100) / max_user_quota_;
-  std::string str_percentage = to_string(percentage);
-  user_info.user_quota_used_percentage = str_percentage.substr(0,5) + "%";
+  float percentage = ( (float)stoul_decimal(dh_user_info.user_quota_used) * (float)100) / (float)max_user_quota_;
+  stringstream stream;
+  stream << std::fixed << std::setprecision(2) << percentage;
+  user_info.user_quota_used_percentage = stream.str() + "%";
 
   return true;
 }
