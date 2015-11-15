@@ -68,6 +68,19 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           delete dftn;
           return MG_TRUE;
 
+      }else if (( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) and (mgConnection.getParameter("fileIds")=="") ){
+          RestoreFileTrashNode * rftn=new RestoreFileTrashNode(mgConnection);
+          rftn->setRequestDispatcher(RequestDispatcher::get_instance());
+          rftn->execute();
+          delete rftn;
+          return MG_TRUE;
+      }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) ){
+          RestoreTrashNode * rtn=new RestoreTrashNode(mgConnection);
+          rtn->setRequestDispatcher(RequestDispatcher::get_instance());
+          rtn->execute();
+          delete rtn;
+          return MG_TRUE;
+
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/file/users",11)) {
@@ -111,6 +124,9 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           sfn->execute();
           delete sfn;
           return MG_TRUE;
+
+
+
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
