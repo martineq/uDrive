@@ -314,7 +314,7 @@ class RequestDispatcher{
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_user_email_full(vector<string> &list, int& status);
+    bool get_user_email_list_full(vector<string> &list, int& status);
     
     /**
      * @brief Gets the list of email for all registered users, filtered by pattern

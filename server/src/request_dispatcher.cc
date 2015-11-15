@@ -337,7 +337,7 @@ bool RequestDispatcher::get_tags(string user_id, vector<string>& tags, int& stat
 }
 
 
-bool RequestDispatcher::get_user_email_full(vector<string>& list, int& status){
+bool RequestDispatcher::get_user_email_list_full(vector<string>& list, int& status){
   string str_list;
   list.clear();
   if( !dh_.get_user_mail_list(str_list,status) ){ return false; }
@@ -349,7 +349,7 @@ bool RequestDispatcher::get_user_email_full(vector<string>& list, int& status){
 bool RequestDispatcher::get_user_email_list_by_pattern(string pattern, vector<string>& list, int& status){
   vector<string> full_list;
   list.clear();
-  if( !get_user_email_full(full_list,status) ){ return false; }
+  if( !get_user_email_list_full(full_list,status) ){ return false; }
   for(vector<string>::iterator it = full_list.begin() ; it!=full_list.end() ; ++it) {
       if( (*it).find(pattern)!=string::npos ){ list.push_back((*it)); }
   }
