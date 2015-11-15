@@ -61,6 +61,14 @@ public class UserProfile extends UserData implements Serializable {
         return GPSLongitude;
     }
 
+    public void setGPSLatitude(double GPSLatitude) {
+        this.GPSLatitude = GPSLatitude;
+    }
+
+    public void setGPSLongitude(double GPSLongitude) {
+        this.GPSLongitude = GPSLongitude;
+    }
+
     public int getUserId(){
         return userId;
     }
