@@ -403,6 +403,17 @@ class DataHandler {
     * @return bool
     */
     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status);
+    
+    /**
+    * @brief Modifies file revision for an file_id. Returns true on success.
+    *        On error returns false and a DataHandler status (see db_constants.h)
+    *     
+    * @param file_id ...
+    * @param revision ...
+    * @param status status returns DataHandler status ONLY if @return==false
+    * @return bool
+    */
+    bool modify_file_revision(string file_id, string revision, int& status);
 
 };
 

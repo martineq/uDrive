@@ -343,6 +343,18 @@ bool DataHandler::modify_file_info(string file_id, string name, string extension
 }
 
 
+bool DataHandler::modify_file_revision(string file_id, string revision, int& status){
+
+  dbh_.clear_batch();
+  dbh_.put_batch(generate_file_key(file_id,SUFFIX_FILE_REVISION),revision);
+
+  // Saves data to file
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
+
+  return true;
+}
+
+
 string DataHandler::generate_user_key(string user_id, string item_selected){
   return (PREFIX_USER+user_id+item_selected);
 }
