@@ -234,6 +234,7 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
   file_info.size = file_info_temp.size;
   file_info.tags = file_info_temp.tags;
   file_info.user_last_mod = file_info_temp.user_last_mod;
+  file_info.parent_directory = file_info_temp.parent_directory;
   
   return true;
 }

@@ -62,6 +62,7 @@ class RequestDispatcher{
       string tags;
       string size;
       string revision;
+      string parent_directory;
     } ;
   
   
