@@ -58,7 +58,6 @@
 
         <TextView
             android:id="@+id/name"
-            android:hint="Hola"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/textview_border"
@@ -151,7 +150,6 @@
                 android:background="#c0c0c0"/>
         </FrameLayout>
         <TextView
-            android:hint="Progress Bar"
             android:id="@+id/textProgressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

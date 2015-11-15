@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Owner"
+                android:hint="@string/owner"
                 android:textSize="16sp"
                 android:layout_toRightOf="@+id/ic_account"
                 android:layout_centerVertical="true"
@@ -99,12 +99,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_account_24"
+                android:src="@drawable/ic_timelapse_24"
                 android:paddingLeft="16dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Size"
+                android:hint="@string/size"
                 android:textSize="16sp"
                 android:layout_toRightOf="@+id/ic_account"
                 android:paddingLeft="2dp"
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Last update"
+                android:hint="@string/lastUpd"
                 android:textSize="16sp"
                 android:layout_toRightOf="@+id/ic_account"
                 android:paddingLeft="2dp"
@@ -155,9 +155,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="By"
+                android:hint="@string/by"
                 android:textSize="14sp"
-                android:layout_toRightOf="@+id/ic_account"
                 android:paddingLeft="42dp"
                 android:layout_centerVertical="true"/>
             <TextView
@@ -177,9 +176,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="From"
+                android:hint="@string/from"
                 android:textSize="14sp"
-                android:layout_toRightOf="@+id/ic_account"
                 android:paddingLeft="42dp"
                 android:layout_centerVertical="true"/>
             <TextView
@@ -206,7 +204,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="No. of items"
+                android:hint="@string/items"
                 android:textSize="16sp"
                 android:layout_toRightOf="@+id/ic_account"
                 android:paddingLeft="2dp"

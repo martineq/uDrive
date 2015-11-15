@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telecom.Call;
 
 import com.fiuba.app.udrive.model.FileInfo;
+import com.fiuba.app.udrive.model.FolderData;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.Tag;
@@ -41,6 +42,8 @@ public class FileMetadataService extends AbstractService {
         @GET("/fileinfo/files/{fileId}")
         void getFileInfo(@Path("fileId") int fileId, Callback<FileInfo> fileInfo);
 
+        @PUT("/filename/files/{fileId}")
+        void updateFilename(@Path("fileId") int fileId, @Body FolderData data, Callback<GenericResult> result);
     }
 
     private FileTagServiceApi mFileTagServiceApi;
@@ -112,6 +115,26 @@ public class FileMetadataService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 fileInfo.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Sends the new name for a file or folder to be updated on database
+    public void updateFilename(int fileId, FolderData data, final ServiceCallback<GenericResult> result){
+        mFileTagServiceApi.updateFilename(fileId, data, new Callback<GenericResult>() {
+            @Override
+            public void success(GenericResult genericResult, Response response) {
+                result.onSuccess(genericResult, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                result.onFailure(error.getMessage(), status);
             }
         });
     }

@@ -90,5 +90,13 @@
     <string name="whohasaccess">Tienen acceso</string>
     <string name="tags">Etiquetas</string>
     <string name="error_fileinfo">Error al cargar la información del archivo o carpeta</string>
+    <string name="error_filename">Error al actualizar el nombre del archivo</string>
+    <string name="edit_filename_title">Actualizar nombre de archivo</string>
+    <string name="owner">Propietario</string>
+    <string name="size">Tamaño</string>
+    <string name="lastUpd">Ult. mod.</string>
+    <string name="by">Por</string>
+    <string name="from">Desde</string>
+    <string name="items">Cant. items</string>
 
 </resources>

@@ -123,20 +123,10 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
-               mUserService.getProfile(mUserAccount.getUserId(), new ServiceCallback<UserProfile>() {
-                @Override
-                public void onSuccess(UserProfile uProfile, int status) {
-                    Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
-                    profile.putExtra("userProfile", uProfile);
-                    profile.putExtra("userAccount", mUserAccount);
-                    startActivity(profile);
-                }
+            Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
+            profile.putExtra("userAccount", mUserAccount);
+            startActivity(profile);
 
-                @Override
-                public void onFailure(String message, int status) {
-                    Toast.makeText(FileListActivity.this, getString(R.string.error_profile), Toast.LENGTH_LONG).show();
-                }
-            });
         }  else if (id == R.id.action_upload_file) {
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
@@ -314,7 +304,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             @Override
             public void onSuccess(FileInfo object, int status) {*/
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
-               // infoIntent.putExtra("fileInfo", object);
+                // infoIntent.putExtra("fileInfo", object);
+                infoIntent.putExtra("token", mUserAccount.getToken());
                 startActivity(infoIntent);
        /*     }
 

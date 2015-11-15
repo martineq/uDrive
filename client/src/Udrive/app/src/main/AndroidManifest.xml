@@ -15,7 +15,6 @@
             android:label="@string/title_main_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,17 +42,12 @@
             android:theme="@style/FilePickerTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".UserProfileActivity"
-            android:label="@string/userprofile_title"
-            android:parentActivityName=".FileListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.fiuba.app.udrive.FileListActivity" />
+            android:label="@string/userprofile_title">
         </activity>
         <activity
             android:name=".FileInfoActivity"

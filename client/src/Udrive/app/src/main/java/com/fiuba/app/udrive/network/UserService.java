@@ -40,6 +40,7 @@ public class UserService extends AbstractService {
 
         @PUT("/userfullname/{userId}")
         void updateFullName(@Path("userId") int userId, @Body UserFullName uFullName, Callback<GenericResult> result);
+
     }
 
     private UserServiceApi mUserServiceApi;
@@ -148,4 +149,5 @@ public class UserService extends AbstractService {
             }
         });
     }
+
 }
