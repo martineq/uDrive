@@ -86,6 +86,14 @@ class DataHandler {
     */
     void init_id_ticket(string type_of_id);
     
+    
+    /**
+     * @brief Initiates the list of users
+     * 
+     * @return void
+     */
+    void init_user_list();
+    
     /**
     * @brief Prints a message error on std::cerr
     * 
@@ -115,6 +123,15 @@ class DataHandler {
     */
     bool dbh_put(string key, string value, int& status);
 
+    /**
+     * @brief Add user email to email list
+     * 
+     * @param email ...
+     * @param status ...
+     * @return bool
+     */
+    bool add_email_to_list(string email, int status);
+    
   public:
 
     struct user_info_st {
@@ -291,6 +308,14 @@ class DataHandler {
     */
     bool get_file_info(string file_id, file_info_st& file_info, int& status);
     
+    
+    /**
+     * @brief Gets the list of email for all registered users
+     * 
+     * @param email_list ...
+     * @return bool
+     */
+    bool get_user_mail_list(string& email_list, int &status);
     
     /**
     * @brief Deletes all information for the user ID and their Index entry. Returns true on success.

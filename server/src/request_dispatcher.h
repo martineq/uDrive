@@ -30,6 +30,7 @@ class RequestDispatcher{
       size_t number_of_items;
       string shared;
       string lastModDate;
+      string owner;
     } ;
 
     struct user_info_st {
@@ -305,6 +306,25 @@ class RequestDispatcher{
      */
     bool get_tags(string user_id, vector<string> &tags, int& status);
     
+    /**
+     * @brief Gets the full list of email for all registered users
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param pattern ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_user_email_full(vector<string> &list, int& status);
+    
+    /**
+     * @brief Gets the list of email for all registered users, filtered by pattern
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param pattern ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_user_email_list_by_pattern(string pattern, vector<string> &list, int& status);
     
     /**
      * @brief Sets the image file for an user.  Returns true on success.
@@ -477,7 +497,8 @@ class RequestDispatcher{
      * @return bool
      */
     bool recover_deleted_files(string user_id, vector<string> selected_files_id, int& status);
-        
+       
+    
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
 

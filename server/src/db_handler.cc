@@ -11,7 +11,7 @@ DbHandler::~DbHandler(void){
 }
 
 
-bool DbHandler::open(std::string filename){
+bool DbHandler::open(string filename){
   rocksdb::Options options;
   
   // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
@@ -21,21 +21,19 @@ bool DbHandler::open(std::string filename){
   // Create the DB if it's not already present
   options.create_if_missing = true;
 
-   
-
   // Open DB and return status
   return(check_status(rocksdb::DB::Open(options, filename, &db_)));  
 }
 
 
-bool DbHandler::put(std::string key, std::string value){
+bool DbHandler::put(string key, string value){
   if(db_==nullptr){ return false; }
   
   return(check_status(db_->Put(rocksdb::WriteOptions(),key,value)));
 }
 
 
-bool DbHandler::get(std::string key, std::string* value, bool& found){
+bool DbHandler::get(string key, string* value, bool& found){
   if(db_==nullptr){ 
     found = false;
     return false; 
@@ -53,7 +51,7 @@ bool DbHandler::get(std::string key, std::string* value, bool& found){
 }
 
 
-bool DbHandler::erase(std::string key){
+bool DbHandler::erase(string key){
   return(check_status(db_->Delete(rocksdb::WriteOptions(),key)));
 }
 
@@ -64,13 +62,13 @@ bool DbHandler::check_status(rocksdb::Status s){
 }
 
 
-void DbHandler::erase_batch(std::string key){
+void DbHandler::erase_batch(string key){
   if(db_==nullptr){ return; }
   batch_.Delete(key);
 }
 
 
-void DbHandler::put_batch(std::string key, std::string value){
+void DbHandler::put_batch(string key, string value){
   if(db_==nullptr){ return; }
   batch_.Put(key,value);
 }
@@ -85,4 +83,3 @@ bool DbHandler::write_batch(){
   if(db_==nullptr){ return false; }
   return(check_status(db_->Write(rocksdb::WriteOptions(),&batch_)) );
 }
-
