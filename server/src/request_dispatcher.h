@@ -149,7 +149,7 @@ class RequestDispatcher{
     * @param status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool log_in(string email, string password, string new_token, string& user_id, int& status);
+    bool log_in(string email, string password, string new_token, string& user_id, string& quota_available, int& status);
     
     
     /**
