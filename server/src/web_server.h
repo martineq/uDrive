@@ -19,6 +19,7 @@
 #include "rest/delete_file_node.h"
 #include "rest/delete_trash_node.h"
 #include "rest/delete_file_trash_node.h"
+#include "rest/delete_dir_node.h"
 #include "rest/restore_file_trash_node.h"
 #include "rest/restore_trash_node.h"
 #include "rest/send_file_node.h"

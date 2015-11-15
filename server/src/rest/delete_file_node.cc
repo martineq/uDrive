@@ -35,12 +35,32 @@ void DeleteFileNode::executeDelete() {
 		string fileId = lista[4];
 
 		Log(Log::LogMsgDebug) << "[" << "DeleteFileNode " << "] userId: " << userId << " fileId: " << fileId;
-		Log(Log::LogMsgDebug) << "[" << "DeleteFileNode " << "] No implementado";
+		RequestDispatcher::file_info_st file_info;
 
-		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		string msg = handlerError(status);
-		getConnection().printfData(msg.c_str());
+		if (!getRequestDispatcher()->get_file_info(userId,fileId,file_info,status)){
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg = handlerError(status);
+			getConnection().printfData(msg.c_str());
+		}else{
+
+
+
+		}
+		//TODO (martindonofrio): falta implementar como.
+
+		if (!getRequestDispatcher()->delete_file(userId,fileId, status)) {
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg = handlerError(status);
+			getConnection().printfData(msg.c_str());
+		}else{
+
+
+
+
+
+		}
 	}
 }
 

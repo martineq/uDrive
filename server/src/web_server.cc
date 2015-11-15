@@ -1,4 +1,5 @@
 #include "web_server.h"
+#include "rest/delete_dir_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -102,6 +103,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           dfn->setRequestDispatcher(RequestDispatcher::get_instance());
           dfn->execute();
           delete dfn;
+          return MG_TRUE;
+      }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) ){
+          DeleteDirNode* ddn=new DeleteDirNode(mgConnection);
+          ddn->setRequestDispatcher(RequestDispatcher::get_instance());
+          ddn->execute();
+          delete ddn;
           return MG_TRUE;
 
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"POST",4)) ){
