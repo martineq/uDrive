@@ -14,12 +14,6 @@
 #include "util/config_parser.h"
 
 
-// TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
-// deleted files cant be asked by the client
-
-// TODO(mart): Ver el caso donde borro un archivo y el usuario sube a la misma carpeta un archivo con el mismo nombre
-// (posible conflicto de revisiones). Se podría resolver renombrando el viejo archivo recuperado (agregando el nombre "restored" o "(1)" )
-
 /**
  * @brief Request Dispatcher
  * 
@@ -103,6 +97,8 @@ class RequestDispatcher{
     bool recover_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
     void divide_selected_ids(string original_ids, vector<string> selected_ids, string &coincidence_ids, string &no_coincidence_ids);
     bool purge_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
+    bool add_tags_recursive(string dir_id, vector<string> &tags, int& status);
+    bool add_tags_from_id_list(string file_ids, vector<string>& tags, int& status);
     
   public:  
     
@@ -299,6 +295,18 @@ class RequestDispatcher{
     
     
     /**
+     * @brief Gets a vector of tags used by the user in their files and tags used in shared files. 
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param tags ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_tags(string user_id, vector<string> &tags, int& status);
+    
+    
+    /**
      * @brief Sets the image file for an user.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
@@ -469,11 +477,10 @@ class RequestDispatcher{
      * @return bool
      */
     bool recover_deleted_files(string user_id, vector<string> selected_files_id, int& status);
-    
-    
+        
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
-    
+
 };
 
 #endif // REQUESTDISPATCHER_H
