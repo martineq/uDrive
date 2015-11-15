@@ -847,7 +847,16 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   // Verify deleted files (recycle bin)
   EXPECT_TRUE(rd->get_deleted_files(user_id_second,vector_info_4,status));
   EXPECT_EQ(0,vector_info_4.size());   // Number of elements in recycle bin: 1-1=0
+
+  // Tag a file
+  EXPECT_TRUE(rd->modify_file_info(user_id,file_id,"archivo","txt","12/11/15","queen;rock;musica",status));
   
+  // Recover all tags from user and check
+  vector<string> tags;
+  EXPECT_TRUE(rd->get_tags(user_id,tags,status));
+  string tags_obtanined;
+  for(vector<string>::iterator it = tags.begin() ; it!=tags.end() ; ++it){ tags_obtanined.append((*it)+";"); }
+  EXPECT_STREQ("queen;rock;musica;",tags_obtanined.c_str());
   
   // Delete user 2
   EXPECT_TRUE(rd->delete_user(user_id_second,status));

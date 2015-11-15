@@ -321,6 +321,21 @@ bool RequestDispatcher::get_deleted_files(string user_id, vector< RequestDispatc
 }
 
 
+bool RequestDispatcher::get_tags(string user_id, vector<string>& tags, int& status){
+
+  DataHandler::user_info_st dh_user_info;
+  if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
+
+  // Add tags from files and directories from the user
+  if( !add_tags_recursive(dh_user_info.dir_root,tags,status) ){ return false; }
+  
+  // Add tags from shared files
+  if( !add_tags_from_id_list(dh_user_info.shared_files,tags,status) ){ return false; }
+  
+  return true;
+}
+
+
 bool RequestDispatcher::set_user_image(string user_id, const char* p_image_stream, string size, int& status){
 
   string user_image_name = LABEL_USER_IMAGE + user_id;
@@ -432,10 +447,7 @@ bool RequestDispatcher::modify_file_info(string user_id, string file_id, string 
     }
   }
   
-  if( !user_authorized ){
-    status = STATUS_USER_FORBIDDEN;
-    return false;
-  }
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
 
   if( !dh_.modify_file_info(file_id,name,extension,date,tags,file_info_temp.users_shared,user_id,file_info_temp.parent_directory,status)){ return false; }
   
@@ -915,6 +927,10 @@ bool RequestDispatcher::add_info_dirs_from_id_list(string dir_id_list,
 
 
 bool RequestDispatcher::recover_deleted_files_from_user_info(DataHandler::user_info_st user_info, int status){
+  
+// TODO(mart): Ver el caso donde borro un archivo y el usuario sube a la misma carpeta un archivo con el mismo nombre
+// (posible conflicto de revisiones). Se podría resolver renombrando el viejo archivo recuperado (agregando el nombre "restored" o "(1)" )
+  
   vector<string> files_deleted = split_string(user_info.files_deleted,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = files_deleted.begin() ; it!=files_deleted.end() ; ++it) {
     string file_deleted_id = (*it);
@@ -977,6 +993,43 @@ bool RequestDispatcher::purge_deleted_files_from_user_info(DataHandler::user_inf
     if( !decrease_user_quota_used(file_info.owner,file_info.size,status) ){ return false; }
   }
   
+  return true;
+}
+
+
+bool RequestDispatcher::add_tags_recursive(string dir_id, vector<string>& tags, int& status){
+ 
+  // Get directory info
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+
+  // Add tags from this directory
+  vector<string> dir_tags = split_string(dir_info.tags,LABEL_STRING_DELIMITER);
+  if( dir_tags.size()!=0 ){ tags.insert(tags.end(),dir_tags.begin(),dir_tags.end()); }
+  
+  // Add tags from files contained in this directory
+  if( !add_tags_from_id_list(dir_info.files_contained,tags,status) ){ return false; }
+  
+  // Step into sub-directories recursively
+  vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
+    string subdir_id = (*it);
+    if( !add_tags_recursive(subdir_id,tags,status) ){ return false; }
+  }
+  
+  return true;
+}
+
+
+bool RequestDispatcher::add_tags_from_id_list(string file_ids, vector<string>& tags, int& status){
+  vector<string> file_ids_v = split_string(file_ids,LABEL_STRING_DELIMITER);  
+  for(vector<string>::iterator it = file_ids_v.begin() ; it!=file_ids_v.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+    vector<string> file_tags = split_string(file_info.tags,LABEL_STRING_DELIMITER);
+    if( file_tags.size()!=0 ){ tags.insert(tags.end(),file_tags.begin(),file_tags.end()); }
+  }
   return true;
 }
 
