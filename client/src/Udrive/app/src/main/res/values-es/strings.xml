@@ -86,5 +86,6 @@
     <string name="no">No</string>
     <string name="are_you_sure">¿Está seguro?</string>
     <string name="action_show_trash">Papelera</string>
+    <string name="collaborators_is_empty">No collaborators</string>
 
 </resources>

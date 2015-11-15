@@ -2,29 +2,16 @@
     android:id="@+id/RelativeLayout" android:layout_width="fill_parent"
     android:layout_height="wrap_content" android:padding="6dip" android:descendantFocusability="blocksDescendants">
 
-
-    <ImageView android:id="@+id/imageViewUserListItem" android:layout_width="60dp" android:layout_height="60dp"
-        android:layout_margin="5dip"  android:layout_centerVertical="true" />
-
     <TextView android:id="@+id/textViewUserListName" android:layout_height="wrap_content"
         android:layout_width="fill_parent" android:layout_margin="4dip"
-        android:layout_toRightOf="@+id/imageViewUserListItem"
         android:textSize="20sp" android:singleLine="true"
-        android:text="@string/file_name" />
-
-    <TextView android:id="@+id/textViewUserListLastMod" android:layout_height="wrap_content"
-        android:layout_width="fill_parent" android:layout_margin="4dip"
-        android:layout_toRightOf="@+id/imageViewUserListItem" android:layout_below="@id/textViewUserListName"
-        android:textSize="10sp" android:singleLine="true"
-        android:text="@string/file_lastMod" />
+        android:text="@string/email_profile" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/BtnNotCheck"
-        android:layout_alignBottom="@+id/imageViewUserListItem"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/imageViewUserListItem"
         android:src="@drawable/ic_checkbox_blank_circle_outline"
         android:background="@android:color/transparent"/>
 

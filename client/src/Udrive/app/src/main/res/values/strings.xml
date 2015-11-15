@@ -90,6 +90,7 @@
     <string name="no">No</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="action_show_trash">Trash</string>
+    <string name="collaborators_is_empty">No collaborators</string>
 
 
 </resources>
