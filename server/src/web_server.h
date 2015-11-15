@@ -1,6 +1,8 @@
 #ifndef __WEB_SERVER_H__
 #define __WEB_SERVER_H__
 
+
+
 #include <string>
 #include <vector>
 #include "mongoose/mongoose.h"
@@ -15,6 +17,8 @@
 #include "rest/update_photo_node.h"
 #include "rest/update_userfullname_node.h"
 #include "rest/delete_file_node.h"
+#include "rest/delete_trash_node.h"
+#include "rest/delete_file_trash_node.h"
 #include "rest/send_file_node.h"
 #include "rest/send_dir_node.h"
 #include "request_dispatcher.h"

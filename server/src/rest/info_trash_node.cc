@@ -30,8 +30,7 @@ void InfoTrashNode::executeGet() {
 	vector<string> lista=InfoTrashNode::split(getUri(),'/');
 	string dirId="";
 	int status=11;
-
-	if ( (!lista[4].compare("trash")) && (lista.size()==6)){
+	if ( (!lista[4].compare("trash")) && (lista.size()==5)){
 		string userId=getUserId();
 		Log(Log::LogMsgDebug) << "[InfoTrashNode], UserId: " <<userId <<" dirId: "<<dirId;
 
@@ -67,7 +66,7 @@ void InfoTrashNode::executeGet() {
 			if (deleted_files.size()==1) enc=true;
 			if (!enc){
 				//empty dir
-				Log(Log::LogMsgDebug) << "[" << "InfoTrashNode" << "], userId: " << userId << ", -- Empty dir.";
+				Log(Log::LogMsgDebug) << "[InfoTrashNode], userId: " << userId << ", -- Empty dir.";
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				getConnection().printfData(defaultResponse().c_str());
@@ -93,6 +92,7 @@ void InfoTrashNode::executeGet() {
 			}
 	}
 	else{
+		Log(Log::LogMsgDebug) << "[InfoTrashNode], URL: "<<getUri();
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		string msg=handlerError(status);
@@ -103,7 +103,7 @@ void InfoTrashNode::executeGet() {
 std::string InfoTrashNode::defaultResponse(){
 	return "[{ \"id\": \"0\",  \"name\": \"\","
 							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+							"\"shared\": \"\",  \"lastModDate\": \"\", \"userOwner \":\"0\"}]";
 }
 
 std::string InfoTrashNode::getUserId(){

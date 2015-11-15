@@ -7,6 +7,7 @@
 #include "./util/log.h"
 
 using std::string;
+#include <string.h>
 
 class MgConnectionW {
 	public:
@@ -78,6 +79,8 @@ class MgConnectionW {
 		void setMethod(std::string method);
 
 		std::string getContentLength();
+
+		std::string getParameter(std::string key);
 
 	protected:
 		struct mg_connection *conn; 

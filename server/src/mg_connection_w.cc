@@ -1,5 +1,4 @@
 #include "mg_connection_w.h"
-#include "mongoose/mongoose.h"
 
 extern "C" {
 	#include <stdarg.h>
@@ -7,10 +6,9 @@ extern "C" {
 
 #include <cstring>
 #include <json/json.h>
+#include <map>
 
-using std::atoi;
-using std::string;
-using std::strlen;
+using std::vector;
 
 static const char* CONTENT_TYPES[] = {
 	"application/json", // CONTENT_TYPE_JSON
@@ -129,5 +127,37 @@ std::string MgConnectionW::getContentLength(){
 
 }
 
+vector<string> split(const string &s, char delim) {
+    std::stringstream ss(s);
+    string item;
+    vector<string> tokens;
+    while (getline(ss, item, delim)) {
+        tokens.push_back(item);
+    }
+    return tokens;
+}
 
+std::string MgConnectionW::getParameter(std::string key){
+    Log(Log::LogMsgDebug) << "[getParameter]: Recuperando parameters, key: "<<key;
+    const char* query=conn->query_string;
 
+    if (query==NULL){
+        Log(Log::LogMsgDebug) << "[getParameter]: query is NULL";
+        return "";
+    }
+    std::string my_string(query);
+    Log(Log::LogMsgDebug) << "[getParameter]: Querry: "<< my_string;
+
+    vector<string> lista=split(query,'=');
+    string k=lista[0];
+    Log(Log::LogMsgDebug) << "[getParameter]: read key: "  <<k;
+
+    if (k==key) {
+        Log(Log::LogMsgDebug) << "[getParameter]: retrive content of key.";
+        return lista[1];
+    }
+    else {
+        Log(Log::LogMsgDebug) << "[getParameter]: key not present.";
+        return "";
+    }
+}

@@ -38,7 +38,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/info/users",11)) {
       vector<string> lista = WEBServer::split(conn->uri, '/');
       string field = lista[4];
-      Log(Log::LogMsgDebug) << "[" << "URI: /info/users" << "], field: " <<field <<" Method: "<<conn->request_method;
+      Log(Log::LogMsgDebug) << "[" << "URI: /info/users" << "], field: " <<field << " Method: "<<conn->request_method <<", Param fileIds: "<<mgConnection.getParameter("fileIds");
 
       if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           InfoTrashNode * itn=new InfoTrashNode(mgConnection);
@@ -46,12 +46,28 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           itn->execute();
           delete itn;
           return MG_TRUE;
+
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           InfoNode * in=new InfoNode(mgConnection);
           in->setRequestDispatcher(RequestDispatcher::get_instance());
           in->execute();
           delete in;
           return MG_TRUE;
+
+      }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) and (mgConnection.getParameter("fileIds")=="") ){
+          DeleteTrashNode * dtn=new DeleteTrashNode(mgConnection);
+          dtn->setRequestDispatcher(RequestDispatcher::get_instance());
+          dtn->execute();
+          delete dtn;
+          return MG_TRUE;
+
+      }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) ){
+          DeleteFileTrashNode * dftn=new DeleteFileTrashNode(mgConnection);
+          dftn->setRequestDispatcher(RequestDispatcher::get_instance());
+          dftn->execute();
+          delete dftn;
+          return MG_TRUE;
+
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/file/users",11)) {
