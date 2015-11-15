@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Base64;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -148,7 +149,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void editName(View view) {
-        final EditText firstname = new EditText(UserProfileActivity.this);
+        /*final EditText firstname = new EditText(UserProfileActivity.this);
         final EditText lastname = new EditText(UserProfileActivity.this);
         LinearLayout layout = new LinearLayout(UserProfileActivity.this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -161,9 +162,16 @@ public class UserProfileActivity extends AppCompatActivity {
         firstname.setGravity(Gravity.CENTER_HORIZONTAL);
         lastname.setGravity(Gravity.CENTER_HORIZONTAL);
         layout.addView(firstname);
-        layout.addView(lastname);
+        layout.addView(lastname);*/
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View layout = inflater.inflate(R.layout.edit_fullname_layout, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(UserProfileActivity.this);
+        builder.setView(layout);
+        builder.setIcon(R.drawable.ic_pencil_24);
+        final EditText firstname = ((EditText)findViewById(R.id.edittext_firstname));
+        final EditText lastname = ((EditText)findViewById(R.id.edittext_lastname));
+
         builder.setCancelable(false)
                 .setTitle(getString(R.string.screen_name))
                 .setView(layout)
@@ -173,7 +181,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 lastname.getText().toString()), new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
-                                if (object.getResultCode() != 1){
+                                if (object.getResultCode() != 1) {
                                     Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_error), Toast.LENGTH_LONG).show();
                                 } else {
                                     // If Request OK:
@@ -185,6 +193,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                     Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_ok), Toast.LENGTH_LONG).show();
                                 }
                             }
+
                             @Override
                             public void onFailure(String message, int status) {
                                 Toast.makeText(UserProfileActivity.this, getString(R.string.fullname_error), Toast.LENGTH_LONG).show();
@@ -193,11 +202,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     }
                 })
-                .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                        .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
         AlertDialog alert = builder.create();
         alert.show();
     }

@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_account_24"
+                android:src="@drawable/ic_timelapse_24"
                 android:paddingLeft="16dp"/>
             <TextView
                 android:layout_width="wrap_content"
