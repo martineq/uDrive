@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "db_handler.h"
 #include "db_constants.h"
 
@@ -131,6 +132,25 @@ class DataHandler {
      * @return bool
      */
     bool add_email_to_list(string email, int status);
+
+    /**
+     * @brief Remove user email from email list
+     * 
+     * @param email ...
+     * @param status ...
+     * @return bool
+     */
+    bool remove_email_from_list(string email, int status);
+    
+    /**
+     * @brief Splits a string with a delimiter in string tokens 
+     * 
+     * @param string_to_split ...
+     * @param delimiter ...
+     * @return std::vector< std::string >
+     */
+    vector<string> split_string(string string_to_split, char delimiter);
+
     
   public:
 

@@ -224,7 +224,7 @@ bool DataHandler::get_user_mail_list(string& email_list, int &status){
 bool DataHandler::delete_user(string user_id, int& status){
 
   string email;
-  if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(email),status) ) return false;
+  if( !dbh_get(generate_user_key(user_id,SUFFIX_EMAIL),&(email),status) ){ return false; }
   
   dbh_.clear_batch();
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_EMAIL));
@@ -235,10 +235,12 @@ bool DataHandler::delete_user(string user_id, int& status){
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_DIR_ROOT));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_SHARED_FILES));
   dbh_.erase_batch(generate_user_key(user_id,SUFFIX_QUOTA_USED));
-  dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email);
-   
+  dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email);  
+  
   // Saves data
   if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
+  
+  if( !remove_email_from_list(email,status) ){ return false; }
   
   return true;
 }
@@ -468,4 +470,31 @@ bool DataHandler::add_email_to_list(string email, int status){
   list_of_user_email.append(LABEL_STRING_DELIMITER+email);
   if( !dbh_put(PREFIX_USER_EMAIL_LIST,list_of_user_email,status) ){ return false; }
   return true;
+}
+
+
+bool DataHandler::remove_email_from_list(string email, int status){
+  string list_of_user_email;
+  if( !dbh_get(PREFIX_USER_EMAIL_LIST,&list_of_user_email,status) ){ return false; }
+
+  // Remove the email by creating a new list without the email
+  vector<string> list = split_string(list_of_user_email,LABEL_STRING_DELIMITER);  
+  string new_list;
+  for(vector<string>::iterator it = list.begin() ; it!=list.end() ; ++it) {
+    if( (*it).compare(email)!=0 ){ new_list.append( LABEL_STRING_DELIMITER + (*it) ); }
+  }
+  
+  if( !dbh_put(PREFIX_USER_EMAIL_LIST,new_list,status) ){ return false; }
+  return true;
+}
+
+
+vector<string> DataHandler::split_string(string string_to_split, char delimiter){
+    stringstream ss(string_to_split);
+    string item;
+    vector<string> tokens;
+    while (getline(ss,item,delimiter)) {
+      if( !item.empty() ){ tokens.push_back(item); }
+    }
+    return tokens;
 }
