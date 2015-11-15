@@ -273,10 +273,8 @@ TEST(DataHandlerTest, UserAdd_GetInfoPassToken_GetDirInfo) {
   cout << "'Size': " << dir_info_jack.size << endl;
   cout << "'cantItems' calculated from files contained: "  << dir_info_jack.files_contained << endl;
   cout << "...and calculated from sub directories contained: "  << dir_info_jack.directories_contained << endl;
-
   cout << "'type': d" << endl;
 
-  
   // Delete used temp folder
   system("rm -rf /tmp/testdb");
 }
@@ -819,6 +817,14 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_TRUE(ok); 
   string file_4_r1_obtanied(p_file_stream_4,stoul(size_file_4,nullptr,10));
   EXPECT_STREQ(p_bin_stream_4,file_4_r1_obtanied.c_str());
+
+  
+  // Print full list of emails with pattern "@"
+  vector<string> list;
+  EXPECT_TRUE(rd->get_user_email_list_by_pattern("@",list,status));
+  string list_obtanined;
+  for(vector<string>::iterator it = list.begin() ; it!=list.end() ; ++it){ list_obtanined.append((*it)+";"); }
+  EXPECT_STREQ("mail@mail.com;mailsecond@mail.com;",list_obtanined.c_str());
   
   
   // Delete file (and check)

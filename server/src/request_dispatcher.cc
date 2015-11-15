@@ -187,6 +187,7 @@ bool RequestDispatcher::get_directory_info(string user_id, string dir_id, Reques
   dir_info.parent_directory = dir_info_temp.parent_directory;
   dir_info.size = dir_info_temp.size;
   dir_info.tags = dir_info_temp.tags;
+  dir_info.owner = dir_info_temp.owner;
   
   if( !is_root_dir ){
     // Check if the parent dir is the root dir, and then, format the root dir ID (change to id==0)
@@ -332,6 +333,26 @@ bool RequestDispatcher::get_tags(string user_id, vector<string>& tags, int& stat
   // Add tags from shared files
   if( !add_tags_from_id_list(dh_user_info.shared_files,tags,status) ){ return false; }
   
+  return true;
+}
+
+
+bool RequestDispatcher::get_user_email_full(vector<string>& list, int& status){
+  string str_list;
+  list.clear();
+  if( !dh_.get_user_mail_list(str_list,status) ){ return false; }
+  list = split_string(str_list,LABEL_STRING_DELIMITER);
+  return true;
+}
+
+
+bool RequestDispatcher::get_user_email_list_by_pattern(string pattern, vector<string>& list, int& status){
+  vector<string> full_list;
+  list.clear();
+  if( !get_user_email_full(full_list,status) ){ return false; }
+  for(vector<string>::iterator it = full_list.begin() ; it!=full_list.end() ; ++it) {
+      if( (*it).find(pattern)!=string::npos ){ list.push_back((*it)); }
+  }
   return true;
 }
 
@@ -884,6 +905,7 @@ bool RequestDispatcher::add_info_files_from_id_list(string file_id_list,
     info_element.type = LABEL_A;  
     info_element.size = stoul_decimal(file_info.size);
     info_element.number_of_items = 0; // File is always number_of_items==0 
+    info_element.owner = file_info.owner;
     
     // Calculate number of users shared
     vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
@@ -912,6 +934,7 @@ bool RequestDispatcher::add_info_dirs_from_id_list(string dir_id_list,
     info_element.type = LABEL_D;  
     info_element.shared = LABEL_FALSE; // Directory is always shared==false 
     info_element.size = stoul_decimal(subdir_info.size);
+    info_element.owner = subdir_info.owner;
     
     // Calculate number of items
     vector<string> temp_subdir_ids = split_string(subdir_info.directories_contained,LABEL_STRING_DELIMITER);

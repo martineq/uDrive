@@ -1,13 +1,16 @@
 #ifndef  DB_HANDLER_H
 #define  DB_HANDLER_H
 
+#include <string>
+#include <iostream>
+
 #include "rocksdb/db.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/options.h"
 #include "rocksdb/write_batch.h"
 #include "util/log.h"
-#include <string>
-#include <iostream>
+
+using namespace std;
 
 class DbHandler {
 
@@ -29,7 +32,7 @@ class DbHandler {
     * @param filename Name of the database file.
     * @return bool
     */
-    bool open(std::string filename);
+    bool open(string filename);
     
     /**
     * @brief Set the database entry for "key" to "value". If "key" already exists, it will be overwritten.
@@ -39,7 +42,7 @@ class DbHandler {
     * @param value value to put on the register
     * @return bool
     */
-    bool put(std::string key, std::string value);
+    bool put(string key, string value);
     
     /**
     * @brief Gets the database entry for "key" to "value".
@@ -52,7 +55,7 @@ class DbHandler {
     * @param found indicates if the value is founded
     * @return bool
     */
-    bool get(std::string key, std::string* value, bool& found);
+    bool get(string key, string* value, bool& found);
     
     /**
     * @brief   Remove the database entry (if any) for "key".  Returns OK on
@@ -62,7 +65,7 @@ class DbHandler {
     * @param key Name of the key stored in the database to be erased
     * @return bool
     */
-    bool erase(std::string key);
+    bool erase(string key);
     
     /**
      * @brief Batch mode of put(). Use write_batch() to make the changes.
@@ -71,7 +74,7 @@ class DbHandler {
      * @param value value to put on the register
      * @return void
      */
-    void put_batch(std::string key, std::string value);
+    void put_batch(string key, string value);
     
     /**
      * @brief Batch mode of erase(). Use write_batch() to make the changes.
@@ -79,7 +82,7 @@ class DbHandler {
      * @param key Name of the key stored in the database to be erased
      * @return void
      */
-    void erase_batch(std::string key);
+    void erase_batch(string key);
     
     /**
      * @brief Clear all updates buffered in this batch.
@@ -95,7 +98,6 @@ class DbHandler {
      */
     bool write_batch();
 
-    
 }; 
 
 #endif // DB_HANDLER_H
