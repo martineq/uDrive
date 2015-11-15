@@ -36,13 +36,21 @@ void UpdateUserFullNameNode::executePut() {
         Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok";
 
         std::string lastname=getConnection().getBodyJson("lastname");
-        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok";
+        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field lastname ok";
+        bool enc=true;
 
         RequestDispatcher::user_info_st user_info;
-
-        //TODO (Martindonofrio): Llamar al metodo que solo actualiza el nombre del usuario sin pedir el password.
-
         if (!getRequestDispatcher()->get_user_info(userId,user_info,status)){
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+            getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+            string msg=handlerError(status);
+            getConnection().printfData(msg.c_str());
+            enc=false;
+        }else{
+            Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: retrieve user data ok";
+        }
+
+        if (!getRequestDispatcher()->modify_user_info(userId,user_info.email,firstname,lastname,user_info.gps_lat,user_info.gps_lat,status)) {
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
@@ -52,7 +60,7 @@ void UpdateUserFullNameNode::executePut() {
             Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode] Updating info, UserID: " << userId;
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-            string msg="{\"resultCode\": 1}";
+            string msg="{\"resultCode\": \"1\"}";
             Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: "<<msg;
             getConnection().printfData(msg.c_str());
         }
@@ -65,7 +73,7 @@ void UpdateUserFullNameNode::executePut() {
 }
 
 std::string UpdateUserFullNameNode::defaultResponse(){
-    return "{\"resultCode\": 2}";
+    return "{\"resultCode\": \"2\"}";
 }
 
 std::string UpdateUserFullNameNode::getUserId() {
