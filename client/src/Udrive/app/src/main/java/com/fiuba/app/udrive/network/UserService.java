@@ -41,8 +41,6 @@ public class UserService extends AbstractService {
         @PUT("/userfullname/{userId}")
         void updateFullName(@Path("userId") int userId, @Body UserFullName uFullName, Callback<GenericResult> result);
 
-        @GET("/photo/{userId}")
-        void getPhoto(@Path("userId") int userId, Callback<MyPhoto> photo);
     }
 
     private UserServiceApi mUserServiceApi;
@@ -152,22 +150,4 @@ public class UserService extends AbstractService {
         });
     }
 
-    public void getPhoto(int userId, final ServiceCallback<MyPhoto> photo){
-        mUserServiceApi.getPhoto(userId, new Callback<MyPhoto>() {
-            @Override
-            public void success(MyPhoto myPhoto, Response response) {
-                photo.onSuccess(myPhoto, response.getStatus());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                int status;
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    status = 503;
-                } else
-                    status = error.getResponse().getStatus();
-                photo.onFailure(error.getMessage(), status);
-            }
-        });
-    }
 }

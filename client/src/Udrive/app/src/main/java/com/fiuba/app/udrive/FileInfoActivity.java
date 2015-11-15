@@ -1,12 +1,16 @@
 package com.fiuba.app.udrive;
 
-import android.graphics.drawable.Drawable;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -16,22 +20,27 @@ import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
+import com.fiuba.app.udrive.model.FolderData;
+import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserBasicData;
 import com.fiuba.app.udrive.model.Util;
+import com.fiuba.app.udrive.network.FileMetadataService;
+import com.fiuba.app.udrive.network.ServiceCallback;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import retrofit.Callback;
 
 public class FileInfoActivity extends AppCompatActivity {
     public static final String FILE_INFO = "fileInfo";
     private FileInfo mFileInfo = null;
+    private FileMetadataService mFileMetadataService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFileMetadataService = new FileMetadataService(((String)getIntent().getSerializableExtra("token"))
+            ,FileInfoActivity.this);
         setContentView(R.layout.activity_file_info);
         ((ScrollView)findViewById(R.id.scroll_layout)).smoothScrollTo(0,0);
         //mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
@@ -39,6 +48,7 @@ public class FileInfoActivity extends AppCompatActivity {
         /** TODO: delete this fragment after loading file info from HTTP response **/
         UserBasicData owner = new UserBasicData("Owner", "User", "owner@owner.com");
         File file = new File("Image.jpg", 565421,'a', false, "21/08/2015 08:53", null);
+        file.setId(1);
         UserBasicData updatedBy = owner;
         double updatedFromLatitude = -34.795713;
         double updatedFromLongitude = -58.348321;
@@ -80,15 +90,15 @@ public class FileInfoActivity extends AppCompatActivity {
         setListViewHeightBasedOnItems(access);
 
         // filename and icon
-        ((TextView)findViewById(R.id.tv_filename)).setText(mFileInfo.getFile().getName());
-        if (!mFileInfo.getFile().isDir()){
+        ((TextView) findViewById(R.id.tv_filename)).setText(mFileInfo.getFile().getName());
+        if (!mFileInfo.getFile().isDir()) {
             if (mFileInfo.getFile().getShared())
-                ((ImageView)findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_file_cloud);
+                ((ImageView) findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_file_cloud);
             else
-                ((ImageView)findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_file);
+                ((ImageView) findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_file);
         } else {
             if (mFileInfo.getFile().getShared())
-                ((ImageView)findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_folder_account);
+                ((ImageView) findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_folder_account);
         }
 
         // tags
@@ -119,10 +129,8 @@ public class FileInfoActivity extends AppCompatActivity {
             numItems = mFileInfo.getFile().getCantItems().toString();
         }
         ((TextView)findViewById(R.id.label_items)).setText(numItems);
-
-
-
     }
+
 
     private String getPanelHTML(ArrayList<Tag> tagList){
         String html = "<html>" +
@@ -178,8 +186,49 @@ public class FileInfoActivity extends AppCompatActivity {
 
     }
 
-    public void editFileName(View view){
-        Toast.makeText(FileInfoActivity.this, "Going to file name edition...", Toast.LENGTH_LONG).show();
+    public void editFileName(View view) {
+        LayoutInflater inflater = getLayoutInflater();
+        final View layout = inflater.inflate(R.layout.edit_file_name, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileInfoActivity.this);
+        builder.setView(layout);
+        builder.setIcon(R.drawable.ic_pencil_24);
+        final EditText filename = ((EditText)layout.findViewById(R.id.edit_filename));
+        String name = Util.capitalize(mFileInfo.getFile().getName());
+        filename.setText(name);
+
+        builder.setCancelable(false)
+                .setTitle(getString(R.string.edit_filename_title))
+                .setView(layout)
+                .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mFileMetadataService.updateFilename((mFileInfo.getFile().getId()), new FolderData(filename.getText().toString()),
+                                new ServiceCallback<GenericResult>() {
+                                    @Override
+                                    public void onSuccess(GenericResult object, int status) {
+                                        if (object.getResultCode() != 1) {
+                                            Toast.makeText(FileInfoActivity.this, getString(R.string.error_filename), Toast.LENGTH_LONG).show();
+                                        } else {
+                                            // If Request OK:
+                                            mFileInfo.getFile().setName(filename.getText().toString());
+                                            ((TextView) findViewById(R.id.tv_filename)).setText(mFileInfo.getFile().getName());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message, int status) {
+                                        Toast.makeText(FileInfoActivity.this, getString(R.string.error_filename), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

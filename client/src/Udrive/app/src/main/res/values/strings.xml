@@ -94,5 +94,13 @@
     <string name="whohasaccess">Who has access</string>
     <string name="tags">Tags</string>
     <string name="error_fileinfo">Error on loading file information</string>
+    <string name="error_filename">Error on updating the filename</string>
+    <string name="edit_filename_title">Update filename</string>
+    <string name="owner">Owner</string>
+    <string name="size">Size</string>
+    <string name="lastUpd">Last update</string>
+    <string name="by">By</string>
+    <string name="from">From</string>
+    <string name="items">No. items</string>
 
 </resources>

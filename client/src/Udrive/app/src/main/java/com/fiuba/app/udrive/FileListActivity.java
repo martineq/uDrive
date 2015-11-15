@@ -304,7 +304,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             @Override
             public void onSuccess(FileInfo object, int status) {*/
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
-        // infoIntent.putExtra("fileInfo", object);
+                // infoIntent.putExtra("fileInfo", object);
+                infoIntent.putExtra("token", mUserAccount.getToken());
                 startActivity(infoIntent);
        /*     }
 

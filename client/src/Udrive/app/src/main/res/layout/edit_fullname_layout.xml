@@ -19,11 +19,12 @@
             android:layout_marginTop="14dp"/>
         <EditText
             android:id="@+id/edittext_firstname"
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@+id/label_firstname"/>
+            android:layout_toRightOf="@+id/label_firstname"
+            android:paddingLeft="8dp"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -39,10 +40,11 @@
             android:layout_marginTop="14dp"/>
         <EditText
             android:id="@+id/edittext_lastname"
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@+id/label_lastname"/>
+            android:layout_toRightOf="@+id/label_lastname"
+            android:paddingLeft="8dp"/>
     </RelativeLayout>
 </LinearLayout>
