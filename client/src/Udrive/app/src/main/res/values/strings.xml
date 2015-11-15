@@ -89,4 +89,10 @@
     <string name="error_savetags">Error on saving tags</string>
     <string name="ok_savetags">Tags updated successfully!</string>
 
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">File info</string>
+    <string name="whohasaccess">Who has access</string>
+    <string name="tags">Tags</string>
+    <string name="error_fileinfo">Error on loading file information</string>
+
 </resources>

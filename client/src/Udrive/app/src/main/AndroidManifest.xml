@@ -22,7 +22,7 @@
         <activity
             android:name=".FileListActivity"
             android:label="@string/title_activity_file_list"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -54,6 +54,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fiuba.app.udrive.FileListActivity" />
+        </activity>
+        <activity
+            android:name=".FileInfoActivity"
+            android:label="@string/fileinfo_title">
         </activity>
     </application>
 

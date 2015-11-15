@@ -1,7 +1,9 @@
 package com.fiuba.app.udrive.network;
 
 import android.content.Context;
+import android.telecom.Call;
 
+import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.Tag;
@@ -34,6 +36,10 @@ public class FileMetadataService extends AbstractService {
         @PUT("/filetags/files/{fileId}")
         void updateTags(@Path("fileId") int fileId, @Body ArrayList<Tag> tagList,
                         Callback<GenericResult> result);
+
+        // Gets the complete info about a folder or file
+        @GET("/fileinfo/files/{fileId}")
+        void getFileInfo(@Path("fileId") int fileId, Callback<FileInfo> fileInfo);
 
     }
 
@@ -86,6 +92,26 @@ public class FileMetadataService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 result.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets all the folder or file info items
+    public void getFileInfo(final int fileId, final ServiceCallback<FileInfo> fileInfo){
+        mFileTagServiceApi.getFileInfo(fileId, new Callback<FileInfo>() {
+            @Override
+            public void success(FileInfo fInfo, Response response) {
+                fileInfo.onSuccess(fInfo, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                fileInfo.onFailure(error.getMessage(), status);
             }
         });
     }

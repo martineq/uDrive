@@ -85,4 +85,10 @@
     <string name="error_savetags">Error al guardar las etiquetas</string>
     <string name="ok_savetags">¡Etiquetas actualizadas correctamente!</string>
 
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">Información de archivo</string>
+    <string name="whohasaccess">Tienen acceso</string>
+    <string name="tags">Etiquetas</string>
+    <string name="error_fileinfo">Error al cargar la información del archivo o carpeta</string>
+
 </resources>

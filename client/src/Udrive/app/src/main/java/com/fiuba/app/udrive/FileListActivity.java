@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fiuba.app.udrive.model.File;
+import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.ObjectStream;
 import com.fiuba.app.udrive.model.Tag;
@@ -308,7 +309,22 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     @Override
     public void onInformationClick(int FileItem) {
-        Log.i(TAG, "Information File position " + FileItem);}
+        Log.i(TAG, "Information File position " + FileItem);
+       /* mFileMetadataService.getFileInfo(mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
+            @Override
+            public void onSuccess(FileInfo object, int status) {*/
+                Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
+               // infoIntent.putExtra("fileInfo", object);
+                startActivity(infoIntent);
+       /*     }
+
+            @Override
+            public void onFailure(String message, int status) {
+                Toast.makeText(FileListActivity.this, getString(R.string.error_fileinfo), Toast.LENGTH_LONG).show();
+            }
+        });*/
+
+    }
 
     @Override
     public void onShareClick(int FileItem) {

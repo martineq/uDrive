@@ -68,22 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.email)).append(": "+mUserProfile.getEmail());
 
         // Last location city
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = null;
-        String location = null;
-        if ((mUserProfile.getGPSLatitude()!=0.00)&&(mUserProfile.getGPSLongitude()!=0.00)) {
-            try {
-                //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
-                addresses = geocoder.getFromLocation(mUserProfile.getGPSLatitude(),
-                        mUserProfile.getGPSLongitude(), 1);
-                location = addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2);
-            } catch (IOException e) {
-                // do something
-            }
-        } else {
-            location = getString(R.string.unknown_location);
-        }
-
+        String location = Util.getGPSLocation(this, mUserProfile.getGPSLatitude(), mUserProfile.getGPSLongitude());
         //String cityName = addresses.get(0).getAddressLine(0);
 
         ((TextView)findViewById(R.id.lastLocation)).setText(Html.fromHtml(getString(R.string.last_location)));
