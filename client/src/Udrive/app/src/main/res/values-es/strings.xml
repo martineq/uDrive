@@ -75,7 +75,6 @@
     <string name="delete_action">Eliminar</string>
     <string name="cancel_action">Cancelar</string>
     <string name="delete_option_title">Eliminar</string>
-    <string name="delete_option_message">¿Quieres eliminar?</string>
     <string name="title_activity_trash">Papelera</string>
     <string name="action_empty_trash">Vaciar</string>
     <string name="action_restore_all">Restaurar todo</string>
@@ -87,5 +86,21 @@
     <string name="are_you_sure">¿Está seguro?</string>
     <string name="action_show_trash">Papelera</string>
     <string name="collaborators_is_empty">No collaborators</string>
+    <string name="delete_option_message">Desea eliminar?</string>
+
+    <!-- Strings related to file tagging dialog -->
+    <string name="file_tag_title">Etiquetar</string>
+    <string name="tag_hint"><i>Ingresa el tag aquí...</i></string>
+    <string name="file_type"><![CDATA[<b>Archivo</b>]]></string>
+    <string name="dir_type"><![CDATA[<b>Carpeta</b>]]></string>
+    <string name="error_savetags">Error al guardar las etiquetas</string>
+    <string name="ok_savetags">¡Etiquetas actualizadas correctamente!</string>
+
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">Información de archivo</string>
+    <string name="whohasaccess">Tienen acceso</string>
+    <string name="tags">Etiquetas</string>
+    <string name="error_fileinfo">Error al cargar la información del archivo o carpeta</string>
 
 </resources>
+

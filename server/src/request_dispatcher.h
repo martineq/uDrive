@@ -6,17 +6,13 @@
 #include <vector>
 #include <sstream>
 
+
 #include "data_handler.h"
 #include "file_handler.h"
 #include "zip_handler.h"
 #include "util/log.h"
+#include "util/config_parser.h"
 
-
-// TODO(mart): Hacer una función que devuelva revisiones anteriores de archivos. Debe chequear que la revision exista.
-// deleted files cant be asked by the client
-
-// TODO(mart): Ver el caso donde borro un archivo y el usuario sube a la misma carpeta un archivo con el mismo nombre
-// (posible conflicto de revisiones). Se podría resolver renombrando el viejo archivo recuperado (agregando el nombre "restored" o "(1)" )
 
 /**
  * @brief Request Dispatcher
@@ -34,6 +30,7 @@ class RequestDispatcher{
       size_t number_of_items;
       string shared;
       string lastModDate;
+      string owner;
     } ;
 
     struct user_info_st {
@@ -74,7 +71,7 @@ class RequestDispatcher{
     FileHandler fh_;
     ZipHandler zh_;
     size_t max_user_quota_;
-    static RequestDispatcher* request_dispatcher_instance;
+    static RequestDispatcher* request_dispatcher_instance_;
     bool init_ok_ = false;
     
     RequestDispatcher(string database_path,size_t max_user_quota);
@@ -92,8 +89,17 @@ class RequestDispatcher{
     unsigned long stoul_decimal(const string& str);
     string add_key_to_string_list(string list, string key);
     string remove_key_from_string_list(string list, string key);
-    bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector< RequestDispatcher::info_element_st >& directory_element_info, int& status);
+    bool get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,vector<RequestDispatcher::info_element_st>& directory_element_info, int& status);
     bool delete_dir_recursive(string dir_id, int& status);
+    bool search_revision_file(string parent_dir_id, string name, string extension, bool &revision_found, string &revision_file_id, DataHandler::file_info_st &revision_file_info, int status);
+    bool increase_file_revision(string file_id, int& status);
+    bool add_info_files_from_id_list(string file_id_list, vector<RequestDispatcher::info_element_st>& files_vector, int& status);    
+    bool add_info_dirs_from_id_list(string dir_id_list, vector<RequestDispatcher::info_element_st>& directories_vector, int& status);    
+    bool recover_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
+    void divide_selected_ids(string original_ids, vector<string> selected_ids, string &coincidence_ids, string &no_coincidence_ids);
+    bool purge_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
+    bool add_tags_recursive(string dir_id, vector<string> &tags, int& status);
+    bool add_tags_from_id_list(string file_ids, vector<string>& tags, int& status);
     
   public:  
     
@@ -104,12 +110,17 @@ class RequestDispatcher{
      * 
      * @return RequestDispatcher*
      */
-    static RequestDispatcher *get_instance(string database_path,size_t max_user_quota){
-        if(request_dispatcher_instance==nullptr){ request_dispatcher_instance= new RequestDispatcher(database_path,max_user_quota); }
-        if( !(request_dispatcher_instance->db_is_initiated()) ){ return nullptr;} 
-        return request_dispatcher_instance;
+    static RequestDispatcher *get_instance() {
+        if(request_dispatcher_instance_==nullptr){ 
+          ConfigParser::Configuration config;
+          if ( (ConfigParser::takeConfFromFile(config))!=0 ){ return nullptr;} 
+          request_dispatcher_instance_= new RequestDispatcher(config.dbpath,config.maxquotauser); 
+        }
+        if( !(request_dispatcher_instance_->db_is_initiated()) ){ return nullptr;} 
+        return request_dispatcher_instance_;
     }
-        
+
+    
     /**
     * @brief Adds a new user on the DB. (Used in sign up)
     *        Creates a "root" directory and user ID. Root directory is always id=0. Returns true on success.
@@ -138,7 +149,7 @@ class RequestDispatcher{
     * @param status returns DataHandler status ONLY if @return==false
     * @return bool
     */
-    bool log_in(string email, string password, string new_token, string& user_id, int& status);
+    bool log_in(string email, string password, string new_token, string& user_id, string& quota_available, int& status);
     
     
     /**
@@ -170,8 +181,7 @@ class RequestDispatcher{
     /**
      * @brief Saves a new file. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
-     *        TODO(mart): implement function: "If the Name and Dir ID is the same, check the hash with previous 
-     *                                         revision and, if they are different, make new revision."
+     *        
      * @param user_id ...
      * @param name ...
      * @param extension ...
@@ -262,6 +272,61 @@ class RequestDispatcher{
     
     
     /**
+     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param shared_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_shared_files(string user_id,vector<RequestDispatcher::info_element_st>& shared_files, int& status);
+    
+   
+    /**
+     * @brief Gets a vector of elements (files) contained in deleted files for an user (recycle bin). 
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param deleted_files return vector of RequestDispatcher::info_element_st
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_deleted_files(string user_id,vector<RequestDispatcher::info_element_st>& deleted_files, int& status);
+    
+    
+    /**
+     * @brief Gets a vector of tags used by the user in their files and tags used in shared files. 
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param tags ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_tags(string user_id, vector<string> &tags, int& status);
+    
+    /**
+     * @brief Gets the full list of email for all registered users
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param pattern ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_user_email_list_full(vector<string> &list, int& status);
+    
+    /**
+     * @brief Gets the list of email for all registered users, filtered by pattern
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param pattern ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_user_email_list_by_pattern(string pattern, vector<string> &list, int& status);
+    
+    /**
      * @brief Sets the image file for an user.  Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
@@ -300,22 +365,45 @@ class RequestDispatcher{
      */
     bool unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
     
-    
+        
     /**
-     * @brief Gets a vector of elements (files) contained in shared files for an user. Returns true on success.
+     * @brief Modifies information of the user. Returns true on success.
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param shared_files return vector of RequestDispatcher::info_element_st
+     * @param email ...
+     * @param name ...
+     * @param location ...
      * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
-    bool get_shared_files(string user_id,vector< RequestDispatcher::info_element_st >& shared_files, int& status);
+    bool modify_user_info(string user_id, string email, string first_name, string last_name, string gps_lat, string gps_lon, int& status);
+
+    
+    /**
+     * @brief Modifies the password of the user. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param password ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool modify_user_password(string user_id, string password, int& status);
     
     
-// TODO(mart): bool modify_user_info(string user_id, string email, string password, string name, string location, string files_shared, int& status);
-    
-    
+    /**
+     * @brief Modifies information of the directory. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param dir_id ...
+     * @param name ...
+     * @param date ...
+     * @param tags ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     bool modify_directory_info(string user_id, string dir_id, string name, string date, string tags, int& status);
     
 
@@ -335,9 +423,30 @@ class RequestDispatcher{
     bool modify_file_info(string user_id, string file_id, string name, string extension, string date, string tags, int& status);
 
     
-// TODO(mart): bool delete_user(string user_id, int& status);
+    /**
+     * @brief Deletes all info linked to the user: deletes the root directory, sub-directories and 
+     *        files contanined (logically and physically). Also removes the profile info of the user
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     
+    bool delete_user(string user_id, int& status);
     
+
+    /**
+     * @brief Deletes the directory, sub-directories and files contanined (logically). 
+     *        Puts file into a "user deleted files" sector, fo a future purge or recover.
+     *        Deleted files must not be asked by the client.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param dir_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
     bool delete_directory(string user_id, string dir_id, int& status);
     
     
@@ -357,27 +466,53 @@ class RequestDispatcher{
     
     /**
      * @brief Deletes physically all files (and their revisions) previously deleted
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool purge_deleted_files(string user_id, int& status);
     
+    
+    /**
+     * @brief Deletes physically all files (and their revisions) previously deleted
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param selected_files_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool purge_deleted_files(string user_id, vector<string> selected_files_id, int& status);
 
-   /**
+    
+    /**
      * @brief Recover files deleted, making files visible. If the original parent dir not exists, move the file to the root dir.
      *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool recover_deleted_files(string user_id, int& status);
     
     
-    bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
+    /**
+     * @brief Recover files deleted, making files visible. If the original parent dir not exists, move the file to the root dir.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param selected_files_id ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool recover_deleted_files(string user_id, vector<string> selected_files_id, int& status);
+       
     
+    
+    bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
+
 };
 
 #endif // REQUESTDISPATCHER_H

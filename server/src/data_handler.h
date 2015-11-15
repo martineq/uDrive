@@ -86,6 +86,14 @@ class DataHandler {
     */
     void init_id_ticket(string type_of_id);
     
+    
+    /**
+     * @brief Initiates the list of users
+     * 
+     * @return void
+     */
+    void init_user_list();
+    
     /**
     * @brief Prints a message error on std::cerr
     * 
@@ -115,6 +123,15 @@ class DataHandler {
     */
     bool dbh_put(string key, string value, int& status);
 
+    /**
+     * @brief Add user email to email list
+     * 
+     * @param email ...
+     * @param status ...
+     * @return bool
+     */
+    bool add_email_to_list(string email, int status);
+    
   public:
 
     struct user_info_st {
@@ -293,6 +310,14 @@ class DataHandler {
     
     
     /**
+     * @brief Gets the list of email for all registered users
+     * 
+     * @param email_list ...
+     * @return bool
+     */
+    bool get_user_mail_list(string& email_list, int &status);
+    
+    /**
     * @brief Deletes all information for the user ID and their Index entry. Returns true on success.
     *        On error returns false and a DataHandler status (see db_constants.h)
     *        (Warning: all info will be deleted without any check for files or directories)
@@ -403,6 +428,17 @@ class DataHandler {
     * @return bool
     */
     bool modify_file_info(string file_id, string name, string extension, string date, string tags, string users_shared, string user_id_modifier, string parent_dir, int& status);
+    
+    /**
+    * @brief Modifies file revision for an file_id. Returns true on success.
+    *        On error returns false and a DataHandler status (see db_constants.h)
+    *     
+    * @param file_id ...
+    * @param revision ...
+    * @param status status returns DataHandler status ONLY if @return==false
+    * @return bool
+    */
+    bool modify_file_revision(string file_id, string revision, int& status);
 
 };
 

@@ -1,7 +1,9 @@
 package com.fiuba.app.udrive.model;
 
 
-public class Collaborator {
+import java.io.Serializable;
+
+public class Collaborator implements Serializable {
 
     private Integer id;
     private String mFirstName;

@@ -2,7 +2,6 @@
 #include <cstring>
 
 using std::string;
-using std::strncmp;
 
 Node::Node(MgConnectionW& conn){
     setConnection(conn);
@@ -23,6 +22,10 @@ void Node::execute() {
 std::string Node::getUserId() {return "0";}
 
 bool Node::auth(int &status) {
+    if (getConnection().getAuthorization()=="") {
+        Log(Log::LogMsgDebug) << "[" << "Auth node" << "] UserId: " <<getUserId()<<" Not Authorization information";
+        return false;
+    }
     Log(Log::LogMsgDebug) << "[" << "Auth node" << "] UserId: " <<getUserId() <<" Token: "<<getConnection().getAuthorization();
     return getRequestDispatcher()->check_token(getUserId(),getConnection().getAuthorization(),status);
 }

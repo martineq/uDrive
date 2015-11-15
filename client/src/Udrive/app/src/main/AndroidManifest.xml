@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".FileListActivity"
-            android:label="@string/title_activity_file_list" >
+            android:label="@string/title_activity_file_list"
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -58,6 +59,12 @@
             android:name=".TrashActivity"
             android:label="@string/title_activity_trash" >
         </activity>
+
+        <activity
+            android:name=".FileInfoActivity"
+            android:label="@string/fileinfo_title">
+        </activity>
+
     </application>
 
 </manifest>

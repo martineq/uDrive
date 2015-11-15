@@ -92,5 +92,18 @@
     <string name="action_show_trash">Trash</string>
     <string name="collaborators_is_empty">No collaborators</string>
 
+    <!-- Strings related to file tagging dialog -->
+    <string name="file_tag_title">Tagging</string>
+    <string name="tag_hint"><i>Type your tag here...</i></string>
+    <string name="file_type"><![CDATA[<b>File</b>]]></string>
+    <string name="dir_type"><![CDATA[<b>Folder</b>]]></string>
+    <string name="error_savetags">Error on saving tags</string>
+    <string name="ok_savetags">Tags updated successfully!</string>
+
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">File info</string>
+    <string name="whohasaccess">Who has access</string>
+    <string name="tags">Tags</string>
+    <string name="error_fileinfo">Error on loading file information</string>
 
 </resources>

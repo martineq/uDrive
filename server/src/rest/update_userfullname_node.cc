@@ -33,23 +33,28 @@ void UpdateUserFullNameNode::executePut() {
         Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: userid: "<<userId;
 
         std::string firstname=getConnection().getBodyJson("firstname");
-        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: Tome firstname ";
+        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok";
 
         std::string lastname=getConnection().getBodyJson("lastname");
-        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: Tome lastname ";
+        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok";
 
-        if (!true){
+        RequestDispatcher::user_info_st user_info;
+
+        //TODO (Martindonofrio): Llamar al metodo que solo actualiza el nombre del usuario sin pedir el password.
+
+        if (!getRequestDispatcher()->get_user_info(userId,user_info,status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());
         }
         else{
-            Log(Log::LogMsgDebug) << "[" << "updating UserFullName profile" << "]: UserID: " << userId;
+            Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode] Updating info, UserID: " << userId;
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-            Log(Log::LogMsgDebug) << "[" << "update UserFullName - resultCode: 1 ]";
-            getConnection().printfData("{\"resultCode\": 1}");
+            string msg="{\"resultCode\": 1}";
+            Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: "<<msg;
+            getConnection().printfData(msg.c_str());
         }
     }else{
         getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);

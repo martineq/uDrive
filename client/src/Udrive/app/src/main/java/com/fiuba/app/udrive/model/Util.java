@@ -1,8 +1,17 @@
 package com.fiuba.app.udrive.model;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
+import com.fiuba.app.udrive.R;
+
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides some helpful general methods
@@ -78,5 +87,23 @@ public class Util {
             }
         }
         return builder.toString();
+    }
+
+    public static String getGPSLocation(Context context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        String location = null;
+        if ((latitude != 0.00) && (longitude != 0.00)) {
+            try {
+                //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
+                addresses = geocoder.getFromLocation(latitude,longitude, 1);
+                location = addresses.get(0).getAddressLine(1);// + ", " + addresses.get(0).getAddressLine(2);
+            } catch (IOException e) {
+                // do something
+            }
+        } else {
+            location = context.getString(R.string.unknown_location);
+        }
+        return location;
     }
 }

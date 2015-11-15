@@ -34,9 +34,10 @@ void TokenNode::executePost() {
 
 	string new_token=CreateToken(email);
 	string userId="";
+        string quotaAvailable="";
 	int status;
 
-	if (!getRequestDispatcher()->log_in(email, password, new_token, userId, status)){
+	if (!getRequestDispatcher()->log_in(email, password, new_token, userId, quotaAvailable,status)){
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		string msg=handlerError(status);
@@ -45,7 +46,7 @@ void TokenNode::executePost() {
 		Log(Log::LogMsgDebug) << "[" << "Valid user!!: userId: " << userId << "] " << "Token: " <<new_token.c_str();
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		getConnection().printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());
+		getConnection().printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\", \"quotaAvailable\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str(), quotaAvailable.c_str());
 	}
 }
 string TokenNode::CreateToken(const std::string& email){
@@ -57,7 +58,7 @@ string TokenNode::CreateToken(const std::string& email){
 }
 
 std::string TokenNode::defaultResponse(){
-	return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\" }";
+	return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\", \"quotaAvailable\": \"0\"}";
 }
 
 bool TokenNode::auth(int &status){

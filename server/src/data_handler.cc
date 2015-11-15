@@ -23,6 +23,10 @@ bool DataHandler::init(string database_path){
 
     // file_id ticket
     init_id_ticket(SUFFIX_FILE_ID);
+    
+    // list of users
+    init_user_list();
+    
   }else{ print_db_error(); return false; }
 
   return true;
@@ -43,7 +47,7 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   
   // Creates the root directory
   string id_dir_root;
-  if(!add_directory(user_id,LABEL_ROOT,date,LABEL_NO_PARENT_DIR,id_dir_root,status)) return false;
+  if(!add_directory(user_id,LABEL_ROOT,date,LABEL_NO_PARENT_DIR,id_dir_root,status)){ return false; }
 
   // Prepares data
   dbh_.clear_batch();
@@ -59,13 +63,17 @@ bool DataHandler::add_user(string email, string password, string name, string lo
   
   // Saves data
   if(dbh_.write_batch()){
-    add_email_user_id_index(email,user_id);
-    return true;
+    if( !add_email_user_id_index(email,user_id) ){ status = STATUS_DATABASE_ERROR; return false; }
+    // Save user email in the list of users
+    if( !add_email_to_list(email,status) ){ return false; }
   }else{// If there is an error, delete the root directory
     delete_directory(id_dir_root,status); if(status==STATUS_DATABASE_ERROR){ std::cerr << "Error deleting directory" << std::endl; }
     status = STATUS_DATABASE_ERROR; return false;
   }
+  
+  return true;
 }
+
 
 bool DataHandler::add_user_token(string email, string token, string& user_id, int& status){
 
@@ -208,6 +216,11 @@ bool DataHandler::get_file_info(string file_id, file_info_st& file_info, int& st
 }
 
 
+bool DataHandler::get_user_mail_list(string& email_list, int &status){
+  return dbh_get(PREFIX_USER_EMAIL_LIST,&email_list,status);
+}
+
+
 bool DataHandler::delete_user(string user_id, int& status){
 
   string email;
@@ -241,6 +254,7 @@ bool DataHandler::delete_directory(string dir_id, int& status){
   dbh_.erase_batch(generate_dir_key(dir_id,SUFFIX_PARENT_DIRECTORY));
   dbh_.erase_batch(generate_dir_key(dir_id,SUFFIX_FILES_CONTAINED));
   dbh_.erase_batch(generate_dir_key(dir_id,SUFFIX_DIRECTORIES_CONTAINED));
+  dbh_.erase_batch(generate_dir_key(dir_id,SUFFIX_SIZE));
   
   // Erases data
   if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
@@ -343,6 +357,18 @@ bool DataHandler::modify_file_info(string file_id, string name, string extension
 }
 
 
+bool DataHandler::modify_file_revision(string file_id, string revision, int& status){
+
+  dbh_.clear_batch();
+  dbh_.put_batch(generate_file_key(file_id,SUFFIX_FILE_REVISION),revision);
+
+  // Saves data to file
+  if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
+
+  return true;
+}
+
+
 string DataHandler::generate_user_key(string user_id, string item_selected){
   return (PREFIX_USER+user_id+item_selected);
 }
@@ -400,6 +426,19 @@ void DataHandler::init_id_ticket(string type_of_id){
 }
 
 
+void DataHandler::init_user_list(){
+  string value;
+  bool found = false;
+
+  if( dbh_.get(PREFIX_USER_EMAIL_LIST,&value,found) ){
+    if(!found){
+      if( !(dbh_.put(PREFIX_USER_EMAIL_LIST,LABEL_SPACE_STRING)) ) { print_db_error();}
+    }
+  }else{ print_db_error(); }
+  
+}
+
+
 void DataHandler::print_db_error(){ std::cerr << "DB error" << std::endl; }
 
 
@@ -419,5 +458,14 @@ bool DataHandler::dbh_get(string key, string* value, int& status){
 
 bool DataHandler::dbh_put(string key, string value, int& status){
   if( !dbh_.put(key,value) ){ status = STATUS_DATABASE_ERROR; return false; }
+  return true;
+}
+
+
+bool DataHandler::add_email_to_list(string email, int status){
+  string list_of_user_email;
+  if( !dbh_get(PREFIX_USER_EMAIL_LIST,&list_of_user_email,status) ){ return false; }
+  list_of_user_email.append(LABEL_STRING_DELIMITER+email);
+  if( !dbh_put(PREFIX_USER_EMAIL_LIST,list_of_user_email,status) ){ return false; }
   return true;
 }
