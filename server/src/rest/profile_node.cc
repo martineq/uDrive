@@ -55,7 +55,7 @@ void ProfileNode::executeGet() {
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             const std::string tmp = item.str();
             const char* msg = tmp.c_str();
-            //Log(Log::LogMsgDebug) << "[" << "ProfileNode" << "] item: " << msg;
+            Log(Log::LogMsgDebug) << "[" << "ProfileNode" << "] item: " << msg;
             getConnection().printfData(msg);
         }
     }else{
