@@ -33,9 +33,14 @@ void ReceiveFileNode::executePost() {
 		std::string extension="";
 		std::string size="";
 
-		time_t now = time(0);
-		char* dt = ctime(&now);
-		std::string fecha(dt);
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer [80];
+		time (&rawtime);
+		timeinfo = localtime (&rawtime);
+		strftime (buffer,80," %d/%m/%Y %X",timeinfo);
+		Log(Log::LogMsgDebug) << "[ReceiveFileNode]: fecha: "<<buffer;
+		std::string fecha(buffer);
 
         p_file = getConnection().getMultipartData(variable, contenido);
        // Log(Log::LogMsgDebug) << "[p_file: " <<p_file;

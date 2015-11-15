@@ -31,6 +31,7 @@ void InfoNode::executeGet() {
 	vector<string> lista=InfoNode::split(getUri(),'/');
 	string dirId="";
 	int status=11;
+	Log(Log::LogMsgDebug) << "[InfoNode]";
 
 	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
 		string userId=getUserId();
@@ -57,13 +58,14 @@ void InfoNode::executeGet() {
 				for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 					enc=true;
 						item
-						<< "{\"id\":\"" << (*directory_it).id
-						<< "\",\"name\":\"" << (*directory_it).name
-						<< "\",\"size\":\""	<< (*directory_it).size
-						<< "\",\"type\":\""	<< (*directory_it).type
-						<< "\",\"cantItems\":\"" << (*directory_it).number_of_items
-						<< "\",\"shared\":\"" << (*directory_it).shared
-						<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
+						<< "{\"id\":\"" << (*directory_it).id << "\","
+						<< "\"name\":\"" << (*directory_it).name << "\","
+						<< "\"size\":\""	<< (*directory_it).size << "\","
+						<< "\"type\":\""	<< (*directory_it).type << "\","
+						<< "\"cantItems\":\"" << (*directory_it).number_of_items << "\","
+					    << "\"shared\":\"" << (*directory_it).shared << "\", "
+						<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
+						<< "\"userOwner\":\"" << (*directory_it).owner<< "\"},";
 				}
 			}
 			if (directory_element_info.size()==1) enc=true;
@@ -75,23 +77,24 @@ void InfoNode::executeGet() {
 				getConnection().printfData(defaultResponse().c_str());
 			}else{
 				item
-					<< "{\"id\":\"" << (*(directory_it)).id
-					<< "\",\"name\":\"" << (*(directory_it)).name
-					<< "\",\"size\":\""	<< (*(directory_it)).size
-					<< "\",\"type\":\""	<< (*(directory_it)).type
-					<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items
-					<< "\",\"shared\":\"" << (*(directory_it)).shared
-					<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
-					item << "]";
-				Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], listing directory,  dirInfo: " << dirInfo_rd.name << ", --Number of items: " << directory_element_info.size();
+				<< "{\"id\":\"" << (*directory_it).id << "\","
+				<< "\"name\":\"" << (*directory_it).name << "\","
+				<< "\"size\":\""	<< (*directory_it).size << "\","
+				<< "\"type\":\""	<< (*directory_it).type << "\","
+				<< "\"cantItems\":\"" << (*directory_it).number_of_items << "\","
+				<< "\"shared\":\"" << (*directory_it).shared << "\", "
+				<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
+				<< "\"userOwner\":\"" << (*directory_it).owner<< "\"}";
+				item << "]";
+				Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], listing directory,  dirInfo: " << dirInfo_rd.name << ", -- Number of items: " << directory_element_info.size();
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				const std::string tmp = item.str();
 				const char* msg = tmp.c_str();
 				getConnection().printfData(msg);
-		}
-
 			}
+
+		}
 	}
 	else{
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
@@ -100,11 +103,10 @@ void InfoNode::executeGet() {
 		getConnection().printfData(msg.c_str());
 	}
 }
-
 std::string InfoNode::defaultResponse(){
 	return "[{ \"id\": \"0\",  \"name\": \"\","
 							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"0\"}]";
 }
 
 std::string InfoNode::getUserId(){

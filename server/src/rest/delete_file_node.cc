@@ -6,6 +6,8 @@
  */
 
 #include "delete_file_node.h"
+#include "info_node.h"
+
 using std::string;
 using std::stringstream;
 using std::vector;
@@ -43,24 +45,31 @@ void DeleteFileNode::executeDelete() {
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else{
-
-
-
+			std::string parentDir=file_info.parent_directory;
+			if (!getRequestDispatcher()->delete_file(userId,fileId, status)) {
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				string msg = handlerError(status);
+				getConnection().printfData(msg.c_str());
+			}else{
+				Log(Log::LogMsgInfo) << "[DeleteFileNode], file deleted, parent folder printing, id: "<<parentDir;
+				MgConnectionW mg=getConnection();
+				InfoNode* in=new InfoNode(mg);
+				in->setRequestDispatcher(RequestDispatcher::get_instance());
+				std::string uri;
+				uri = "/info/users/"+ userId + "/dir/" + parentDir;
+				mg.setMethod("GET");
+				mg.setUri(uri);
+				in->executeGet();
+				delete in;
+			}
 		}
-		//TODO (martindonofrio): falta implementar como.
-
-		if (!getRequestDispatcher()->delete_file(userId,fileId, status)) {
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			string msg = handlerError(status);
-			getConnection().printfData(msg.c_str());
-		}else{
-
-
-
-
-
-		}
+	}else{
+		status=11;
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		string msg=handlerError(status);
+		getConnection().printfData(msg.c_str());
 	}
 }
 

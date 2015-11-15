@@ -40,9 +40,15 @@ void CreateDirNode::executePost() {
 		std::string dirNameS = getConnection().getBodyJson("dirName");
 		std::string new_dirId;
 
-		time_t now = time(0);
-		char* dt = ctime(&now);
-		std::string fecha(dt);
+
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer [80];
+		time (&rawtime);
+		timeinfo = localtime (&rawtime);
+		strftime (buffer,80," %d/%m/%Y %X",timeinfo);
+		Log(Log::LogMsgDebug) << "[CreateDirNode]: fecha: "<<buffer;
+		std::string fecha(buffer);
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
 		if (getRequestDispatcher()->new_directory(userId, dirNameS, fecha, dirId, new_dirId, status)){
