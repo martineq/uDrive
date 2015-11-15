@@ -447,10 +447,11 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   email="mail@mail.com"; password="1234"; generated_token="8475610293";
   // Parameters OUT
   string user_id_readed="0"; status=0;
-  ok = rd->log_in(email,password,generated_token,user_id_readed,status);
+  string quota_available_readed;
+  ok = rd->log_in(email,password,generated_token,user_id_readed,quota_available_readed,status);
   EXPECT_TRUE(ok); 
   EXPECT_EQ(user_id,user_id_readed);
-
+  EXPECT_EQ("150",quota_available_readed);
   
   // + Post file       IN: binStream/filename/userId/dirId/token    OUT: fileId
   // Parameters IN
