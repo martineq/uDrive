@@ -118,9 +118,9 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
                     // Put picture if size is less than 150 KB
-                    int size = getPictureSize(yourSelectedImage);
+                  /*  int size = getPictureSize(yourSelectedImage);
                     System.out.println("Avatar size >>>> "+size);
-                    if (size <= 153600) {
+                    if (size <= 153600) {*/
                         ((ImageView) findViewById(R.id.avatar)).setImageBitmap(yourSelectedImage);
 
                         // Encode to Base64 and Send to the server
@@ -141,36 +141,26 @@ public class UserProfileActivity extends AppCompatActivity {
                                 Toast.makeText(UserProfileActivity.this, getString(R.string.picture_error), Toast.LENGTH_LONG).show();
                             }
                         });
-                    } else {
+                   /* } else {
                         Toast.makeText(UserProfileActivity.this, getString(R.string.picture_size_error), Toast.LENGTH_LONG).show();
-                    }
+                    }*/
                 }
         }
     }
 
     public void editName(View view) {
-        /*final EditText firstname = new EditText(UserProfileActivity.this);
-        final EditText lastname = new EditText(UserProfileActivity.this);
-        LinearLayout layout = new LinearLayout(UserProfileActivity.this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setGravity(Gravity.CENTER_VERTICAL);
-        layout.setPaddingRelative(200, 50, 200, 50);
-        String fName = Util.capitalize(mUserProfile.getFirstname());
-        String lName = Util.capitalize(mUserProfile.getLastname());
-        firstname.setText(fName);
-        lastname.setText(lName);
-        firstname.setGravity(Gravity.CENTER_HORIZONTAL);
-        lastname.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.addView(firstname);
-        layout.addView(lastname);*/
-
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.edit_fullname_layout, null);
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(UserProfileActivity.this);
         builder.setView(layout);
         builder.setIcon(R.drawable.ic_pencil_24);
-        final EditText firstname = ((EditText)findViewById(R.id.edittext_firstname));
-        final EditText lastname = ((EditText)findViewById(R.id.edittext_lastname));
+        final EditText firstname = ((EditText)layout.findViewById(R.id.edittext_firstname));
+        final EditText lastname = ((EditText)layout.findViewById(R.id.edittext_lastname));
+        String fName = Util.capitalize(mUserProfile.getFirstname());
+        String lName = Util.capitalize(mUserProfile.getLastname());
+        firstname.setText(fName);
+        lastname.setText(lName);
+
 
         builder.setCancelable(false)
                 .setTitle(getString(R.string.screen_name))
