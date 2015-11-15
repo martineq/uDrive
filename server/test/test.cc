@@ -418,12 +418,12 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 
 
 void generate_image(string &data, size_t &size); // Auxiliar function used by RequestDispatcherTest
-TEST(RequestDispatcherTest, Checkpoint4Routine) {
+TEST(RequestDispatcherTest, Checkpoint5Routine) {
 
   // Create a config file
   ofstream myfile;
   myfile.open ("config.yml");
-  myfile << "# Configuración de conexión\nbindip: 127.0.0.1\nbindport: 8080\nlogfile: mylog.txt\nloglevel: debug\ndbpath: /tmp/testdb_checkpoint4\nmaxquotauser: 150";
+  myfile << "# Configuración de conexión\nbindip: 127.0.0.1\nbindport: 8080\nlogfile: mylog.txt\nloglevel: debug\ndbpath: /tmp/testdb_checkpoint5\nmaxquotauser: 149";
   myfile.close();
   
   // Init database. ¡Warning!: This test assumes an empty Database
@@ -451,7 +451,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   ok = rd->log_in(email,password,generated_token,user_id_readed,quota_available_readed,status);
   EXPECT_TRUE(ok); 
   EXPECT_EQ(user_id,user_id_readed);
-  EXPECT_EQ("150",quota_available_readed);
+  EXPECT_EQ("149",quota_available_readed);
   
   // + Post file       IN: binStream/filename/userId/dirId/token    OUT: fileId
   // Parameters IN
@@ -564,9 +564,9 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_EQ("222.55",user_info.gps_lon);                     // User location   
   EXPECT_EQ("jake",user_info.first_name);                    // User name   
   EXPECT_EQ("the dog",user_info.last_name);                  // User name   
-  EXPECT_EQ("108",user_info.user_quota_used);                 // Size of quota used (150-108==42)
-  EXPECT_EQ("72.00%",user_info.user_quota_used_percentage);  // User quota percentage
-  EXPECT_EQ("150",user_info.user_quota_total);               // User quota total
+  EXPECT_EQ("108",user_info.user_quota_used);                // Size of quota used (54*2==108)
+  EXPECT_EQ("72.48%",user_info.user_quota_used_percentage);  // User quota percentage
+  EXPECT_EQ("149",user_info.user_quota_total);               // User quota total
  
   // *******************
   // *** Other tests *** 
@@ -601,7 +601,26 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   EXPECT_TRUE(rd->check_token(user_id_second,"10244756",status));
   ok = rd->get_user_info(user_id_second,user_info_second,status);
   EXPECT_TRUE(ok); 
-
+  
+  // Check user info
+  EXPECT_EQ("mailsecond@mail.com",user_info_second.email);         // User mail   
+  EXPECT_EQ("152.08",user_info_second.gps_lat);                    // User location   
+  EXPECT_EQ("121.55",user_info_second.gps_lon);                    // User location   
+  EXPECT_EQ("finn",user_info_second.first_name);                   // User name   
+  EXPECT_EQ("the human",user_info_second.last_name);               // User name   
+  EXPECT_EQ("0",user_info_second.user_quota_used);                 // Size of quota used: 0 bytes (new user)
+  EXPECT_EQ("0.00%",user_info_second.user_quota_used_percentage); // User quota percentage
+  EXPECT_EQ("149",user_info_second.user_quota_total);              // User quota total
+  
+  // Add new file to 2nd user check quota and delete the file
+  string file_temp_2;
+  EXPECT_TRUE(rd->new_file(user_id_second,"temp2","txt","11/11/15","123456789","9","0",file_temp_2,status));
+  EXPECT_TRUE(ok = rd->get_user_info(user_id_second,user_info_second,status));
+  EXPECT_EQ("9",user_info_second.user_quota_used);                 // Size of quota used: 9 bytes
+  EXPECT_EQ("6.04%",user_info_second.user_quota_used_percentage); // User quota percentage
+  EXPECT_TRUE(rd->delete_file(user_id_second,file_temp_2,status));
+  EXPECT_TRUE(rd->purge_deleted_files(user_id_second,status));
+  
   
   // Use get_directory_info() with forbidden user
   string forbidden_user_id = user_id_second;
@@ -915,7 +934,7 @@ TEST(RequestDispatcherTest, Checkpoint4Routine) {
   delete rd;
     
   // Delete used temp folder
-  system("rm -rf /tmp/testdb_checkpoint4");
+  system("rm -rf /tmp/testdb_checkpoint5");
   
   // Delete used file
   remove("config.yml");
