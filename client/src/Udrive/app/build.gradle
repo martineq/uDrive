@@ -54,6 +54,8 @@ dependencies {
     // lib to use file picker
     compile 'com.nononsenseapps:filepicker:2.4.2'
 
+    // Google API
+    compile 'com.google.android.gms:play-services:+'
 }
 
 

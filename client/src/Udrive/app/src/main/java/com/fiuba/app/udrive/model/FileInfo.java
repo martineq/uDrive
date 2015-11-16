@@ -8,8 +8,6 @@ public class FileInfo implements Serializable {
     private UserBasicData owner;
     private File file;
     private UserBasicData updatedBy;
-    private double updatedFromLatitude;
-    private double updatedFromLongitude;
     private ArrayList<UserBasicData> collaborators;
     private ArrayList<Tag> tags;
 
@@ -19,8 +17,6 @@ public class FileInfo implements Serializable {
         this.owner = owner;
         this.file = file;
         this.updatedBy = updatedBy;
-        this.updatedFromLatitude = updatedFromLatitude;
-        this.updatedFromLongitude = updatedFromLongitude;
         this.collaborators = collaborators;
         this.tags = tags;
     }
@@ -47,22 +43,6 @@ public class FileInfo implements Serializable {
 
     public void setUpdatedBy(UserBasicData updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    public double getUpdatedFromLatitude() {
-        return updatedFromLatitude;
-    }
-
-    public void setUpdatedFromLatitude(double updatedFromLatitude) {
-        this.updatedFromLatitude = updatedFromLatitude;
-    }
-
-    public double getUpdatedFromLongitude() {
-        return updatedFromLongitude;
-    }
-
-    public void setUpdatedFromLongitude(double updatedFromLongitude) {
-        this.updatedFromLongitude = updatedFromLongitude;
     }
 
     public ArrayList<UserBasicData> getCollaborators() {

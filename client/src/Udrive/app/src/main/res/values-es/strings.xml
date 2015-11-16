@@ -109,12 +109,16 @@
     <string name="by">Por</string>
     <string name="from">Desde</string>
     <string name="items">Cant. items</string>
+
+    <!-- Strings related to file actions -->
     <string name="share_title">Compartir</string>
     <string name="add_collaborator">Agregar Colaborador</string>
-
     <string name="title_activity_search_users">Buscar usuarios</string>
     <string name="search_users_is_empty">No hay usuarios para su búsqueda</string>
     <string name="action_search">Buscar</string>
+
+    <!-- Strings related to GPS service -->
+    <string name="error_gps">Error al obtener la ubicación</string>
 
 </resources>
 

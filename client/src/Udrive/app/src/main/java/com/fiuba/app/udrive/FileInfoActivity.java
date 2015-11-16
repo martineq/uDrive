@@ -121,8 +121,6 @@ public class FileInfoActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.label_size)).setText(totalSize);
         ((TextView)findViewById(R.id.label_update)).setText(mFileInfo.getFile().getLastModDateFormated());
         ((TextView)findViewById(R.id.label_by)).setText(mFileInfo.getUpdatedBy().getFirstname()+" "+mFileInfo.getUpdatedBy().getLastname());
-        String location = Util.getGPSLocation(this, mFileInfo.getUpdatedFromLatitude(), mFileInfo.getUpdatedFromLongitude());
-        ((TextView)findViewById(R.id.label_from)).setText(location);
         String numItems = " -- ";
         if (mFileInfo.getFile().isDir()){
             numItems = mFileInfo.getFile().getCantItems().toString();

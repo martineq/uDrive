@@ -113,10 +113,15 @@
     <string name="by">By</string>
     <string name="from">From</string>
     <string name="items">No. items</string>
+
+    <!-- Strings related to file actions -->
     <string name="share_title">Share</string>
     <string name="add_collaborator">Add Collaborator</string>
     <string name="title_activity_search_users">Search users</string>
     <string name="search_users_is_empty">No users for your query</string>
     <string name="action_search">Search</string>
+
+    <!-- Strings related to GPS service -->
+    <string name="error_gps">Error on getting GPS location</string>
 
 </resources>

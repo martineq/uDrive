@@ -167,8 +167,8 @@
             android:max="100"
             android:progress="50"
             android:maxHeight="6sp"
-            android:layout_marginRight="6dp"
-            android:layout_marginLeft="6dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
             android:paddingBottom="25dp"
             android:layout_alignParentBottom="true"/>
     </RelativeLayout>
