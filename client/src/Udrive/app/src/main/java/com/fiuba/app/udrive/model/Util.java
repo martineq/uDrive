@@ -106,4 +106,24 @@ public class Util {
         }
         return location;
     }
+
+    public static String tagsToString(ArrayList<Tag> tagList){
+        String tags = "";
+        for (int i = 0; i < tagList.size(); i++){
+            if (tags.compareTo("") != 0)
+                tags = tags+";";
+            tags = tags+tagList.get(i).getTagName();
+
+        }
+        return tags;
+    }
+
+    public static ArrayList<Tag> stringToTagsArray(String tags){
+        ArrayList<Tag> tagList = new ArrayList<>();
+        String[] parts = tags.split(";");
+        for (int i = 0; i < parts.length; i++){
+            tagList.add(new Tag(parts[i]));
+        }
+        return tagList;
+    }
 }

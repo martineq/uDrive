@@ -30,6 +30,7 @@ import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.ObjectStream;
+import com.fiuba.app.udrive.model.StringTags;
 import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserLocation;
@@ -423,13 +424,14 @@ public class FileListActivity extends AppCompatActivity implements
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
+        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<String>() {
             @Override
-            public void onSuccess(ArrayList<Tag> object, int status) {
+            public void onSuccess(String object, int status) {
+                ArrayList<Tag> tags = Util.stringToTagsArray(object);
                 int i;
-                for (i = 0; i < object.size(); i++)
-                    tagList.add(object.get(i));
-                if (object.size() > 0) {
+                for (i = 0; i < tags.size(); i++)
+                    tagList.add(tags.get(i));
+                if (tags.size() > 0) {
                     updatePanel(panel, tagList);
                 }
             }
@@ -470,6 +472,7 @@ public class FileListActivity extends AppCompatActivity implements
                 input.setText("");
             }
         });
+
         builder.setCancelable(false)
                 .setTitle(getString(R.string.file_tag_title))
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
@@ -477,7 +480,8 @@ public class FileListActivity extends AppCompatActivity implements
                         final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(), null, getString(R.string.loading), true);
                         progressDialog.setCancelable(false);
                         // Send tag list to be updated on the server
-                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
+                        final StringTags tags = new StringTags(Util.tagsToString(tagList));
+                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
                                 if (object.getResultCode() != 1)

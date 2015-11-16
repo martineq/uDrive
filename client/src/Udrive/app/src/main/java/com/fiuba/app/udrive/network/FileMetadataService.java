@@ -7,6 +7,7 @@ import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.FolderData;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.MyPhoto;
+import com.fiuba.app.udrive.model.StringTags;
 import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
@@ -31,11 +32,11 @@ public class FileMetadataService extends AbstractService {
 
         // Gets the file or folder tags
         @GET("/filetags/users/{userId}/files/{fileId}")
-        void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<ArrayList<Tag>> tags);
+        void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<String> tags);
 
         // Updates the tag set for the given file ID
         @PUT("/filetags/users/{userId}/files/{fileId}")
-        void updateTags(@Path("userId") int userId, @Path("fileId") int fileId, @Body ArrayList<Tag> tagList,
+        void updateTags(@Path("userId") int userId, @Path("fileId") int fileId, @Body StringTags tagList,
                         Callback<GenericResult> result);
 
         // Gets the complete info about a folder or file
@@ -60,11 +61,11 @@ public class FileMetadataService extends AbstractService {
         this.mFileTagServiceApi = createService(FileTagServiceApi.class, token);
     }
 
-    public void getTags(int userId, int fileId, final ServiceCallback<ArrayList<Tag>> tags){
-        mFileTagServiceApi.getTags(userId, fileId, new Callback<ArrayList<Tag>>() {
+    public void getTags(int userId, int fileId, final ServiceCallback<String> tags){
+        mFileTagServiceApi.getTags(userId, fileId, new Callback<String>() {
             @Override
-            public void success(ArrayList<Tag> tagList, Response response) {
-                tags.onSuccess(tagList, response.getStatus());
+            public void success(String tagsString, Response response) {
+                tags.onSuccess(tagsString, response.getStatus());
             }
 
             @Override
@@ -81,7 +82,7 @@ public class FileMetadataService extends AbstractService {
 
 
     // Passes the final tag list corresponding to a file.
-    public void updateFileTags(int userId, int fileId, @Body ArrayList<Tag> tagList,
+    public void updateFileTags(int userId, int fileId, @Body StringTags tagList,
                         final ServiceCallback<GenericResult> result){
         mFileTagServiceApi.updateTags(userId, fileId, tagList, new Callback<GenericResult>() {
             @Override
