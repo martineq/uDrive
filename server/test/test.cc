@@ -716,6 +716,24 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   EXPECT_TRUE(ok); 
   EXPECT_TRUE(file_id_3!="0");
   
+  // Search by name
+  vector<RequestDispatcher::info_element_st> elements_founded;
+  EXPECT_TRUE(rd->search_by_name(user_id,"aR",elements_founded,status));
+  string search_results;
+  for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
+    search_results.append((*it).name+";");
+  }
+  EXPECT_STREQ("archivo;archivo_2;miCarpeta;",search_results.c_str());
+  
+  // Search by extension
+  EXPECT_TRUE(rd->search_by_extension(user_id,"TxT",elements_founded,status));
+  search_results.clear();
+  for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
+    search_results.append((*it).name+";");
+  }  
+  EXPECT_STREQ("archivo;archivo_2;file_3;",search_results.c_str());
+  
+    
   
   // Create zip file
   string root_dir_id = "0";
@@ -876,7 +894,7 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   EXPECT_EQ(0,vector_info_4.size());   // Number of elements in recycle bin: 1-1=0
 
   // Tag a file
-  EXPECT_TRUE(rd->modify_file_info(user_id,file_id,"archivo","txt","12/11/15","queen;rock;musica",status));
+  EXPECT_TRUE(rd->modify_file_info(user_id,file_id,"archivo1","txt","12/11/15","queen;rock;musica",status));
   
   // Recover all tags from user and check
   vector<string> tags;
@@ -884,6 +902,14 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   string tags_obtanined;
   for(vector<string>::iterator it = tags.begin() ; it!=tags.end() ; ++it){ tags_obtanined.append((*it)+";"); }
   EXPECT_STREQ("queen;rock;musica;",tags_obtanined.c_str());
+  
+  // Search by tag
+  EXPECT_TRUE(rd->search_by_tag(user_id,"RoCk",elements_founded,status));
+  search_results.clear();
+  for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
+    search_results.append((*it).name+";");
+  }  
+  EXPECT_STREQ("archivo1;",search_results.c_str());
   
   // Delete user 2
   EXPECT_TRUE(rd->delete_user(user_id_second,status));

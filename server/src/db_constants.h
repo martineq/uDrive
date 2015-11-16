@@ -59,3 +59,11 @@
 #define LABEL_TRUE "true"
 #define LABEL_FALSE "false"
 #define LABEL_USER_IMAGE "user_image"
+
+// Search modes
+#define SEARCH_MODE_OFF 0
+#define SEARCH_MODE_BY_NAME 1
+#define SEARCH_MODE_BY_EXTENSION 2
+#define SEARCH_MODE_BY_TAG 3
+
+
