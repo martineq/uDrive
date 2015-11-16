@@ -31,18 +31,18 @@ void UpdatePhotoNode::executePut() {
     if (lista.size()==3){
         string userId=lista[2];
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: userid: "<<userId;
-        std::string photoStream=getConnection().getBodyJson("photoStream");
-        int size=photoStream.size();
+        std::string photoStream="";
+        photoStream=getConnection().getBodyJson("photoStream");
 
-        long tam_long = size * sizeof(char);
         string tam_string;
         stringstream mystream;
-        mystream << tam_long;
+
+        mystream << photoStream.size();
         tam_string = mystream.str();
 
-        Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: Tome photoStream ";
+        Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: Tome photoStream, tamaño "<<tam_string;
 
-        if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(), tam_string,status)){
+        if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),tam_string,status)){
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
