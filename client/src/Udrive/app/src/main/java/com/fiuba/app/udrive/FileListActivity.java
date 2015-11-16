@@ -95,7 +95,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         mFileMetadataService = new FileMetadataService(mUserAccount.getToken(), FileListActivity.this);
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
-           mDirId = 0;
+            mDirId = 0;
         loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
     }
 
@@ -184,6 +184,10 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             // show it
             alertDialog.show();
 
+        } else if (id == R.id.action_show_trash) {
+            Intent i = new Intent(this, TrashActivity.class);
+            i.putExtra(TrashActivity.EXTRA_USER_ACCOUNT, mUserAccount);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -203,9 +207,9 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
             @Override
             public void onFailure(String message, int status) {
-                if (StatusCode.isHumanReadable(status)){
-                   message = StatusCode.getMessage(FileListActivity.this, status);
-                   Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
+                if (StatusCode.isHumanReadable(status)) {
+                    message = StatusCode.getMessage(FileListActivity.this, status);
+                    Toast.makeText(FileListActivity.this, message, Toast.LENGTH_LONG).show();
                 }
                 progressDialog.dismiss();
                 Log.e(TAG, message);
@@ -295,6 +299,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
 
         startActivityForResult(i, DIR_CODE);
+        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
     @Override
@@ -320,6 +325,12 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     @Override
     public void onShareClick(int FileItem) {
         Log.i(TAG, "Share File position " + FileItem);
+        Integer idFile = mFiles.get(FileItem).getId();
+        Intent shareIntent = new Intent(FileListActivity.this, ShareActivity.class);
+        shareIntent.putExtra(ShareActivity.EXTRA_USER_ACCOUNT, mUserAccount);
+        shareIntent.putExtra(ShareActivity.EXTRA_FILE_ID, idFile);
+        startActivity(shareIntent);
+        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
     @Override
@@ -430,6 +441,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         android.app.AlertDialog alert = builder.create();
         alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         alert.show();
+        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
 
@@ -508,6 +520,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
         // show it
         alertDialog.show();
+        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
     @Override

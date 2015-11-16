@@ -8,6 +8,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_upload_file" android:title="@string/action_upload_file"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_show_trash" android:title="@string/action_show_trash"
+        android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_signout" android:title="@string/action_signout"
         android:orderInCategory="100" app:showAsAction="never" />
 

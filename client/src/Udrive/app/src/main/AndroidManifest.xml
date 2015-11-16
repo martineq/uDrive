@@ -50,9 +50,25 @@
             android:label="@string/userprofile_title">
         </activity>
         <activity
+            android:name=".TrashActivity"
+            android:label="@string/title_activity_trash" >
+        </activity>
+
+        <activity
             android:name=".FileInfoActivity"
             android:label="@string/fileinfo_title">
         </activity>
+
+        <activity
+            android:name=".ShareActivity"
+            android:label="@string/share_title">
+        </activity>
+
+        <activity
+            android:name=".SearchUsersActivity"
+            android:label=" " >
+        </activity>
+
     </application>
 
 </manifest>
