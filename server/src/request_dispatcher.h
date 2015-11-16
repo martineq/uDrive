@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
+#include <algorithm>
 
 #include "data_handler.h"
 #include "file_handler.h"
@@ -94,13 +94,17 @@ class RequestDispatcher{
     bool delete_dir_recursive(string dir_id, int& status);
     bool search_revision_file(string parent_dir_id, string name, string extension, bool &revision_found, string &revision_file_id, DataHandler::file_info_st &revision_file_info, int status);
     bool increase_file_revision(string file_id, int& status);
-    bool add_info_files_from_id_list(string file_id_list, vector<RequestDispatcher::info_element_st>& files_vector, int& status);    
+    bool add_info_files_from_id_list(string file_id_list, int mode, string text, vector<RequestDispatcher::info_element_st>& files_vector, int& status);    
     bool add_info_dirs_from_id_list(string dir_id_list, vector<RequestDispatcher::info_element_st>& directories_vector, int& status);    
     bool recover_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
     void divide_selected_ids(string original_ids, vector<string> selected_ids, string &coincidence_ids, string &no_coincidence_ids);
     bool purge_deleted_files_from_user_info(DataHandler::user_info_st user_info,int status);
     bool add_tags_recursive(string dir_id, vector<string> &tags, int& status);
     bool add_tags_from_id_list(string file_ids, vector<string>& tags, int& status);
+    bool search_by_mode_recursive(string dir_id, int mode, string text, vector<RequestDispatcher::info_element_st>& elements_founded, int &status);
+    void fill_info_elem_to_dir_info(string dir_id, DataHandler::dir_info_st dir_info, RequestDispatcher::info_element_st& info_element);
+    void fill_info_elem_to_file_info(string file_id, DataHandler::file_info_st file_info, RequestDispatcher::info_element_st& info_element);
+    bool is_str_included_to_lower(string str_source, string str_to_search);
     
   public:  
     
@@ -510,6 +514,46 @@ class RequestDispatcher{
      */
     bool recover_deleted_files(string user_id, vector<string> selected_files_id, int& status);
        
+    
+    /**
+     * @brief Searches all the elements (files and directories) containing the especified name. Includes shared files.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param file_name ...
+     * @param elements_founded ...
+     * @param status returns DataHandler status ONLY if @return==false
+     */
+    bool search_by_name(string user_id,string name,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
+    
+    
+    /**
+     * @brief Searches all the elements (files) containing the especified extension. Includes shared files.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param extension ...
+     * @param elements_founded ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool search_by_extension(string user_id,string extension,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
+    
+    
+    /**
+     * @brief Searches all the elements (files and directories) containing the especified tag. Includes shared files.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param tag ...
+     * @param elements_founded ...
+     * @param status ...
+     * @return bool
+     */
+    bool search_by_tag(string user_id,string tag,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
+    
+    
+    //bool search_by_user(string user_id,string user_id_to_search,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
     
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);

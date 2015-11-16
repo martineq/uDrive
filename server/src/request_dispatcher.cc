@@ -311,7 +311,7 @@ bool RequestDispatcher::get_shared_files(string user_id, vector<RequestDispatche
 
   // Prepare data
   shared_files.clear();
-  if( !add_info_files_from_id_list(dh_user_info.shared_files,shared_files,status) ){ return false; }
+  if( !add_info_files_from_id_list(dh_user_info.shared_files,SEARCH_MODE_OFF,LABEL_EMPTY_STRING,shared_files,status) ){ return false; }
   
   return true;
 }
@@ -324,7 +324,7 @@ bool RequestDispatcher::get_deleted_files(string user_id, vector< RequestDispatc
 
   // Prepare data
   deleted_files.clear();
-  if( !add_info_files_from_id_list(dh_user_info.files_deleted,deleted_files,status) ){ return false; }  
+  if( !add_info_files_from_id_list(dh_user_info.files_deleted,SEARCH_MODE_OFF,LABEL_EMPTY_STRING,deleted_files,status) ){ return false; }  
   
   return true;
 }
@@ -668,6 +668,51 @@ bool RequestDispatcher::recover_deleted_files(string user_id, vector<string> sel
 }
 
 
+bool RequestDispatcher::search_by_name(string user_id, string name,
+                                       vector< RequestDispatcher::info_element_st >& elements_founded, int& status){
+  // Search in owned files
+  elements_founded.clear();
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+  if( !search_by_mode_recursive(owner_info.dir_root,SEARCH_MODE_BY_NAME,name,elements_founded,status) ){ return false; }
+  
+  // Search in shared files
+  if( !add_info_files_from_id_list(owner_info.shared_files,SEARCH_MODE_BY_NAME,name,elements_founded,status) ){ return false; }  
+
+  return true;
+}
+
+
+bool RequestDispatcher::search_by_extension(string user_id, string extension,
+                                            vector< RequestDispatcher::info_element_st >& elements_founded, int& status){
+  // Search in owned files
+  elements_founded.clear();
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+  if( !search_by_mode_recursive(owner_info.dir_root,SEARCH_MODE_BY_EXTENSION,extension,elements_founded,status) ){ return false; }
+
+  // Search in shared files
+  if( !add_info_files_from_id_list(owner_info.shared_files,SEARCH_MODE_BY_EXTENSION,extension,elements_founded,status) ){ return false; }  
+
+  return true;
+}
+
+
+bool RequestDispatcher::search_by_tag(string user_id, string tag,
+                                      vector< RequestDispatcher::info_element_st >& elements_founded, int& status){
+  // Search in owned files
+  elements_founded.clear();
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+  if( !search_by_mode_recursive(owner_info.dir_root,SEARCH_MODE_BY_TAG,tag,elements_founded,status) ){ return false; }
+
+  // Search in shared files
+  if( !add_info_files_from_id_list(owner_info.shared_files,SEARCH_MODE_BY_TAG,tag,elements_founded,status) ){ return false; }  
+  
+  return true;
+}
+
+
 vector<string> RequestDispatcher::split_string(string string_to_split, char delimiter){
     stringstream ss(string_to_split);
     string item;
@@ -844,7 +889,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(DataHandler::di
   if( !add_info_dirs_from_id_list(dir_info.directories_contained,directory_element_info,status) ){ return false; }
   
   // Fill file info  
-  if( !add_info_files_from_id_list(dir_info.files_contained,directory_element_info,status) ){ return false; }
+  if( !add_info_files_from_id_list(dir_info.files_contained,SEARCH_MODE_OFF,LABEL_EMPTY_STRING,directory_element_info,status) ){ return false; }
   
   return true;
 }
@@ -904,62 +949,51 @@ bool RequestDispatcher::increase_file_revision(string file_id, int& status){
 }
 
 
-bool RequestDispatcher::add_info_files_from_id_list(string file_id_list,
+bool RequestDispatcher::add_info_files_from_id_list(string file_id_list, int mode, string text,
                                                     vector<RequestDispatcher::info_element_st>& files_vector, int& status){
   vector<string> file_ids = split_string(file_id_list,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
     string file_id = (*it);
     DataHandler::file_info_st file_info;
     RequestDispatcher::info_element_st info_element;
-
     if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
     
-    info_element.id = stoul_decimal(file_id);
-    info_element.lastModDate = file_info.date_last_mod;
-    info_element.name = file_info.name;
-    info_element.type = LABEL_A;  
-    info_element.size = stoul_decimal(file_info.size);
-    info_element.number_of_items = 0; // File is always number_of_items==0 
-    info_element.owner = file_info.owner;
+    if(mode==SEARCH_MODE_OFF){ fill_info_elem_to_file_info(file_id,file_info,info_element); files_vector.push_back(info_element);}
+    if(mode==SEARCH_MODE_BY_NAME){
+      if( is_str_included_to_lower(file_info.name,text) ){ 
+        fill_info_elem_to_file_info(file_id,file_info,info_element);  
+        files_vector.push_back(info_element);
+      }
+    }
+    if(mode==SEARCH_MODE_BY_EXTENSION){
+      if( is_str_included_to_lower(file_info.extension,text) ){ 
+        fill_info_elem_to_file_info(file_id,file_info,info_element);  
+        files_vector.push_back(info_element);
+      }
+    }
+    if(mode==SEARCH_MODE_BY_TAG){
+      if( is_str_included_to_lower(file_info.tags,text) ){ 
+        fill_info_elem_to_file_info(file_id,file_info,info_element);  
+        files_vector.push_back(info_element);
+      }
+    }
     
-    // Calculate number of users shared
-    vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
-    size_t number_of_users_shared = temp_users_shared.size();
-    if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; }else{ info_element.shared = LABEL_FALSE; }
-    
-    files_vector.push_back(info_element);
-  }
-  
+  } // End for()
   return true;  
 }
 
 
 bool RequestDispatcher::add_info_dirs_from_id_list(string dir_id_list,
                                                    vector< RequestDispatcher::info_element_st >& directories_vector, int& status){
-  vector<string> subdir_ids = split_string(dir_id_list,LABEL_STRING_DELIMITER);
-  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
-    string subdir_id = (*it);
-    DataHandler::dir_info_st subdir_info;
+  vector<string> dir_ids = split_string(dir_id_list,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = dir_ids.begin() ; it!=dir_ids.end() ; ++it) {
+    string dir_id = (*it);
+    DataHandler::dir_info_st dir_info;
     RequestDispatcher::info_element_st info_element;
-    
-    if( !dh_.get_directory_info(subdir_id,subdir_info,status) ){ return false; }
-    info_element.id = stoul_decimal(subdir_id);
-    info_element.lastModDate = subdir_info.date_last_mod;
-    info_element.name = subdir_info.name;
-    info_element.type = LABEL_D;  
-    info_element.shared = LABEL_FALSE; // Directory is always shared==false 
-    info_element.size = stoul_decimal(subdir_info.size);
-    info_element.owner = subdir_info.owner;
-    
-    // Calculate number of items
-    vector<string> temp_subdir_ids = split_string(subdir_info.directories_contained,LABEL_STRING_DELIMITER);
-    vector<string> temp_file_ids = split_string(subdir_info.files_contained,LABEL_STRING_DELIMITER);
-    info_element.number_of_items = temp_subdir_ids.size() + temp_file_ids.size();
-    
+    if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+    fill_info_elem_to_dir_info(dir_id,dir_info,info_element);
     directories_vector.push_back(info_element);
   }  
-  
-  
   return true;  
 }
 
@@ -1069,6 +1103,86 @@ bool RequestDispatcher::add_tags_from_id_list(string file_ids, vector<string>& t
     if( file_tags.size()!=0 ){ tags.insert(tags.end(),file_tags.begin(),file_tags.end()); }
   }
   return true;
+}
+
+
+bool RequestDispatcher::search_by_mode_recursive(string dir_id, int mode, string text,
+                                                      vector<RequestDispatcher::info_element_st>& elements_founded, int &status){
+  // Get directory info
+  DataHandler::dir_info_st dir_info;
+  if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
+
+  // Check this dir (by mode)
+  if(mode==SEARCH_MODE_BY_NAME){ 
+    if( is_str_included_to_lower(dir_info.name,text) ){ 
+      RequestDispatcher::info_element_st info_element_dir;
+      fill_info_elem_to_dir_info(dir_id,dir_info,info_element_dir);  
+      elements_founded.push_back(info_element_dir);
+    }  
+  }  
+  if(mode==SEARCH_MODE_BY_TAG){ 
+    if( is_str_included_to_lower(dir_info.tags,text) ){ 
+      RequestDispatcher::info_element_st info_element_dir;
+      fill_info_elem_to_dir_info(dir_id,dir_info,info_element_dir);  
+      elements_founded.push_back(info_element_dir);
+    }
+  }
+  
+  // Check files contained in this dir
+  if( !add_info_files_from_id_list(dir_info.files_contained,mode,text,elements_founded,status) ){ return false; }
+  
+  // Step into sub-directories recursively
+  vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
+    string subdir_id = (*it);
+    if( !search_by_mode_recursive(subdir_id,mode,text,elements_founded,status) ){ return false; }
+  }
+  
+  return true;
+}
+
+
+void RequestDispatcher::fill_info_elem_to_dir_info(string dir_id, DataHandler::dir_info_st dir_info,
+                                                        RequestDispatcher::info_element_st& info_element){
+  info_element.id = stoul_decimal(dir_id);
+  info_element.lastModDate = dir_info.date_last_mod;
+  info_element.name = dir_info.name;
+  info_element.type = LABEL_D;  
+  info_element.shared = LABEL_FALSE; // Directory is always shared==false 
+  info_element.size = stoul_decimal(dir_info.size);
+  info_element.owner = dir_info.owner;
+
+  // Calculate number of items
+  vector<string> temp_subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
+  vector<string> temp_file_ids = split_string(dir_info.files_contained,LABEL_STRING_DELIMITER);
+  info_element.number_of_items = temp_subdir_ids.size() + temp_file_ids.size();
+}
+
+
+void RequestDispatcher::fill_info_elem_to_file_info(string file_id, 
+                                           DataHandler::file_info_st file_info, RequestDispatcher::info_element_st& info_element){
+  // Fill info
+  info_element.id = stoul_decimal(file_id);
+  info_element.lastModDate = file_info.date_last_mod;
+  info_element.name = file_info.name;
+  info_element.type = LABEL_A;  
+  info_element.size = stoul_decimal(file_info.size);
+  info_element.number_of_items = 0; // File is always number_of_items==0 
+  info_element.owner = file_info.owner;
+  
+  // Calculate number of users shared
+  vector<string> temp_users_shared = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+  size_t number_of_users_shared = temp_users_shared.size();
+  if(number_of_users_shared > 0){ info_element.shared = LABEL_TRUE; }else{ info_element.shared = LABEL_FALSE; }
+
+  return void();
+}
+
+
+bool RequestDispatcher::is_str_included_to_lower(string str_source, string str_to_search){
+  transform(str_source.begin(),str_source.end(),str_source.begin(), ::tolower);
+  transform(str_to_search.begin(),str_to_search.end(),str_to_search.begin(), ::tolower);
+  return( str_source.find(str_to_search)!=string::npos );
 }
 
 
