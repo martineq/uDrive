@@ -6,31 +6,22 @@
     android:padding="6dp">
 
     <ImageView
-        android:id="@+id/imageViewUserListItem"
+        android:id="@+id/imageViewUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="16dp"
-        android:background="@drawable/ic_account"/>
+        android:background="@drawable/ic_account_24" />
 
     <TextView
-        android:id="@+id/textViewUserListName"
+        android:id="@+id/textViewEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="4dp"
-        android:layout_toEndOf="@+id/imageViewUserListItem"
+        android:layout_toEndOf="@+id/imageViewUser"
         android:singleLine="true"
         android:textSize="20sp"
-        tools:text="Name" />
-
-    <ImageView
-        android:id="@+id/imageViewCheckUser"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/ic_checkbox_blank_circle_outline" />
+        tools:text="test@test.com" />
 
 </RelativeLayout>

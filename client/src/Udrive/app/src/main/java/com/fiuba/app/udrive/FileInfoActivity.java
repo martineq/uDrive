@@ -38,7 +38,7 @@ public class FileInfoActivity extends AppCompatActivity {
 
         /** TODO: delete this fragment after loading file info from HTTP response **/
         UserBasicData owner = new UserBasicData("Owner", "User", "owner@owner.com");
-        File file = new File("Image.jpg", 565421,'a', false, "21/08/2015 08:53", null);
+        File file = new File("Image.jpg", 565421,'a', false, "21/08/2015 08:53", null,null);
         UserBasicData updatedBy = owner;
         double updatedFromLatitude = -34.795713;
         double updatedFromLongitude = -58.348321;

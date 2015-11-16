@@ -22,6 +22,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
     private final Context mContext;
     private List<Collaborator> mCollaborators = Collections.emptyList();
     private Map<Integer, Boolean> mCheckedPositions = new HashMap<>();
+    private Collaborator mColaborator;
 
     public CollaboratorsArrayAdapter(Context context) {
         this.mContext = context;
@@ -50,6 +51,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
     private static class ViewHolder {
         TextView txEmail;
         ImageView ivCheck;
+        ImageView ivUser;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -60,21 +62,25 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
                     .inflate(R.layout.users_list_item, parent, false);
 
             viewHolder = new ViewHolder();
+            viewHolder.ivUser = (ImageView) convertView.findViewById(R.id.imageViewUserListItem);
             viewHolder.txEmail = (TextView) convertView.findViewById(R.id.textViewUserListName);
-            viewHolder.ivCheck = (ImageView) convertView.findViewById(R.id.imageViewCheck);
+            viewHolder.ivCheck = (ImageView) convertView.findViewById(R.id.imageViewCheckUser);
+
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Collaborator collaborator = mCollaborators.get(position);
+        mColaborator = mCollaborators.get(position);
+        viewHolder.txEmail.setText(mColaborator.getmEmail());
 
         if (isChecked(position)) {
             viewHolder.ivCheck.setImageResource(R.drawable.ic_checkbox_marked_circle);
         } else {
             viewHolder.ivCheck.setImageResource(R.drawable.ic_checkbox_blank_circle_outline);
         }
+
         return convertView;
     }
 

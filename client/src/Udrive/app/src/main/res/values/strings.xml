@@ -105,5 +105,10 @@
     <string name="whohasaccess">Who has access</string>
     <string name="tags">Tags</string>
     <string name="error_fileinfo">Error on loading file information</string>
+    <string name="share_title">Share</string>
+    <string name="add_collaborator">Add Collaborator</string>
+    <string name="title_activity_search_users">Search users</string>
+    <string name="search_users_is_empty">No users for your query</string>
+    <string name="action_search">Search</string>
 
 </resources>

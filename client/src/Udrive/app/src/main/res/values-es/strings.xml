@@ -101,6 +101,12 @@
     <string name="whohasaccess">Tienen acceso</string>
     <string name="tags">Etiquetas</string>
     <string name="error_fileinfo">Error al cargar la información del archivo o carpeta</string>
+    <string name="share_title">Compartir</string>
+    <string name="add_collaborator">Agregar Colaborador</string>
+
+    <string name="title_activity_search_users">Buscar usuarios</string>
+    <string name="search_users_is_empty">No hay usuarios para su búsqueda</string>
+    <string name="action_search">Buscar</string>
 
 </resources>
 

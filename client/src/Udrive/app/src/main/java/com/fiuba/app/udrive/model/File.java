@@ -12,14 +12,17 @@ public class File {
     private Boolean shared;
     private String lastModDate;
     private Integer cantItems;
+    private Integer userOwner;
 
-    public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems){
+    public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems, Integer userOwner){
         this.name = name;
         this.size = size;
         this.type = type;
         this.shared = shared;
         this.lastModDate = lastModDate;
         this.cantItems = cantItems;
+        this.userOwner = userOwner;
+
     }
 
     public Integer getId() {
@@ -68,6 +71,11 @@ public class File {
     public boolean isDir(){
         return this.getType() == 'd' ? true : false;
     }
+
+    public Integer getUserOwner() {
+        return userOwner;
+    }
+
 
 
 }

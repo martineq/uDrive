@@ -1,6 +1,7 @@
 package com.fiuba.app.udrive.network;
 import android.content.Context;
 
+import com.fiuba.app.udrive.model.Collaborator;
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FolderData;
 import com.fiuba.app.udrive.utils.Utils;
@@ -63,6 +64,14 @@ public class FilesService extends AbstractService {
 
         @POST("/info/users/{userId}/trash/restored")
         void restoreTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
+
+        @GET("/fileInfo/files/{fileId}/collaborators")
+        void getAllCollaborators(@Path("fileId") int fileId, Callback<List<Collaborator>> callback);
+
+        @POST("/fileInfo/files/{fileId}/collaborators")
+        void updateCollaborators(@Path("fileId") int fileId, @Body List<Collaborator> usersList,
+                                 Callback<List<Collaborator>> callback);
+
 
     }
 
@@ -318,6 +327,48 @@ public class FilesService extends AbstractService {
                 serviceCallback.onFailure(error.getMessage(), status);
             }
         });
+    }
+
+    public void getAllCollaborators(int fileId, final ServiceCallback<List<Collaborator>> serviceCallback) {
+
+        mFilesServiceApi.getAllCollaborators(fileId, new Callback<List<Collaborator>>() {
+            @Override
+            public void success(List<Collaborator> collaborators, Response response) {
+                serviceCallback.onSuccess(collaborators, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+
+    }
+
+    public void updateCollaborators(int fileId, List<Collaborator> collaborators,final ServiceCallback<List<Collaborator>> serviceCallback) {
+
+        mFilesServiceApi.updateCollaborators(fileId, collaborators, new Callback<List<Collaborator>>() {
+            @Override
+            public void success(List<Collaborator> collaborators, Response response) {
+                serviceCallback.onSuccess(collaborators, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+
     }
 
 }
