@@ -193,6 +193,19 @@ public class FileListActivity extends AppCompatActivity implements
                         public void onSuccess(List<File> files, int status) {
                             mFilesAdapter.updateFiles(files);
                             Log.d(TAG, "Number of files received " + files.size());
+                            // Update user location
+                            UserLocation userLocation = new UserLocation(mLatitude, mLongitude);
+                            mUserService.updateUserLocation(mUserAccount.getUserId(), userLocation, new ServiceCallback<GenericResult>() {
+                                @Override
+                                public void onSuccess(GenericResult object, int status) {
+                                    // Does nothing. Transparent for the user
+                                }
+
+                                @Override
+                                public void onFailure(String message, int status) {
+                                    // Does nothing. Transparent for the user
+                                }
+                            });
                         }
 
                         @Override
