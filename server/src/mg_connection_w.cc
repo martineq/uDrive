@@ -5,8 +5,7 @@ extern "C" {
 }
 
 #include <cstring>
-#include <json/json.h>
-#include <map>
+
 
 using std::vector;
 
@@ -63,9 +62,7 @@ string MgConnectionW::getAuthorization(){
 	std::string my_string(dar);
 	return my_string;
 }
-/**
- *
- */
+
 std::string MgConnectionW::getBodyJson(string field) {
     Log(Log::LogMsgDebug) << "[getBodyJson]: Recuperando campo Json";
     std::string content_string(this->conn->content);
@@ -87,6 +84,22 @@ std::string MgConnectionW::getBodyJson(string field) {
         Log(Log::LogMsgDebug) << "[getBodyJson]: No se encontro el campo: "<<field;
         return "";
     }
+}
+
+Json::Value MgConnectionW::getBodyJson() {
+    Log(Log::LogMsgDebug) << "[getFullBodyJson]: retrieve full json";
+    std::string content_string(this->conn->content);
+
+    Log(Log::LogMsgDebug) << "[getFullBodyJson]: "<<content_string;
+
+    Json::Value root;
+    Json::Reader reader;
+    bool parsedSuccess = reader.parse(content_string, root, false);
+    if (!parsedSuccess) {
+        Log(Log::LogMsgDebug) << "[getFullBodyJson]: Error parseando Body";
+        return nullptr;
+    }
+    return root;
 }
 
 struct mg_connection* MgConnectionW::operator->(){

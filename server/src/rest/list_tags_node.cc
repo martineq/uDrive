@@ -29,17 +29,18 @@ vector<string> ListTagsNode::split(const string &s, char delim) {
 
 void ListTagsNode::executeGet() {
 	vector<string> lista=ListTagsNode::split(getUri(),'/');
-	string dirId="";
+
 	int status=11;
 	Log(Log::LogMsgDebug) << "[ListTagsNode]";
 
-	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
+	if ( (!lista[4].compare("files")) && (lista.size()==6)){
 		string userId=getUserId();
-		dirId=lista[5];
+		string fileId=lista[5];
 
-		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId;
+		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", FileId: " <<fileId;
 
 		vector<string> listTags;
+		std::string tags="";
 
 		if (!getRequestDispatcher()->get_tags(userId,listTags,status)){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
@@ -48,40 +49,19 @@ void ListTagsNode::executeGet() {
 			getConnection().printfData(msg.c_str());
 		}
 		else{
-			bool enc = false;
-			std::ostringstream item;
-  			item << "[";
-			vector<std::string>::iterator listTags_it;
-			Log(Log::LogMsgDebug) << "[ListTagsNode], touring list of tags";
-			if (listTags.size()!=0){
-				for (listTags_it = listTags.begin(); listTags_it < (listTags.end()-1); listTags_it++){
-					enc=true;
-					item
-					<< "{\"tagName\":\"" << (*listTags_it) << "\",";
-				}
-			}
-			if (listTags.size()==1) enc=true;
-			if (!enc){
-				//empty dir
-				Log(Log::LogMsgDebug) << "[" << "ListTagsNode" << "] -- Empty dir.";
-				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
-				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-				getConnection().printfData(defaultResponse().c_str());
-			}else{
-				item
-				<< "{\"tagName\":\"" << (*listTags_it) << "\"}";
-				item << "]";
 				Log(Log::LogMsgDebug) << "[" << "ListTagsNode" << "], listing directory -- Number of items: " << listTags.size();
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-				const std::string tmp = item.str();
-				const char* msg = tmp.c_str();
-				getConnection().printfData(msg);
+
+				for (int index = 0; index < listTags.size(); ++index) {
+					Log(Log::LogMsgDebug) << "[ListTagsNode], TAG: " << listTags[index];
+					tags = tags + listTags[index] + ";";
+				}
+				std::string msg="{\"tags\":\"" + tags + "\"}";
+				getConnection().printfData(msg.c_str());
 			}
 
-		}
-	}
-	else{
+	}else{
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 		string msg=handlerError(status);
