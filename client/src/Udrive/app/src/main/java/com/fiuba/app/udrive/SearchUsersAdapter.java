@@ -62,7 +62,7 @@ public class SearchUsersAdapter extends BaseAdapter {
 
         Collaborator user = mUsers.get(position);
         if (user != null) {
-            viewHolder.txEmail.setText(user.getmEmail());
+            viewHolder.txEmail.setText(user.getEmail());
         }
 
         return convertView;

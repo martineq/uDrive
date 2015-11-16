@@ -6,38 +6,38 @@ import java.io.Serializable;
 public class Collaborator implements Serializable {
 
     private Integer id;
-    private String mFirstName;
-    private String mLastName;
-    private String mEmail;
+    private String firstName;
+    private String lastName;
+    private String email;
 
     public Collaborator(String firstName,String lastName, String eMail){
-        this.mFirstName = firstName;
-        this.mLastName = lastName;
-        this.mEmail = eMail;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = eMail;
     }
 
-    public String getmFirstName() {
-        return mFirstName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setmFirstName(String mFirstName) {
-        this.mFirstName = mFirstName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getmLastName() {
-        return mLastName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setmLastName(String mLastName) {
-        this.mLastName = mLastName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getmEmail() {
-        return mEmail;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setmEmail(String mEmail) {
-        this.mEmail = mEmail;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public Integer getId() {
@@ -47,5 +47,7 @@ public class Collaborator implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
+
 
 }
