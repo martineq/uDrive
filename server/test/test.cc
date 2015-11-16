@@ -761,6 +761,25 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   shared_files.clear();
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
   EXPECT_EQ(1,shared_files.size()); 
+  
+  // Get colaborator users and check
+  vector<RequestDispatcher::user_info_st> users_founded;
+  EXPECT_TRUE(rd->get_colaborator_users(user_shared_id,users_founded,status));
+  string users;
+  for(vector<RequestDispatcher::user_info_st>::iterator it=users_founded.begin();it!=users_founded.end();++it){
+    users.append((*it).email+";");
+  }
+  EXPECT_STREQ("mail@mail.com;",users.c_str());
+  // Search by user
+  elements_founded.clear();
+  EXPECT_TRUE(rd->search_by_user(user_shared_id,user_owner_id,elements_founded,status));
+  search_results.clear();
+  for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
+    search_results.append((*it).name+";");
+  }
+  EXPECT_STREQ("archivo_2;",search_results.c_str());
+    
+  
   // ...Delete the file from the user shared
   EXPECT_TRUE(rd->delete_file(user_shared_id,file_to_share_id,status));
   // ...Check file deleted  from user shared (file forbidden)
