@@ -2,7 +2,6 @@ package com.fiuba.app.udrive;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.FolderData;
 import com.fiuba.app.udrive.model.GenericResult;
@@ -43,10 +41,10 @@ public class FileInfoActivity extends AppCompatActivity {
             ,FileInfoActivity.this);
         setContentView(R.layout.activity_file_info);
         ((ScrollView)findViewById(R.id.scroll_layout)).smoothScrollTo(0,0);
-        //mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
+        mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
 
         /** TODO: delete this fragment after loading file info from HTTP response **/
-        UserBasicData owner = new UserBasicData("Owner", "User", "owner@owner.com");
+        /*UserBasicData owner = new UserBasicData("Owner", "User", "owner@owner.com");
 
         File file = new File("Image.jpg", 565421,'a', false, "21/08/2015 08:53", null,null);
         file.setId(1);
@@ -74,7 +72,7 @@ public class FileInfoActivity extends AppCompatActivity {
         tags.add(new Tag("tag2"));
 
         mFileInfo = new FileInfo(owner, file, updatedBy, updatedFromLatitude, updatedFromLongitude,
-                collaborators, tags);
+                collaborators, tags);*/
         /******/
         ListView access = (ListView)findViewById(R.id.list_access);
         // who has access
@@ -104,7 +102,7 @@ public class FileInfoActivity extends AppCompatActivity {
 
         // tags
         WebView panel = ((WebView)findViewById(R.id.tags));
-        panel.loadData(getPanelHTML(tags), "text/html", "utf-8");
+        panel.loadData(getPanelHTML(mFileInfo.getTags()), "text/html", "utf-8");
         panel.setBackgroundColor(0);
 
         // labels
@@ -202,7 +200,9 @@ public class FileInfoActivity extends AppCompatActivity {
                 .setView(layout)
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mFileMetadataService.updateFilename((mFileInfo.getFile().getId()), new FolderData(filename.getText().toString()),
+                        int userId = (int)getIntent().getSerializableExtra("token");
+                        int fileId = mFileInfo.getFile().getId();
+                        mFileMetadataService.updateFilename(userId, fileId, new FolderData(filename.getText().toString()),
                                 new ServiceCallback<GenericResult>() {
                                     @Override
                                     public void onSuccess(GenericResult object, int status) {

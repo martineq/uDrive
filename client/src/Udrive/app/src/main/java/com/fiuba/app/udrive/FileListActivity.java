@@ -305,20 +305,21 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     @Override
     public void onInformationClick(int FileItem) {
         Log.i(TAG, "Information File position " + FileItem);
-       /* mFileMetadataService.getFileInfo(mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
+        mFileMetadataService.getFileInfo(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
             @Override
-            public void onSuccess(FileInfo object, int status) {*/
+            public void onSuccess(FileInfo object, int status) {
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
-                // infoIntent.putExtra("fileInfo", object);
+                infoIntent.putExtra("fileInfo", object);
                 infoIntent.putExtra("token", mUserAccount.getToken());
+                infoIntent.putExtra("userId", mUserAccount.getUserId());
                 startActivity(infoIntent);
-       /*     }
+            }
 
             @Override
             public void onFailure(String message, int status) {
                 Toast.makeText(FileListActivity.this, getString(R.string.error_fileinfo), Toast.LENGTH_LONG).show();
             }
-        });*/
+        });
 
     }
 
@@ -360,7 +361,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
+        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
             @Override
             public void onSuccess(ArrayList<Tag> object, int status) {
                 int i;
@@ -413,7 +414,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                         final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(), null, getString(R.string.loading), true);
                         progressDialog.setCancelable(false);
                         // Send tag list to be updated on the server
-                        mFileMetadataService.updateFileTags(mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
+                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
                                 if (object.getResultCode() != 1)
