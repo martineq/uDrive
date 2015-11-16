@@ -35,7 +35,8 @@ set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUT
         ${RUTA_SRC}/rest/profile_node.cc ${RUTA_SRC}/rest/update_photo_node.cc ${RUTA_SRC}/rest/delete_file_node.cc
         ${RUTA_SRC}/rest/send_file_node.cc ${RUTA_SRC}/rest/update_userfullname_node.cc ${RUTA_SRC}/rest/send_dir_node.cc
         ${RUTA_SRC}/rest/info_trash_node.cc ${RUTA_SRC}/rest/delete_trash_node.cc ${RUTA_SRC}/rest/delete_file_trash_node.cc
-        ${RUTA_SRC}/rest/restore_file_trash_node.cc ${RUTA_SRC}/rest/restore_trash_node.cc ${RUTA_SRC}/rest/delete_dir_node.cc)
+        ${RUTA_SRC}/rest/restore_file_trash_node.cc ${RUTA_SRC}/rest/restore_trash_node.cc ${RUTA_SRC}/rest/delete_dir_node.cc
+        ${RUTA_SRC}/rest/list_tags_node.cc ${RUTA_SRC}/rest/update_tags_node.cc)
 set(SRC_PACK_YAML ${RUTA_SRC}/util/config_parser.cc)
 set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc ${RUTA_SRC}/zip_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****

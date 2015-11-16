@@ -19,7 +19,7 @@ void ProfileNode::executeGet() {
 
     if (lista.size()==3){
         string userId=getUserId();
-        Log(Log::LogMsgDebug) << "[" << "ProfileNode" << "] UserId: "<<userId;
+        Log(Log::LogMsgDebug) << "[ProfileNode] UserId: "<<userId;
         RequestDispatcher::user_info_st user_info;
 
         if (!getRequestDispatcher()->get_user_info(userId,user_info,status)){
@@ -33,7 +33,8 @@ void ProfileNode::executeGet() {
             char* user_image=nullptr;
             std::string size_image;
             getRequestDispatcher()->get_user_image(userId,user_image,size_image,status);
-            Log(Log::LogMsgDebug) << "[" << "printing profile" << "]: firstname: " << user_info.first_name;
+            Log(Log::LogMsgDebug) << "[ProfileNode] TamañoDeImagen desde la base: "<<size_image;
+            Log(Log::LogMsgDebug) << "[ProfileNode]: firstname: " << user_info.first_name;
             item
             << "{\"firstname\":\""  << user_info.first_name
             << "\",\"lastname\":\"" << user_info.last_name
@@ -41,7 +42,7 @@ void ProfileNode::executeGet() {
 
 
             if (user_image!= nullptr) item << "\",\"photo\":\""	<< user_image;
-            else item << "\",\"photo\":\"";
+            else item << "\",\"photo\":\"\"";
 
             item << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon
