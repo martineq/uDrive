@@ -1,5 +1,7 @@
 #include "web_server.h"
 #include "rest/delete_dir_node.h"
+#include "rest/list_tags_node.h"
+#include "rest/update_tags_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -131,9 +133,6 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           sfn->execute();
           delete sfn;
           return MG_TRUE;
-
-
-
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
@@ -158,6 +157,30 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/userfullname",12)) {
+      UpdateUserFullNameNode* uun=new UpdateUserFullNameNode(mgConnection);
+      uun->setRequestDispatcher(RequestDispatcher::get_instance());
+      uun->execute();
+      delete uun;
+      return MG_TRUE;
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
+
+      if (!strncmp(mgConnection.getMethod(),"GET",3)){
+          ListTagsNode* ltn=new ListTagsNode(mgConnection);
+          ltn->setRequestDispatcher(RequestDispatcher::get_instance());
+          ltn->execute();
+          delete ltn;
+          return MG_TRUE;
+
+      }else if (!strncmp(mgConnection.getMethod(),"PUT",3)){
+          UpdateTagsNode* uun=new UpdateTagsNode(mgConnection);
+          uun->setRequestDispatcher(RequestDispatcher::get_instance());
+          uun->execute();
+          delete uun;
+          return MG_TRUE;
+      }
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
       UpdateUserFullNameNode* uun=new UpdateUserFullNameNode(mgConnection);
       uun->setRequestDispatcher(RequestDispatcher::get_instance());
       uun->execute();
