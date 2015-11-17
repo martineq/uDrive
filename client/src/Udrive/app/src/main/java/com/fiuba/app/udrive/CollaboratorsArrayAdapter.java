@@ -73,7 +73,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
         }
 
         mColaborator = mCollaborators.get(position);
-        viewHolder.txEmail.setText(mColaborator.getmEmail());
+        viewHolder.txEmail.setText(mColaborator.getEmail());
 
         if (isChecked(position)) {
             viewHolder.ivCheck.setImageResource(R.drawable.ic_checkbox_marked_circle);
