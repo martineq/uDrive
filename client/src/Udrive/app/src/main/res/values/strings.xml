@@ -128,5 +128,9 @@
     <string name="lorem_ipsum">Testing tabbed dialog</string>
     <string name="action_file_search">Search files</string>
     <string name="search">Search</string>
+    <string name="by_name">By name</string>
+    <string name="by_ext">By extension</string>
+    <string name="by_tag">By tag</string>
+    <string name="by_owner">By owner</string>
 
 </resources>

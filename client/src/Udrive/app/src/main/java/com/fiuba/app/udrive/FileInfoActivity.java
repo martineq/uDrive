@@ -186,7 +186,7 @@ public class FileInfoActivity extends AppCompatActivity {
     public void editFileName(View view) {
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.edit_file_name, null);
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileInfoActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
         builder.setView(layout);
         builder.setIcon(R.drawable.ic_pencil_24);
         final EditText filename = ((EditText)layout.findViewById(R.id.edit_filename));

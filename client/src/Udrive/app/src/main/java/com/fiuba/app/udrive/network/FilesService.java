@@ -77,6 +77,27 @@ public class FilesService extends AbstractService {
         void updateCollaborators(@Path("fileId") int fileId, @Body List<Collaborator> usersList,
                                  Callback<List<Collaborator>> callback);
 
+        /*** Searching requests ***/
+
+        // Gets the results for the searching by file(dir) name
+        @GET("/info/users/{userId}/dir?name={dirName}")
+        void getFilesByName(@Path("userId") int userId, @Query("dirName") String dirName, Callback<List<File>> files);
+
+        // Gets the results for the searching by file extension
+        @GET("/info/users/{userId}/file?extension={extension}")
+        void getFilesByExtension(@Path("userId") int userId, @Query("extension") String extension, Callback<List<File>> files);
+
+        // Gets the results for the searching by file(dir) name
+        @GET("/info/users/{userId}/tags?tag={tag}")
+        void getFilesByTag(@Path("userId") int userId, @Query("tag") String tag, Callback<List<File>> files);
+
+        // Gets the results for the searching by file(dir) name
+        @GET("/info/users/{userId}/owners/{ownerId}")
+        void getFilesByOwner(@Path("userId") int userId, @Path("ownerId") int ownerId, Callback<List<File>> files);
+
+        /***/
+
+
 
     }
 
@@ -388,6 +409,86 @@ public class FilesService extends AbstractService {
             }
         });
 
+    }
+
+    // Gets the results for the searching by file(dir) name
+    public void getFilesByName(int userId, String dirName, final ServiceCallback<List<File>> cb){
+        mFilesServiceApi.getFilesByName(userId, dirName, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                cb.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                cb.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets the results for the searching by file extension
+    public void getFilesByExtension(int userId, String extension, final ServiceCallback<List<File>> cb){
+        mFilesServiceApi.getFilesByExtension(userId, extension, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                cb.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                cb.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets the results for the searching by file(dir) name
+    public void getFilesByTag(int userId, String tag, final ServiceCallback<List<File>> cb){
+        mFilesServiceApi.getFilesByTag(userId, tag, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                cb.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                cb.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets the results for the searching by file(dir) name
+    public void getFilesByOwner(int userId, int ownerId, final ServiceCallback<List<File>> cb){
+        mFilesServiceApi.getFilesByOwner(userId, ownerId, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                cb.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                cb.onFailure(error.getMessage(), status);
+            }
+        });
     }
 
 }

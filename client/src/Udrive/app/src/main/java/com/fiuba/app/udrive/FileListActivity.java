@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -249,7 +250,7 @@ public class FileListActivity extends AppCompatActivity implements
             LayoutInflater inflater = getLayoutInflater();
             final View layout = inflater.inflate(R.layout.filesearch_custom_dialog, null);
             AlertDialog.Builder dBuilder = new AlertDialog.Builder(this);
-            dBuilder.setTitle("My First Custom Tabbed Dialog");
+            dBuilder.setTitle(R.string.action_file_search);
             dBuilder.setView(layout);
 
             // get our tabHost from the xml
@@ -258,28 +259,29 @@ public class FileListActivity extends AppCompatActivity implements
 
             // create tab 1
             TabHost.TabSpec spec1 = tabHost.newTabSpec("tab1");
-            spec1.setIndicator("By name", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec1.setIndicator(getString(R.string.by_name), ContextCompat.getDrawable(this, R.drawable.ic_tag));
             spec1.setContent(R.id.TextView01);
             tabHost.addTab(spec1);
             //create tab2
             TabHost.TabSpec spec2 = tabHost.newTabSpec("tab2");
-            spec2.setIndicator("By extension", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec2.setIndicator(getString(R.string.by_ext), ContextCompat.getDrawable(this, R.drawable.ic_tag));
             spec2.setContent(R.id.TextView02);
             tabHost.addTab(spec2);
             //create tab2
             TabHost.TabSpec spec3 = tabHost.newTabSpec("tab3");
-            spec3.setIndicator("By tag", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec3.setIndicator(getString(R.string.by_tag), ContextCompat.getDrawable(this, R.drawable.ic_tag));
             spec3.setContent(R.id.TextView03);
             tabHost.addTab(spec3);
             //create tab2
             TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
-            spec4.setIndicator("By owner", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec4.setIndicator(getString(R.string.by_owner), ContextCompat.getDrawable(this, R.drawable.ic_tag));
             spec4.setContent(R.id.TextView04);
             tabHost.addTab(spec4);
 
             // Get tags from server
             // Get owners from server
             dBuilder.setCancelable(false)
+                    .setIcon(R.drawable.ic_magnify)
                     .setPositiveButton(getString(R.string.search), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
@@ -465,7 +467,7 @@ public class FileListActivity extends AppCompatActivity implements
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.file_tag_layout, null);
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileListActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(layout);
         builder.setIcon(R.drawable.ic_tag);
         ((TextView)layout.findViewById(R.id.file_name)).setText(Html.fromHtml(type));
@@ -574,7 +576,7 @@ public class FileListActivity extends AppCompatActivity implements
                         dialog.cancel();
                     }
                 });
-        android.app.AlertDialog alert = builder.create();
+        AlertDialog alert = builder.create();
         alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         alert.show();
         FileContextMenuManager.getInstance().hideContextMenu();

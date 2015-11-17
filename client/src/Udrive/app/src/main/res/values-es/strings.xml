@@ -124,6 +124,10 @@
     <string name="lorem_ipsum">Probando diálogo</string>
     <string name="action_file_search">Buscar archivos</string>
     <string name="search">Buscar</string>
+    <string name="by_name">Por nombre</string>
+    <string name="by_ext">Por extensión</string>
+    <string name="by_tag">Por etiqueta</string>
+    <string name="by_owner">Por dueño</string>
 
 </resources>
 
