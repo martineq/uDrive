@@ -31,27 +31,27 @@ void DeleteDirNode::executeDelete() {
 	vector<string> lista = DeleteDirNode::split(getUri(), '/');
 	int status = 3;
 
-	if ((!lista[3].compare("file")) && (lista.size() == 5)) {
+	if ((!lista[3].compare("dir")) && (lista.size() == 5)) {
 		string userId = lista[2];
-		string fileId = lista[4];
+		string dirId = lista[4];
 
-		Log(Log::LogMsgDebug) << "[" << "DeleteDirNode " << "] userId: " << userId << " fileId: " << fileId;
+		Log(Log::LogMsgDebug) << "[" << "DeleteDirNode " << "] userId: " << userId << " dirId: " << dirId;
 		RequestDispatcher::dir_info_st dir_info;
 
-		if (!getRequestDispatcher()->get_directory_info(userId,fileId,dir_info,status)){
+		if (!getRequestDispatcher()->get_directory_info(userId, dirId,dir_info,status)){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
-		}else Log(Log::LogMsgDebug) << "[" << "DeleteDirNode " << "] dirId parent: "<<dir_info.parent_directory;
+		}else Log(Log::LogMsgDebug) << "[DeleteDirNode] dirId parent: "<<dir_info.parent_directory;
 
-		if (!getRequestDispatcher()->delete_file(userId,fileId,status)) {
+		if (!getRequestDispatcher()->delete_directory(userId, dirId,status)) {
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else{
-			Log(Log::LogMsgInfo) << "[" << "DeleteDirNode " << "], dir erase, parent folder printing";
+			Log(Log::LogMsgInfo) << "[DeleteDirNode], dir erase, parent folder printing";
 			MgConnectionW mg=getConnection();
 			InfoNode* in=new InfoNode(mg);
 			in->setRequestDispatcher(RequestDispatcher::get_instance());
