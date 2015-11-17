@@ -32,7 +32,7 @@ public class FileMetadataService extends AbstractService {
 
         // Gets the file or folder tags
         @GET("/filetags/users/{userId}/files/{fileId}")
-        void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<String> tags);
+        void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<StringTags> tags);
 
         // Updates the tag set for the given file ID
         @PUT("/filetags/users/{userId}/{type}/{fileId}")
@@ -61,10 +61,10 @@ public class FileMetadataService extends AbstractService {
         this.mFileTagServiceApi = createService(FileTagServiceApi.class, token);
     }
 
-    public void getTags(int userId, int fileId, final ServiceCallback<String> tags){
-        mFileTagServiceApi.getTags(userId, fileId, new Callback<String>() {
+    public void getTags(int userId, int fileId, final ServiceCallback<StringTags> tags){
+        mFileTagServiceApi.getTags(userId, fileId, new Callback<StringTags>() {
             @Override
-            public void success(String tagsString, Response response) {
+            public void success(StringTags tagsString, Response response) {
                 tags.onSuccess(tagsString, response.getStatus());
             }
 

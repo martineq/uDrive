@@ -424,16 +424,18 @@ public class FileListActivity extends AppCompatActivity implements
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<String>() {
+        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<StringTags>() {
             @Override
-            public void onSuccess(String object, int status) {
-                ArrayList<Tag> tags = Util.stringToTagsArray(object);
+            public void onSuccess(StringTags object, int status) {
+                ArrayList<Tag> tags = Util.stringToTagsArray(object.getTags());
                 int i;
-                for (i = 0; i < tags.size(); i++)
+                for (i = 0; i < tags.size(); i++) {
                     tagList.add(tags.get(i));
+                }
                 if (tags.size() > 0) {
                     updatePanel(panel, tagList);
                 }
+
             }
 
             @Override
