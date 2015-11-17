@@ -481,7 +481,8 @@ public class FileListActivity extends AppCompatActivity implements
                         progressDialog.setCancelable(false);
                         // Send tag list to be updated on the server
                         final StringTags tags = new StringTags(Util.tagsToString(tagList));
-                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
+                        String type = mFiles.get(FileItem).isDir()?"dir":"file";
+                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
                                 if (object.getResultCode() != 1)

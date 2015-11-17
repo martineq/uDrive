@@ -35,8 +35,8 @@ public class FileMetadataService extends AbstractService {
         void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<String> tags);
 
         // Updates the tag set for the given file ID
-        @PUT("/filetags/users/{userId}/files/{fileId}")
-        void updateTags(@Path("userId") int userId, @Path("fileId") int fileId, @Body StringTags tagList,
+        @PUT("/filetags/users/{userId}/{type}/{fileId}")
+        void updateTags(@Path("userId") int userId, @Path("type") String type, @Path("fileId") int fileId, @Body StringTags tagList,
                         Callback<GenericResult> result);
 
         // Gets the complete info about a folder or file
@@ -82,9 +82,9 @@ public class FileMetadataService extends AbstractService {
 
 
     // Passes the final tag list corresponding to a file.
-    public void updateFileTags(int userId, int fileId, @Body StringTags tagList,
+    public void updateFileTags(int userId, String type, int fileId, @Body StringTags tagList,
                         final ServiceCallback<GenericResult> result){
-        mFileTagServiceApi.updateTags(userId, fileId, tagList, new Callback<GenericResult>() {
+        mFileTagServiceApi.updateTags(userId, type, fileId, tagList, new Callback<GenericResult>() {
             @Override
             public void success(GenericResult genericResult, Response response) {
                 result.onSuccess(genericResult, response.getStatus());
