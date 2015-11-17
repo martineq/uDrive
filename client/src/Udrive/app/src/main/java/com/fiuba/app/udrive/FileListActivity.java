@@ -370,7 +370,8 @@ public class FileListActivity extends AppCompatActivity implements
         Log.i(TAG, "Information File position " + FileItem);
         /*System.out.println("Position - Lat >>>> "+getLatitude()+
                 "Position - Long >>>> "+getLongitude());*/
-        mFileMetadataService.getFileInfo(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
+        String type = mFiles.get(FileItem).isDir()?"dir":"file";
+        mFileMetadataService.getFileInfo(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
             @Override
             public void onSuccess(FileInfo object, int status) {
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
@@ -426,16 +427,19 @@ public class FileListActivity extends AppCompatActivity implements
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<StringTags>() {
+        type = mFiles.get(FileItem).isDir()?"dir":"file";
+        mFileMetadataService.getTags(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), new ServiceCallback<StringTags>() {
             @Override
             public void onSuccess(StringTags object, int status) {
-                ArrayList<Tag> tags = Util.stringToTagsArray(object.getTags());
-                int i;
-                for (i = 0; i < tags.size(); i++) {
-                    tagList.add(tags.get(i));
-                }
-                if (tags.size() > 0) {
-                    updatePanel(panel, tagList);
+                if (object.getTags() != "") {
+                    ArrayList<Tag> tags = Util.stringToTagsArray(object.getTags());
+                    int i;
+                    for (i = 0; i < tags.size(); i++) {
+                        tagList.add(tags.get(i));
+                    }
+                    if (tags.size() > 0) {
+                        updatePanel(panel, tagList);
+                    }
                 }
 
             }

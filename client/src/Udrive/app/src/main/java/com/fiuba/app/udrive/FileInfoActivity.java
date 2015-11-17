@@ -200,7 +200,8 @@ public class FileInfoActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         int userId = (int)getIntent().getSerializableExtra("token");
                         int fileId = mFileInfo.getFile().getId();
-                        mFileMetadataService.updateFilename(userId, fileId, new FolderData(filename.getText().toString()),
+                        String type = mFileInfo.getFile().isDir()?"dir":"file";
+                        mFileMetadataService.updateFilename(userId, type, fileId, new FolderData(filename.getText().toString()),
                                 new ServiceCallback<GenericResult>() {
                                     @Override
                                     public void onSuccess(GenericResult object, int status) {

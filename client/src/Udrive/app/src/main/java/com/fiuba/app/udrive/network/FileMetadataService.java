@@ -31,21 +31,23 @@ public class FileMetadataService extends AbstractService {
     private interface FileTagServiceApi {
 
         // Gets the file or folder tags
-        @GET("/filetags/users/{userId}/files/{fileId}")
-        void getTags(@Path("userId") int userId, @Path("fileId") int fileId, Callback<StringTags> tags);
+        @GET("/filetags/users/{userId}/{type}/{fileId}")
+        void getTags(@Path("userId") int userId, @Path("type") String type,
+                     @Path("fileId") int fileId, Callback<StringTags> tags);
 
         // Updates the tag set for the given file ID
         @PUT("/filetags/users/{userId}/{type}/{fileId}")
-        void updateTags(@Path("userId") int userId, @Path("type") String type, @Path("fileId") int fileId, @Body StringTags tagList,
+        void updateTags(@Path("userId") int userId, @Path("type") String type,
+                        @Path("fileId") int fileId, @Body StringTags tagList,
                         Callback<GenericResult> result);
 
         // Gets the complete info about a folder or file
-        @GET("/fileinfo/users/{userId}/files/{fileId}")
-        void getFileInfo(@Path("userId") int userId, @Path("fileId") int fileId, Callback<FileInfo> fileInfo);
+        @GET("/fileinfo/users/{userId}/{type}/{fileId}")
+        void getFileInfo(@Path("userId") int userId, @Path("type") String type, @Path("fileId") int fileId, Callback<FileInfo> fileInfo);
 
         // Updates a file or folder name
-        @PUT("/filename/users/{userId}/files/{fileId}")
-        void updateFilename(@Path("userId") int userId, @Path("fileId") int fileId, @Body FolderData data,
+        @PUT("/filename/users/{userId}/{type}/{fileId}")
+        void updateFilename(@Path("userId") int userId, @Path("type") String type, @Path("fileId") int fileId, @Body FolderData data,
                             Callback<GenericResult> result);
     }
 
@@ -61,8 +63,8 @@ public class FileMetadataService extends AbstractService {
         this.mFileTagServiceApi = createService(FileTagServiceApi.class, token);
     }
 
-    public void getTags(int userId, int fileId, final ServiceCallback<StringTags> tags){
-        mFileTagServiceApi.getTags(userId, fileId, new Callback<StringTags>() {
+    public void getTags(int userId, String type, int fileId, final ServiceCallback<StringTags> tags){
+        mFileTagServiceApi.getTags(userId, type, fileId, new Callback<StringTags>() {
             @Override
             public void success(StringTags tagsString, Response response) {
                 tags.onSuccess(tagsString, response.getStatus());
@@ -103,8 +105,8 @@ public class FileMetadataService extends AbstractService {
     }
 
     // Gets all the folder or file info items
-    public void getFileInfo(int userId, int fileId, final ServiceCallback<FileInfo> fileInfo){
-        mFileTagServiceApi.getFileInfo(userId, fileId, new Callback<FileInfo>() {
+    public void getFileInfo(int userId, String type, int fileId, final ServiceCallback<FileInfo> fileInfo){
+        mFileTagServiceApi.getFileInfo(userId, type, fileId, new Callback<FileInfo>() {
             @Override
             public void success(FileInfo fInfo, Response response) {
                 fileInfo.onSuccess(fInfo, response.getStatus());
@@ -123,8 +125,8 @@ public class FileMetadataService extends AbstractService {
     }
 
     // Sends the new name for a file or folder to be updated on database
-    public void updateFilename(int userId, int fileId, FolderData data, final ServiceCallback<GenericResult> result){
-        mFileTagServiceApi.updateFilename(userId, fileId, data, new Callback<GenericResult>() {
+    public void updateFilename(int userId, String type, int fileId, FolderData data, final ServiceCallback<GenericResult> result){
+        mFileTagServiceApi.updateFilename(userId, type, fileId, data, new Callback<GenericResult>() {
             @Override
             public void success(GenericResult genericResult, Response response) {
                 result.onSuccess(genericResult, response.getStatus());
