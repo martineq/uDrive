@@ -93,7 +93,6 @@ void InfoNode::executeGet() {
 				const char* msg = tmp.c_str();
 				getConnection().printfData(msg);
 			}
-
 		}
 	}
 	else{
@@ -104,9 +103,10 @@ void InfoNode::executeGet() {
 	}
 }
 std::string InfoNode::defaultResponse(){
-	return "[{ \"id\": \"0\",  \"name\": \"\","
-							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"0\"}]";
+//	return "[{ \"id\": \"0\",  \"name\": \"\","
+//							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
+//							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"0\"}]";
+	return "[]";
 }
 
 std::string InfoNode::getUserId(){
