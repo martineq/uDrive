@@ -50,6 +50,11 @@ public class FilesService extends AbstractService {
                         @Path("fileId") int fileId,
                         Callback<List<File>> files);
 
+        @DELETE("/users/{userId}/dir/{dirId}")
+        void deleteDirectory(@Path("userId") int userId,
+                        @Path("dirId") int dirId,
+                        Callback<List<File>> files);
+
         @GET("/info/users/{userId}/trash")
         void getTrashedFiles(@Path("userId") int userId, Callback<List<File>> callback);
 
@@ -146,28 +151,24 @@ public class FilesService extends AbstractService {
     }
 
     public void addFolder(int userId, int dirId,String folderName, final ServiceCallback<List<File>> serviceCallback) {
-        try{
-            FolderData folderData = new FolderData(folderName);
-            mFilesServiceApi.addFolder(userId, dirId, folderData, new Callback<List<File>>() {
-                @Override
-                public void success(List<File> files, Response response) {
-                    serviceCallback.onSuccess(files, response.getStatus());
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    int status;
-                    if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                        status = 503;
-                    } else
-                        status = error.getResponse().getStatus();
-                    serviceCallback.onFailure(error.getMessage(), status);
-                }
-            });
-        }catch (Exception e){
-            serviceCallback.onFailure("No se pudo crear la carpeta",1);
-        }
+        FolderData folderData = new FolderData(folderName);
+        mFilesServiceApi.addFolder(userId, dirId, folderData, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
     }
 
     public void downloadFile(int userId, int fileId, String fullPath, final ServiceCallback<FileOutputStream> serviceCallback) {
@@ -211,26 +212,44 @@ public class FilesService extends AbstractService {
     }
 
     public void deleteFile(int userId, int fileId,final ServiceCallback<List<File>> serviceCallback) {
-        try{
-            mFilesServiceApi.deleteFile(userId, fileId, new Callback<List<File>>() {
-                @Override
-                public void success(List<File> files, Response response) {
-                    serviceCallback.onSuccess(files, response.getStatus());
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    int status;
-                    if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                        status = 503;
-                    } else
-                        status = error.getResponse().getStatus();
-                    serviceCallback.onFailure(error.getMessage(), status);
-                }
-            });
-        }catch (Exception e){
-            serviceCallback.onFailure("No se pudo eliminar el archivo",1);
-        }
+        mFilesServiceApi.deleteFile(userId, fileId, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
+
+    }
+
+    public void deleteDirectory(int userId, int dirId,final ServiceCallback<List<File>> serviceCallback) {
+
+        mFilesServiceApi.deleteDirectory(userId, dirId, new Callback<List<File>>() {
+            @Override
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                serviceCallback.onFailure(error.getMessage(), status);
+            }
+        });
 
     }
 
