@@ -128,6 +128,12 @@
     <string name="by_ext">Por extensión</string>
     <string name="by_tag">Por etiqueta</string>
     <string name="by_owner">Por dueño</string>
+    <string name="label_by_name">Nombre de archivo</string>
+    <string name="label_by_ext">Extensión</string>
+    <string name="label_by_tag">Seleccione tag</string>
+    <string name="label_by_owner">Seleccione dueño</string>
+    <string name="label_by_name_hint">Ingrese el nombre aquí...</string>
+    <string name="label_by_ext_hint">Ingrese la extensión aquí...</string>
 
 </resources>
 

@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,6 @@ import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserLocation;
 import com.fiuba.app.udrive.model.Util;
-import com.fiuba.app.udrive.network.ConnectionConfig;
 import com.fiuba.app.udrive.network.FileMetadataService;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
@@ -46,7 +44,6 @@ import com.fiuba.app.udrive.network.StatusCode;
 import com.fiuba.app.udrive.network.UserService;
 import com.fiuba.app.udrive.view.FileContextMenu;
 import com.fiuba.app.udrive.view.FileContextMenuManager;
-import com.fiuba.app.udrive.view.FileSearchDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -246,7 +243,6 @@ public class FileListActivity extends AppCompatActivity implements
             startActivity(i);
         } else if (id == R.id.action_file_search) {
 
-
             LayoutInflater inflater = getLayoutInflater();
             final View layout = inflater.inflate(R.layout.filesearch_custom_dialog, null);
             AlertDialog.Builder dBuilder = new AlertDialog.Builder(this);
@@ -260,22 +256,25 @@ public class FileListActivity extends AppCompatActivity implements
             // create tab 1
             TabHost.TabSpec spec1 = tabHost.newTabSpec("tab1");
             spec1.setIndicator(getString(R.string.by_name), ContextCompat.getDrawable(this, R.drawable.ic_tag));
-            spec1.setContent(R.id.TextView01);
+            spec1.setContent(R.id.layout1);
             tabHost.addTab(spec1);
+
             //create tab2
             TabHost.TabSpec spec2 = tabHost.newTabSpec("tab2");
             spec2.setIndicator(getString(R.string.by_ext), ContextCompat.getDrawable(this, R.drawable.ic_tag));
-            spec2.setContent(R.id.TextView02);
+            spec2.setContent(R.id.layout2);
             tabHost.addTab(spec2);
-            //create tab2
+
+            //create tab3
             TabHost.TabSpec spec3 = tabHost.newTabSpec("tab3");
             spec3.setIndicator(getString(R.string.by_tag), ContextCompat.getDrawable(this, R.drawable.ic_tag));
-            spec3.setContent(R.id.TextView03);
+            spec3.setContent(R.id.layout3);
             tabHost.addTab(spec3);
-            //create tab2
+
+            //create tab4
             TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
             spec4.setIndicator(getString(R.string.by_owner), ContextCompat.getDrawable(this, R.drawable.ic_tag));
-            spec4.setContent(R.id.TextView04);
+            spec4.setContent(R.id.layout4);
             tabHost.addTab(spec4);
 
             // Get tags from server
