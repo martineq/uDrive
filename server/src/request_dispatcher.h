@@ -219,12 +219,11 @@ class RequestDispatcher{
      *        On error returns false and a DataHandler status (see db_constants.h)
      * 
      * @param user_id ...
-     * @param p_image_stream return the image stream. The user must de-allocate the file.
-     * @param size return the size of the stream (in bytes)
+     * @param image_stream return the image stream in Base64 format (text). 
      * @param status ...
      * @return bool
      */
-    bool get_user_image(string user_id, char*& p_image_stream, string& size, int& status);
+    bool get_user_image(string user_id, string& image_stream, int& status);
     
     /**
      * @brief Gets the directory information on a DataHandler::dir_info_st (only non-deleted files)
@@ -580,10 +579,7 @@ class RequestDispatcher{
      * @return bool
      */
     bool search_by_user(string user_id,string user_id_to_search,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
-    
-    
-    
-    bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);
+
 
 };
 

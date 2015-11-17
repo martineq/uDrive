@@ -31,20 +31,16 @@ void ProfileNode::executeGet() {
         else{
 
             std::ostringstream item;
-            char* user_image=nullptr;
-            std::string size_image="";
-            getRequestDispatcher()->get_user_image(userId,user_image,size_image,status);
-
-            std::string user_image_str(user_image,atol(size_image.c_str()));
-
-            Log(Log::LogMsgDebug) << "[ProfileNode] TamañoDeImagen desde la base: "<<size_image;
+            std::string user_image;
+            getRequestDispatcher()->get_user_image(userId,user_image,status);
+            Log(Log::LogMsgDebug) << "[ProfileNode] TamañoDeImagen desde la base: "<<user_image.size();
             Log(Log::LogMsgDebug) << "[ProfileNode]: firstname: " << user_info.first_name;
             item
             << "{\"firstname\":\""  << user_info.first_name
             << "\",\"lastname\":\"" << user_info.last_name
             << "\",\"email\":\""	<< user_info.email;
 
-            if (user_image_str.size()!=0)  item << "\",\"photo\":\"" << user_image_str.c_str();
+            if (user_image.size()!=0)  item << "\",\"photo\":\"" << user_image.c_str();
             else item << "\",\"photo\":\"\"";
 
             item << "\",\"GPSLatitude\":\"" << user_info.gps_lat
