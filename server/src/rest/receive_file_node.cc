@@ -43,7 +43,6 @@ void ReceiveFileNode::executePost() {
 		std::string fecha(buffer);
 
         p_file = getConnection().getMultipartData(variable, contenido);
-       // Log(Log::LogMsgDebug) << "[p_file: " <<p_file;
 		while(p_file!= "") {
             if (variable == "file") {
                 Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
@@ -54,7 +53,6 @@ void ReceiveFileNode::executePost() {
         Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
         vector<string> partesArchivo=ReceiveFileNode::split(contenido,'.');
         Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
-        //size=sizeof(p_file)* sizeof(char);
         Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Tamaño de Archivo:  "<<p_file.size();
 
         stringstream tamanio;

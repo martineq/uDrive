@@ -8,6 +8,7 @@ import com.fiuba.app.udrive.model.MyPhoto;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserData;
 import com.fiuba.app.udrive.model.UserFullName;
+import com.fiuba.app.udrive.model.UserLocation;
 import com.fiuba.app.udrive.model.UserProfile;
 
 import java.util.List;
@@ -43,6 +44,10 @@ public class UserService extends AbstractService {
 
         @GET("/users")
         void getUsers(@Query("q") String query, Callback<List<Collaborator>> result);
+
+        // Updates the GPS coordinates when user makes last update on his files
+        @PUT("/location/users/{userId}")
+        void updateUserLocation(@Path("userId") int userId, @Body UserLocation userLocation, Callback<GenericResult> result);
 
     }
 
@@ -168,6 +173,25 @@ public class UserService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 callback.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    public void updateUserLocation(int userId, UserLocation userLocation, final ServiceCallback<GenericResult> result){
+        mUserServiceApi.updateUserLocation(userId, userLocation, new Callback<GenericResult>() {
+            @Override
+            public void success(GenericResult genericResult, Response response) {
+                result.onSuccess(genericResult, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                result.onFailure(error.getMessage(), status);
             }
         });
     }

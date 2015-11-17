@@ -138,20 +138,8 @@ bool RequestDispatcher::get_user_info(string user_id, RequestDispatcher::user_in
   if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; }
 
   // Prepare data
-  user_info.email = dh_user_info.email;
-  vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
-  user_info.first_name = name.front();
-  user_info.last_name = name.back();
-  vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
-  user_info.gps_lat = location.front();
-  user_info.gps_lon = location.back();
-  user_info.user_quota_used = dh_user_info.user_quota_used;
-  user_info.user_quota_total = to_string(max_user_quota_);
-  float percentage = ( (float)stoul_decimal(dh_user_info.user_quota_used) * (float)100) / (float)max_user_quota_;
-  stringstream stream;
-  stream << std::fixed << std::setprecision(2) << percentage;
-  user_info.user_quota_used_percentage = stream.str() + "%";
-
+  fill_user_info_st(user_id,dh_user_info,user_info);
+  
   return true;
 }
 
@@ -361,6 +349,35 @@ bool RequestDispatcher::get_user_email_list_by_pattern(string pattern, vector<st
   for(vector<string>::iterator it = full_list.begin() ; it!=full_list.end() ; ++it) {
       if( (*it).find(pattern)!=string::npos ){ list.push_back((*it)); }
   }
+  return true;
+}
+
+
+bool RequestDispatcher::get_colaborator_users(string user_id, vector< RequestDispatcher::user_info_st >& users_founded, int& status){
+
+  users_founded.clear();
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+  
+  // Search colaborators users in shared files
+  vector<string> file_ids = split_string(owner_info.shared_files,LABEL_STRING_DELIMITER);
+  string ids_of_colaborators;
+  for(vector<string>::iterator it = file_ids.begin() ; it!=file_ids.end() ; ++it) {
+    string file_id = (*it);
+    DataHandler::file_info_st file_info;
+    if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+    ids_of_colaborators = add_key_to_string_list(ids_of_colaborators,file_info.owner);
+  } 
+  
+  // Fill all data of users founded
+  vector<string> colaborators_ids = split_string(ids_of_colaborators,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = colaborators_ids.begin() ; it!=colaborators_ids.end() ; ++it) {
+    string user_id = (*it);
+    RequestDispatcher::user_info_st user_info;
+    if( !get_user_info(user_id,user_info,status) ){ return false; }
+    users_founded.push_back(user_info);
+  }
+
   return true;
 }
 
@@ -713,6 +730,19 @@ bool RequestDispatcher::search_by_tag(string user_id, string tag,
 }
 
 
+bool RequestDispatcher::search_by_user(string user_id, string user_id_to_search, vector< RequestDispatcher::info_element_st >& elements_founded, int& status){
+
+  elements_founded.clear();
+  DataHandler::user_info_st owner_info;
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+
+  // Search in shared files
+  if( !add_info_files_from_id_list(owner_info.shared_files,SEARCH_MODE_BY_USER,user_id_to_search,elements_founded,status) ){ return false; }  
+  
+  return true;
+}
+
+
 vector<string> RequestDispatcher::split_string(string string_to_split, char delimiter){
     stringstream ss(string_to_split);
     string item;
@@ -977,6 +1007,12 @@ bool RequestDispatcher::add_info_files_from_id_list(string file_id_list, int mod
         files_vector.push_back(info_element);
       }
     }
+    if(mode==SEARCH_MODE_BY_USER){ 
+      if( file_info.owner.compare(text)==0 ){ 
+        fill_info_elem_to_file_info(file_id,file_info,info_element);  
+        files_vector.push_back(info_element);
+      }
+    }
     
   } // End for()
   return true;  
@@ -1183,6 +1219,27 @@ bool RequestDispatcher::is_str_included_to_lower(string str_source, string str_t
   transform(str_source.begin(),str_source.end(),str_source.begin(), ::tolower);
   transform(str_to_search.begin(),str_to_search.end(),str_to_search.begin(), ::tolower);
   return( str_source.find(str_to_search)!=string::npos );
+}
+
+
+void RequestDispatcher::fill_user_info_st(string user_id, DataHandler::user_info_st dh_user_info, RequestDispatcher::user_info_st& user_info){
+
+  user_info.id = user_id;
+  user_info.email = dh_user_info.email;
+  vector<string> name = split_string(dh_user_info.name,LABEL_STRING_DELIMITER);
+  user_info.first_name = name.front();
+  user_info.last_name = name.back();
+  vector<string> location = split_string(dh_user_info.location,LABEL_STRING_DELIMITER);
+  user_info.gps_lat = location.front();
+  user_info.gps_lon = location.back();
+  user_info.user_quota_used = dh_user_info.user_quota_used;
+  user_info.user_quota_total = to_string(max_user_quota_);
+  float percentage = ( (float)stoul_decimal(dh_user_info.user_quota_used) * (float)100) / (float)max_user_quota_;
+  stringstream stream;
+  stream << std::fixed << std::setprecision(2) << percentage;
+  user_info.user_quota_used_percentage = stream.str() + "%";
+
+  return void();
 }
 
 

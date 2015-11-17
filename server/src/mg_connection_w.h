@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include "./util/log.h"
+#include <json/json.h>
 
 using std::string;
 #include <string.h>
@@ -61,6 +62,11 @@ class MgConnectionW {
 		 * It takes the value of the last field next json parameter in the header
 		 */
 		std::string getBodyJson(string field);
+
+		/**
+		 * Full returns the json structure you find on the content of request
+		 */
+		Json::Value getBodyJson();
 
         /**
          * specifies the content type of the HTTP message

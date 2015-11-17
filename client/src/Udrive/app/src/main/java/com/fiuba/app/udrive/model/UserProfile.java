@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class UserProfile extends UserData implements Serializable {
     private String firstname;
     private String lastname;
-    private String photo = null; // TODO: check this.
+    private String photo = null;
     private double GPSLatitude;
     private double GPSLongitude;
     private int userId = 0;

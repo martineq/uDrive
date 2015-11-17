@@ -34,6 +34,7 @@ class RequestDispatcher{
     } ;
 
     struct user_info_st {
+      string id;
       string email;
       string first_name;
       string last_name;
@@ -105,6 +106,8 @@ class RequestDispatcher{
     void fill_info_elem_to_dir_info(string dir_id, DataHandler::dir_info_st dir_info, RequestDispatcher::info_element_st& info_element);
     void fill_info_elem_to_file_info(string file_id, DataHandler::file_info_st file_info, RequestDispatcher::info_element_st& info_element);
     bool is_str_included_to_lower(string str_source, string str_to_search);
+    void fill_user_info_st(string user_id,DataHandler::user_info_st dh_user_info,RequestDispatcher::user_info_st& user_info);
+    
     
   public:  
     
@@ -330,6 +333,19 @@ class RequestDispatcher{
      * @return bool
      */
     bool get_user_email_list_by_pattern(string pattern, vector<string> &list, int& status);
+
+    
+    /**
+     * @brief Searches all the colaborator users in shared files.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param users_founded ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool get_colaborator_users(string user_id, vector<RequestDispatcher::user_info_st>& users_founded, int& status);
+    
     
     /**
      * @brief Sets the image file for an user.  Returns true on success.
@@ -547,13 +563,24 @@ class RequestDispatcher{
      * @param user_id ...
      * @param tag ...
      * @param elements_founded ...
-     * @param status ...
+     * @param status returns DataHandler status ONLY if @return==false
      * @return bool
      */
     bool search_by_tag(string user_id,string tag,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
     
     
-    //bool search_by_user(string user_id,string user_id_to_search,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
+    /**
+     * @brief Searches all the elements of a user colaborator in shared files.
+     *        Returns true on success. On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_id ...
+     * @param user_id_to_search ...
+     * @param elements_founded ...
+     * @param status returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool search_by_user(string user_id,string user_id_to_search,vector<RequestDispatcher::info_element_st>& elements_founded, int& status);
+    
     
     
     bool HARDCODED_get_user_image(string user_id, string& image_stream, int& status);

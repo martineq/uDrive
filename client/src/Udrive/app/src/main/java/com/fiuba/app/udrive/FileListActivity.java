@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,9 +30,10 @@ import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
 import com.fiuba.app.udrive.model.ObjectStream;
+import com.fiuba.app.udrive.model.StringTags;
 import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
-import com.fiuba.app.udrive.model.UserProfile;
+import com.fiuba.app.udrive.model.UserLocation;
 import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.FileMetadataService;
 import com.fiuba.app.udrive.network.FilesService;
@@ -40,14 +42,17 @@ import com.fiuba.app.udrive.network.StatusCode;
 import com.fiuba.app.udrive.network.UserService;
 import com.fiuba.app.udrive.view.FileContextMenu;
 import com.fiuba.app.udrive.view.FileContextMenuManager;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class FileListActivity extends AppCompatActivity implements FilesArrayAdapter.OnContextMenuClickListener, AdapterView.OnItemClickListener, FileContextMenu.OnFileContextMenuItemClickListener {
+public class FileListActivity extends AppCompatActivity implements
+        FilesArrayAdapter.OnContextMenuClickListener, AdapterView.OnItemClickListener,
+        FileContextMenu.OnFileContextMenuItemClickListener, GoogleApiClient.ConnectionCallbacks {
 
     public static final String TAG = "FileListActivity";
 
@@ -79,6 +84,12 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     public static final String EXTRA_DIR_ID = "dirId";
 
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation = null;
+    private double mLatitude;
+    private double mLongitude;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,10 +104,32 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
         mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
         mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         mFileMetadataService = new FileMetadataService(mUserAccount.getToken(), FileListActivity.this);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .build();
+        mGoogleApiClient.connect();
+
+
         System.out.println("idDir: "+mDirId);
         if (mDirId == null)
             mDirId = 0;
         loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
+    }
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLatitude = mLastLocation.getLatitude();
+            mLongitude = mLastLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        mLatitude = 0.0;
+        mLongitude = 0.0;
+        Toast.makeText(FileListActivity.this, R.string.error_gps, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -115,6 +148,9 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
         // Action of signing out
         if (id == R.id.action_signout) {
+            // Stop GPS service
+            if (mGoogleApiClient.isConnected())
+                mGoogleApiClient.disconnect();
             ObjectStream<UserAccount> os = new ObjectStream<>(MainActivity.getAccountFilename(), FileListActivity.this);
             os.delete();
             Intent main = new Intent(getApplicationContext(), MainActivity.class);
@@ -158,6 +194,19 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                         public void onSuccess(List<File> files, int status) {
                             mFilesAdapter.updateFiles(files);
                             Log.d(TAG, "Number of files received " + files.size());
+                            // Update user location
+                            UserLocation userLocation = new UserLocation(mLatitude, mLongitude);
+                            mUserService.updateUserLocation(mUserAccount.getUserId(), userLocation, new ServiceCallback<GenericResult>() {
+                                @Override
+                                public void onSuccess(GenericResult object, int status) {
+                                    // Does nothing. Transparent for the user
+                                }
+
+                                @Override
+                                public void onFailure(String message, int status) {
+                                    // Does nothing. Transparent for the user
+                                }
+                            });
                         }
 
                         @Override
@@ -275,6 +324,18 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             public void onSuccess(List<File> files, int status) {
                 mFilesAdapter.updateFiles(files);
                 Log.d(TAG, "Number of files received " + files.size());
+                // Update user location
+                UserLocation userLocation = new UserLocation(mLatitude, mLongitude);
+                mUserService.updateUserLocation(mUserAccount.getUserId(), userLocation, new ServiceCallback<GenericResult>() {
+                    @Override
+                    public void onSuccess(GenericResult object, int status) {
+                        // Does nothing. Transparent for the user
+                    }
+                    @Override
+                    public void onFailure(String message, int status) {
+                        // Does nothing. Transparent for the user
+                    }
+                });
             }
 
             @Override
@@ -305,20 +366,23 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
     @Override
     public void onInformationClick(int FileItem) {
         Log.i(TAG, "Information File position " + FileItem);
-       /* mFileMetadataService.getFileInfo(mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
+        /*System.out.println("Position - Lat >>>> "+getLatitude()+
+                "Position - Long >>>> "+getLongitude());*/
+        mFileMetadataService.getFileInfo(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
             @Override
-            public void onSuccess(FileInfo object, int status) {*/
+            public void onSuccess(FileInfo object, int status) {
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
-                // infoIntent.putExtra("fileInfo", object);
+                infoIntent.putExtra("fileInfo", object);
                 infoIntent.putExtra("token", mUserAccount.getToken());
+                infoIntent.putExtra("userId", mUserAccount.getUserId());
                 startActivity(infoIntent);
-       /*     }
+            }
 
             @Override
             public void onFailure(String message, int status) {
                 Toast.makeText(FileListActivity.this, getString(R.string.error_fileinfo), Toast.LENGTH_LONG).show();
             }
-        });*/
+        });
 
     }
 
@@ -360,16 +424,18 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mFiles.get(FileItem).getId(), new ServiceCallback<ArrayList<Tag>>() {
+        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<String>() {
             @Override
-            public void onSuccess(ArrayList<Tag> object, int status) {
+            public void onSuccess(String object, int status) {
+                ArrayList<Tag> tags = Util.stringToTagsArray(object);
                 int i;
-                for (i = 0; i < object.size(); i++)
-                    tagList.add(object.get(i));
-                if (object.size() > 0) {
+                for (i = 0; i < tags.size(); i++)
+                    tagList.add(tags.get(i));
+                if (tags.size() > 0) {
                     updatePanel(panel, tagList);
                 }
             }
+
             @Override
             public void onFailure(String message, int status) {
                 // Do something
@@ -387,7 +453,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
                 int i;
                 boolean tagExists = false;
-                if (tagList.size()>0) {
+                if (tagList.size() > 0) {
                     // Check tag was not repeated in list
                     for (i = 0; i < tagList.size(); i++) {
                         if (tagList.get(i).getTagName().toLowerCase().compareTo(newTag.toLowerCase()) == 0) {
@@ -406,6 +472,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                 input.setText("");
             }
         });
+
         builder.setCancelable(false)
                 .setTitle(getString(R.string.file_tag_title))
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
@@ -413,7 +480,8 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
                         final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(), null, getString(R.string.loading), true);
                         progressDialog.setCancelable(false);
                         // Send tag list to be updated on the server
-                        mFileMetadataService.updateFileTags(mFiles.get(FileItem).getId(), tagList, new ServiceCallback<GenericResult>() {
+                        final StringTags tags = new StringTags(Util.tagsToString(tagList));
+                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
                                 if (object.getResultCode() != 1)
@@ -530,7 +598,7 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     @Override
     public void onClick(View v, int position) {
-        FileContextMenuManager.getInstance().toggleContextMenuFromView(v,position,this);
+        FileContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this);
     }
 
 
@@ -540,6 +608,22 @@ public class FileListActivity extends AppCompatActivity implements FilesArrayAda
 
     public void setSelectedFileForDownload(File selectedFileForDownload) {
         this.selectedFileForDownload = selectedFileForDownload;
+    }
+
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    public void setLatitude(double mLatitude) {
+        this.mLatitude = mLatitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double mLongitude) {
+        this.mLongitude = mLongitude;
     }
 
 }
