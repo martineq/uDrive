@@ -508,6 +508,7 @@ public class FileListActivity extends AppCompatActivity implements
                                 }
                             }
                         });
+                        progressDialog.dismiss();
                     }
                 })
                 .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
