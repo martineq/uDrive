@@ -2,6 +2,7 @@
 #include "rest/delete_dir_node.h"
 #include "rest/list_tags_node.h"
 #include "rest/update_tags_node.h"
+#include "rest/list_tags_user_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -165,8 +166,17 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
 
-      if (!strncmp(mgConnection.getMethod(),"GET",3)){
+      vector<string> lista = WEBServer::split(conn->uri, '/');
+
+      if (!strncmp(mgConnection.getMethod(),"GET",3) and (lista.size()!=4)){
           ListTagsNode* ltn=new ListTagsNode(mgConnection);
+          ltn->setRequestDispatcher(RequestDispatcher::get_instance());
+          ltn->execute();
+          delete ltn;
+          return MG_TRUE;
+
+      }else if (!strncmp(mgConnection.getMethod(),"GET",3) and (lista.size()==4)){
+          ListTagsUserNode* ltn=new ListTagsUserNode(mgConnection);
           ltn->setRequestDispatcher(RequestDispatcher::get_instance());
           ltn->execute();
           delete ltn;
@@ -178,7 +188,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           uun->execute();
           delete uun;
           return MG_TRUE;
-      }
+      } else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
       UpdateUserFullNameNode* uun=new UpdateUserFullNameNode(mgConnection);

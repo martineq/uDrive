@@ -33,31 +33,37 @@ void ListTagsNode::executeGet() {
 	int status=11;
 	Log(Log::LogMsgDebug) << "[ListTagsNode]";
 
-	if ( (!lista[4].compare("files")) && (lista.size()==6)){
+	if ( ( (!lista[4].compare("file")) or (!lista[4].compare("dir"))) && (lista.size()==6)){
 		string userId=getUserId();
-		string fileId=lista[5];
+		string id =lista[5];
 
-		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", FileId: " <<fileId;
+		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", Id: " << id;
 
-		vector<string> listTags;
-		std::string tags="";
+		string listTags="";
+		bool result=false;
 
-		if (!getRequestDispatcher()->get_tags(userId,listTags,status)){
+		RequestDispatcher::file_info_st file_info;
+		if (lista[4]=="file"){
+			RequestDispatcher::file_info_st file_info;
+			result=getRequestDispatcher()->get_file_info(userId,id,file_info,status);
+			listTags=file_info.tags;
+		}else{
+			RequestDispatcher::dir_info_st dir_info;
+			result=getRequestDispatcher()->get_directory_info(userId,id,dir_info,status);
+			listTags=dir_info.tags;
+		}
+
+		if (!result){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}
 		else{
-				Log(Log::LogMsgDebug) << "[" << "ListTagsNode" << "], listing directory -- Number of items: " << listTags.size();
+				Log(Log::LogMsgDebug) << "[ListTagsNode]";
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-
-				for (int index = 0; index < listTags.size(); ++index) {
-					Log(Log::LogMsgDebug) << "[ListTagsNode], TAG: " << listTags[index];
-					tags = tags + listTags[index] + ";";
-				}
-				std::string msg="{\"tags\":\"" + tags + "\"}";
+				std::string msg="{\"tags\":\"" + listTags + "\"}";
 				getConnection().printfData(msg.c_str());
 			}
 
@@ -69,7 +75,7 @@ void ListTagsNode::executeGet() {
 	}
 }
 std::string ListTagsNode::defaultResponse(){
-	return "[{\"tagName\": \"\"}]";
+	return "[{\"tags\": \"\"}]";
 }
 
 std::string ListTagsNode::getUserId(){

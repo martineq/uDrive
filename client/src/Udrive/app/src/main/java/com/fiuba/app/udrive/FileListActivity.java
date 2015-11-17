@@ -426,16 +426,18 @@ public class FileListActivity extends AppCompatActivity implements
             }
         }, "Android");
         // Get tags from server
-        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<String>() {
+        mFileMetadataService.getTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), new ServiceCallback<StringTags>() {
             @Override
-            public void onSuccess(String object, int status) {
-                ArrayList<Tag> tags = Util.stringToTagsArray(object);
+            public void onSuccess(StringTags object, int status) {
+                ArrayList<Tag> tags = Util.stringToTagsArray(object.getTags());
                 int i;
-                for (i = 0; i < tags.size(); i++)
+                for (i = 0; i < tags.size(); i++) {
                     tagList.add(tags.get(i));
+                }
                 if (tags.size() > 0) {
                     updatePanel(panel, tagList);
                 }
+
             }
 
             @Override
@@ -483,7 +485,8 @@ public class FileListActivity extends AppCompatActivity implements
                         progressDialog.setCancelable(false);
                         // Send tag list to be updated on the server
                         final StringTags tags = new StringTags(Util.tagsToString(tagList));
-                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
+                        String type = mFiles.get(FileItem).isDir()?"dir":"file";
+                        mFileMetadataService.updateFileTags(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), tags, new ServiceCallback<GenericResult>() {
                             @Override
                             public void onSuccess(GenericResult object, int status) {
                                 if (object.getResultCode() != 1)

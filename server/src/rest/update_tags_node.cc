@@ -29,30 +29,43 @@ vector<string> UpdateTagsNode::split(const string &s, char delim) {
 
 void UpdateTagsNode::executePut() {
 	vector<string> lista=UpdateTagsNode::split(getUri(),'/');
-	string fileId="";
+	string id ="";
 	int status=11;
 	Log(Log::LogMsgDebug) << "[UpdateTagsNode]";
 
-	if ( (!lista[4].compare("files")) && (lista.size()==6)){
-
+	if ( ( (!lista[4].compare("file")) or (!lista[4].compare("dir"))) && (lista.size()==6)){
 		Log(Log::LogMsgDebug) << "[UpdateTagsNode]";
 		string userId=getUserId();
-		fileId=lista[5];
+		id =lista[5];
+		bool result=false;
+		RequestDispatcher::dir_info_st dir_info;
+		RequestDispatcher::file_info_st file_info;
 
-		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", FileId: " <<fileId;
+		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", Id: " << id;
+
 		std:string tags=getConnection().getBodyJson("tags");
 
 		Log(Log::LogMsgDebug) << "[ListTagsNode], Tags: "<<tags;
 
-		RequestDispatcher::file_info_st file_info;
+		if (lista[4]=="file") result=getRequestDispatcher()->get_file_info(userId,id,file_info,status);
+		else result=getRequestDispatcher()->get_directory_info(userId,id,dir_info,status);
 
-		if (!getRequestDispatcher()->get_file_info(userId,fileId,file_info,status)){
+		if (!result){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 
-		}else if (!getRequestDispatcher()->modify_file_info(userId,fileId,file_info.name,file_info.extension,file_info.date_last_mod,tags,status)){
+		}else if ( (!lista[4].compare("file")) and (!getRequestDispatcher()->modify_file_info(userId,
+			id,file_info.name,file_info.extension,file_info.date_last_mod,tags,status)) ){
+
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg=handlerError(status);
+			getConnection().printfData(msg.c_str());
+		}else if ( (!lista[4].compare("dir")) and (!getRequestDispatcher()->modify_directory_info(userId,
+			id,dir_info.name,dir_info.date_last_mod,tags,status)) ){
+
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
