@@ -671,6 +671,7 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   EXPECT_FALSE(ok); 
   EXPECT_EQ(9,status); // STATUS_USER_FORBIDDEN==9  
   
+  
   // Share the file...
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   string user_owner_id = user_id;
@@ -685,6 +686,17 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   vector< RequestDispatcher::info_element_st > shared_files;
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));
   EXPECT_EQ(1,shared_files.size()); 
+  
+  // Use get_file_info() from a user with a shared file (no the owner)
+  RequestDispatcher::file_info_st file_info_shared;
+  EXPECT_TRUE(rd->get_file_info(user_shared_id,file_to_share_id,file_info_shared,status));
+  EXPECT_STREQ("archivo_2",file_info_shared.name.c_str());
+  
+  // Use get_file_stream() from a user with a shared file (no the owner)
+  char* p_file_stream_shared;
+  string size_file_shared;
+  EXPECT_TRUE(rd->get_file_stream(user_shared_id,file_to_share_id,"1",p_file_stream_shared,size_file_shared,status));
+  
   // ...Unshare the file from the same user...
   EXPECT_TRUE(rd->check_token(user_id,token_2,status));
   EXPECT_TRUE(rd->unset_file_share(user_owner_id,file_to_share_id,user_shared_id,"07/11/15",status));
@@ -944,11 +956,10 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->set_user_image(user_id,data.c_str(),to_string(size_img),status);
   EXPECT_TRUE(ok); 
-  char* p_image_stream;
-  string size_img_loaded;
-  ok = rd->get_user_image(user_id,p_image_stream,size_img_loaded,status);
+  string image_stream;
+  ok = rd->get_user_image(user_id,image_stream,status);
   EXPECT_TRUE(ok); 
-  EXPECT_EQ(to_string(size_img),size_img_loaded);
+  EXPECT_EQ(size_img,image_stream.size());
 
   // Save an image with base64 format
   string data2("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAyADIDASIAAhEBAxEB/8QAGgABAQADAQEAAAAAAAAAAAAAAAcFBggDBP/EAD4QAAEDAgIGBQgHCQAAAAAAAAEAAgMEEQUGBxIhMUFhEyIyUXEIFBUWI4GT0xczQkNSU1RVgpGSobHB0eH/xAAaAQACAwEBAAAAAAAAAAAAAAAABgMEBQcB/8QALBEAAQMCBAMHBQAAAAAAAAAAAQACBAMFERMhMQZB0RIUImFxgeEyQpHB8P/aAAwDAQACEQMRAD8A7LRFPtOObfV3K7qGll1cRxEOijsdscf238thsOZvwXjjgMSoJMhkak6q/YLPUGdMDxBkslFLLURxTPhc9jRbWabHju4jvBBX0es2H/l1H8o/2uZ9GuYDg2YhS1D7UVeQx9zsZJua7/B8R3K0FIt4vdxgSCwEdk6jTl8LQ4ffGusQVTo4aOGPPofhUelnjqadk8Rux4uF6LVsnYhqSGgld1X7Y78DxC2lNNpuDZ8VtYb7HyP9qvJVA0KhZ+EREWkq68quohpKSarqZGxQQxukke7c1oFyT4ALkjSHmafNeaqrFZC4Qk9HTRn7uIdkf3J5kqr+Ujm7zWhiypRS+2qQJawtO1sd+qz3kXPIDgVAw5Vqz8TgkXiW45lQRmHRu/r8LJ5fwarzFjlHg9E3WmqpAwEg2aOLjyAuTyC6PxTCHYP0FMJZJ4hE1rZZO0+wAJPPj71gvJzyj6Pwd+Z62K1VXN1KUOG1kN+1+8f6Ad6p+N0Ir6B8I+sHWjPP/u5ZF5tXfoZDfrGo6e/RM3B9J0Bma/79/Tl1WgxyOjkbJG4tc03BHAqgYRWsr6FlQ22tueO53FT14LHFrthBsQVlsq4iKOv6KR1oZrNNzuPApJ4auvcZeW8+B+h8jyP6Ke7jFzqXabuFu6Ii6slhRbylcpecUUObaKL2tOBDWho7TCeo8+BNie4jgFAXOOwDedgXcNbSwVtFPR1UTZaeeN0UrHbnNcLEHxBXPlVoFzI3EZ3UeJ4S6l6R3QGWWQP1L7NYCMgG2+xU0KNRqyW5zsGbnp7pSu1kdVlitTGIO48x1U4w6RzYRFrHqjZtX09I78Tv4qhRaEM2MN/SGC/Gl+Wvb6Fc1fr8G+NL8tdKp3iAGgZoUDrfJx0YVNCVvWhXK/rBmltXVRa1Bh5Estxse+/UZz2i55AjisgdCmav2hgvxpflqw6P8txZWyxT4WwtfNtkqZG7nym1z4CwA5AKhd79QbGLY78XO005DmVbgWyoawdVbgBr6rPoiLnyaUREQhEREIRERCEREQhf/9k=",1512);
@@ -956,24 +967,11 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   ok = rd->set_user_image(user_id,data2.c_str(),to_string(size_img2),status);
   EXPECT_TRUE(ok); 
-  char* p_image_stream2;
-  string size_img_loaded2;
-  ok = rd->get_user_image(user_id,p_image_stream2,size_img_loaded2,status);
-  EXPECT_TRUE(ok); 
-  EXPECT_EQ(to_string(size_img2),size_img_loaded2);
-  size_t size_obtanined = stoul(size_img_loaded2,nullptr,10);
-  string p_image_stream2_string(p_image_stream2,size_obtanined);
-  EXPECT_STREQ(data2.c_str(),p_image_stream2_string.c_str());
-  
-  // Save an image with base64 format (Using HARDCODED_get_user_image())
-  string p_image_stream3;
-  EXPECT_TRUE(rd->HARDCODED_get_user_image(user_id,p_image_stream3,status));
-  EXPECT_STREQ(data2.c_str(),p_image_stream3.c_str());
-  
-  // TODO(mart): implement this functions for test
-  // Use get_file_info() from a user with a shared file (no the owner)
-  // Use get_file_stream() from a user with a shared file (no the owner)
-  
+  string image_stream2;
+  ok = rd->get_user_image(user_id,image_stream2,status);
+  EXPECT_TRUE(ok);
+  EXPECT_EQ(size_img2,image_stream2.size());
+  EXPECT_STREQ(data2.c_str(),image_stream2.c_str());
   
   // Delete instance
   delete rd;

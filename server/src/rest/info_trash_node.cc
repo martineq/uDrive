@@ -101,9 +101,7 @@ void InfoTrashNode::executeGet() {
 }
 
 std::string InfoTrashNode::defaultResponse(){
-	return "[{ \"id\": \"0\",  \"name\": \"\","
-							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\", \"userOwner \":\"0\"}]";
+	return "[]";
 }
 
 std::string InfoTrashNode::getUserId(){
