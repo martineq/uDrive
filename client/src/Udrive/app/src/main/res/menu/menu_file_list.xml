@@ -10,6 +10,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_show_trash" android:title="@string/action_show_trash"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_file_search" android:title="@string/action_search"
+        android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_signout" android:title="@string/action_signout"
         android:orderInCategory="100" app:showAsAction="never" />
 

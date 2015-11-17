@@ -120,5 +120,10 @@
     <!-- Strings related to GPS service -->
     <string name="error_gps">Error al obtener la ubicación</string>
 
+    <!-- Strings related to file searching -->
+    <string name="lorem_ipsum">Probando diálogo</string>
+    <string name="action_file_search">Buscar archivos</string>
+    <string name="search">Buscar</string>
+
 </resources>
 

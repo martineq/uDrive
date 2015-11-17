@@ -8,6 +8,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -23,6 +24,7 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import com.fiuba.app.udrive.model.Tag;
 import com.fiuba.app.udrive.model.UserAccount;
 import com.fiuba.app.udrive.model.UserLocation;
 import com.fiuba.app.udrive.model.Util;
+import com.fiuba.app.udrive.network.ConnectionConfig;
 import com.fiuba.app.udrive.network.FileMetadataService;
 import com.fiuba.app.udrive.network.FilesService;
 import com.fiuba.app.udrive.network.ServiceCallback;
@@ -42,6 +45,7 @@ import com.fiuba.app.udrive.network.StatusCode;
 import com.fiuba.app.udrive.network.UserService;
 import com.fiuba.app.udrive.view.FileContextMenu;
 import com.fiuba.app.udrive.view.FileContextMenuManager;
+import com.fiuba.app.udrive.view.FileSearchDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -239,6 +243,60 @@ public class FileListActivity extends AppCompatActivity implements
             Intent i = new Intent(this, TrashActivity.class);
             i.putExtra(TrashActivity.EXTRA_USER_ACCOUNT, mUserAccount);
             startActivity(i);
+        } else if (id == R.id.action_file_search) {
+
+
+            LayoutInflater inflater = getLayoutInflater();
+            final View layout = inflater.inflate(R.layout.filesearch_custom_dialog, null);
+            AlertDialog.Builder dBuilder = new AlertDialog.Builder(this);
+            dBuilder.setTitle("My First Custom Tabbed Dialog");
+            dBuilder.setView(layout);
+
+            // get our tabHost from the xml
+            TabHost tabHost = (TabHost)layout.findViewById(R.id.TabHost01);
+            tabHost.setup();
+
+            // create tab 1
+            TabHost.TabSpec spec1 = tabHost.newTabSpec("tab1");
+            spec1.setIndicator("By name", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec1.setContent(R.id.TextView01);
+            tabHost.addTab(spec1);
+            //create tab2
+            TabHost.TabSpec spec2 = tabHost.newTabSpec("tab2");
+            spec2.setIndicator("By extension", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec2.setContent(R.id.TextView02);
+            tabHost.addTab(spec2);
+            //create tab2
+            TabHost.TabSpec spec3 = tabHost.newTabSpec("tab3");
+            spec3.setIndicator("By tag", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec3.setContent(R.id.TextView03);
+            tabHost.addTab(spec3);
+            //create tab2
+            TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
+            spec4.setIndicator("By owner", ContextCompat.getDrawable(this, R.drawable.ic_tag));
+            spec4.setContent(R.id.TextView04);
+            tabHost.addTab(spec4);
+
+            // Get tags from server
+            // Get owners from server
+            dBuilder.setCancelable(false)
+                    .setPositiveButton(getString(R.string.search), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            // launch this activity with the result of the request
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+
+
+            AlertDialog dialog = dBuilder.create();
+            dialog.show();
+
         }
 
         return super.onOptionsItemSelected(item);

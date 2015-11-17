@@ -27,7 +27,7 @@
     <!-- Strings related to Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_item_connection">Connection settings</string>
-    <string name="ssettings_save">Save</string>
+    <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
 
@@ -123,5 +123,10 @@
 
     <!-- Strings related to GPS service -->
     <string name="error_gps">Error on getting GPS location</string>
+
+    <!-- Strings related to file searching -->
+    <string name="lorem_ipsum">Testing tabbed dialog</string>
+    <string name="action_file_search">Search files</string>
+    <string name="search">Search</string>
 
 </resources>
