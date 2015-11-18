@@ -7,6 +7,9 @@
 #include "rest/list_collaborators_node.h"
 #include "rest/search_users_node.h"
 #include "rest/search_filename_node.h"
+#include "rest/search_extension_node.h"
+#include "rest/search_tag_node.h"
+#include "rest/search_owner_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -72,14 +75,26 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
       }else if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"GET",3)) and (mgConnection.getParameter("extension")!="") ){
           Log(Log::LogMsgDebug) << "[BÚSQUEDA POR EXTENSION]";
+          SearchExtensionNode * in=new SearchExtensionNode(mgConnection);
+          in->setRequestDispatcher(RequestDispatcher::get_instance());
+          in->execute();
+          delete in;
           return MG_TRUE;
 
       }else if ( ( field == "tags") and (!strncmp(mgConnection.getMethod(),"GET",3)) and (mgConnection.getParameter("tagname")!="") ){
           Log(Log::LogMsgDebug) << "[BÚSQUEDA POR TAG]";
+          SearchTagNode * in=new SearchTagNode(mgConnection);
+          in->setRequestDispatcher(RequestDispatcher::get_instance());
+          in->execute();
+          delete in;
           return MG_TRUE;
 
       }else if ( ( field == "owners") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           Log(Log::LogMsgDebug) << "[BÚSQUEDA POR PROPIETARIO]";
+          SearchOwnerNode * in=new SearchOwnerNode(mgConnection);
+          in->setRequestDispatcher(RequestDispatcher::get_instance());
+          in->execute();
+          delete in;
           return MG_TRUE;
 
       }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) and (mgConnection.getParameter("fileIds")=="") ){
