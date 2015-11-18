@@ -5,6 +5,7 @@
 #include "rest/list_tags_user_node.h"
 #include "rest/update_collaborators_node.h"
 #include "rest/list_collaborators_node.h"
+#include "rest/search_users_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -132,6 +133,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 
       }else if ( ( field == "dir") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
           SendDirNode* sfn=new SendDirNode(mgConnection);
+          sfn->setRequestDispatcher(RequestDispatcher::get_instance());
+          sfn->execute();
+          delete sfn;
+          return MG_TRUE;
+
+      }else if ( ( field == "users") and (!strncmp(mgConnection.getMethod(),"GET",3))  and (mgConnection.getParameter("q")!="") ){
+          SearchUsersNode* sfn=new SearchUsersNode(mgConnection);
           sfn->setRequestDispatcher(RequestDispatcher::get_instance());
           sfn->execute();
           delete sfn;
