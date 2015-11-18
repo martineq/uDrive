@@ -31,7 +31,7 @@ void SearchUsersNode::executeGet() {
 	vector<string> lista=SearchUsersNode::split(getUri(),'/');
 	string fileId ="";
 	int status=11;
-	if ( (!lista[4].compare("file"))){
+	if ( (!lista[3].compare("users"))){
 		Log(Log::LogMsgDebug) << "[SearchUsersNode]";
 		string userId=getUserId();
 		fileId =lista[5];
@@ -45,8 +45,9 @@ void SearchUsersNode::executeGet() {
 		vector<RequestDispatcher::user_info_st> listaUsersInfo;
 
 		//TODO (martin): Modificar este vector, descomentando el de arriba una vez que mart libere el cambio.
+
 		//if (getRequestDispatcher()->get_user_email_list_by_pattern(query_mail,listaUsersInfo,status)){
-		if (true){
+		if (false){
 			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users ";
 			for (int i = 0; i < listaUsersInfo.size()-1 ; ++i) {
 
@@ -65,7 +66,6 @@ void SearchUsersNode::executeGet() {
 			<< "\"email\":\"" << listaUsersInfo[listaUsersInfo.size()-1].email << "\"}";
 			result=true;
 			Log(Log::LogMsgDebug) << "[SearchUsersNode]: last json added.";
-
 		}
 		item << "]";
 
@@ -97,6 +97,6 @@ std::string SearchUsersNode::defaultResponse(){
 
 std::string SearchUsersNode::getUserId(){
 	vector<string> lista=SearchUsersNode::split(getUri(),'/');
-	return lista[3];
+	return lista[2];
 }
 
