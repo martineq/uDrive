@@ -15,6 +15,7 @@ public class File {
     private Integer userOwner;
     private Integer lastVersion;
 
+
     public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems, Integer userOwner){
         this.name = name;
         this.size = size;
