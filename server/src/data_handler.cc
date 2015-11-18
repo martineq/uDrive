@@ -221,6 +221,11 @@ bool DataHandler::get_user_mail_list(string& email_list, int &status){
 }
 
 
+bool DataHandler::get_email_user_id_index(string email, string& user_id, int& status){
+  return( dbh_get(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,&user_id,status) );
+}
+
+
 bool DataHandler::delete_user(string user_id, int& status){
 
   string email;
@@ -309,6 +314,8 @@ bool DataHandler::modify_user_info(string user_id, string email, string name, st
   if( email.compare(old_email)!=0 ){
     dbh_.erase_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+old_email);
     dbh_.put_batch(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,user_id);  // Refresh index email-user_id
+    if(!remove_email_from_list(old_email,status)){ status = STATUS_DATABASE_ERROR; return false; }
+    if(!add_email_to_list(email,status)){ status = STATUS_DATABASE_ERROR; return false; }
   }
   
   if(!dbh_.write_batch()){ status = STATUS_DATABASE_ERROR; return false; }
@@ -408,11 +415,6 @@ bool DataHandler::add_email_user_id_index(string email, string user_id){
 }
 
 
-bool DataHandler::get_email_user_id_index(string email, string& user_id, int& status){
-  return( dbh_get(PREFIX_INDEX_USER_ID_FROM_USER_EMAIL+email,&user_id,status) );
-}
-
-
 void DataHandler::init_id_ticket(string type_of_id){
   // Verifies the indexes
   string value;
@@ -434,7 +436,7 @@ void DataHandler::init_user_list(){
 
   if( dbh_.get(PREFIX_USER_EMAIL_LIST,&value,found) ){
     if(!found){
-      if( !(dbh_.put(PREFIX_USER_EMAIL_LIST,LABEL_SPACE_STRING)) ) { print_db_error();}
+      if( !(dbh_.put(PREFIX_USER_EMAIL_LIST,LABEL_EMPTY_STRING)) ) { print_db_error();}
     }
   }else{ print_db_error(); }
   
@@ -467,8 +469,18 @@ bool DataHandler::dbh_put(string key, string value, int& status){
 bool DataHandler::add_email_to_list(string email, int status){
   string list_of_user_email;
   if( !dbh_get(PREFIX_USER_EMAIL_LIST,&list_of_user_email,status) ){ return false; }
-  list_of_user_email.append(LABEL_STRING_DELIMITER+email);
-  if( !dbh_put(PREFIX_USER_EMAIL_LIST,list_of_user_email,status) ){ return false; }
+  vector<string> list_splited = split_string(list_of_user_email,LABEL_STRING_DELIMITER);
+  bool founded = false;
+  for(vector<string>::iterator it = list_splited.begin() ; (it!=list_splited.end() && !founded ) ; ++it) {
+    if( (*it).compare(email)==0 ){ founded = true; }
+  }
+
+  if(!founded){
+    string new_key = LABEL_STRING_DELIMITER + email;
+    list_of_user_email.append(new_key);
+    if( !dbh_put(PREFIX_USER_EMAIL_LIST,list_of_user_email,status) ){ return false; }
+  }
+  
   return true;
 }
 

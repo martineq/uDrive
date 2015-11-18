@@ -66,19 +66,7 @@ class DataHandler {
     * @return bool
     */
     bool add_email_user_id_index(string email, string user_id);
-    
-    /**
-    * @brief Gets an user_id for their corresponding email from an index.
-    *        Returns true if the operation was successful and the user_id was founded.
-    *        Returns false and a status on error, or if the user_id is not found
-    * 
-    * @param email ...
-    * @param user_id ...
-    * @param status ...
-    * @return bool
-    */
-    bool get_email_user_id_index(string email, string& user_id, int& status);
-    
+        
     /**
     * @brief Verifies the type_of_id ticket number (and creates if they not exist).
     * The ticket number is used in the assignment of ID's
@@ -336,6 +324,20 @@ class DataHandler {
      * @return bool
      */
     bool get_user_mail_list(string& email_list, int &status);
+    
+    
+   /**
+    * @brief Gets an user_id for their corresponding email from an index.
+    *        Returns true if the operation was successful and the user_id was founded.
+    *        Returns false and a status on error, or if the user_id is not found
+    * 
+    * @param email ...
+    * @param user_id ...
+    * @param status ...
+    * @return bool
+    */
+    bool get_email_user_id_index(string email, string& user_id, int& status);
+
     
     /**
     * @brief Deletes all information for the user ID and their Index entry. Returns true on success.
