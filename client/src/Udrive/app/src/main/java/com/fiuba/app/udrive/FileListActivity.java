@@ -54,6 +54,7 @@ import com.google.android.gms.location.LocationServices;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -374,6 +375,47 @@ public class FileListActivity extends AppCompatActivity implements
 
         startActivityForResult(i, DIR_CODE);
         FileContextMenuManager.getInstance().hideContextMenu();
+    }
+
+    @Override
+    public void onDownloadPrevClick(int FileItem) {
+        FileContextMenuManager.getInstance().hideContextMenu();
+        if (mFiles.get(FileItem).getLastVersion()<=1){
+            Toast.makeText(FileListActivity.this, "No other versions found!", Toast.LENGTH_SHORT).show();
+        } else {
+            ArrayList<String> versions = getFileVersions(mFiles.get(FileItem).getLastVersion());
+            LayoutInflater inflater = getLayoutInflater();
+            final View layout = inflater.inflate(R.layout.prev_version_layout, null);
+            Spinner spinner = (Spinner)layout.findViewById(R.id.spinner_prev);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+            spinner.setAdapter(adapter);
+            for (int i = 0; i < versions.size(); i++)
+                adapter.add(versions.get(i));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(layout);
+            builder.setIcon(R.drawable.ic_down_18);
+            builder.setCancelable(false)
+                    .setTitle(R.string.version)
+                    .setPositiveButton(getString(R.string.prev_download), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+        }
+        /*setSelectedFileForDownload(mFiles.get(FileItem));
+        Intent i = new Intent(this, FilePickerActivity.class);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+
+        startActivityForResult(i, DIR_CODE);
+        FileContextMenuManager.getInstance().hideContextMenu();*/
     }
 
     @Override
@@ -901,5 +943,13 @@ public class FileListActivity extends AppCompatActivity implements
     public boolean shouldShowDeleteButton(int position) {
         File actualFile = mFiles.get(position);
         return (actualFile.getUserOwner().equals(mUserAccount.getUserId()));
+    }
+
+    ArrayList<String> getFileVersions(int lastVersion){
+        ArrayList<String> v = new ArrayList<>();
+        for (int last = (lastVersion-1); last >= 1; last--){
+            v.add(getString(R.string.versionNumber)+" "+last);
+        }
+        return v;
     }
 }

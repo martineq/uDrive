@@ -39,6 +39,7 @@ public class FileContextMenu extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         LinearLayout btnDownload = (LinearLayout) findViewById(R.id.lnBtnDownload);
+        LinearLayout btnDownloadPrev = (LinearLayout) findViewById(R.id.lnBtnDownloadPrev);
         LinearLayout btnInfo = (LinearLayout) findViewById(R.id.lnBtnInformation);
         LinearLayout btnShare = (LinearLayout) findViewById(R.id.lnBtnShare);
         LinearLayout btnTag = (LinearLayout) findViewById(R.id.lnBtnTag);
@@ -50,6 +51,15 @@ public class FileContextMenu extends LinearLayout {
             public void onClick(View v) {
                 if (onItemClickListener != null) {
                     onItemClickListener.onDownloadClick(fileItem);
+                }
+            }
+        });
+
+        btnDownloadPrev.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onDownloadPrevClick(fileItem);
                 }
             }
         });
@@ -117,6 +127,7 @@ public class FileContextMenu extends LinearLayout {
 
     public interface OnFileContextMenuItemClickListener {
         void onDownloadClick(int FileItem);
+        void onDownloadPrevClick(int FileItem);
         void onInformationClick(int FileItem);
         void onShareClick(int FileItem);
         void onTagClick(int FileItem);

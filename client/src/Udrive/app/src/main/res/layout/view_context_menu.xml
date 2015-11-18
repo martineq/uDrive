@@ -33,6 +33,37 @@
         android:background="#eeeeee" />
 
     <LinearLayout
+        android:id="@+id/lnBtnDownloadPrev"
+        style="@style/ContextMenuButton"
+        android:background="@color/white"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnDownloadPrev"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:background="@color/white"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_down_18" />
+
+        <TextView
+            android:id="@+id/textViewDownloadPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:text="@string/download_action_prev" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eeeeee" />
+
+    <LinearLayout
         android:id="@+id/lnBtnInformation"
         style="@style/ContextMenuButton"
         android:background="@color/white"

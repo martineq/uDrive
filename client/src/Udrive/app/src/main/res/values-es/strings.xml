@@ -69,6 +69,7 @@
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Descargar</string>
+    <string name="download_action_prev">Versiones previas</string>
     <string name="info_action">Información</string>
     <string name="share_action">Compartir</string>
     <string name="tag_action">Etiquetar</string>
@@ -137,6 +138,11 @@
     <string name="searching">Buscando...</string>
     <string name="empty_search_title">Búsqueda de archivos</string>
     <string name="empty_search_msg">No se encontraron resultados</string>
+
+    <!-- Strings related to file previous versions -->
+    <string name="version">Seleccione una versión</string>
+    <string name="prev_download">Descargar</string>
+    <string name="versionNumber">Versión</string>
 
 </resources>
 

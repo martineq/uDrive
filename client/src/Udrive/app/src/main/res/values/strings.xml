@@ -70,6 +70,7 @@
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Download</string>
+    <string name="download_action_prev">Previous versions</string>
     <string name="info_action">Information</string>
     <string name="share_action">Share</string>
     <string name="tag_action">Tag</string>
@@ -140,5 +141,10 @@
     <string name="searching">Searching...</string>
     <string name="empty_search_title">Search files</string>
     <string name="empty_search_msg">No results found</string>
+
+    <!-- Strings related to file previous versions -->
+    <string name="version">Select a version</string>
+    <string name="prev_download">Download</string>
+    <string name="versionNumber">Version</string>
 
 </resources>
