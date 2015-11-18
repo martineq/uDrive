@@ -39,6 +39,7 @@ void ReceiveFileNode::executePost() {
 		time (&rawtime);
 		timeinfo = localtime (&rawtime);
 		strftime (buffer,80," %d/%m/%Y %X",timeinfo);
+
 		Log(Log::LogMsgDebug) << "[ReceiveFileNode]: fecha: "<<buffer;
 		std::string fecha(buffer);
 

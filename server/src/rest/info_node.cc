@@ -67,7 +67,7 @@ void InfoNode::executeGet() {
 					    << "\"shared\":\"" << (*directory_it).shared << "\", "
 						<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
 						<< "\"userOwner\":\"" << (*directory_it).owner << "\", "
-						<< "\"lastVersion\":\"" << lastVersion<< "\"},";
+						<< "\"lastVersion\":\"" << lastVersion << "\"},";
 				}
 			}
 			if (directory_element_info.size()==1) enc=true;

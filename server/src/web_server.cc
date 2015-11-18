@@ -3,6 +3,7 @@
 #include "rest/list_tags_node.h"
 #include "rest/update_tags_node.h"
 #include "rest/list_tags_user_node.h"
+#include "rest/update_collaborators_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -196,6 +197,21 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       uun->execute();
       delete uun;
       return MG_TRUE;
+
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/user/",15)) {
+      if (!strncmp(mgConnection.getMethod(),"GET",3)){
+         // ListCollaboratorsNode* uun=new ListCollaboratorsNode(mgConnection);
+         // uun->setRequestDispatcher(RequestDispatcher::get_instance());
+         // uun->execute();
+         // delete uun;
+          return MG_TRUE;
+      }else if (!strncmp(mgConnection.getMethod(),"PUT",3)){
+          UpdateCollaboratorsNode* uun=new UpdateCollaboratorsNode(mgConnection);
+          uun->setRequestDispatcher(RequestDispatcher::get_instance());
+          uun->execute();
+          delete uun;
+          return MG_TRUE;
+      }else return MG_FALSE;
 
   } else return MG_FALSE;  // Rest of the events are not processed
 }
