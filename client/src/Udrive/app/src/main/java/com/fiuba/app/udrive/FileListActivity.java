@@ -384,14 +384,14 @@ public class FileListActivity extends AppCompatActivity implements
         if (mFiles.get(FileItem).getLastVersion()<=1){
             Toast.makeText(FileListActivity.this, "No other versions found!", Toast.LENGTH_SHORT).show();
         } else {
-            ArrayList<String> versions = getFileVersions(mFiles.get(FileItem).getLastVersion());
+            ArrayList<Integer> versions = getFileVersions(mFiles.get(FileItem).getLastVersion());
             LayoutInflater inflater = getLayoutInflater();
             final View layout = inflater.inflate(R.layout.prev_version_layout, null);
-            Spinner spinner = (Spinner)layout.findViewById(R.id.spinner_prev);
+            final Spinner spinner = (Spinner)layout.findViewById(R.id.spinner_prev);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
             spinner.setAdapter(adapter);
             for (int i = 0; i < versions.size(); i++)
-                adapter.add(versions.get(i));
+                adapter.add(versions.get(i).toString());
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(layout);
             builder.setIcon(R.drawable.ic_down_18);
@@ -399,7 +399,8 @@ public class FileListActivity extends AppCompatActivity implements
                     .setTitle(R.string.version)
                     .setPositiveButton(getString(R.string.prev_download), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-
+                            int version = Integer.parseInt(spinner.getSelectedItem().toString());
+                            System.out.println("Version selected >>>>> "+version);
                         }
                     })
                     .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
@@ -952,10 +953,10 @@ public class FileListActivity extends AppCompatActivity implements
         return (!actualFile.isDir());
     }
 
-    ArrayList<String> getFileVersions(int lastVersion){
-        ArrayList<String> v = new ArrayList<>();
+    ArrayList<Integer> getFileVersions(int lastVersion){
+        ArrayList<Integer> v = new ArrayList<>();
         for (int last = (lastVersion-1); last >= 1; last--){
-            v.add(getString(R.string.versionNumber)+" "+last);
+            v.add(last);
         }
         return v;
     }
