@@ -27,7 +27,7 @@
     <!-- Strings related to Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_item_connection">Connection settings</string>
-    <string name="ssettings_save">Save</string>
+    <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
 
@@ -123,5 +123,22 @@
 
     <!-- Strings related to GPS service -->
     <string name="error_gps">Error on getting GPS location</string>
+
+    <!-- Strings related to file searching -->
+    <string name="action_file_search">Search files</string>
+    <string name="search">Search</string>
+    <string name="by_name">By name</string>
+    <string name="by_ext">By extension</string>
+    <string name="by_tag">By tag</string>
+    <string name="by_owner">By owner</string>
+    <string name="label_by_name">Filename</string>
+    <string name="label_by_ext">Extension</string>
+    <string name="label_by_tag">Select a tag</string>
+    <string name="label_by_owner">Select an owner</string>
+    <string name="label_by_name_hint"><i>Enter name here...</i></string>
+    <string name="label_by_ext_hint"><i>Enter extension here...</i></string>
+    <string name="searching">Searching...</string>
+    <string name="empty_search_title">Search files</string>
+    <string name="empty_search_msg">No results found</string>
 
 </resources>

@@ -84,7 +84,8 @@ public class FileInfoActivity extends AppCompatActivity {
             names.add(coll.get(i).getFirstname()+" "+coll.get(i).getLastname());
             mails.add(coll.get(i).getEmail());
         }
-        ArrayAdapter<String> adapter = new CollaboratorsListAdapter(this, names, mails);
+        ArrayAdapter adapter = new CollaboratorsListAdapter(this, R.layout.file_info_item,
+                R.layout.file_info_item, names, mails);
         access.setAdapter(adapter);
         setListViewHeightBasedOnItems(access);
 

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TabHost01"
+    android:layout_width="fill_parent"
+    android:layout_height="500dip">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:padding="5dp">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+
+            <ScrollView android:id="@+id/ScrollView01"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <RelativeLayout
+                    android:id="@+id/layout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="26dp">
+                    <TextView
+                        android:id="@+id/tab1_text"
+                        android:hint="@string/label_by_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerVertical="true"/>
+                    <EditText
+                        android:id="@+id/edit_tab1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/label_by_name_hint"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:paddingLeft="16dp"
+                        android:layout_toRightOf="@+id/tab1_text"
+                        android:layout_centerVertical="true"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
+            </ScrollView>
+
+            <ScrollView android:id="@+id/ScrollView02"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/layout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="26dp">
+                    <TextView
+                        android:id="@+id/tab2_text"
+                        android:hint="@string/label_by_ext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerVertical="true"/>
+                    <EditText
+                        android:id="@+id/edit_tab2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/label_by_ext_hint"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:paddingLeft="16dp"
+                        android:layout_toRightOf="@+id/tab2_text"
+                        android:layout_centerVertical="true"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+            </ScrollView>
+
+            <ScrollView android:id="@+id/ScrollView03"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/layout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp">
+                    <TextView
+                        android:id="@+id/tab3_text"
+                        android:hint="@string/label_by_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerVertical="true"/>
+                    <Spinner
+                        android:id="@+id/spinner_tab3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/tab3_text"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"/>
+                </RelativeLayout>
+
+            </ScrollView>
+
+            <ScrollView android:id="@+id/ScrollView04"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/layout4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:id="@+id/tab4_text"
+                        android:hint="@string/label_by_owner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="6dp"/>
+                    <Spinner
+                        android:id="@+id/spinner_tab4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="40dp"/>
+                </RelativeLayout>
+
+            </ScrollView>
+        </FrameLayout>
+    </LinearLayout>
+</TabHost>

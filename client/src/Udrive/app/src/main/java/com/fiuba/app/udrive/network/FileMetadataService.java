@@ -49,6 +49,12 @@ public class FileMetadataService extends AbstractService {
         @PUT("/filename/users/{userId}/{type}/{fileId}")
         void updateFilename(@Path("userId") int userId, @Path("type") String type, @Path("fileId") int fileId, @Body FolderData data,
                             Callback<GenericResult> result);
+
+        // Gets the tags belonging to a userId.
+        // Retrieves all those tags which are set in any file that was shared with this user.
+        @GET("/filetags/users/{userId}")
+        void getUserTags(@Path("userId") int userId, Callback<StringTags> tags);
+
     }
 
     private FileTagServiceApi mFileTagServiceApi;
@@ -140,6 +146,27 @@ public class FileMetadataService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 result.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets the tags belonging to a userId.
+    // Retrieves all those tags which are set in any file that was shared with this user.
+    public void getUserTags(int userId, final ServiceCallback<StringTags> tags){
+        mFileTagServiceApi.getUserTags(userId, new Callback<StringTags>() {
+            @Override
+            public void success(StringTags stringTags, Response response) {
+                tags.onSuccess(stringTags, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                tags.onFailure(error.getMessage(), status);
             }
         });
     }

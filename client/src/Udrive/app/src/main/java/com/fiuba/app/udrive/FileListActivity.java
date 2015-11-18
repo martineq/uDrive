@@ -2,12 +2,15 @@ package com.fiuba.app.udrive;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -21,10 +24,15 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.fiuba.app.udrive.model.Collaborator;
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
@@ -239,6 +247,8 @@ public class FileListActivity extends AppCompatActivity implements
             Intent i = new Intent(this, TrashActivity.class);
             i.putExtra(TrashActivity.EXTRA_USER_ACCOUNT, mUserAccount);
             startActivity(i);
+        } else if (id == R.id.action_file_search) {
+            launchFileSearch();
         }
 
         return super.onOptionsItemSelected(item);
@@ -333,6 +343,7 @@ public class FileListActivity extends AppCompatActivity implements
                     public void onSuccess(GenericResult object, int status) {
                         // Does nothing. Transparent for the user
                     }
+
                     @Override
                     public void onFailure(String message, int status) {
                         // Does nothing. Transparent for the user
@@ -370,7 +381,7 @@ public class FileListActivity extends AppCompatActivity implements
         Log.i(TAG, "Information File position " + FileItem);
         /*System.out.println("Position - Lat >>>> "+getLatitude()+
                 "Position - Long >>>> "+getLongitude());*/
-        String type = mFiles.get(FileItem).isDir()?"dir":"file";
+        String type = mFiles.get(FileItem).isDir() ? "dir" : "file";
         mFileMetadataService.getFileInfo(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
             @Override
             public void onSuccess(FileInfo object, int status) {
@@ -407,7 +418,7 @@ public class FileListActivity extends AppCompatActivity implements
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.file_tag_layout, null);
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileListActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(layout);
         builder.setIcon(R.drawable.ic_tag);
         ((TextView)layout.findViewById(R.id.file_name)).setText(Html.fromHtml(type));
@@ -516,7 +527,7 @@ public class FileListActivity extends AppCompatActivity implements
                         dialog.cancel();
                     }
                 });
-        android.app.AlertDialog alert = builder.create();
+        AlertDialog alert = builder.create();
         alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         alert.show();
         FileContextMenuManager.getInstance().hideContextMenu();
@@ -646,6 +657,228 @@ public class FileListActivity extends AppCompatActivity implements
 
     public void setSelectedFileForDownload(File selectedFileForDownload) {
         this.selectedFileForDownload = selectedFileForDownload;
+    }
+
+    private void launchFileSearch(){
+        LayoutInflater inflater = getLayoutInflater();
+        final View layout = inflater.inflate(R.layout.filesearch_custom_dialog, null);
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(this);
+        dBuilder.setTitle(R.string.action_file_search);
+        dBuilder.setView(layout);
+
+        // get our tabHost from the xml
+        final TabHost tabHost = (TabHost)layout.findViewById(R.id.TabHost01);
+        tabHost.setup();
+        // create tab 1
+        TabHost.TabSpec spec1 = tabHost.newTabSpec("tab1");
+        spec1.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_name, R.drawable.ic_alphabetical_24));
+        spec1.setContent(R.id.layout1);
+        tabHost.addTab(spec1);
+
+        //create tab2
+        TabHost.TabSpec spec2 = tabHost.newTabSpec("tab2");
+        spec2.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_ext, R.drawable.ic_regex_24));
+        spec2.setContent(R.id.layout2);
+        tabHost.addTab(spec2);
+
+        //create tab3
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spinner_tab3 = (Spinner)layout.findViewById(R.id.spinner_tab3);
+        spinner_tab3.setAdapter(adapter);
+        // Fill tags spinner with the user tags coming from server
+        mFileMetadataService.getUserTags(mUserAccount.getUserId(), new ServiceCallback<StringTags>() {
+            @Override
+            public void onSuccess(StringTags object, int status) {
+                if (object.getTags() != "") {
+                    ArrayList<Tag> tags = Util.stringToTagsArray(object.getTags());
+                    for (int i = 0; i < tags.size(); i++) {
+                        adapter.add(tags.get(i).getTagName());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(String message, int status) {
+                // Do nothing
+            }
+        });
+        TabHost.TabSpec spec3 = tabHost.newTabSpec("tab3");
+        spec3.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_tag, R.drawable.ic_tag_multiple_24));
+        spec3.setContent(R.id.layout3);
+        tabHost.addTab(spec3);
+
+        //create tab4
+        final ArrayList<String> names = new ArrayList<>();
+        final ArrayList<String> mails = new ArrayList<>();
+        final ArrayList<Collaborator> collab = new ArrayList<>();
+        // Fill owners spinner with the owners coming from server
+        mUserService.getOwners(mUserAccount.getUserId(), new ServiceCallback<List<Collaborator>>() {
+            @Override
+            public void onSuccess(List<Collaborator> coll, int status) {
+                for (int i = 0; i < coll.size(); i++) {
+                    names.add(coll.get(i).getFirstName() + " " + coll.get(i).getLastName());
+                    mails.add(coll.get(i).getEmail());
+                    collab.add(coll.get(i));
+                }
+            }
+
+            @Override
+            public void onFailure(String message, int status) {
+                // Do nothing
+            }
+        });
+
+        // TODO: delete after testing
+        /*************/
+        /*collab.add(new Collaborator("Name1", "Name1", "name1@name1.com"));
+        collab.add(new Collaborator("Name2", "Name2", "name2@name2.com"));
+        collab.add(new Collaborator("Name3", "Name3", "name3@name3.com"));
+        for (int i = 0; i < collab.size(); i++){
+            names.add(collab.get(i).getFirstName()+" "+collab.get(i).getLastName());
+            mails.add(collab.get(i).getEmail());
+        }*/
+        /*************/
+        final CollaboratorsListAdapter ownerAdapter = new CollaboratorsListAdapter(this, android.R.layout.simple_spinner_item,
+                R.layout.file_info_item, names, mails);
+        ownerAdapter.setDropDownViewResource(R.layout.file_info_item);
+        final Spinner spinner_tab4 = (Spinner)layout.findViewById(R.id.spinner_tab4);
+        spinner_tab4.setAdapter(ownerAdapter);
+        for(int i = 0; i < collab.size(); i++) {
+            collab.get(i).setId(i);
+            ownerAdapter.add(collab.get(i));
+        }
+        TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
+        spec4.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_owner, R.drawable.ic_account_24));
+        spec4.setContent(R.id.layout4);
+        tabHost.addTab(spec4);
+
+        dBuilder.setCancelable(false)
+                .setIcon(R.drawable.ic_magnify)
+                .setPositiveButton(getString(R.string.search), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        final ProgressDialog progressDialog = ProgressDialog.show(layout.getContext(),
+                                null, getString(R.string.searching), true);
+                        progressDialog.setCancelable(false);
+                        // launch this activity with the result of the request
+                        if (tabHost.getCurrentTab() == 2) { // Search by tag
+                            System.out.println("Selected item >>>> " + spinner_tab3.getSelectedItem());
+                            mFilesService.getFilesByTag(mUserAccount.getUserId(), spinner_tab3.getSelectedItem().toString().toLowerCase(),
+                                    new ServiceCallback<List<File>>() {
+                                        @Override
+                                        public void onSuccess(List<File> files, int status) {
+                                            if (files.size() > 0) {
+                                                progressDialog.dismiss();
+                                                mFilesAdapter.updateFiles(files);
+                                                Log.d(TAG, "Number of files received " + files.size());
+                                            } else {
+                                                // Show no results msg
+                                                progressDialog.dismiss();
+                                                Intent emptySearch = new Intent(FileListActivity.this,
+                                                        FileSearchEmptyActivity.class);
+                                                startActivity(emptySearch);
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(String message, int status) {
+                                            progressDialog.dismiss();
+                                        }
+                                    });
+                        } else if (tabHost.getCurrentTab() == 0) { // Search by Name
+                            String name = ((EditText) layout.findViewById(R.id.edit_tab1)).getText().toString().toLowerCase();
+                            if (name.compareTo("") != 0) {
+                                mFilesService.getFilesByName(mUserAccount.getUserId(), name, new ServiceCallback<List<File>>() {
+                                    @Override
+                                    public void onSuccess(List<File> files, int status) {
+                                        if (files.size() > 0) {
+                                            progressDialog.dismiss();
+                                            mFilesAdapter.updateFiles(files);
+                                            Log.d(TAG, "Number of files received " + files.size());
+                                        } else {
+                                            // Show no results msg
+                                            progressDialog.dismiss();
+                                            Intent emptySearch = new Intent(FileListActivity.this,
+                                                    FileSearchEmptyActivity.class);
+                                            startActivity(emptySearch);
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(String message, int status) {
+                                        // do nothing
+                                        progressDialog.dismiss();
+                                    }
+                                });
+                            } else
+                                Toast.makeText(FileListActivity.this, "You must enter a name", Toast.LENGTH_LONG).show();
+                        } else if (tabHost.getCurrentTab() == 1) { // Search by extension
+                            String extension = ((EditText) layout.findViewById(R.id.edit_tab2)).getText().toString().toLowerCase();
+                            if ((extension.compareTo("") != 0) && (extension.compareTo(" ") != 0)) {
+                                mFilesService.getFilesByExtension(mUserAccount.getUserId(), extension, new ServiceCallback<List<File>>() {
+                                    @Override
+                                    public void onSuccess(List<File> files, int status) {
+                                        if (files.size() > 0) {
+                                            progressDialog.dismiss();
+                                            mFilesAdapter.updateFiles(files);
+                                            Log.d(TAG, "Number of files received " + files.size());
+                                        } else {
+                                            // Show no results msg
+                                            progressDialog.dismiss();
+                                            Intent emptySearch = new Intent(FileListActivity.this,
+                                                    FileSearchEmptyActivity.class);
+                                            startActivity(emptySearch);
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(String message, int status) {
+                                        // do nothing
+                                        progressDialog.dismiss();
+                                    }
+                                });
+                            } else
+                                Toast.makeText(FileListActivity.this, "You must enter a valid extension", Toast.LENGTH_LONG).show();
+                        } else { // Tab 3 was active. Search by owner.
+                            int ownerId = ((Collaborator)spinner_tab4.getSelectedItem()).getId();
+                            System.out.println("Owner selected >>>>> "+ownerId);
+                            mFilesService.getFilesByOwner(mUserAccount.getUserId(), ownerId, new ServiceCallback<List<File>>() {
+                                @Override
+                                public void onSuccess(List<File> files, int status) {
+                                    if (files.size() > 0) {
+                                        progressDialog.dismiss();
+                                        mFilesAdapter.updateFiles(files);
+                                        Log.d(TAG, "Number of files received " + files.size());
+                                    } else {
+                                        // Show no results msg
+                                        progressDialog.dismiss();
+                                        Intent emptySearch = new Intent(FileListActivity.this,
+                                                FileSearchEmptyActivity.class);
+                                        startActivity(emptySearch);
+                                    }
+                                }
+                                @Override
+                                public void onFailure(String message, int status) {
+                                    // Do nothing
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = dBuilder.create();
+        dialog.show();
+    }
+
+    private View getTabIndicator(Context context, int title, int icon) {
+        View view = LayoutInflater.from(context).inflate(R.layout.tab_layout, null);
+        ImageView iv = (ImageView) view.findViewById(R.id.imageView);
+        iv.setImageResource(icon);
+        //TextView tv = (TextView) view.findViewById(R.id.textView);
+        //tv.setText(title);
+        return view;
     }
 
     public double getLatitude() {
