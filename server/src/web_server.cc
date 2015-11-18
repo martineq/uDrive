@@ -44,7 +44,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       string field = lista[4];
       Log(Log::LogMsgDebug) << "[" << "URI: /info/users" << "], field: " <<field << " Method: "<<conn->request_method <<", Param fileIds: "<<mgConnection.getParameter("fileIds");
 
-      if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
+      if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"GET",3)) and  ( lista.size()==5)){
           InfoTrashNode * itn=new InfoTrashNode(mgConnection);
           itn->setRequestDispatcher(RequestDispatcher::get_instance());
           itn->execute();
@@ -72,13 +72,13 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           delete dftn;
           return MG_TRUE;
 
-      }else if (( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) and (mgConnection.getParameter("fileIds")=="") ){
+      }else if (( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) and (mgConnection.getParameter("fileIds")!="") ){
           RestoreFileTrashNode * rftn=new RestoreFileTrashNode(mgConnection);
           rftn->setRequestDispatcher(RequestDispatcher::get_instance());
           rftn->execute();
           delete rftn;
           return MG_TRUE;
-      }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) ){
+      }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"POST",4)) and  ( lista.size()>4)){
           RestoreTrashNode * rtn=new RestoreTrashNode(mgConnection);
           rtn->setRequestDispatcher(RequestDispatcher::get_instance());
           rtn->execute();

@@ -20,7 +20,7 @@ class RestoreTrashNode : public Node {
 public:
 	RestoreTrashNode(MgConnectionW& conn);
 	~RestoreTrashNode();
-	void executeDelete();
+	void executePost();
 protected:
 
 	std::string defaultResponse();
