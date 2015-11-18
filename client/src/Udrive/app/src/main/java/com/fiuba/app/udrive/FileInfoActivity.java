@@ -26,6 +26,7 @@ import com.fiuba.app.udrive.model.Util;
 import com.fiuba.app.udrive.network.FileMetadataService;
 import com.fiuba.app.udrive.network.ServiceCallback;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -103,7 +104,8 @@ public class FileInfoActivity extends AppCompatActivity {
 
         // tags
         WebView panel = ((WebView)findViewById(R.id.tags));
-        panel.loadData(getPanelHTML(mFileInfo.getTags()), "text/html", "utf-8");
+        ArrayList<Tag> tags = Util.stringToTagsArray(mFileInfo.getTags());
+        panel.loadData(getPanelHTML(tags), "text/html", "utf-8");
         panel.setBackgroundColor(0);
 
         // labels

@@ -84,10 +84,13 @@ TEST(MongooseTest, CreateServeClose) {
   EXPECT_STREQ(NULL,errMsg);
   
   // Serve request. Hit Ctrl-C to terminate the program
-  printf("Starting on port %s\n", mg_get_option(server, "listening_port"));
+  string msg = "Starting on port ";
+  msg.append(mg_get_option(server, "listening_port"));
+  EXPECT_STREQ("Starting on port 8080",msg.c_str());
+  
   for (int i=0;i<3;i++) {
-    cout << "Mongoose - Poll Cicle No:"<< i+1 << endl;
-    mg_poll_server(server, 100);
+    //cout << "Mongoose - Poll Cicle No:"<< i+1 << endl;
+    mg_poll_server(server, 10);
   }
 
   // Cleanup, and free server instance
@@ -110,26 +113,22 @@ TEST(JsonTest, CreateWriteRead) {
   fromScratch["array"] = array;
   fromScratch["object"]["hello"] = "world";
 
-  std::cout << fromScratch["hello"];
-  std::cout << fromScratch["number"];
-  std::cout << fromScratch["array"][0] << fromScratch["array"][1];
-  std::cout << fromScratch["object"]["hello"];
-    
   // Write readeable
   Json::StyledWriter styledWriter;
-  std::cout << styledWriter.write(fromScratch);
-
+  const char* write_out = "{\n   \"array\" : [ \"hello\", \"world\" ],\n   \"hello\" : \"world\",\n   \"number\" : 2,\n   \"object\" : {\n      \"hello\" : \"world\"\n   }\n}\n";
+  EXPECT_STREQ(write_out,styledWriter.write(fromScratch).c_str());
+  
   // Write compact
   Json::FastWriter fastWriter;
   std::string jsonMessage = fastWriter.write(fromScratch);
-
+  const char* write_out_compact = "{\"array\":[\"hello\",\"world\"],\"hello\":\"world\",\"number\":2,\"object\":{\"hello\":\"world\"}}\n";
+  EXPECT_STREQ(write_out_compact,jsonMessage.c_str());  
+  
   Json::Value parsedFromString;
   Json::Reader reader;
   bool parsingSuccessful = reader.parse(jsonMessage, parsedFromString);
   EXPECT_EQ(true,parsingSuccessful);
-  if (parsingSuccessful){
-    std::cout << styledWriter.write(parsedFromString) << std::endl;
-  }
+  EXPECT_STREQ(write_out,styledWriter.write(parsedFromString).c_str());  
   
 }
 

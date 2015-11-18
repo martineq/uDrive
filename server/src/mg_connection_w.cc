@@ -88,9 +88,9 @@ std::string MgConnectionW::getBodyJson(string field) {
 
 Json::Value MgConnectionW::getBodyJson() {
     Log(Log::LogMsgDebug) << "[getFullBodyJson]: retrieve full json";
-    std::string content_string(this->conn->content);
 
-    Log(Log::LogMsgDebug) << "[getFullBodyJson]: "<<content_string;
+    std::string content_string(this->conn->content,this->conn->content_len);
+    Log(Log::LogMsgDebug) << "[getFullBodyJson]";
 
     Json::Value root;
     Json::Reader reader;
@@ -98,8 +98,10 @@ Json::Value MgConnectionW::getBodyJson() {
     if (!parsedSuccess) {
         Log(Log::LogMsgDebug) << "[getFullBodyJson]: Error parseando Body";
         return nullptr;
+    }else {
+        Log(Log::LogMsgDebug) << "[getFullBodyJson] retornando";
+        return root;
     }
-    return root;
 }
 
 struct mg_connection* MgConnectionW::operator->(){

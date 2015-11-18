@@ -109,7 +109,8 @@
                         android:layout_height="match_parent"
                         android:layout_toRightOf="@+id/tab3_text"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"/>
+                        android:paddingLeft="10dp"
+                        android:layout_marginRight="10dp"/>
                 </RelativeLayout>
 
             </ScrollView>
