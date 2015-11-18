@@ -53,13 +53,14 @@ void UpdateCollaboratorsNode::executePut() {
 		std::ostringstream item;
 		item << "[";
 
-		for (int i = 0; i < root.size() ; ++i) {
+		RequestDispatcher::user_info_st user_share_info;
+
+		for (int i = 0; i < root.size()-1 ; ++i) {
 			string userId_shared=root[i]["id"].asString();
 
 			if (getRequestDispatcher()->set_file_share(userId, fileId, userId_shared, fecha, status)){
 				Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: userId_shared: " << userId_shared <<" OK";
 
-				RequestDispatcher::user_info_st user_share_info;
 				if (getRequestDispatcher()->get_user_info(userId_shared,user_share_info,status)){
 					item
 					<< "{\"id\":\"" << userId_shared << "\","
@@ -70,6 +71,15 @@ void UpdateCollaboratorsNode::executePut() {
 				}
 			}
 		}
+		if (getRequestDispatcher()->get_user_info(userId_shared,user_share_info,status)){
+			item
+			<< "{\"id\":\"" << userId_shared << "\","
+			<< "\"firstName\":\"" << user_share_info.first_name << "\","
+			<< "\"lastName\":\"" << user_share_info.last_name << "\","
+			<< "\"email\":\"" << user_share_info.email << "\"}";
+			result=true;
+		}
+
 		item << "]";
 
 		if (!result) {
