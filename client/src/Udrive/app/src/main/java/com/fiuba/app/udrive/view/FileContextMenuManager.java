@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
-
 import com.fiuba.app.udrive.utils.Utils;
 
 public class FileContextMenuManager implements View.OnAttachStateChangeListener {
@@ -32,21 +31,21 @@ public class FileContextMenuManager implements View.OnAttachStateChangeListener 
 
     }
 
-    public void toggleContextMenuFromView(View openingView, int feedItem, FileContextMenu.OnFileContextMenuItemClickListener listener) {
+    public void toggleContextMenuFromView(View openingView, int feedItem, FileContextMenu.OnFileContextMenuItemClickListener listener, FileContextMenu.OnFileContextMenuItemClickButtonVisibilityListener btnVisibilityListener ) {
         if (contextMenuView == null) {
-            showContextMenuFromView(openingView, feedItem, listener);
+            showContextMenuFromView(openingView, feedItem, listener, btnVisibilityListener);
         } else {
             hideContextMenu();
         }
     }
 
-    private void showContextMenuFromView(final View openingView, int feedItem, FileContextMenu.OnFileContextMenuItemClickListener listener) {
+    private void showContextMenuFromView(final View openingView, int feedItem, FileContextMenu.OnFileContextMenuItemClickListener listener, FileContextMenu.OnFileContextMenuItemClickButtonVisibilityListener btnVisibilityListener) {
         if (!isContextMenuShowing) {
             isContextMenuShowing = true;
             contextMenuView = new FileContextMenu(openingView.getContext());
             contextMenuView.bindToItem(feedItem);
             contextMenuView.addOnAttachStateChangeListener(this);
-            contextMenuView.setOnFileMenuItemClickListener(listener);
+            contextMenuView.setOnFileMenuItemClickListener(listener,btnVisibilityListener,feedItem);
 
             ((ViewGroup) openingView.getRootView().findViewById(android.R.id.content)).addView(contextMenuView);
 

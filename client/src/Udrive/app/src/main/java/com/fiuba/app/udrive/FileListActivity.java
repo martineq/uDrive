@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FileInfo;
 import com.fiuba.app.udrive.model.GenericResult;
@@ -52,7 +51,8 @@ import java.util.List;
 
 public class FileListActivity extends AppCompatActivity implements
         FilesArrayAdapter.OnContextMenuClickListener, AdapterView.OnItemClickListener,
-        FileContextMenu.OnFileContextMenuItemClickListener, GoogleApiClient.ConnectionCallbacks {
+        FileContextMenu.OnFileContextMenuItemClickListener, GoogleApiClient.ConnectionCallbacks,
+        FileContextMenu.OnFileContextMenuItemClickButtonVisibilityListener {
 
     public static final String TAG = "FileListActivity";
 
@@ -636,7 +636,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v, int position) {
-        FileContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this);
+        FileContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this, this);
     }
 
 
@@ -664,4 +664,9 @@ public class FileListActivity extends AppCompatActivity implements
         this.mLongitude = mLongitude;
     }
 
+    @Override
+    public boolean shouldShowDeleteButton(int position) {
+        File actualFile = mFiles.get(position);
+        return (actualFile.getUserOwner().equals(mUserAccount.getUserId()));
+    }
 }

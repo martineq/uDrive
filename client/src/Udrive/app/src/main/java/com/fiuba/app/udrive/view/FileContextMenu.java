@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import com.fiuba.app.udrive.R;
 
@@ -14,6 +15,9 @@ public class FileContextMenu extends LinearLayout {
     private int fileItem = -1;
 
     private OnFileContextMenuItemClickListener onItemClickListener;
+
+    private OnFileContextMenuItemClickButtonVisibilityListener onItemClickBtnVisibilityListener;
+    private int mFeedItem;
 
     public FileContextMenu(Context context) {
         super(context);
@@ -86,6 +90,9 @@ public class FileContextMenu extends LinearLayout {
             }
         });
 
+        if(!this.onItemClickBtnVisibilityListener.shouldShowDeleteButton(mFeedItem))
+            btnDelete.setVisibility(GONE);
+
         btnCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +109,10 @@ public class FileContextMenu extends LinearLayout {
     }
 
 
-    public void setOnFileMenuItemClickListener(OnFileContextMenuItemClickListener onItemClickListener) {
+    public void setOnFileMenuItemClickListener(OnFileContextMenuItemClickListener onItemClickListener, FileContextMenu.OnFileContextMenuItemClickButtonVisibilityListener btnVisibilityListener, int feedItem) {
         this.onItemClickListener = onItemClickListener;
+        this.onItemClickBtnVisibilityListener = btnVisibilityListener;
+        this.mFeedItem = feedItem;
     }
 
     public interface OnFileContextMenuItemClickListener {
@@ -113,5 +122,9 @@ public class FileContextMenu extends LinearLayout {
         void onTagClick(int FileItem);
         void onDeleteClick(int FileItem);
         void onCancelClick(int FileItem);
+    }
+
+    public interface OnFileContextMenuItemClickButtonVisibilityListener {
+        boolean shouldShowDeleteButton(int fileItem);
     }
 }
