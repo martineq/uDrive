@@ -31,39 +31,37 @@ void ListOwnersNode::executeGet() {
 	vector<string> lista=ListOwnersNode::split(getUri(),'/');
 	string fileId ="";
 	int status=11;
-	if (!lista[4].size()==4){
+	if (lista.size()==4){
 		Log(Log::LogMsgDebug) << "[ListOwnersNode]";
 		string userId=getUserId();
 		bool result=false;
 
-		Log(Log::LogMsgDebug) << "[ListOwnersNode], UserId: " <<userId<< ", fileId: " << fileId;
-		const Json::Value root = getConnection().getBodyJson();
-
+		Log(Log::LogMsgDebug) << "[ListOwnersNode], UserId: " <<userId;
 		std::ostringstream item;
-		item << "[";
 
-		RequestDispatcher::user_info_st user_info;
 		vector<RequestDispatcher::user_info_st> lista_user_info;
-
-		if (getRequestDispatcher()->get_colaborator_users()
-			Log(Log::LogMsgDebug) << "[ListOwnersNode]: list colaborators users ";
-			for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
+		item << "[";
+		if (getRequestDispatcher()->get_colaborator_users(userId,lista_user_info,status)){
+			Log(Log::LogMsgDebug) << "[ListOwnersNode]: list owners users " << lista_user_info.size();
+			if (lista_user_info.size()!=0) {
+				for (int i = 0; i < lista_user_info.size() - 1; ++i) {
+					item
+					<< "{\"id\":\"" << lista_user_info[i].id << "\","
+					<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
+					<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
+					<< "\"email\":\"" << lista_user_info[i].email << "\"},";
+					result = true;
+				}
 				item
-				<< "{\"id\":\"" << lista_user_info[i].id << "\","
-				<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
-				<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
-				<< "\"email\":\"" << lista_user_info[i].email << "\"},";
-				result=true;
+				<< "{\"id\":\"" << lista_user_info[lista_user_info.size() - 1].id << "\","
+				<< "\"firstName\":\"" << lista_user_info[lista_user_info.size() - 1].first_name << "\","
+				<< "\"lastName\":\"" << lista_user_info[lista_user_info.size() - 1].last_name << "\","
+				<< "\"email\":\"" << lista_user_info[lista_user_info.size() - 1].email << "\"}";
+				result = true;
+				Log(Log::LogMsgDebug) << "[ListOwnersNode] last node added ";
+			}else{
+				result = true;
 			}
-			Log(Log::LogMsgDebug) << "[ListOwnersNode]: "<<lista_user_info.size();
-			item
-			<< "{\"id\":\"" << lista_user_info[lista_user_info.size()-1].id << "\","
-			<< "\"firstName\":\"" << lista_user_info[lista_user_info.size()-1].first_name << "\","
-			<< "\"lastName\":\"" << lista_user_info[lista_user_info.size()-1].last_name << "\","
-			<< "\"email\":\"" << lista_user_info[lista_user_info.size()-1].email << "\"}";
-			result=true;
-			Log(Log::LogMsgDebug) << "[ListOwnersNode]: ";
-
 		}
 		item << "]";
 
@@ -95,6 +93,6 @@ std::string ListOwnersNode::defaultResponse(){
 
 std::string ListOwnersNode::getUserId(){
 	vector<string> lista=ListOwnersNode::split(getUri(),'/');
-	return lista[2];
+	return lista[3];
 }
 

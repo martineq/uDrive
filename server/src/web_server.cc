@@ -10,6 +10,7 @@
 #include "rest/search_extension_node.h"
 #include "rest/search_tag_node.h"
 #include "rest/search_owner_node.h"
+#include "rest/list_owners_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -241,6 +242,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/user/",15)) {
+
       if (!strncmp(mgConnection.getMethod(),"GET",3)){
           ListCollaboratorsNode* uun=new ListCollaboratorsNode(mgConnection);
           uun->setRequestDispatcher(RequestDispatcher::get_instance());
@@ -255,11 +257,11 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           return MG_TRUE;
       }else return MG_FALSE;
 
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/owners/users/",15)) {
-   //   ListOwnersNode* uun=new ListOwnersNode(mgConnection);
-   //   uun->setRequestDispatcher(RequestDispatcher::get_instance());
-   //   uun->execute();
-  // delete uun;
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/owners/users/",14)) {
+      ListOwnersNode* uun=new ListOwnersNode(mgConnection);
+      uun->setRequestDispatcher(RequestDispatcher::get_instance());
+      uun->execute();
+   delete uun;
       return MG_TRUE;
   } else return MG_FALSE;  // Rest of the events are not processed
 }
