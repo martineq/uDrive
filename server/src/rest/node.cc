@@ -73,49 +73,49 @@ std::string Node::handlerError(int status){
  switch(status)
    {
    case STATUS_USER_ALREADY_EXISTS :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "USER_ALREADY_EXISTS" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "USER_ALREADY_EXISTS" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_DATABASE_ERROR :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "DATABASE_ERROR" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "DATABASE_ERROR" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_KEY_NOT_FOUND :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "KEY_NOT_FOUND" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "KEY_NOT_FOUND" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_WRONG_PASSWORD :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "WRONG_PASSWORD" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "WRONG_PASSWORD" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_WRONG_TOKEN :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "WRONG_TOKEN" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "WRONG_TOKEN" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_FAIL_SAVING_FILE :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "FAIL_SAVING_FILE" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "FAIL_SAVING_FILE" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_FAIL_LOADING_FILE :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "FAIL_LOADING_FILE" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "FAIL_LOADING_FILE" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_USER_FORBIDDEN :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "USER_FORBIDDEN" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "USER_FORBIDDEN" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case STATUS_MAX_QUOTA_EXCEEDED :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "MAX_QUOTA_EXCEEDED" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "MAX_QUOTA_EXCEEDED" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
 
    case 11 :
-       Log(Log::LogMsgDebug) << "ERROR: [" << "INVALID_URL" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "ERROR: [" << "INVALID_URL" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
    case 12 :
-           Log(Log::LogMsgDebug) << "ERROR: [" << "EMPTY DIR" << "] - connection: " << getConnection().getUri();
+           Log(Log::LogMsgError) << "ERROR: [" << "EMPTY DIR" << "] - connection: " << getConnection().getUri();
            return defaultResponse();
    default :
-       Log(Log::LogMsgDebug) << "[" << "NOT ERROR DEFINED" << "] - connection: " << getConnection().getUri();
+       Log(Log::LogMsgError) << "[" << "NOT ERROR DEFINED" << "] - connection: " << getConnection().getUri();
        return defaultResponse();
    }
 }

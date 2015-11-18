@@ -175,12 +175,6 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           delete sfn;
           return MG_TRUE;
 
-      }else if ( ( field == "users") and (!strncmp(mgConnection.getMethod(),"GET",3))  and (mgConnection.getParameter("q")!="") ){
-          SearchUsersNode* sfn=new SearchUsersNode(mgConnection);
-          sfn->setRequestDispatcher(RequestDispatcher::get_instance());
-          sfn->execute();
-          delete sfn;
-          return MG_TRUE;
       }else return MG_FALSE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/signup",7)) {
@@ -261,8 +255,15 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       ListOwnersNode* uun=new ListOwnersNode(mgConnection);
       uun->setRequestDispatcher(RequestDispatcher::get_instance());
       uun->execute();
-   delete uun;
+      delete uun;
       return MG_TRUE;
+  }else if ( (ev == MG_REQUEST && !strncmp(conn->uri, "/user/",6))  and (mgConnection.getParameter("q")!="") ){
+      SearchUsersNode* sfn=new SearchUsersNode(mgConnection);
+      sfn->setRequestDispatcher(RequestDispatcher::get_instance());
+      sfn->execute();
+      delete sfn;
+      return MG_TRUE;
+
   } else return MG_FALSE;  // Rest of the events are not processed
 }
 

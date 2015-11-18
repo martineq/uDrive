@@ -34,42 +34,43 @@ void SearchUsersNode::executeGet() {
 	if ( (!lista[3].compare("users"))){
 		Log(Log::LogMsgDebug) << "[SearchUsersNode]";
 		string userId=getUserId();
-		fileId =lista[5];
 		bool result=false;
 
-		Log(Log::LogMsgDebug) << "[SearchUsersNode], UserId: " <<userId<< ", fileId: " << fileId;
+
 		const string query_mail = getConnection().getParameter("q");
+		Log(Log::LogMsgDebug) << "[SearchUsersNode], UserId: " <<userId << " query: " <<query_mail;
 
 		std::ostringstream item;
 		item << "[";
 		vector<RequestDispatcher::user_info_st> listaUsersInfo;
 
-		//TODO (martin): Modificar este vector, descomentando el de arriba una vez que mart libere el cambio.
-
-		//if (getRequestDispatcher()->get_user_email_list_by_pattern(query_mail,listaUsersInfo,status)){
-		if (false){
-			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users ";
-			for (int i = 0; i < listaUsersInfo.size()-1 ; ++i) {
-
+		if (getRequestDispatcher()->get_user_email_list_by_pattern(query_mail,listaUsersInfo,status)){
+			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users , size: "<<listaUsersInfo.size();
+			if (listaUsersInfo.size()!=0) {
+				for (int i = 0; i < listaUsersInfo.size()-1 ; ++i) {
+					item
+					<< "{\"id\":\"" << listaUsersInfo[i].id << "\","
+					<< "\"firstName\":\"" << listaUsersInfo[i].first_name << "\","
+					<< "\"lastName\":\"" << listaUsersInfo[i].last_name << "\","
+					<< "\"email\":\"" << listaUsersInfo[i].email << "\"},";
+					result=true;
+				}
+				Log(Log::LogMsgDebug) << "[SearchUsersNode]: "<<listaUsersInfo.size();
 				item
-				<< "{\"id\":\"" << listaUsersInfo[i].id << "\","
-				<< "\"firstName\":\"" << listaUsersInfo[i].first_name << "\","
-				<< "\"lastName\":\"" << listaUsersInfo[i].last_name << "\","
-				<< "\"email\":\"" << listaUsersInfo[i].email << "\"},";
+				<< "{\"id\":\"" << listaUsersInfo[listaUsersInfo.size()-1].id << "\","
+				<< "\"firstName\":\"" << listaUsersInfo[listaUsersInfo.size()-1].first_name << "\","
+				<< "\"lastName\":\"" << listaUsersInfo[listaUsersInfo.size()-1].last_name << "\","
+				<< "\"email\":\"" << listaUsersInfo[listaUsersInfo.size()-1].email << "\"}";
 				result=true;
+				Log(Log::LogMsgDebug) << "[SearchUsersNode]: last json added.";
+			}else{
+				result = true;
 			}
-			Log(Log::LogMsgDebug) << "[SearchUsersNode]: "<<listaUsersInfo.size();
-			item
-			<< "{\"id\":\"" << listaUsersInfo[listaUsersInfo.size()-1].id << "\","
-			<< "\"firstName\":\"" << listaUsersInfo[listaUsersInfo.size()-1].first_name << "\","
-			<< "\"lastName\":\"" << listaUsersInfo[listaUsersInfo.size()-1].last_name << "\","
-			<< "\"email\":\"" << listaUsersInfo[listaUsersInfo.size()-1].email << "\"}";
-			result=true;
-			Log(Log::LogMsgDebug) << "[SearchUsersNode]: last json added.";
 		}
 		item << "]";
 
 		if (!result) {
+			Log(Log::LogMsgDebug) << "[SearchUsersNode]: not result";
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
@@ -79,8 +80,7 @@ void SearchUsersNode::executeGet() {
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 
 			const std::string tmp = item.str();
-			const char* msg = tmp.c_str();
-			Log(Log::LogMsgDebug) << tmp.c_str();
+			Log(Log::LogMsgDebug) << tmp;
 			getConnection().printfData(tmp.c_str());
 		}
 	}
