@@ -47,7 +47,10 @@ void RestoreFileTrashNode::executePost() {
 		}
 		else{
 			MgConnectionW mg=getConnection();
+			std::string uri;
+			uri = "/info/users/"+ userId + "/trash";
 			mg.setMethod("GET");
+			mg.setUri(uri);
 			InfoTrashNode * itn=new InfoTrashNode(mg);
 			itn->setRequestDispatcher(RequestDispatcher::get_instance());
 			itn->executeGet();
@@ -64,9 +67,7 @@ void RestoreFileTrashNode::executePost() {
 }
 
 std::string RestoreFileTrashNode::defaultResponse(){
-	return "[{ \"id\": \"0\",  \"name\": \"\","
-							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\", \"userOwner \":\"0\"}]";
+	return "[]";
 }
 
 std::string RestoreFileTrashNode::getUserId(){

@@ -51,6 +51,7 @@ void InfoNode::executeGet() {
 			vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;   // Assign value
 			bool enc = false;
 			std::ostringstream item;
+			string lastVersion="1";
   			item << "[";
 			vector<RequestDispatcher::info_element_st>::iterator directory_it;
 			Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], touring list: dirInfo: " << dirInfo_rd.name;
@@ -65,7 +66,8 @@ void InfoNode::executeGet() {
 						<< "\"cantItems\":\"" << (*directory_it).number_of_items << "\","
 					    << "\"shared\":\"" << (*directory_it).shared << "\", "
 						<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
-						<< "\"userOwner\":\"" << (*directory_it).owner<< "\"},";
+						<< "\"userOwner\":\"" << (*directory_it).owner << "\", "
+						<< "\"lastVersion\":\"" << lastVersion<< "\"},";
 				}
 			}
 			if (directory_element_info.size()==1) enc=true;
@@ -84,7 +86,8 @@ void InfoNode::executeGet() {
 				<< "\"cantItems\":\"" << (*directory_it).number_of_items << "\","
 				<< "\"shared\":\"" << (*directory_it).shared << "\", "
 				<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
-				<< "\"userOwner\":\"" << (*directory_it).owner<< "\"}";
+				<< "\"userOwner\":\"" << (*directory_it).owner << "\", "
+				<< "\"lastVersion\":\"" << lastVersion<< "\"}";
 				item << "]";
 				Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], listing directory,  dirInfo: " << dirInfo_rd.name << ", -- Number of items: " << directory_element_info.size();
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
@@ -103,9 +106,6 @@ void InfoNode::executeGet() {
 	}
 }
 std::string InfoNode::defaultResponse(){
-//	return "[{ \"id\": \"0\",  \"name\": \"\","
-//							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-//							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"0\"}]";
 	return "[]";
 }
 

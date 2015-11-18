@@ -22,11 +22,13 @@ void SendFileNode::executeGet() {
 	if ( (!lista[3].compare("file")) && (lista.size()==5)){
 		std::string userId=lista[2];
 		std::string fileId=lista[4];
-        std::string revision="1";
+
+        std::string revision=getConnection().getParameter("version");
+
 		char* p_file;
         std::string size="";
 
-		Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] userId: " << userId << " dirId: " << fileId;
+		Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] userId: " << userId << " dirId: " << fileId<< " Version: "<<revision;
         if (!getRequestDispatcher()->get_file_stream(userId,fileId,revision,p_file,size,status)  ){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
