@@ -105,6 +105,7 @@ public class FilesService extends AbstractService {
         @GET("/users/{userId}/file/{fileId}")
         void downloadFile(@Path("userId") int userId,
                           @Path("fileId") int fileId,
+                          @Query("version") int version,
                           Callback<FileOutputStream> callback);
 
         @GET("/users/{userId}/dir/{dirId}")
@@ -192,9 +193,9 @@ public class FilesService extends AbstractService {
         });
     }
 
-    public void downloadFile(int userId, int fileId, String fullPath, final ServiceCallback<FileOutputStream> serviceCallback) {
+    public void downloadFile(int userId, int fileId, int version, String fullPath, final ServiceCallback<FileOutputStream> serviceCallback) {
         FileDownloadServiceApi fileDownloadServiceApi = createService(FileDownloadServiceApi.class, mToken, new FileOutputStreamConverter(fullPath));
-        fileDownloadServiceApi.downloadFile(userId, fileId, new Callback<FileOutputStream>() {
+        fileDownloadServiceApi.downloadFile(userId, fileId, version, new Callback<FileOutputStream>() {
             @Override
             public void success(FileOutputStream outputStream, Response response) {
                 serviceCallback.onSuccess(outputStream, response.getStatus());

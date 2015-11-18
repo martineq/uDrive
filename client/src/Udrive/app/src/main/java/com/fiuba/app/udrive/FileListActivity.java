@@ -322,7 +322,8 @@ public class FileListActivity extends AppCompatActivity implements
             };
 
             if (selectedFileForDownload.isFile()) {
-                mFilesService.downloadFile(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
+                mFilesService.downloadFile(mUserAccount.getUserId(), selectedFileForDownload.getId(),
+                        selectedFileForDownload.getLastVersion(), fullPath, callback);
             } else {
                 mFilesService.downloadDir(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
             }
@@ -943,6 +944,12 @@ public class FileListActivity extends AppCompatActivity implements
     public boolean shouldShowDeleteButton(int position) {
         File actualFile = mFiles.get(position);
         return (actualFile.getUserOwner().equals(mUserAccount.getUserId()));
+    }
+
+    @Override
+    public boolean shouldShowPrevDownloadButton(int position) {
+        File actualFile = mFiles.get(position);
+        return (!actualFile.isDir());
     }
 
     ArrayList<String> getFileVersions(int lastVersion){
