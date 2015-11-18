@@ -13,6 +13,7 @@ public class File {
     private String lastModDate;
     private Integer cantItems;
     private Integer userOwner;
+    private String lastVersion;
 
     public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems, Integer userOwner){
         this.name = name;
@@ -80,10 +81,8 @@ public class File {
         return this.getType() == 'd' ? true : false;
     }
 
-    public Integer getUserOwner() {
-        return userOwner;
-    }
-
+    public Integer getUserOwner() {return userOwner;}
+    public String getLastVersion() {return lastVersion;}
 
 
 }

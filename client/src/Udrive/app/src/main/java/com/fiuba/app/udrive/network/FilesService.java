@@ -59,13 +59,13 @@ public class FilesService extends AbstractService {
         void getTrashedFiles(@Path("userId") int userId, Callback<List<File>> callback);
 
         @DELETE("/info/users/{userId}/trash")
-        void deleteAllTrashedFiles(@Path("userId") int userId, Callback<Void> callback);
+        void deleteAllTrashedFiles(@Path("userId") int userId, Callback<List<File>> callback);
 
         @DELETE("/info/users/{userId}/trash")
         void deleteTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
 
         @POST("/info/users/{userId}/trash/restored")
-        void restoreAllTrashedFiles(@Path("userId") int userId, Callback<Void> callback);
+        void restoreAllTrashedFiles(@Path("userId") int userId, Callback<List<File>> callback);
 
         @POST("/info/users/{userId}/trash/restored")
         void restoreTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
@@ -293,11 +293,11 @@ public class FilesService extends AbstractService {
         });
     }
 
-    public void deleteAllTrashedFiles(int userId, final ServiceCallback<Void> serviceCallback) {
-        mFilesServiceApi.deleteAllTrashedFiles(userId, new Callback<Void>() {
+    public void deleteAllTrashedFiles(int userId, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.deleteAllTrashedFiles(userId, new Callback<List<File>>() {
             @Override
-            public void success(Void v, Response response) {
-                serviceCallback.onSuccess(v, response.getStatus());
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
             }
 
             @Override
@@ -331,11 +331,11 @@ public class FilesService extends AbstractService {
         });
     }
 
-    public void restoreAllTrashedFiles(int userId, final ServiceCallback<Void> serviceCallback) {
-        mFilesServiceApi.restoreAllTrashedFiles(userId, new Callback<Void>() {
+    public void restoreAllTrashedFiles(int userId, final ServiceCallback<List<File>> serviceCallback) {
+        mFilesServiceApi.restoreAllTrashedFiles(userId, new Callback<List<File>>() {
             @Override
-            public void success(Void v, Response response) {
-                serviceCallback.onSuccess(v, response.getStatus());
+            public void success(List<File> files, Response response) {
+                serviceCallback.onSuccess(files, response.getStatus());
             }
 
             @Override
