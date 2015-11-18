@@ -80,15 +80,15 @@ public class FilesService extends AbstractService {
         /*** Searching requests ***/
 
         // Gets the results for the searching by file(dir) name
-        @GET("/info/users/{userId}/dir?name={dirName}")
+        @GET("/info/users/{userId}/dir")
         void getFilesByName(@Path("userId") int userId, @Query("dirName") String dirName, Callback<List<File>> files);
 
         // Gets the results for the searching by file extension
-        @GET("/info/users/{userId}/file?extension={extension}")
+        @GET("/info/users/{userId}/file")
         void getFilesByExtension(@Path("userId") int userId, @Query("extension") String extension, Callback<List<File>> files);
 
         // Gets the results for the searching by file(dir) name
-        @GET("/info/users/{userId}/tags?tag={tag}")
+        @GET("/info/users/{userId}/tags")
         void getFilesByTag(@Path("userId") int userId, @Query("tag") String tag, Callback<List<File>> files);
 
         // Gets the results for the searching by file(dir) name

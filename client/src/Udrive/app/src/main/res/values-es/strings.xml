@@ -134,6 +134,9 @@
     <string name="label_by_owner">Seleccione dueño</string>
     <string name="label_by_name_hint">Ingrese el nombre aquí...</string>
     <string name="label_by_ext_hint">Ingrese la extensión aquí...</string>
+    <string name="searching">Buscando...</string>
+    <string name="empty_search_title">Búsqueda de archivos</string>
+    <string name="empty_search_msg">No se encontraron resultados</string>
 
 </resources>
 

@@ -3,7 +3,7 @@
     package="com.fiuba.app.udrive" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -16,6 +16,7 @@
             android:label="@string/title_main_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,33 +44,33 @@
             android:theme="@style/FilePickerTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".UserProfileActivity"
-            android:label="@string/userprofile_title">
+            android:label="@string/userprofile_title" >
         </activity>
         <activity
             android:name=".TrashActivity"
             android:label="@string/title_activity_trash" >
         </activity>
-
         <activity
             android:name=".FileInfoActivity"
-            android:label="@string/fileinfo_title">
+            android:label="@string/fileinfo_title" >
         </activity>
-
         <activity
             android:name=".ShareActivity"
-            android:label="@string/share_title">
+            android:label="@string/share_title" >
         </activity>
-
         <activity
             android:name=".SearchUsersActivity"
             android:label=" " >
         </activity>
-
+        <activity android:name=".FileSearchEmptyActivity"
+            android:label="@string/empty_search_title">
+        </activity>
     </application>
 
 </manifest>

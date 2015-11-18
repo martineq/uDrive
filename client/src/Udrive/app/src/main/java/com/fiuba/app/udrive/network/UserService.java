@@ -45,6 +45,10 @@ public class UserService extends AbstractService {
         @GET("/users")
         void getUsers(@Query("q") String query, Callback<List<Collaborator>> result);
 
+        // Gets a list of owners who shared files with this user
+        @GET("/owners/users/{userId}")
+        void getOwners(@Path("userId") int userId, Callback<List<Collaborator>> collaborators);
+
         // Updates the GPS coordinates when user makes last update on his files
         @PUT("/location/users/{userId}")
         void updateUserLocation(@Path("userId") int userId, @Body UserLocation userLocation, Callback<GenericResult> result);
@@ -192,6 +196,27 @@ public class UserService extends AbstractService {
                 } else
                     status = error.getResponse().getStatus();
                 result.onFailure(error.getMessage(), status);
+            }
+        });
+    }
+
+    // Gets a list of owners who shared files with this user
+    @GET("/owners/users/{userId}")
+    public void getOwners(int userId, final ServiceCallback<List<Collaborator>> collaborators){
+        mUserServiceApi.getOwners(userId, new Callback<List<Collaborator>>() {
+            @Override
+            public void success(List<Collaborator> colls, Response response) {
+                collaborators.onSuccess(colls, response.getStatus());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int status;
+                if (error.getKind() == RetrofitError.Kind.NETWORK) {
+                    status = 503;
+                } else
+                    status = error.getResponse().getStatus();
+                collaborators.onFailure(error.getMessage(), status);
             }
         });
     }

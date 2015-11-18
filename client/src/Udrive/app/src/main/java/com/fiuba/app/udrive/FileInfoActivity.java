@@ -84,7 +84,8 @@ public class FileInfoActivity extends AppCompatActivity {
             names.add(coll.get(i).getFirstname()+" "+coll.get(i).getLastname());
             mails.add(coll.get(i).getEmail());
         }
-        ArrayAdapter<String> adapter = new CollaboratorsListAdapter(this, names, mails);
+        ArrayAdapter adapter = new CollaboratorsListAdapter(this, R.layout.file_info_item,
+                R.layout.file_info_item, names, mails);
         access.setAdapter(adapter);
         setListViewHeightBasedOnItems(access);
 
@@ -186,7 +187,7 @@ public class FileInfoActivity extends AppCompatActivity {
     public void editFileName(View view) {
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.edit_file_name, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FileInfoActivity.this);
         builder.setView(layout);
         builder.setIcon(R.drawable.ic_pencil_24);
         final EditText filename = ((EditText)layout.findViewById(R.id.edit_filename));

@@ -122,22 +122,20 @@
                     android:id="@+id/layout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="30dp">
+                    android:layout_marginTop="10dp">
                     <TextView
                         android:id="@+id/tab4_text"
                         android:hint="@string/label_by_owner"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textSize="16sp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_centerVertical="true"/>
+                        android:layout_marginLeft="6dp"/>
                     <Spinner
                         android:id="@+id/spinner_tab4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_toRightOf="@+id/tab4_text"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"/>
+                        android:layout_marginTop="40dp"/>
                 </RelativeLayout>
 
             </ScrollView>
