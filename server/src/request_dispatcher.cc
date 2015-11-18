@@ -216,15 +216,8 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
   }
 
   // Assign file_info value
-  file_info.date_last_mod = file_info_temp.date_last_mod;
-  file_info.extension = file_info_temp.extension;
-  file_info.name = file_info_temp.name;
-  file_info.revision = file_info_temp.revision;
-  file_info.size = file_info_temp.size;
-  file_info.tags = file_info_temp.tags;
-  file_info.user_last_mod = file_info_temp.user_last_mod;
-  file_info.parent_directory = file_info_temp.parent_directory;
-  
+  dh_file_info_to_rd_file_info(file_info_temp,file_info);
+
   return true;
 }
 
@@ -334,27 +327,37 @@ bool RequestDispatcher::get_tags(string user_id, vector<string>& tags, int& stat
 }
 
 
-bool RequestDispatcher::get_user_email_list_full(vector<string>& list, int& status){
+bool RequestDispatcher::get_user_email_list_full(vector<RequestDispatcher::user_info_st>& user_list, int& status){
+  user_list.clear();
   string str_list;
-  list.clear();
   if( !dh_.get_user_mail_list(str_list,status) ){ return false; }
-  list = split_string(str_list,LABEL_STRING_DELIMITER);
-  return true;
-}
-
-
-bool RequestDispatcher::get_user_email_list_by_pattern(string pattern, vector<string>& list, int& status){
-  vector<string> full_list;
-  list.clear();
-  if( !get_user_email_list_full(full_list,status) ){ return false; }
-  for(vector<string>::iterator it = full_list.begin() ; it!=full_list.end() ; ++it) {
-      if( (*it).find(pattern)!=string::npos ){ list.push_back((*it)); }
+  vector<string> list_v = split_string(str_list,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = list_v.begin() ; it!=list_v.end() ; ++it) {
+    string email = (*it);
+    string user_id;
+    DataHandler::user_info_st dh_user_info;
+    RequestDispatcher::user_info_st rd_user_info;
+    if( !dh_.get_email_user_id_index(email,user_id,status) ){ return false; }
+    if( !dh_.get_user_info(user_id,dh_user_info,status) ){ return false; } 
+    fill_user_info_st(user_id,dh_user_info,rd_user_info);
+    user_list.push_back(rd_user_info);
   }
   return true;
 }
 
 
-bool RequestDispatcher::get_colaborator_users(string user_id, vector< RequestDispatcher::user_info_st >& users_founded, int& status){
+bool RequestDispatcher::get_user_email_list_by_pattern(string pattern, vector<RequestDispatcher::user_info_st>& user_list, int& status){
+  vector<RequestDispatcher::user_info_st> full_list;
+  user_list.clear();
+  if( !get_user_email_list_full(full_list,status) ){ return false; }
+  for(vector<RequestDispatcher::user_info_st>::iterator it = full_list.begin() ; it!=full_list.end() ; ++it) {
+    if( (*it).email.find(pattern)!=string::npos ){ user_list.push_back((*it)); }
+  }
+  return true;
+}
+
+
+bool RequestDispatcher::get_owners_of_shared_files(string user_id, vector< RequestDispatcher::user_info_st >& users_founded, int& status){
 
   users_founded.clear();
   DataHandler::user_info_st owner_info;
@@ -888,7 +891,7 @@ string RequestDispatcher::add_key_to_string_list(string list, string key){
   
   vector<string> list_splited = split_string(list,LABEL_STRING_DELIMITER);
   bool founded = false;
-  for(vector<string>::iterator it = list_splited.begin() ; it!=list_splited.end() ; ++it) {
+  for(vector<string>::iterator it = list_splited.begin() ; ( it!=list_splited.end() && !founded ) ; ++it) {
     if( (*it).compare(key)==0 ){ founded = true; }
   }
 
@@ -1245,3 +1248,14 @@ void RequestDispatcher::fill_user_info_st(string user_id, DataHandler::user_info
 }
 
 
+void RequestDispatcher::dh_file_info_to_rd_file_info(DataHandler::file_info_st file_info_temp, RequestDispatcher::file_info_st& file_info){
+  file_info.date_last_mod = file_info_temp.date_last_mod;
+  file_info.extension = file_info_temp.extension;
+  file_info.name = file_info_temp.name;
+  file_info.revision = file_info_temp.revision;
+  file_info.size = file_info_temp.size;
+  file_info.tags = file_info_temp.tags;
+  file_info.user_last_mod = file_info_temp.user_last_mod;
+  file_info.parent_directory = file_info_temp.parent_directory;
+  return void();
+}

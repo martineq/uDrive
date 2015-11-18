@@ -46,7 +46,7 @@ void ListCollaboratorsNode::executeGet() {
 		RequestDispatcher::user_info_st user_info;
 		vector<RequestDispatcher::user_info_st> lista_user_info;
 
-		if (getRequestDispatcher()->get_colaborator_users(userId,lista_user_info,status)){
+		if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
 			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: list colaborators users ";
 			for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
 				item

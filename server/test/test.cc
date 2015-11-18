@@ -26,7 +26,7 @@
 using namespace std;
 
 
-TEST(RocksDBTest, CreateWriteRead){
+TEST(RocksDBTest, Create_Write_Read){
 
   rocksdb::DB* db; 
   rocksdb::Options options; 
@@ -74,7 +74,7 @@ TEST(RocksDBTest, CreateWriteRead){
 
 
 static int ev_handler(struct mg_connection *conn, enum mg_event ev); // Auxiliar function used by MongooseTest
-TEST(MongooseTest, CreateServeClose) {
+TEST(MongooseTest, Create_Serve_Close) {
 
   struct mg_server *server;
 
@@ -101,7 +101,7 @@ TEST(MongooseTest, CreateServeClose) {
 }
 
 
-TEST(JsonTest, CreateWriteRead) {
+TEST(JsonTest, Create_Write_Read) {
 
   // Create from Scratch
   Json::Value fromScratch;
@@ -133,7 +133,7 @@ TEST(JsonTest, CreateWriteRead) {
 }
 
 
-TEST(DbHandlerTest, OpenWriteRead) {
+TEST(DbHandlerTest, Open_Write_Read) {
 
   DbHandler dbh;
 
@@ -166,11 +166,14 @@ TEST(DbHandlerTest, OpenWriteRead) {
   EXPECT_TRUE(dbh.erase("key2"));
   EXPECT_TRUE(dbh.get("key2", &value, found));
   EXPECT_FALSE(found); 
-
+  
+  // Delete used temp folder
+  system("rm -rf /tmp/testdb");
+  
 }
 
 
-TEST(DbHandlerTest, OpenError) {
+TEST(DbHandlerTest, OpenErrorHandle) {
 
   DbHandler dbh;
   
@@ -185,7 +188,7 @@ TEST(DbHandlerTest, OpenError) {
 }
 
 
-TEST(DataHandlerTest, UserAdd_GetInfoPassToken_GetDirInfo) {
+TEST(DataHandlerTest, Init_UserAdd) {
 
   DataHandler dh;
   
@@ -196,22 +199,45 @@ TEST(DataHandlerTest, UserAdd_GetInfoPassToken_GetDirInfo) {
   string user_id_jake = "0";
   int status; // Used in case of error
   EXPECT_TRUE( dh.add_user("mail@mail.com","1234","jake","121.12;212.33","be16e465de64f0d2f2d83f3cfcd6370b","07-10-2015-15-20",user_id_jake,status) );
-  EXPECT_TRUE( user_id_jake!="0" );
-
+  EXPECT_TRUE( user_id_jake!="0" ); 
+  EXPECT_EQ("1",user_id_jake);
   
+}  
+  
+  
+TEST(DataHandlerTest, GetUserInfo) {  
+  DataHandler dh;
+  
+  // This test assumes an existent Database
+  EXPECT_TRUE( dh.init("/tmp/testdb") );
+
+  string user_id_jake = "1";
+  int status; // Used in case of error
+
   // Gets user info
   DataHandler::user_info_st user_info_jack;
   EXPECT_TRUE( dh.get_user_info(user_id_jake,user_info_jack,status) );
-  cout << " New user info " << endl;
-  cout << " ID: "<< user_id_jake << endl;
-  cout << " Name: "<< user_info_jack.name << endl;
-  cout << " Email: "<< user_info_jack.email << endl;
-  cout << " Location: "<< user_info_jack.location << endl;
-  cout << " Root Diretory ID: "<< user_info_jack.dir_root << endl;
-  cout << " ID's of shared files: "<< user_info_jack.shared_files << endl;
-  // *Send all necesary data to the client. *
+  EXPECT_STREQ("1",user_id_jake.c_str());
+  EXPECT_STREQ("jake",user_info_jack.name.c_str());
+  EXPECT_STREQ("mail@mail.com",user_info_jack.email.c_str());
+  EXPECT_STREQ("121.12;212.33",user_info_jack.location.c_str());
+  EXPECT_STREQ("1",user_info_jack.dir_root.c_str());
+  EXPECT_STREQ("",user_info_jack.shared_files.c_str());
+}
 
-
+TEST(DataHandlerTest, PasswordCheck_Token_Check) {    
+  
+  DataHandler dh;
+  
+  // This test assumes an existent Database
+  EXPECT_TRUE( dh.init("/tmp/testdb") );
+  
+  // From previous tests
+  string user_id_jake = "1";
+  int status; // Used in case of error
+  DataHandler::user_info_st user_info_jack;
+  EXPECT_TRUE( dh.get_user_info(user_id_jake,user_info_jack,status) );
+  
   // User logs 3 times (3 different "GET /token" requests cases): Case A (wrong mail), Case B (wrong pass), Case C (mail & pass OK)
   // Case A (wrong mail in client login)
   // 1) Check email/pass obtained from client 
@@ -259,20 +285,34 @@ TEST(DataHandlerTest, UserAdd_GetInfoPassToken_GetDirInfo) {
   EXPECT_TRUE( dh.get_user_token(user_id_from_client,token_from_db,status) );
   EXPECT_TRUE( token_from_client==token_from_db );
 
-  // In the real implementation, server must check if the dir_id belongs to the user_id (not implemented in this test)
-  // and if the token recieved is valid
-  // * dir_id - user_id check... *
+}
+
+
+TEST(DataHandlerTest, DirectoryInfo) {    
+
+  
+  DataHandler dh;
+  
+  // This test assumes an existent Database
+  EXPECT_TRUE( dh.init("/tmp/testdb") );
+  
+  // From previous tests
+  string user_id_jake = "1";
+  int status; // Used in case of error
+  DataHandler::user_info_st user_info_jack;
+  EXPECT_TRUE( dh.get_user_info(user_id_jake,user_info_jack,status) );
   
   // Gets information of the directory requested, used in client response
   DataHandler::dir_info_st dir_info_jack;
-  EXPECT_TRUE( dh.get_directory_info(dir_id_from_client,dir_info_jack,status) );
-  cout << " ** Sends to client Directory info **" << endl;
-  cout << "'Directory ID': " << user_id_from_client << endl;
-  cout << "'Name': " << dir_info_jack.name << endl;
-  cout << "'Size': " << dir_info_jack.size << endl;
-  cout << "'cantItems' calculated from files contained: "  << dir_info_jack.files_contained << endl;
-  cout << "...and calculated from sub directories contained: "  << dir_info_jack.directories_contained << endl;
-  cout << "'type': d" << endl;
+  EXPECT_TRUE( dh.get_directory_info(user_info_jack.dir_root,dir_info_jack,status) );
+  EXPECT_STREQ("07-10-2015-15-20",dir_info_jack.date_last_mod.c_str());
+  EXPECT_STREQ("1",dir_info_jack.owner.c_str());
+  EXPECT_STREQ("no_parent",dir_info_jack.parent_directory.c_str());
+  EXPECT_STREQ("0",dir_info_jack.size.c_str());
+  EXPECT_STREQ("",dir_info_jack.tags.c_str());
+  EXPECT_STREQ("root",dir_info_jack.name.c_str());
+  EXPECT_STREQ("",dir_info_jack.files_contained.c_str());
+  EXPECT_STREQ("",dir_info_jack.directories_contained.c_str());
 
   // Delete used temp folder
   system("rm -rf /tmp/testdb");
@@ -417,12 +457,12 @@ TEST(FileHandlerTest, SaveAndLoadFile) {
 
 
 void generate_image(string &data, size_t &size); // Auxiliar function used by RequestDispatcherTest
-TEST(RequestDispatcherTest, Checkpoint5Routine) {
+TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
 
   // Create a config file
   ofstream myfile;
   myfile.open ("config.yml");
-  myfile << "# Configuración de conexión\nbindip: 127.0.0.1\nbindport: 8080\nlogfile: mylog.txt\nloglevel: debug\ndbpath: /tmp/testdb_checkpoint5\nmaxquotauser: 149";
+  myfile << "# Configuración de conexión\nbindip: 127.0.0.1\nbindport: 8080\nlogfile: mylog.txt\nloglevel: debug\ndbpath: /tmp/testdb_Release\nmaxquotauser: 149";
   myfile.close();
   
   // Init database. ¡Warning!: This test assumes an empty Database
@@ -775,7 +815,7 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   
   // Get colaborator users and check
   vector<RequestDispatcher::user_info_st> users_founded;
-  EXPECT_TRUE(rd->get_colaborator_users(user_shared_id,users_founded,status));
+  EXPECT_TRUE(rd->get_owners_of_shared_files(user_shared_id,users_founded,status));
   string users;
   for(vector<RequestDispatcher::user_info_st>::iterator it=users_founded.begin();it!=users_founded.end();++it){
     users.append((*it).email+";");
@@ -889,11 +929,13 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
 
   
   // Print full list of emails with pattern "@"
-  vector<string> list;
+  status=0;
+  vector<RequestDispatcher::user_info_st> list;
   EXPECT_TRUE(rd->get_user_email_list_by_pattern("@",list,status));
+  EXPECT_EQ(0,status);
   string list_obtanined;
-  for(vector<string>::iterator it = list.begin() ; it!=list.end() ; ++it){ list_obtanined.append((*it)+";"); }
-  EXPECT_STREQ("mail@mail.com;mailsecond@mail.com;",list_obtanined.c_str());
+  for(vector<RequestDispatcher::user_info_st>::iterator it = list.begin() ; it!=list.end() ; ++it){ list_obtanined.append((*it).email+";"); }
+  EXPECT_STREQ("mail@mail.com;minuevo@mail.com.br;",list_obtanined.c_str());
   
   
   // Delete file (and check)
@@ -976,7 +1018,7 @@ TEST(RequestDispatcherTest, Checkpoint5Routine) {
   delete rd;
     
   // Delete used temp folder
-  system("rm -rf /tmp/testdb_checkpoint5");
+  system("rm -rf /tmp/testdb_Release");
   
   // Delete used file
   remove("config.yml");
