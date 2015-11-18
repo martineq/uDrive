@@ -172,10 +172,10 @@ public class TrashActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 final ProgressDialog progressDialog = ProgressDialog.show(TrashActivity.this, null, getString(R.string.loading), true);
                 progressDialog.setCancelable(false);
-                mFilesService.restoreAllTrashedFiles(mUserAccount.getUserId(), new ServiceCallback<Void>() {
+                mFilesService.restoreAllTrashedFiles(mUserAccount.getUserId(),new ServiceCallback<List<File>>() {
                     @Override
-                    public void onSuccess(Void v, int status) {
-                        setTrashedFiles(new ArrayList<File>());
+                    public void onSuccess(List<File> files, int status) {
+                        setTrashedFiles(files);
                         progressDialog.dismiss();
                     }
 
@@ -195,10 +195,10 @@ public class TrashActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 final ProgressDialog progressDialog = ProgressDialog.show(TrashActivity.this, null, getString(R.string.loading), true);
                 progressDialog.setCancelable(false);
-                mFilesService.deleteAllTrashedFiles(mUserAccount.getUserId(), new ServiceCallback<Void>() {
+                mFilesService.deleteAllTrashedFiles(mUserAccount.getUserId(), new ServiceCallback<List<File>>() {
                     @Override
-                    public void onSuccess(Void object, int status) {
-                        setTrashedFiles(new ArrayList<File>());
+                    public void onSuccess(List<File> files, int status) {
+                        setTrashedFiles(files);
                         progressDialog.dismiss();
                     }
 

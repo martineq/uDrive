@@ -9,11 +9,12 @@ public class FileInfo implements Serializable {
     private File file;
     private UserBasicData updatedBy;
     private ArrayList<UserBasicData> collaborators;
-    private ArrayList<Tag> tags;
+    //private ArrayList<Tag> tags;
+    private String tags = null;
 
     public FileInfo(UserBasicData owner, File file, UserBasicData updatedBy,
                     double updatedFromLatitude, double updatedFromLongitude,
-                    ArrayList<UserBasicData> collaborators, ArrayList<Tag> tags) {
+                    ArrayList<UserBasicData> collaborators, /*ArrayList<Tag>*/ String tags) {
         this.owner = owner;
         this.file = file;
         this.updatedBy = updatedBy;
@@ -53,11 +54,11 @@ public class FileInfo implements Serializable {
         this.collaborators = collaborators;
     }
 
-    public ArrayList<Tag> getTags() {
+    public /*ArrayList<Tag>*/ String getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(/*ArrayList<Tag>*/ String tags) {
         this.tags = tags;
     }
 }
