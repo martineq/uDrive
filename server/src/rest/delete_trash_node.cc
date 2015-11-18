@@ -43,12 +43,11 @@ void DeleteTrashNode::executeDelete() {
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else {
-			MgConnectionW mg=getConnection();
-			mg.setMethod("GET");
-			InfoTrashNode * itn=new InfoTrashNode(mg);
-			itn->setRequestDispatcher(RequestDispatcher::get_instance());
-			itn->executeGet();
-			delete itn;
+			Log(Log::LogMsgDebug) << "[DeleteTrashNode], URL: "<<getUri();
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg="[]";
+			getConnection().printfData(msg.c_str());
 		}
 
 	}
