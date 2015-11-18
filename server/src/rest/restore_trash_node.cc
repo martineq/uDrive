@@ -26,16 +26,14 @@ vector<string> RestoreTrashNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void RestoreTrashNode::executeDelete() {
+void RestoreTrashNode::executePost() {
 	vector<string> lista=RestoreTrashNode::split(getUri(),'/');
 	string dirId="";
 	int status=11;
 
-	if ( (!lista[4].compare("trash")) && (lista.size()==6)){
+	if ( (!lista[4].compare("trash")) && (lista.size()>=6)){
 		string userId=getUserId();
 		Log(Log::LogMsgDebug) << "[RestoreTrashNode], UserId: " <<userId;
-
-		vector<RequestDispatcher::info_element_st> deleted_files;
 
 		if (!getRequestDispatcher()->recover_deleted_files(userId,status)){
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
@@ -43,14 +41,18 @@ void RestoreTrashNode::executeDelete() {
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else {
+			Log(Log::LogMsgDebug) << "[RestoreTrashNode], restore ok.";
 			MgConnectionW mg=getConnection();
 			mg.setMethod("GET");
 			InfoTrashNode * itn=new InfoTrashNode(mg);
 			itn->setRequestDispatcher(RequestDispatcher::get_instance());
+			std::string uri;
+			uri = "/info/users/"+ userId + "/trash";
+			mg.setMethod("GET");
+			mg.setUri(uri);
 			itn->executeGet();
 			delete itn;
 		}
-
 	}
 	else{
 		Log(Log::LogMsgDebug) << "[RestoreTrashNode], URL: "<<getUri();
@@ -62,9 +64,7 @@ void RestoreTrashNode::executeDelete() {
 }
 
 std::string RestoreTrashNode::defaultResponse(){
-	return "[{ \"id\": \"0\",  \"name\": \"\","
-							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\", \"userOwner \":\"0\"}]";
+	return "[]";
 }
 
 std::string RestoreTrashNode::getUserId(){

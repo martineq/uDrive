@@ -47,9 +47,12 @@ void DeleteFileTrashNode::executeDelete() {
 		}
 		else{
 			MgConnectionW mg=getConnection();
-			mg.setMethod("GET");
 			InfoTrashNode * itn=new InfoTrashNode(mg);
 			itn->setRequestDispatcher(RequestDispatcher::get_instance());
+			std::string uri;
+			uri = "/info/users/"+ userId + "/trash";
+			mg.setMethod("GET");
+			mg.setUri(uri);
 			itn->executeGet();
 			delete itn;
 		}
