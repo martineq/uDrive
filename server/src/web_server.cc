@@ -6,6 +6,7 @@
 #include "rest/update_collaborators_node.h"
 #include "rest/list_collaborators_node.h"
 #include "rest/search_users_node.h"
+#include "rest/search_filename_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -59,6 +60,26 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           in->setRequestDispatcher(RequestDispatcher::get_instance());
           in->execute();
           delete in;
+          return MG_TRUE;
+
+      }else if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"GET",3)) and (mgConnection.getParameter("name")!="") ){
+          Log(Log::LogMsgDebug) << "[BÚSQUEDA POR NOMBRE DE ARCHIVO]";
+          SearchFilenameNode * in=new SearchFilenameNode(mgConnection);
+          in->setRequestDispatcher(RequestDispatcher::get_instance());
+          in->execute();
+          delete in;
+          return MG_TRUE;
+
+      }else if ( ( field == "file") and (!strncmp(mgConnection.getMethod(),"GET",3)) and (mgConnection.getParameter("extension")!="") ){
+          Log(Log::LogMsgDebug) << "[BÚSQUEDA POR EXTENSION]";
+          return MG_TRUE;
+
+      }else if ( ( field == "tags") and (!strncmp(mgConnection.getMethod(),"GET",3)) and (mgConnection.getParameter("tagname")!="") ){
+          Log(Log::LogMsgDebug) << "[BÚSQUEDA POR TAG]";
+          return MG_TRUE;
+
+      }else if ( ( field == "owners") and (!strncmp(mgConnection.getMethod(),"GET",3)) ){
+          Log(Log::LogMsgDebug) << "[BÚSQUEDA POR PROPIETARIO]";
           return MG_TRUE;
 
       }else if ( ( field == "trash") and (!strncmp(mgConnection.getMethod(),"DELETE",6)) and (mgConnection.getParameter("fileIds")=="") ){
@@ -174,7 +195,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       delete uun;
       return MG_TRUE;
 
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",16)) {
 
       vector<string> lista = WEBServer::split(conn->uri, '/');
 
@@ -200,11 +221,8 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           return MG_TRUE;
       } else return MG_FALSE;
 
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/filetags/users/",15)) {
-      UpdateUserFullNameNode* uun=new UpdateUserFullNameNode(mgConnection);
-      uun->setRequestDispatcher(RequestDispatcher::get_instance());
-      uun->execute();
-      delete uun;
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/revisions/users/",17)) {
+      Log(Log::LogMsgDebug) << "[OBTIENE LISTA DE REVISIONES DE UN ARCHIVO]";
       return MG_TRUE;
 
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/user/",15)) {
@@ -222,6 +240,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           return MG_TRUE;
       }else return MG_FALSE;
 
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/owners/users/",15)) {
+   //   ListOwnersNode* uun=new ListOwnersNode(mgConnection);
+   //   uun->setRequestDispatcher(RequestDispatcher::get_instance());
+   //   uun->execute();
+  // delete uun;
+      return MG_TRUE;
   } else return MG_FALSE;  // Rest of the events are not processed
 }
 
