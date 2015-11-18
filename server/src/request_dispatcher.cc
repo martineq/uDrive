@@ -575,8 +575,9 @@ bool RequestDispatcher::delete_file(string user_id, string file_id, int& status)
     // Copy file_id to files_deleted
     DataHandler::user_info_st owner_info;
     if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
+    owner_info.files_deleted = add_key_to_string_list(owner_info.files_deleted,LABEL_STRING_DELIMITER+file_id);
     if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
-      owner_info.shared_files,owner_info.user_quota_used,LABEL_STRING_DELIMITER+file_id,status) ){ return false; }
+      owner_info.shared_files,owner_info.user_quota_used,owner_info.files_deleted,status) ){ return false; }
     
     // Delete file_id from parent_dir.files_contained
     DataHandler::dir_info_st parent_dir_info;
