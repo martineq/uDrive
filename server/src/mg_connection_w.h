@@ -2,10 +2,13 @@
 #define __MG_CONNECTION_W_H__
 
 #include "mongoose/mongoose.h"
-
 #include <map>
 #include <string>
+#include "./util/log.h"
+#include <json/json.h>
+
 using std::string;
+#include <string.h>
 
 class MgConnectionW {
 	public:
@@ -14,7 +17,7 @@ class MgConnectionW {
 		typedef enum StatusCodes {
 			// 2xx Success
 			STATUS_CODE_OK=200, // OK
-			STATUS_CODE_CREATED=201, // Se creo algo
+			STATUS_CODE_CREATED=201,
 			STATUS_CODE_NO_CONTENT=204, //No content
 
 			// 4xx Client Error
@@ -32,75 +35,61 @@ class MgConnectionW {
 		/** Enum que representa los content types que puede tener la respuesta
 		 */
 		typedef enum ContentTypes {
-			CONTENT_TYPE_JSON=0, ///< Se envia un JSON
-			CONTENT_TYPE_HTML, ///< Se envia un HTML
-			CONTENT_TYPE_TOTAL
+			CONTENT_TYPE_JSON=0,
+			CONTENT_TYPE_HTML,
+			CONTENT_TYPE_TOTAL,
+            CONTENT_TYPE_MULTIPART
 		} ContentTypes;
 
-		/** Envia el codigo de estado
-		 * @param codigo (enum)
-		 */
-		void sendStatus(MgConnectionW::StatusCodes code);
-
-		/** Envia el codigo de estado
-		 * @param codigo entero
+		/**
+		 * send status code connection
 		 */
 		void sendStatus(int code);
-		/** Setea un header del request
-		 * @param name: nombre del header
-		 * @param val: valor
-		 */
-		void sendHeader(const std::string& name, const std::string& val);
-		void sendHeader(const char* name, const char* val);
 
+		/**
+		 * Get transfer file with multipart mode.
+		 */
 		std::string getMultipartData(string& var_name, string& file_name);
 
-		std::string getAuthorization();
-		/** Setea el content type
+	    size_t setMultipartData(string var_name, string file_name,const void *data, int data_len);
+
+		/**
+		 * takes the token header
 		 */
-		void sendContentType(const std::string& type);
-		void sendContentType(const char* type);
+		std::string getAuthorization();
+
+		/**
+		 * It takes the value of the last field next json parameter in the header
+		 */
+		std::string getBodyJson(string field);
+
+		/**
+		 * Full returns the json structure you find on the content of request
+		 */
+		Json::Value getBodyJson();
+
+        /**
+         * specifies the content type of the HTTP message
+         */
 		void sendContentType(MgConnectionW::ContentTypes type);
 
-		/** Printf - abstrae mg_vprintf_data
-		 */
-		size_t printfData(const char* format, ...);
+        size_t printfData(const char* fmt, ...);
 
-		/** Operador derreferencia.
-		 * @return puntero a mg_connection
-		 */
 		struct mg_connection* operator->();
 
-		/** Obtiene un parametro que anteriormente fue guardado para esta coneccion
-		 * @param key: clave por la cual fue guardado
-		 * @return valor del parametro o "" si no existe
-		 */
-		const std::string& getParameter(const std::string& key);
+		const char* getUri();
+		void setUri(string uri);
 
-		/** Guarda un parametro para la coneccion
-		 * @param key: clave
-		 * @param value: valor
-		 */
-		void setParameter(const std::string& key, const std::string& value);
+		const char* getMethod();
 
-		/** Obtiene un parametro de la url o de post (si es url encoded)
-		 * @param varName: nombre del parametro
-		 * @param max: buffer a allocar
-		 * @return valor del parametro o "" si no existe
-		 */
-		std::string getVarStr(const char* varName, size_t max=64);
-		std::string getVarStr(const std::string& varName, size_t max=64);
+		void setMethod(std::string method);
 
-		/** Obtiene un parametro de la url, lo convierte a entero
-		 * @see MgConnection::getVarStr
-		 */
-		int getVarInt(const char* varName, size_t max=64);
-		int getVarInt(const std::string& varName, size_t max=64);
+		std::string getContentLength();
 
+		std::string getParameter(std::string key);
 
 	protected:
 		struct mg_connection *conn; 
-		std::map<std::string, std::string> parameters; ///< map de los parametros guardados por el usuario
 		int multipartOffset;
 };
 

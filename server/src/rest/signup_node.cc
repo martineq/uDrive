@@ -6,72 +6,52 @@
  */
 
 #include "signup_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-
 using std::string;
 using std::stringstream;
 using std::vector;
 
-SignupNode::SignupNode()  : Node("SignupNode") {
+SignupNode::SignupNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 SignupNode::~SignupNode() {
 }
 
-void SignupNode::executePost(MgConnectionW& conn, const char* url){
+void SignupNode::executePost() {
 		Log(Log::LogMsgDebug) << "[" << "SignUp " << "]";
-		const char *s = conn->content;
-		char body[1024*sizeof(char)] = "";
-		strncpy(body, s, conn->content_len);
-		body[conn->content_len] = '0';
+		std::string firstname = getConnection().getBodyJson("firstname");
+		std::string lastname = getConnection().getBodyJson("lastname");
+		std::string email = getConnection().getBodyJson("email");
+		std::string password = getConnection().getBodyJson("password");
 
-		// Parse the JSON body
-		Json::Value root;
-		Json::Reader reader;
-		bool parsedSuccess = reader.parse(body, root, false);
-		if (!parsedSuccess) {
-			// Error, do something
-		}
-		const Json::Value firstname = root["firstname"];
-		const Json::Value lastname = root["lastname"];
-		const Json::Value email = root["email"];
-		const Json::Value password = root["password"];
+		Log(Log::LogMsgDebug) << "[" << "SignUp " << "] firstname: " << firstname << ""
+		" Lastname: " << lastname << " Email: " << email << " Password: " << password;
 
-		std::string firstnameS = firstname.asString();
-		std::string lastnameS = lastname.asString();
-		std::string emailS = email.asString();
-		std::string passwordS = password.asString();
-
-		Log(Log::LogMsgDebug) << "[" << "SignUp " << "] firstname: " << firstnameS << " Lastname: " << lastnameS << " Email: " << emailS << " Password: " << passwordS;
-
-		if ( (emailS != "") && (passwordS != "") ){ 
+		int status=5;
+		if ( (email != "") && (password != "") ){
 			int status;
 			time_t now = time(0);
 			char* dt = ctime(&now);
 			std::string fecha(dt);
 			std::string userId;
-			std::string new_token=CreateToken(emailS);
+			std::string new_token=CreateToken(email);
 
-			if (!this->rd->sign_up(emailS, passwordS, firstnameS, "Caba", new_token, fecha, userId,status)){
-				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-				Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 2 ]";
-				conn.printfData("{\"resultCode\": 2}");
+			if (!getRequestDispatcher()->sign_up(email, password, firstname, lastname, "0.00", "0.00",new_token, fecha, userId,status)){
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				string msg=handlerError(status);
+				getConnection().printfData(msg.c_str());
 			}else{
-				conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 1 ]";
-				conn.printfData("{\"resultCode\": 1}");
+				getConnection().printfData("{\"resultCode\": \"1\"}");
 			}
 		}else{
 			Log(Log::LogMsgDebug) << "[" << "empty email or password" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 2 ]";
-			conn.printfData("{\"resultCode\": 2}");
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg=handlerError(status);
+			getConnection().printfData(msg.c_str());
 		}
 }
 
@@ -83,8 +63,13 @@ std::string SignupNode::CreateToken(const std::string& email){
 	return out;
 }
 
-void SignupNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
+std::string SignupNode::defaultResponse(){
+	return "{\"resultCode\": \"2\"}";
+}
+
+bool SignupNode::auth(int &status){
+	Log(Log::LogMsgDebug) << "[" << "SignUp - always auth" << "]";
+	return true;
 }
 
 

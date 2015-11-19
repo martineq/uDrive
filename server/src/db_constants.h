@@ -9,10 +9,8 @@
 #define STATUS_FAIL_LOADING_FILE 8
 #define STATUS_USER_FORBIDDEN 9
 #define STATUS_MAX_QUOTA_EXCEEDED 10
-
-// Deleted file status
-#define DELETED_FILE_STATUS_EXISTS "1"
-#define DELETED_FILE_STATUS_ERASED "2"
+#define STATUS_DELETE_ROOT_DIR_FORBIDDEN 11
+#define STATUS_REVISION_NOT_EXISTS 12
 
 // DataHandler prefixes for key construction
 #define PREFIX_USER "user_"
@@ -20,6 +18,7 @@
 #define PREFIX_FILE "file_"
 #define PREFIX_INDEX_USER_ID_FROM_USER_EMAIL "index_user_id_from_user_email_"
 #define PREFIX_TICKET_LAST "ticket_last_"
+#define PREFIX_USER_EMAIL_LIST "user_email_list_"
 
 // DataHandler suffixes for key construction
 #define SUFFIX_EMAIL "_email"
@@ -28,7 +27,6 @@
 #define SUFFIX_NAME "_name"
 #define SUFFIX_LOCATION "_location"
 #define SUFFIX_QUOTA_USED "_quota_used"
-#define SUFFIX_AVATAR_FILE "_avatar_file"
 #define SUFFIX_DIR_ROOT "_dir_root"
 #define SUFFIX_SHARED_FILES "_shared_files"
 #define SUFFIX_DATE_LAST_MOD "_date_last_mod"
@@ -46,10 +44,12 @@
 #define SUFFIX_USER_ID "user_id"
 #define SUFFIX_DIR_ID "dir_id"
 #define SUFFIX_FILE_ID "file_id"
+#define SUFFIX_FILES_DELETED "_files_deleted"
 
 // Labels
 #define LABEL_ROOT "root"
 #define LABEL_EMPTY_STRING ""
+#define LABEL_SPACE_STRING " "
 #define LABEL_NO_PARENT_DIR "no_parent"
 #define LABEL_REVISION_1 "1"
 #define LABEL_STRING_DELIMITER ';'
@@ -58,3 +58,13 @@
 #define LABEL_D "d"
 #define LABEL_TRUE "true"
 #define LABEL_FALSE "false"
+#define LABEL_USER_IMAGE "user_image"
+#define LABEL_SHARED_FILES "shared_files"
+
+// Search modes
+#define SEARCH_MODE_OFF 0
+#define SEARCH_MODE_BY_NAME 1
+#define SEARCH_MODE_BY_EXTENSION 2
+#define SEARCH_MODE_BY_TAG 3
+#define SEARCH_MODE_BY_USER 4
+

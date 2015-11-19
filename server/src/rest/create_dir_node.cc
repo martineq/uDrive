@@ -6,16 +6,11 @@
  */
 
 #include "create_dir_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-
 using std::string;
 using std::stringstream;
 using std::vector;
 
-CreateDirNode::CreateDirNode()  : Node("CreateDir") {
+CreateDirNode::CreateDirNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 CreateDirNode::~CreateDirNode() {
@@ -31,58 +26,48 @@ vector<string> CreateDirNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
-	vector<string> lista=CreateDirNode::split(conn->uri,'/');
-
-	int status;
+void CreateDirNode::executePost() {
+	vector<string> lista=CreateDirNode::split(getUri(),'/');
+	int status=11;
 	
 	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
 		string userId=lista[2];
 		string dirId=lista[4];
-		string token=conn.getAuthorization();
+		string token=getConnection().getAuthorization();
 		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << token << " UserID: " << userId;
 
-		const char *s = conn->content;
-		char body[1024*sizeof(char)] = "";
-		strncpy(body, s, conn->content_len);
-		body[conn->content_len] = '0';
-
-		// Parse the JSON body
-		Json::Value root;
-		Json::Reader reader;
-		bool parsedSuccess = reader.parse(body, root, false);
-		if (!parsedSuccess) {
-			// Error, do something
-		}
-		const Json::Value dirName = root["dirName"];
-		std::string dirNameS = dirName.asString();
+		//TODO(martindonofrio): Validar que no sea vacio el campo dirName
+		std::string dirNameS = getConnection().getBodyJson("dirName");
 		std::string new_dirId;
-		
 
-		time_t now = time(0);
-		char* dt = ctime(&now);
-		std::string fecha(dt);
+
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer [80];
+		time (&rawtime);
+		timeinfo = localtime (&rawtime);
+		strftime (buffer,80," %d/%m/%Y %X",timeinfo);
+		Log(Log::LogMsgDebug) << "[CreateDirNode]: fecha: "<<buffer;
+		std::string fecha(buffer);
 
 		Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] userId: " << userId << " dirId: " << dirId << " Create directory " << dirNameS;
-		if (this->rd->new_directory(userId, token, dirNameS, fecha, dirId, new_dirId, status)){
-			DataHandler::dir_info_st dirInfo;
-			if (!this->rd->get_directory_info(userId, token, dirId, dirInfo, status)){
-				Log(Log::LogMsgDebug) << "[" << "Fail get get_directory_info" << "]" << "Status: " << status;
-				conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-				conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-				conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+		if (getRequestDispatcher()->new_directory(userId, dirNameS, fecha, dirId, new_dirId, status)){
+
+			RequestDispatcher::dir_info_st dirInfo_rd;
+			if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+				string msg=handlerError(status);
+				getConnection().printfData(msg.c_str());
 			}
 			else{
-				vector<RequestDispatcher::info_element_st> directory_element_info;
+				vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;  // Assign value
 				bool enc = false;
 				std::ostringstream item;
 	  			item << "[";
-				if (this->rd->get_directory_element_info_from_dir_info(userId, token, dirInfo, directory_element_info, status)){
+				if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
-					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo.name;
-
+					Log(Log::LogMsgDebug) << "[" << "touring list" << "]: dirInfo: " << dirInfo_rd.name;
 					if (directory_element_info.size()!=0){
 						for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
 		     				enc=true;
@@ -99,15 +84,13 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 					if (directory_element_info.size()==1) enc=true;
 					
 					if (!enc){
-						Log(Log::LogMsgDebug) << "[" << "empty directory" << "]: dirInfo: " << dirInfo.name;
-						conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-						conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+						status=12;
+						getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+						getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						string msg=handlerError(status);
+						getConnection().printfData(msg.c_str());
 					}else{
-						
-						item 
+						item
 	     				<< "{\"id\":\"" << (*(directory_it)).id 
 	     				<< "\",\"name\":\"" << (*(directory_it)).name 
 	     				<< "\",\"size\":\""	<< (*(directory_it)).size	
@@ -117,46 +100,36 @@ void CreateDirNode::executePost(MgConnectionW& conn, const char* url){
 	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
 	     				item << "]";
 
-						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo.name << ", Number of items: " << directory_element_info.size(); 
-	  					conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-						conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
+	  					getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+						getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 						const std::string tmp = item.str();
 						const char* msg = tmp.c_str();
-						conn.printfData(msg);
-
+						getConnection().printfData(msg);
 					}
-
 				} else Log(Log::LogMsgDebug) << "[" << "Not directory elem with dir_info" << "]";
 				}	
-
-		//	conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-		//	conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		//	Log(Log::LogMsgDebug) << "[" << "CreateDirNode " << "] new dirId: " << new_dirId.c_str();
-		//	conn.printfData("{\"dirId\": \"%s\"}",new_dirId.c_str());
-
-
 		}else{
-			Log(Log::LogMsgDebug) << "[" << "failed to create" << "] Status: " << status;
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			//conn.printfData("{\"dirId\": \"%s\"}","0");
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg=handlerError(status);
+			getConnection().printfData(msg.c_str());
 		}
 	}else{
-			Log(Log::LogMsgDebug) << "failed to create" << "] Status: " <<status;
-			conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			//conn.printfData("{\"dirId\": \"%s\"}","0");
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg=handlerError(status);
+			getConnection().printfData(msg.c_str());
 	}
 }
+std::string CreateDirNode::defaultResponse(){
+	return "[{ \"id\": \"0\",\"name\": \"\",\"size\": \"0\","
+			"\"type\": \"\",\"cantItems\": \"0\",\"shared\": \"\",\"lastModDate\": \"\"}]";
+}
 
-void CreateDirNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
+std::string CreateDirNode::getUserId() {
+	vector<string> lista=CreateDirNode::split(getUri(),'/');
+	return lista[2];
 }
 
 

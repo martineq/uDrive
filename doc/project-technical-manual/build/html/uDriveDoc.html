@@ -1,0 +1,501 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>UDrive - Entrega &mdash; Udrive 2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Udrive 2 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to Udrive’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Udrive’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Udrive 2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <hr class="docutils" />
+<div class="section" id="udrive-entrega">
+<h1>UDrive - Entrega<a class="headerlink" href="#udrive-entrega" title="Permalink to this headline">¶</a></h1>
+<p><strong>19/11/2015</strong></p>
+<p><strong>Grupo Nro 5</strong></p>
+<p><strong>Ayudante asignado: Pablo Rodríguez Manzi</strong></p>
+<p><strong>Integrantes:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Apellido y Nombre</th>
+<th class="head">Padrón</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Cortazzo Romina Pamela</td>
+<td>80915</td>
+</tr>
+<tr class="row-odd"><td>D&#8217;Onofrio Martín</td>
+<td>82106</td>
+</tr>
+<tr class="row-even"><td>Liva María Eugenia</td>
+<td>86123</td>
+</tr>
+<tr class="row-odd"><td>Quiroz Martín</td>
+<td>86012</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tag a descargar:</strong></p>
+</div>
+<hr class="docutils" />
+<div class="section" id="manual-de-proyecto">
+<h1>Manual de proyecto<a class="headerlink" href="#manual-de-proyecto" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="gestion-del-proyecto">
+<h2>Gestión del proyecto<a class="headerlink" href="#gestion-del-proyecto" title="Permalink to this headline">¶</a></h2>
+<p>Las tareas se gestionaron mediante el sistema de tickets que nos proveé GitHub. Por cada tarea a realizar se crea un issue que se asigna a un integrante del grupo.
+Para tener una trazabilidad del estado de las tareas y el código que corresponde a cada corrección, al realizar un commit se indica el número de issue al que corresponde. Por tal razón al momento de  definir las tareas se tuvo en cuenta que sean lo suficientemente atómicas como para cerrarlas con un único commit.</p>
+</div>
+<div class="section" id="division-de-tareas">
+<h2>División de tareas<a class="headerlink" href="#division-de-tareas" title="Permalink to this headline">¶</a></h2>
+<p>Para el desarrollo de UDrive se conformaron los módulos Cliente y Servidor, asignando a dos integrantes del equipo a cargo principalmente de uno de los módulos. Lo cual puede cambiar de ser necesario. Las asignaciones fueron:</p>
+<ul class="simple">
+<li>Cliente:  Liva María Eugenia y Cortazzo Romina Pamela</li>
+<li>Servidor:  Quiroz Martín y D&#8217;Onofrio Martín</li>
+</ul>
+</div>
+<div class="section" id="tareas-que-componen-los-checklists-3-a-final">
+<h2>Tareas que componen los Checklists 3 a Final<a class="headerlink" href="#tareas-que-componen-los-checklists-3-a-final" title="Permalink to this headline">¶</a></h2>
+<p>Son todas las pertenecientes a los milestones:</p>
+<p><a class="reference external" href="https://github.com/martineq/tp7552/milestones/Checkpoint%20%233">Checkpoint #3</a>
+<a class="reference external" href="https://github.com/martineq/tp7552/milestones/Checkpoint%20%234">Checkpoint #4</a>
+<a class="reference external" href="https://github.com/martineq/tp7552/milestones/Checkpoint%20%235">Checkpoint #5</a>
+<a class="reference external" href="https://github.com/martineq/tp7552/milestones/Entrega%20Final">Checkpoint #Entrega Final</a></p>
+<p>Decidimos crear Checkpoints no oficiales (3, 4 y 5) como forma de
+organización interna para proyectar y concretar metas posibles en tales plazos.</p>
+</div>
+<div class="section" id="funcionalidades">
+<h2>Funcionalidades<a class="headerlink" href="#funcionalidades" title="Permalink to this headline">¶</a></h2>
+<p>En esta entrega se incluye a nivel funcionalidad en cliente y servidor,
+tanto interfaz de usuario como funcionalidades en el core y servicios
+REST:</p>
+<ul class="simple">
+<li>Eliminación archivo</li>
+<li>Eliminación carpeta</li>
+<li>Papelera-ver archivos borrados</li>
+<li>Papelera-eliminar archivo seleccionado</li>
+<li>Papelera-vaciar papelera</li>
+<li>Papelera-recuperar todos los archivos</li>
+<li>Papelera-recuperar archivos seleccionados</li>
+<li>Compartir-busqueda de usuarios para compartir</li>
+<li>Compartir-actualizar colaboradores</li>
+<li>Compartir-mostrar los colaboradores de un archivo</li>
+<li>Taggeo de archivos y carpetas</li>
+<li>Vista de perfil de usuario</li>
+<li>Edición de nombre de usuario</li>
+<li>Edición de imagen de perfil</li>
+<li>Obtención de información completa de archivo  o carpeta</li>
+<li>Modificación de nombre de archivo o carpeta</li>
+<li>Actualización de geolocalización de usuario</li>
+<li>Obtención de tags de un usuario</li>
+<li>Obtención de todos los propietarios de los archivos compartidos con el usuario logueado</li>
+<li>Búsqueda por nombre de archivo</li>
+<li>Búsqueda por extensión de archivo</li>
+<li>Búsqueda por tag</li>
+<li>Búsqueda por propietario</li>
+<li>Descarga de archivo por revisión</li>
+<li>Descarga de archivo</li>
+<li>Descarga de directorio</li>
+</ul>
+</div>
+<div class="section" id="control-de-versiones-repositorio">
+<h2>Control de versiones - Repositorio<a class="headerlink" href="#control-de-versiones-repositorio" title="Permalink to this headline">¶</a></h2>
+<p>El control de versiones del proyecto fue mediante Github.
+Se utilizaron un mismo repositorio para el proyecto de servidor y del cliente.</p>
+<p><a class="reference external" href="https://github.com/martineq/tp7552.git">Repositorio</a></p>
+<p>El manejo de branches que realizamos es el siguiente:</p>
+<ul class="simple">
+<li>Master: Sólo se hará commit sobre este branch al momento de cerrar un checkpoint.</li>
+<li>Develop: Se subirán a este branch las funcionalidades que se vayan cerrando.</li>
+<li>Features branches: Cada integrante trabajará en una branch local y una vez que tenga la funcionalidad terminada, hará merge con Develop y volcará sobre este los cambios.</li>
+</ul>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="manual-tecnico">
+<h1>Manual Técnico<a class="headerlink" href="#manual-tecnico" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="api-rest">
+<h2>API REST<a class="headerlink" href="#api-rest" title="Permalink to this headline">¶</a></h2>
+<p>Para la comunicación entre Cliente y Servidor se definieron los siguientes servicios REST:</p>
+<ul class="simple">
+<li><strong>Agrega un archivo en el directorio indicado</strong></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">URL: /users/{userId}/dir/{dirId}</p>
+</li>
+<li><p class="first">Verbo: POST</p>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de entrada (multipart):</dt>
+<dd><p class="first last">&#8220;file&#8221;: binario
+&#8220;filename&#8221;: &#8220;archivo.txt&#8221;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de salida (JSON):</dt>
+<dd><p class="first last">&#8220;id&#8221;: 1,
+&#8220;name&#8221;: &#8220;Carpeta1&#8221;,
+&#8220;size&#8221;: 1234,
+&#8220;type&#8221;: &#8220;d&#8221;,
+&#8220;cantItems&#8221;: 2,
+&#8220;shared&#8221;: true,
+&#8220;lastModDate&#8221;: &#8220;10/08/2015&#8221;
+},
+{
+&#8220;id&#8221;: 2
+&#8220;name&#8221;: &#8220;Carpeta2&#8221;,
+&#8220;size&#8221;: 500,
+&#8220;type&#8221;: &#8220;a&#8221;,
+&#8220;cantItems&#8221;: 1
+&#8220;shared&#8221;: false,
+&#8220;lastModDate&#8221;: &#8220;10/08/2015&#8221;
+},
+...
+]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><strong>Crea un directorio en el directorio</strong></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">URL: /users/{userId}/dir/{dirId}</p>
+</li>
+<li><p class="first">Verbo: POST</p>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de entrada (JSON):</dt>
+<dd><p class="first last">{&#8220;dirName&#8221;: &#8220;nuevo_directorio&#8221;}</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de salida (JSON):</dt>
+<dd><p class="first last">&#8220;id&#8221;: 1,
+&#8220;name&#8221;: &#8220;Carpeta1&#8221;,
+&#8220;size&#8221;: 1234,
+&#8220;type&#8221;: &#8220;d&#8221;,
+&#8220;cantItems&#8221;: 2,
+&#8220;shared&#8221;: true,
+&#8220;lastModDate&#8221;: &#8220;10/08/2015&#8221;
+},
+{
+&#8220;id&#8221;: 2
+&#8220;name&#8221;: &#8220;Carpeta2&#8221;,
+&#8220;size&#8221;: 500,
+&#8220;type&#8221;: &#8220;a&#8221;,
+&#8220;cantItems&#8221;: 1
+&#8220;shared&#8221;: false,
+&#8220;lastModDate&#8221;: &#8220;10/08/2015&#8221;
+},
+...
+]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><strong>Registración de usuario</strong></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">URL: /signup</p>
+</li>
+<li><p class="first">Verbo: POST</p>
+</li>
+<li><p class="first">Descripción: Chequea si el e-mail enviado existe o no. Si existe devuelve un código de error ( != 1).De lo contrario inserta todos los campos recibidos en la base de datos y devuelve un código de operación exitosa (1).</p>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de entrada (JSON):</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd><p class="first last">&#8220;firstname&#8221;: &#8220;nombre&#8221;,
+&#8220;lastname&#8221;: &#8220;apellido&#8221;,
+&#8220;email&#8221;: &#8220;<a class="reference external" href="mailto:mail&#37;&#52;&#48;mail&#46;com">mail<span>&#64;</span>mail<span>&#46;</span>com</a>&#8221;,
+&#8220;password&#8221;: &#8220;xxxxxxxx&#8221;</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de salida (JSON):</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd><p class="first last">&#8220;resultCode&#8221;: 1</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><strong>Consulta de perfil de usuario</strong></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">URL: /profile/{userId}</p>
+</li>
+<li><p class="first">Verbo: GET</p>
+</li>
+<li><p class="first">Descripción: Trae todos los campos pertenecientes al perfil del usuario logueado en la aplicación.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Ejemplo de salida (JSON):</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd><p class="first last">&#8220;firstname&#8221;: &#8220;nombre&#8221;,
+&#8220;lastname&#8221;: &#8220;apellido&#8221;,
+&#8220;email&#8221;: &#8220;<a class="reference external" href="mailto:mail&#37;&#52;&#48;mail&#46;com">mail<span>&#64;</span>mail<span>&#46;</span>com</a>&#8221;,
+/<em>&#8220;photo&#8221;: &#8220;dfd5g46s5gfGf&#8221;,</em>/
+/<em>&#8220;lastLocation&#8221;: &#8220;&#8221;,</em>/
+&#8220;userId&#8221;: &#8220;5&#8221;,
+&#8220;quotaAvailable&#8221;: &#8220;570 MB&#8221;
+&#8220;quotaTotal&#8221;: &#8220;756 MB&#8221;
+&#8220;quotaUsagePercent&#8221;: &#8220;75.39%&#8221;</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="base-de-datos">
+<h2>Base de Datos<a class="headerlink" href="#base-de-datos" title="Permalink to this headline">¶</a></h2>
+<p>Para persistir los datos se utilizó RocksDB</p>
+<p><strong>Información que se necesitaba persistir</strong></p>
+<ul class="simple">
+<li>Relacionados a un cliente (user):</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>user_id</li>
+<li>user_email</li>
+<li>user_password</li>
+<li>user_token</li>
+<li>user_name</li>
+<li>user_location</li>
+<li>user_dir_root</li>
+<li>user_shared_files</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Relacionados a un directorio (directory):</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>dir_id</li>
+<li>dir_name</li>
+<li>dir_date_last_mod</li>
+<li>dir_tags</li>
+<li>dir_owner</li>
+<li>dir_parent_directory</li>
+<li>dir_files_contained</li>
+<li>dir_directories_contained</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Relacionados a un archivo (file):</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>file_id</li>
+<li>file_name</li>
+<li>file_extension</li>
+<li>file_date_last_mod</li>
+<li>file_user_last_mod</li>
+<li>file_tags</li>
+<li>file_owner</li>
+<li>file_size (expresado en Kilobytes)</li>
+<li>file_deleted_status</li>
+<li>file_users_shared</li>
+<li>file_revision</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Relacionados a la búsquedas por atributos que no son el ID (index):</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>index_user_id_from_user_email</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Relacionados al manejo de asignaciones de id para usuarios, directorios y archivos (ticket):</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>ticket_last_user_id</li>
+<li>ticket_last_dir_id</li>
+<li>ticket_last_file_id</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="servidor">
+<h2>Servidor<a class="headerlink" href="#servidor" title="Permalink to this headline">¶</a></h2>
+<p><strong>Diagrama de clases</strong></p>
+<img alt="_images/diagrama_clase_serv.png" src="_images/diagrama_clase_serv.png" />
+<p><strong>Instalacón y configuración</strong></p>
+<ol class="arabic">
+<li><p class="first">Descargar el <a class="reference external" href="https://raw.githubusercontent.com/martineq/tp7552/master/server/server_install_v0.1.sh">script de instalación</a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Para la instalación:</dt>
+<dd><ol class="first last loweralpha simple">
+<li>chmod 777 server_install_v0.1.sh</li>
+<li>./server_install_v0.1.sh</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Luego ejecutar el servidor con:</dt>
+<dd><ol class="first last loweralpha simple">
+<li>./server</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+<p><strong>Ejecución de pruebas</strong></p>
+<p>Luego de haber levantado el servidor con los pasos indicados anteriormente, ejecutar:</p>
+<ul class="simple">
+<li>cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..</li>
+<li>make</li>
+<li>make coveralls</li>
+</ul>
+</div>
+<div class="section" id="cliente">
+<h2>Cliente<a class="headerlink" href="#cliente" title="Permalink to this headline">¶</a></h2>
+<p><strong>Instalacón y configuración</strong></p>
+<ol class="arabic simple">
+<li>Descargar el <a class="reference external" href="https://github.com/martineq/tp7552/raw/344e1550a2eab0febc324910d4edaf2256522ac9/client/src/Udrive/app/app-release.apk">apk de instalación</a></li>
+<li>Configurar ip del servidor entrando a Settings &gt; Connection settings</li>
+</ol>
+<img alt="_images/settings.png" src="_images/settings.png" />
+<img alt="_images/connectionSettings1.png" src="_images/connectionSettings1.png" />
+<img alt="_images/connectionSettings2.png" src="_images/connectionSettings2.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">UDrive - Entrega</a></li>
+<li><a class="reference internal" href="#manual-de-proyecto">Manual de proyecto</a><ul>
+<li><a class="reference internal" href="#gestion-del-proyecto">Gestión del proyecto</a></li>
+<li><a class="reference internal" href="#division-de-tareas">División de tareas</a></li>
+<li><a class="reference internal" href="#tareas-que-componen-los-checklists-3-a-final">Tareas que componen los Checklists 3 a Final</a></li>
+<li><a class="reference internal" href="#funcionalidades">Funcionalidades</a></li>
+<li><a class="reference internal" href="#control-de-versiones-repositorio">Control de versiones - Repositorio</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#manual-tecnico">Manual Técnico</a><ul>
+<li><a class="reference internal" href="#api-rest">API REST</a></li>
+<li><a class="reference internal" href="#base-de-datos">Base de Datos</a></li>
+<li><a class="reference internal" href="#servidor">Servidor</a></li>
+<li><a class="reference internal" href="#cliente">Cliente</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Udrive&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/uDriveDoc.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Udrive’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Udrive 2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Grupo5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

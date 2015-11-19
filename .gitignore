@@ -2,6 +2,7 @@
 
 # Ignoro los archivos temporales (todos los que terminan con el caracter "~")
 *~
+*.lock
 
 # Ignoro la carpeta build:
 /server/**/build/
@@ -15,3 +16,6 @@ build_kdev/
 
 # Ignoro un archivo main alternativo
 main.cc.alt
+
+# Ignoro directorio .idea
+.idea/

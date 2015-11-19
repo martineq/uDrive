@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_weight="0.8">
+        <TextView
+            android:id="@+id/file_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"/>
+        <EditText
+            android:inputType="text"
+            android:digits="0123456789*,qwertzuiopasdfghjklyxcvbnm+-ñáéíóú./!?¿¡_
+            ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+            android:id="@+id/tag_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/tag_hint"
+            android:gravity="fill_vertical"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="60dp"
+            android:paddingLeft="20dp"
+            android:textColorHint="#999999"/>
+        <ImageView
+            android:id="@+id/button_add_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_plus_circle_outline_grey600_36dp"
+            android:clickable="true"
+            android:paddingTop="9dp"
+            android:layout_marginTop="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2">
+        <WebView
+            android:id="@+id/tagView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp">
+
+        </WebView>
+
+    </RelativeLayout>
+</LinearLayout>

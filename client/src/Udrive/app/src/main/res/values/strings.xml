@@ -42,25 +42,116 @@
     <string name="error_lastname">You must enter your lastname</string>
     <string name="error_password">You must enter your password</string>
     <string name="signup_ok">User account successfully created!</string>
+    <string name="error_email_format">You must enter a valid e-mail address</string>
+    <string name="password_again">Re-type password</string>
+    <string name="error_match_pass">Passwords do not match</string>
+    <string name="error_password_again">You must re-type your password</string>
 
     <!-- String related to Add file-->
     <string name="action_upload_file">Upload file</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">OK</string>
-    <string name="new_folder_cancel">Cancel</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancel</string>
     <string name="action_add_folder">Add folder</string>
     <string name="folder_name">Folder name: </string>
 
     <!-- Strings related to User Profile Activity -->
     <string name="userprofile_title">My profile</string>
-    <string name="title_activity_main2">Main2Activity</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <!-- User profile -->
     <string name="screen_name">Edit firstname and lastname</string>
     <string name="save_changes">Save changes</string>
+    <string name="unknown_location">Unknown</string>
+    <string name="last_location"><![CDATA[<b>Last location</b>]]></string>
+    <string name="email_profile"><![CDATA[<b>E-mail</b>]]></string>
+    <string name="quota_usage"><![CDATA[<b>Usage</b>]]></string>
+    <string name="quota_of">of</string>
+    <string name="picture_ok">Profile picture updated!</string>
+    <string name="picture_error">Error updating profile picture</string>
+    <string name="fullname_ok">Full name updated!</string>
+    <string name="fullname_error">Error updating the full name</string>
+    <string name="error_profile">Error loading profile</string>
+    <string name="picture_size_error">Your picture size must not be greater than 1 MB</string>
+
+    <!-- Strings related to Context Menu -->
+    <string name="download_action">Download</string>
+    <string name="download_action_prev">Previous versions</string>
+    <string name="info_action">Information</string>
+    <string name="share_action">Share</string>
+    <string name="tag_action">Tag</string>
+    <string name="delete_action">Delete</string>
+    <string name="cancel_action">Cancel</string>
+
+    <!-- Strings related to Delete option -->
+    <string name="delete_option_title">Delete</string>
+    <string name="delete_option_message">Do you want to Delete?</string>
+
+    <string name="title_activity_trash">Trash</string>
+    <string name="action_empty_trash">Empty trash</string>
+    <string name="action_restore_all">Restore all</string>
+    <string name="action_delete_selected">Delete selected</string>
+    <string name="action_restore_selected">Restore selected</string>
+    <string name="trash_is_empty">Trash is empty</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="action_show_trash">Trash</string>
+    <string name="collaborators_is_empty">No collaborators</string>
+
+    <!-- Strings related to file tagging dialog -->
+    <string name="file_tag_title">Tagging</string>
+    <string name="tag_hint"><i>Type your tag here...</i></string>
+    <string name="file_type"><![CDATA[<b>File</b>]]></string>
+    <string name="dir_type"><![CDATA[<b>Folder</b>]]></string>
+    <string name="error_savetags">Error on saving tags</string>
+    <string name="ok_savetags">Tags updated successfully!</string>
+
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">File info</string>
+    <string name="whohasaccess">Who has access</string>
+    <string name="tags">Tags</string>
+    <string name="error_fileinfo">Error on loading file information</string>
+    <string name="error_filename">Error on updating the filename</string>
+    <string name="edit_filename_title">Update filename</string>
+    <string name="owner">Owner</string>
+    <string name="size">Size</string>
+    <string name="lastUpd">Last update</string>
+    <string name="by">By</string>
+    <string name="from">From</string>
+    <string name="items">No. items</string>
+
+    <!-- Strings related to file actions -->
+    <string name="share_title">Share</string>
+    <string name="add_collaborator">Add Collaborator</string>
+    <string name="title_activity_search_users">Search users</string>
+    <string name="search_users_is_empty">No users for your query</string>
+    <string name="action_search">Search</string>
+
+    <!-- Strings related to GPS service -->
+    <string name="error_gps">Error on getting GPS location</string>
+
+    <!-- Strings related to file searching -->
+    <string name="action_file_search">Search files</string>
+    <string name="search">Search</string>
+    <string name="by_name">By name</string>
+    <string name="by_ext">By extension</string>
+    <string name="by_tag">By tag</string>
+    <string name="by_owner">By owner</string>
+    <string name="label_by_name">Filename</string>
+    <string name="label_by_ext">Extension</string>
+    <string name="label_by_tag">Select a tag</string>
+    <string name="label_by_owner">Select an owner</string>
+    <string name="label_by_name_hint"><i>Enter name here...</i></string>
+    <string name="label_by_ext_hint"><i>Enter extension here...</i></string>
+    <string name="searching">Searching...</string>
+    <string name="empty_search_title">Search files</string>
+    <string name="empty_search_msg">No results found</string>
+
+    <!-- Strings related to file previous versions -->
+    <string name="version">Select a version</string>
+    <string name="prev_download">Download</string>
+    <string name="versionNumber">Version</string>
+    <string name="message_validation_lessQuota">Your quota is insufficient</string>
+    <string name="fileList_is_empty">No files uploaded</string>
+    <string name="message_validation_no_canShare">Not authorized</string>
 
 </resources>

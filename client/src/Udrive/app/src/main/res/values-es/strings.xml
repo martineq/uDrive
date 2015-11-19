@@ -23,6 +23,7 @@
     <string name="error_auth">Error de autenticación</string>
     <string name="error_port_number">Error: El puerto debe ser mayor a 1024 y menor a 49151</string>
     <string name="error_empty">Ingrese correo electrónico y contraseña</string>
+    <string name="error_password_again">Debe re-ingresar la contraseña</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Configuración</string>
@@ -41,21 +42,114 @@
     <string name="error_firstname">Debe ingresar el nombre</string>
     <string name="error_lastname">Debe ingresar el apellido</string>
     <string name="error_password">Debe ingresar una contraseña</string>
+    <string name="error_email_format">Debe ingresar un correo electrónico válido</string>
+    <string name="password_again">Re-ingrese password</string>
+    <string name="error_match_pass">Las contraseñas ingresadas no coinciden</string>
 
     <!-- String related to Add file-->
     <string name="action_upload_file">Subir archivo</string>
 
     <!-- String related to Add folder-->
-    <string name="new_folder_ok">OK</string>
-    <string name="new_folder_cancel">Cancelar</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancelar</string>
     <string name="action_add_folder">Crear carpeta</string>
     <string name="folder_name">Nombre de carpeta: </string>
 
     <!-- Strings related to User Profile Activity -->
     <string name="userprofile_title">Mi perfil</string>
-
-    <!-- User profile -->
     <string name="screen_name">Modificar nombre y apellido</string>
     <string name="save_changes">Guardar cambios</string>
+    <string name="unknown_location">Desconocido</string>
+    <string name="last_location"><![CDATA[<strong>Última ubicación</strong>]]></string>
+    <string name="email_profile"><![CDATA[<b>Correo electrónico</b>]]></string>
+    <string name="quota_usage"><![CDATA[<b>Uso</b>]]></string>
+    <string name="quota_of">de</string>
+    <string name="picture_ok">¡Imagen de perfil actualizada!</string>
+    <string name="picture_error">Error al actualizar imagen de perfil</string>
+    <string name="fullname_ok">¡Nombre actualizado!</string>
+    <string name="fullname_error">Error actualizando el nombre</string>
+    <string name="error_profile">Error al intentar mostrar el perfil</string>
+    <string name="picture_size_error">El tamaño de la imagen no puede superar 1 MB</string>
+
+    <!-- Strings related to Context Menu -->
+    <string name="download_action">Descargar</string>
+    <string name="download_action_prev">Versiones previas</string>
+    <string name="info_action">Información</string>
+    <string name="share_action">Compartir</string>
+    <string name="tag_action">Etiquetar</string>
+    <string name="delete_action">Eliminar</string>
+    <string name="cancel_action">Cancelar</string>
+    <string name="delete_option_title">Eliminar</string>
+    <string name="title_activity_trash">Papelera</string>
+    <string name="action_empty_trash">Vaciar</string>
+    <string name="action_restore_all">Restaurar todo</string>
+    <string name="action_delete_selected">Eliminar selección</string>
+    <string name="action_restore_selected">Restaurar selección</string>
+    <string name="trash_is_empty">La papelera está vacía</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">¿Está seguro?</string>
+    <string name="action_show_trash">Papelera</string>
+    <string name="collaborators_is_empty">No collaborators</string>
+    <string name="delete_option_message">Desea eliminar?</string>
+
+    <!-- Strings related to file tagging dialog -->
+    <string name="file_tag_title">Etiquetar</string>
+    <string name="tag_hint"><i>Ingresa el tag aquí...</i></string>
+    <string name="file_type"><![CDATA[<b>Archivo</b>]]></string>
+    <string name="dir_type"><![CDATA[<b>Carpeta</b>]]></string>
+    <string name="error_savetags">Error al guardar las etiquetas</string>
+    <string name="ok_savetags">¡Etiquetas actualizadas correctamente!</string>
+
+    <!-- Strings related to file info view -->
+    <string name="fileinfo_title">Información de archivo</string>
+    <string name="whohasaccess">Tienen acceso</string>
+    <string name="tags">Etiquetas</string>
+    <string name="error_fileinfo">Error al cargar la información del archivo o carpeta</string>
+    <string name="error_filename">Error al actualizar el nombre del archivo</string>
+    <string name="edit_filename_title">Actualizar nombre de archivo</string>
+    <string name="owner">Propietario</string>
+    <string name="size">Tamaño</string>
+    <string name="lastUpd">Ult. mod.</string>
+    <string name="by">Por</string>
+    <string name="from">Desde</string>
+    <string name="items">Cant. items</string>
+
+    <!-- Strings related to file actions -->
+    <string name="share_title">Compartir</string>
+    <string name="add_collaborator">Agregar Colaborador</string>
+    <string name="title_activity_search_users">Buscar usuarios</string>
+    <string name="search_users_is_empty">No hay usuarios para su búsqueda</string>
+    <string name="action_search">Buscar</string>
+
+    <!-- Strings related to GPS service -->
+    <string name="error_gps">Error al obtener la ubicación</string>
+
+    <!-- Strings related to file searching -->
+    <string name="lorem_ipsum">Probando diálogo</string>
+    <string name="action_file_search">Buscar archivos</string>
+    <string name="search">Buscar</string>
+    <string name="by_name">Por nombre</string>
+    <string name="by_ext">Por extensión</string>
+    <string name="by_tag">Por etiqueta</string>
+    <string name="by_owner">Por dueño</string>
+    <string name="label_by_name">Nombre de archivo</string>
+    <string name="label_by_ext">Extensión</string>
+    <string name="label_by_tag">Seleccione tag</string>
+    <string name="label_by_owner">Seleccione dueño</string>
+    <string name="label_by_name_hint">Ingrese el nombre aquí...</string>
+    <string name="label_by_ext_hint">Ingrese la extensión aquí...</string>
+    <string name="searching">Buscando...</string>
+    <string name="empty_search_title">Búsqueda de archivos</string>
+    <string name="empty_search_msg">No se encontraron resultados</string>
+
+    <!-- Strings related to file previous versions -->
+    <string name="version">Seleccione una versión</string>
+    <string name="prev_download">Descargar</string>
+    <string name="versionNumber">Versión</string>
+    <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
+    <string name="fileList_is_empty">Sin archivos cargados</string>
+    <string name="message_validation_no_canShare">No posee permisos para descompartir</string>
 
 </resources>
+

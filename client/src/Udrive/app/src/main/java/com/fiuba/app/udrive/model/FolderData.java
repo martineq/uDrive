@@ -16,5 +16,6 @@ public class FolderData implements Serializable {
     public void setDirName(String name) {
         this.dirName = name;
     }
+
 }
 

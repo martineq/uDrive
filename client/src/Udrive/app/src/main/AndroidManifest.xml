@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -21,7 +22,8 @@
         </activity>
         <activity
             android:name=".FileListActivity"
-            android:label="@string/title_activity_file_list" >
+            android:label="@string/title_activity_file_list"
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -48,11 +50,26 @@
         </activity>
         <activity
             android:name=".UserProfileActivity"
-            android:label="@string/userprofile_title"
-            android:parentActivityName=".FileListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.fiuba.app.udrive.FileListActivity" />
+            android:label="@string/userprofile_title" >
+        </activity>
+        <activity
+            android:name=".TrashActivity"
+            android:label="@string/title_activity_trash" >
+        </activity>
+        <activity
+            android:name=".FileInfoActivity"
+            android:label="@string/fileinfo_title" >
+        </activity>
+        <activity
+            android:name=".ShareActivity"
+            android:label="@string/share_title" >
+        </activity>
+        <activity
+            android:name=".SearchUsersActivity"
+            android:label=" " >
+        </activity>
+        <activity android:name=".FileSearchEmptyActivity"
+            android:label="@string/empty_search_title">
         </activity>
     </application>
 

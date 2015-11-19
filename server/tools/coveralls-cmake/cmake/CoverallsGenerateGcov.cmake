@@ -277,9 +277,11 @@ set(JSON_TEMPLATE
 }"
 )
 
+#TODO(mart): Originalmente la línea de name era:         \"name\": \"\@GCOV_SRC_REL_PATH\@\",
+# y fue cambiada (solo para este proyecto) por:          \"name\": \"server/\@GCOV_SRC_REL_PATH\@\",
 set(SRC_FILE_TEMPLATE
 "{
-      \"name\": \"\@GCOV_SRC_REL_PATH\@\",
+      \"name\": \"server/\@GCOV_SRC_REL_PATH\@\",
       \"source_digest\": \"\@GCOV_CONTENTS_MD5\@\",
       \"coverage\": \@GCOV_FILE_COVERAGE\@
   }"

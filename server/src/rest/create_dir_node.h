@@ -7,7 +7,6 @@
 
 #ifndef CREATE_DIR_NODE_H_
 #define CREATE_DIR_NODE_H_
-
 #include "../rest/node.h"
 #include "../util/log.h"
 #include <string.h>
@@ -21,13 +20,13 @@
 class CreateDirNode  : public Node {
 
 public:
-	CreateDirNode();
+	CreateDirNode(MgConnectionW& conn);
 	~CreateDirNode();
-	void setRequestDispatcher(RequestDispatcher* rd);
 protected:
-	void executePost(MgConnectionW& conn, const char* url);
+	void executePost();
+	std::string defaultResponse();
+	std::string getUserId();
 private:
-	RequestDispatcher* rd;
 	vector<string> split(const string &s, char delim);
 
 };

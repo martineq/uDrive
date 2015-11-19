@@ -21,46 +21,34 @@ struct email_pass{
 
 typedef struct email_pass email_pass;
 
-TokenNode::TokenNode() : Node("token") {
+TokenNode::TokenNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
-void TokenNode::executePost(MgConnectionW& conn, const char* url){
-	const char *s = conn->content;
-	char body[1024*sizeof(char)] = "";
-	strncpy(body, s, conn->content_len);
-	body[conn->content_len] = '0';
-	// Parse the JSON body
-	Json::Value root;
-	Json::Reader reader;
-	bool parsedSuccess = reader.parse(body, root, false);
-	if (!parsedSuccess) {
-		// Error, do something
-	}
-	const Json::Value mail = root["email"];
-	const Json::Value pass = root["password"];
-	std::string email = mail.asString();
-	std::string password = pass.asString();
+void TokenNode::executePost() {
+	Log(Log::LogMsgDebug) << "[" << "TokenNode" << "]: parsing Json";
+
+	std::string email = getConnection().getBodyJson("email");
+	std::string password = getConnection().getBodyJson("password");
 
 	Log(Log::LogMsgDebug) << "[" << "validating user" << "] " << email << " " << password;
 
 	string new_token=CreateToken(email);
 	string userId="";
+        string quotaAvailable="";
 	int status;
 
-	if (!this->rd->log_in(email, password, new_token, userId, status)){
-		Log(Log::LogMsgDebug) << "[" << "email incorrecto" << "] ";
-		conn.sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"userId\": \"%d\",  \"email\": \"%s\",  \"token\": \"%s\" }", 0, "", "");
+	if (!getRequestDispatcher()->log_in(email, password, new_token, userId, quotaAvailable,status)){
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		string msg=handlerError(status);
+		getConnection().printfData(msg.c_str());
 	}else{
-		Log(Log::LogMsgDebug) << "[" << "Valid user: userId: " << userId << "] " << "Token: " <<new_token.c_str();
-		conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str());
+		Log(Log::LogMsgDebug) << "[" << "Valid user!!: userId: " << userId << "] " << "Token: " <<new_token.c_str();
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		getConnection().printfData("{ \"userId\": \"%s\",  \"email\": \"%s\",  \"token\": \"%s\", \"quotaAvailable\": \"%s\" }", userId.c_str(), email.c_str(), new_token.c_str(), quotaAvailable.c_str());
 	}
 }
-
-
 string TokenNode::CreateToken(const std::string& email){
 	stringstream ss;
 	ss << randomNumber(1000) << email << time(NULL) << randomNumber(9999) ;
@@ -69,8 +57,16 @@ string TokenNode::CreateToken(const std::string& email){
 	return out;
 }
 
-void TokenNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
+std::string TokenNode::defaultResponse(){
+	return "{ \"userId\": \"0\",  \"email\": \"\",  \"token\": \"\", \"quotaAvailable\": \"0\"}";
+}
+
+bool TokenNode::auth(int &status){
+	Log(Log::LogMsgDebug) << "Auth de Token";
+	std::string email = getConnection().getBodyJson("email");
+	std::string password = getConnection().getBodyJson("password");
+	Log(Log::LogMsgDebug) << "[" << "auth-TOKEN" << "] Email: " << email << ", Password: "  << password;
+	return true;
 }
 
 

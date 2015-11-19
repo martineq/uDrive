@@ -6,96 +6,100 @@
  */
 
 #include "receive_file_node.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-
+#include "info_node.h"
 using std::string;
 using std::stringstream;
 
-
-ReceiveFileNode::ReceiveFileNode() : Node("ReceiveFileNode") {
+ReceiveFileNode::ReceiveFileNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
 ReceiveFileNode::~ReceiveFileNode() {
 }
-vector<string> ReceiveFileNode::split(const string &s, char delim) {
-    stringstream ss(s);
-    string item;
-    vector<string> tokens;
-    while (getline(ss, item, delim)) {
-        tokens.push_back(item);
-    }
-    return tokens;
-}
 
-void ReceiveFileNode::executePost(MgConnectionW& conn, const char* url){
-	vector<string> lista=ReceiveFileNode::split(conn->uri,'/');
-	Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] "; 
+void ReceiveFileNode::executePost() {
+	vector<string> lista=ReceiveFileNode::split(getConnection().getUri(),'/');
+	Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] ";
+	int status=11;
 
-	if ( (!lista[3].compare("dir")) && (lista.size()==5)){
-		std::string userId=lista[2];
-		std::string dirId=lista[4];
-		Log(Log::LogMsgDebug) << "[" << "Authorization " << "] token: " << conn.getAuthorization() << " UserID: " << userId;
+	if ( (!lista[4].compare("dir")) && (lista.size()==6)){
+		std::string userId=lista[3];
+		std::string dirId=lista[5];
+		std::string file_id;
+		std::string p_file;
 
-	//	int status;
-		std::string token=conn.getAuthorization();
-	//	std::string var_name;
-	//	std::string file_name;
-	//	std::string arch;
+		Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "] userId: " << userId << " dirId: " << dirId;
+		std::string variable="";
+		std::string contenido="";
+		std::string extension="";
+		std::string size="";
 
-	//	time_t now = time(0);
-	//	char* dt = ctime(&now);
-	//	std::string fecha(dt);
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer [80];
+		time (&rawtime);
+		timeinfo = localtime (&rawtime);
+		strftime (buffer,80," %d/%m/%Y %X",timeinfo);
 
+		Log(Log::LogMsgDebug) << "[ReceiveFileNode]: fecha: "<<buffer;
+		std::string fecha(buffer);
 
+        p_file = getConnection().getMultipartData(variable, contenido);
+		while(p_file!= "") {
+            if (variable == "file") {
+                Log(Log::LogMsgDebug) << "[" << "ReceiveFileNode " << "]: Variable: "<<variable<< ", Nombre de archivo: " << contenido; //<< ", p_file_aux: " << p_file;
+                break;
+            };
+            p_file = getConnection().getMultipartData(variable, contenido);
+        }
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], multipart receive finished";
+        vector<string> partesArchivo=ReceiveFileNode::split(contenido,'.');
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Nombre Archivo: "<<partesArchivo[0] << ", Extension: "<<partesArchivo[1];
+        Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], Tamaño de Archivo:  "<<p_file.size();
 
-		//if(this->rd->new_file(userId, token, var_name, ".jpg",fecha, const char* p_file_stream, string size, string parent_dir_id, string& file_id, int& status){
+        stringstream tamanio;
+        tamanio << p_file.size();
 
-
-
-		if (token.compare("be16e465de64f0d2f2d83f3cfcd6370b")!=0){
-			Log(Log::LogMsgDebug) << "[" << "invalid token" << "]";
-			conn.sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
+        if ( (p_file.size() <= 0) or (!getRequestDispatcher()->new_file(userId,contenido, partesArchivo[1],fecha, p_file.c_str(), tamanio.str(),dirId,file_id,status)) ){
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
+			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+			string msg=handlerError(status);
+			getConnection().printfData(msg.c_str());
 		}else{
-			//Autorizado
-			Log(Log::LogMsgInfo) << "[" << "Receive file" << "], authorized";
-			
-			std::string var_name;
-			std::string file_name;
-			std::string arch;
-
-			while((arch = conn.getMultipartData(var_name, file_name)) != ""){
-				Log(Log::LogMsgDebug) << "[" << "Receive file" << "], Var_name: " << var_name << ", file_name: " << file_name << " Contenido: " << arch;
-				if(var_name == "arch") break;
-			}
-			Log(Log::LogMsgInfo) << "[" << "Receive file" << "], finished";
-
-			//Tomo tiempo de ultima modificacion
-			time_t now = time(0);
-			char* dt = ctime(&now);
-			conn.sendStatus(MgConnectionW::STATUS_CODE_OK);
-			conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			conn.printfData("[{ \"id\": \"%s\",  \"name\": \"%s\","
-														"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-														"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", dirId.c_str(), "Carpeta1", 0,"d",1,"",dt);
+			Log(Log::LogMsgInfo) << "[" << "ReceiveFileNode " << "], file accepted, parent folder printing";
+			MgConnectionW mg=getConnection();
+			InfoNode* in=new InfoNode(mg);
+            in->setRequestDispatcher(RequestDispatcher::get_instance());
+			std::string uri;
+			uri = "/info/users/"+ userId + "/dir/" + dirId;
+            mg.setMethod("GET");
+            mg.setUri(uri);
+			in->executeGet();
+            delete in;
 		}
 	}else{
-		Log(Log::LogMsgDebug) << "[" << "invalid url" << "]";
-		conn.sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
-		conn.sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-		conn.printfData("[{ \"id\": \"%d\",  \"name\": \"%s\","
-											"\"size\": \"%d\" ,  \"type\": \"%s\",  \"cantItems\": \"%d\", "
-											"\"shared\": \"%s\",  \"lastModDate\": \"%s\"}]", 0, "", 0,"",0,"","");
-
+		status=11;
+		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+		string msg=handlerError(status);
+		getConnection().printfData(msg.c_str());
 	}
 }
-void ReceiveFileNode::setRequestDispatcher(RequestDispatcher* rd){
-	this->rd=rd;
+std::string ReceiveFileNode::defaultResponse(){
+	return "[{ \"id\": \"0\",  \"name\": \"\","
+							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
+							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
 }
 
+vector<string> ReceiveFileNode::split(const string &s, char delim) {
+	stringstream ss(s);
+	string item;
+	vector<string> tokens;
+	while (getline(ss, item, delim)) {
+		tokens.push_back(item);
+	}
+	return tokens;
+}
+std::string ReceiveFileNode::getUserId() {
+	vector<string> lista=ReceiveFileNode::split(getUri(),'/');
+	return lista[3];
+}

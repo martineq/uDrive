@@ -1,26 +1,31 @@
 package com.fiuba.app.udrive.model;
 
-public class UserProfile extends UserData {
+import java.io.Serializable;
+
+public class UserProfile extends UserData implements Serializable {
     private String firstname;
     private String lastname;
-    private String photo = null; // TODO: check this.
-    private String lastLocation = null; // TODO: Mobile GPS usage
+    private String photo = null;
+    private double GPSLatitude;
+    private double GPSLongitude;
     private int userId = 0;
-    private String quotaAvailable = null;
+    private String quotaUsed = null;
     private String quotaTotal = null;
     private String quotaUsagePercent = null;
 
     public UserProfile(String _email, String _password, String _firstname, String _lastname,
-                       String _photo, String _lastLocation, int _userId, String _quotaTotal, String _quotaAvailable,
+                       String _photo, double _GPSLatitude, double _GPSLongitude,
+                       int _userId, String _quotaTotal, String _quotaAvailable,
                        String _quotaUsagePercent){
         super(_email.toLowerCase(), Util.encodePassword(_password));
         firstname = _firstname.toLowerCase();
         lastname = _lastname.toLowerCase();
         photo = _photo;
-        lastLocation = _lastLocation;
+        GPSLatitude = _GPSLatitude;
+        GPSLongitude = _GPSLongitude;
         userId = _userId;
         quotaTotal = _quotaTotal;
-        quotaAvailable = _quotaAvailable;
+        quotaUsed = _quotaAvailable;
         quotaUsagePercent = _quotaUsagePercent;
     }
 
@@ -48,12 +53,20 @@ public class UserProfile extends UserData {
         photo = _photo;
     }
 
-    public String getLastLocation(){
-        return lastLocation;
+    public double getGPSLatitude(){
+        return GPSLatitude;
     }
 
-    public void setLastLocation(String _lastLocation){
-        lastLocation = _lastLocation;
+    public double getGPSLongitude(){
+        return GPSLongitude;
+    }
+
+    public void setGPSLatitude(double GPSLatitude) {
+        this.GPSLatitude = GPSLatitude;
+    }
+
+    public void setGPSLongitude(double GPSLongitude) {
+        this.GPSLongitude = GPSLongitude;
     }
 
     public int getUserId(){
@@ -72,12 +85,12 @@ public class UserProfile extends UserData {
         quotaTotal = _quotaTotal;
     }
 
-    public String getQuotaAvailable(){
-        return quotaAvailable;
+    public String getQuotaUsed(){
+        return quotaUsed;
     }
 
-    public void setQuotaAvailable(String _quotaAvailable){
-        quotaAvailable = _quotaAvailable;
+    public void setQuotaUsed(String _quotaUsed){
+        quotaUsed = _quotaUsed;
     }
 
     public String getQuotaUsagePercent(){
