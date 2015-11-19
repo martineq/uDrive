@@ -31,7 +31,7 @@ void UpdateLocationNode::executePut() {
 	vector<string> lista = UpdateLocationNode::split(getUri(), '/');
 	int status = 11;
 
-	if (lista.size()==3) {
+	if (lista.size()==4) {
 		Log(Log::LogMsgDebug) << "[UpdateLocationNode]";
 		string userId = getUserId();
 
@@ -55,7 +55,7 @@ void UpdateLocationNode::executePut() {
 		} else {
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
-			Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 1 ]";
+			Log(Log::LogMsgDebug) << "[" << "UpdateLocationNode - resultCode: 1 ]";
 			getConnection().printfData("{\"resultCode\": \"1\"}");
 		}
 	}else {
