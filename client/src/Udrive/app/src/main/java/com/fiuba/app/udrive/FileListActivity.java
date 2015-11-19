@@ -463,6 +463,7 @@ public class FileListActivity extends AppCompatActivity implements
         shareIntent.putExtra(ShareActivity.EXTRA_USER_ACCOUNT, mUserAccount);
         shareIntent.putExtra(ShareActivity.EXTRA_FILE_ID, mFileId);
         shareIntent.putExtra(ShareActivity.EXTRA_FILE_OWNER_ID, mActualFile.getUserOwner());
+        shareIntent.putExtra(ShareActivity.EXTRA_DIR_ID, mDirId);
         startActivity(shareIntent);
         FileContextMenuManager.getInstance().hideContextMenu();
     }

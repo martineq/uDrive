@@ -1,6 +1,7 @@
 package com.fiuba.app.udrive;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class ShareActivity extends AppCompatActivity {
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
     public static final String EXTRA_FILE_ID = "fileId";
     public static final String EXTRA_FILE_OWNER_ID = "ownerFileId";
+    public static final String EXTRA_DIR_ID = "dirId";
     public static final int USER_CODE = 1;
 
     private ListView mUsersListView;
@@ -34,6 +36,7 @@ public class ShareActivity extends AppCompatActivity {
     private UserAccount mUserAccount;
     private Integer mFileId;
     private Integer mFileOwnerId;
+    private Integer mDirId;
     private FilesService mFileService;
     private CollaboratorsArrayAdapter mCollaboratorsAdapter;
 
@@ -44,6 +47,7 @@ public class ShareActivity extends AppCompatActivity {
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
         mFileId = (Integer) getIntent().getIntExtra(EXTRA_FILE_ID, -1);
         mFileOwnerId = (Integer) getIntent().getIntExtra(EXTRA_FILE_OWNER_ID, -1);
+        mDirId = (Integer) getIntent().getIntExtra(EXTRA_DIR_ID, -1);
         mUsersListView = (ListView) findViewById(R.id.usersListView);
         mUsersListView.setEmptyView(findViewById(R.id.emptyCollaboratorsTextView));
         mUsersListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -129,11 +133,12 @@ public class ShareActivity extends AppCompatActivity {
 
         // Action of add collaborators
         if (id == R.id.action_add_collaborators) {
-            mFileService.updateCollaborators(mUserAccount.getUserId(),mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
+            mFileService.updateCollaborators(mUserAccount.getUserId(), mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
                 @Override
                 public void onSuccess(List<Collaborator> collaborators, int status) {
                     mCollaboratorsAdapter.updateCollaborators(collaborators);
                     Log.d(TAG, "Number of collaborators received " + collaborators.size());
+                    backFileList();
                 }
 
                 @Override
@@ -148,6 +153,15 @@ public class ShareActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void backFileList(){
+        Intent nextIntent = new Intent(ShareActivity.this, FileListActivity.class);
+        nextIntent.putExtra(FileListActivity.EXTRA_USER_ACCOUNT, mUserAccount);
+        nextIntent.putExtra(FileListActivity.EXTRA_DIR_ID, mDirId);
+        startActivity(nextIntent);
+        finish();
     }
 
     @Override
