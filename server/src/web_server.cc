@@ -11,6 +11,7 @@
 #include "rest/search_tag_node.h"
 #include "rest/search_owner_node.h"
 #include "rest/list_owners_node.h"
+#include "rest/list_info_elem_node.h"
 
 WEBServer::WEBServer(){
 		server = mg_create_server(server, WEBServer::handlerCaller);
@@ -259,6 +260,12 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       return MG_TRUE;
   }else if ( (ev == MG_REQUEST && !strncmp(conn->uri, "/user/",6))  and (mgConnection.getParameter("q")!="") ){
       SearchUsersNode* sfn=new SearchUsersNode(mgConnection);
+      sfn->setRequestDispatcher(RequestDispatcher::get_instance());
+      sfn->execute();
+      delete sfn;
+      return MG_TRUE;
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/users/",16)) {
+      ListInfoElemNode* sfn=new ListInfoElemNode(mgConnection);
       sfn->setRequestDispatcher(RequestDispatcher::get_instance());
       sfn->execute();
       delete sfn;

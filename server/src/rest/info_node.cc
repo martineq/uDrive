@@ -53,11 +53,18 @@ void InfoNode::executeGet() {
 			std::ostringstream item;
 			string lastVersion="1";
   			item << "[";
+			RequestDispatcher::file_info_st file_info;
 			vector<RequestDispatcher::info_element_st>::iterator directory_it;
 			Log(Log::LogMsgDebug) << "[" << "InfoNode" << "], touring list: dirInfo: " << dirInfo_rd.name;
 			if (directory_element_info.size()!=0){
+				RequestDispatcher::file_info_st file_info;
 				for (directory_it = directory_element_info.begin(); directory_it < (directory_element_info.end()-1); directory_it++){
-					enc=true;
+						if ((*directory_it).type=="a") {
+							std::stringstream fileId;
+							fileId << ((*directory_it).id);
+							if (getRequestDispatcher()->get_file_info(userId,fileId.str(),file_info,status)) lastVersion=file_info.revision;
+						}
+						enc=true;
 						item
 						<< "{\"id\":\"" << (*directory_it).id << "\","
 						<< "\"name\":\"" << (*directory_it).name << "\","
@@ -78,6 +85,13 @@ void InfoNode::executeGet() {
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				getConnection().printfData(defaultResponse().c_str());
 			}else{
+
+				if ((*directory_it).type=="a") {
+					std::stringstream fileId;
+					fileId << ((*directory_it).id);
+					if (getRequestDispatcher()->get_file_info(userId,fileId.str(),file_info,status)) lastVersion=file_info.revision;
+				}
+
 				item
 				<< "{\"id\":\"" << (*directory_it).id << "\","
 				<< "\"name\":\"" << (*directory_it).name << "\","
