@@ -120,8 +120,8 @@ public class FileInfoActivity extends AppCompatActivity {
         panel.setBackgroundColor(0);
 
         // labels
-        ((TextView)findViewById(R.id.label_owner)).setText(mFileInfo.getOwner().getFirstname()+" "+
-                mFileInfo.getOwner().getLastname());
+        ((TextView)findViewById(R.id.label_owner)).setText(Util.capitalize(mFileInfo.getOwner().getFirstname())+" "+
+                Util.capitalize(mFileInfo.getOwner().getLastname()));
         // Convert size to KB or MB
         int size = mFileInfo.getFile().getSize();
         String totalSize = "";
@@ -136,7 +136,8 @@ public class FileInfoActivity extends AppCompatActivity {
         }
         ((TextView)findViewById(R.id.label_size)).setText(totalSize);
         ((TextView)findViewById(R.id.label_update)).setText(mFileInfo.getFile().getLastModDateFormated());
-        ((TextView)findViewById(R.id.label_by)).setText(mFileInfo.getUpdatedBy().getFirstname()+" "+mFileInfo.getUpdatedBy().getLastname());
+        ((TextView)findViewById(R.id.label_by)).setText(Util.capitalize(mFileInfo.getUpdatedBy().getFirstname())+" "+
+                Util.capitalize(mFileInfo.getUpdatedBy().getLastname()));
         String numItems = " -- ";
         if (mFileInfo.getFile().isDir()){
             numItems = mFileInfo.getFile().getCantItems().toString();
