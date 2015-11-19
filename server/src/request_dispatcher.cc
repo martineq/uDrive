@@ -1284,7 +1284,17 @@ bool RequestDispatcher::dh_file_info_to_rd_file_info(DataHandler::file_info_st f
   file_info.tags = file_info_temp.tags;
   file_info.user_last_mod = file_info_temp.user_last_mod;
   file_info.owner = file_info_temp.owner;
- 
+
+  vector<string> users_shared_id = split_string(file_info_temp.users_shared,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = users_shared_id.begin() ; it!=users_shared_id.end() ; ++it) {
+    string user_shared_id = (*it);
+    DataHandler::user_info_st dh_user_info;
+    RequestDispatcher::user_info_st rd_user_info;
+    if( !dh_.get_user_info(user_shared_id,dh_user_info,status) ){ return false; }
+    fill_user_info_st(user_shared_id,dh_user_info,rd_user_info);
+    file_info.shared_users.push_back(rd_user_info);
+  }
+
   // Check if parent_dir dir is root_dir
   DataHandler::dir_info_st parent_dir_info_temp;
   if( !dh_.get_directory_info(file_info_temp.parent_directory,parent_dir_info_temp,status) ){ return false; }

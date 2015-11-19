@@ -79,29 +79,32 @@ void ListInfoElemNode::executeGet() {
 							item << "[";
 
 							vector<RequestDispatcher::user_info_st> lista_user_info;
+							RequestDispatcher::file_info_st file_info;
 
-							if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
-								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: list users ";
-								if (lista_user_info.size()!=0){
-
-								for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
+							if (getRequestDispatcher()->get_file_info(userId,Id,file_info,status)) {
+								lista_user_info=file_info.shared_users;
+								Log(Log::LogMsgDebug) << "[ListOwnersNode]: list owners users " << lista_user_info.size();
+								if (lista_user_info.size() != 0) {
+									for (int i = 0; i < lista_user_info.size() - 1; ++i) {
+										item
+										<< "{\"id\":\"" << lista_user_info[i].id << "\","
+										<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
+										<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
+										<< "\"email\":\"" << lista_user_info[i].email << "\"},";
+										result = true;
+									}
 									item
-									<< "{\"id\":\"" << lista_user_info[i].id << "\","
-									<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
-									<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
-									<< "\"email\":\"" << lista_user_info[i].email << "\"},";
-
-								}
-								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: "<<lista_user_info.size();
-								item
-								<< "{\"id\":\"" << lista_user_info[lista_user_info.size()-1].id << "\","
-								<< "\"firstName\":\"" << lista_user_info[lista_user_info.size()-1].first_name << "\","
-								<< "\"lastName\":\"" << lista_user_info[lista_user_info.size()-1].last_name << "\","
-								<< "\"email\":\"" << lista_user_info[lista_user_info.size()-1].email << "\"}";
-
-								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: ";
+									<< "{\"id\":\"" << lista_user_info[lista_user_info.size() - 1].id << "\","
+									<< "\"firstName\":\"" << lista_user_info[lista_user_info.size() - 1].first_name << "\","
+									<< "\"lastName\":\"" << lista_user_info[lista_user_info.size() - 1].last_name << "\","
+									<< "\"email\":\"" << lista_user_info[lista_user_info.size() - 1].email << "\"}";
+									result = true;
+									Log(Log::LogMsgDebug) << "[ListOwnersNode] last node added ";
+								} else {
+									result = true;
 								}
 							}
+
 							item << "]";
 
 							vector<string> tags;

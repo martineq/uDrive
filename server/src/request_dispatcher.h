@@ -65,6 +65,7 @@ class RequestDispatcher{
       string size;
       string revision;
       string parent_directory;
+      vector<RequestDispatcher::user_info_st> shared_users;
     } ;
   
   

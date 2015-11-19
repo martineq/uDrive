@@ -30,7 +30,7 @@ vector<string> UpdateCollaboratorsNode::split(const string &s, char delim) {
 void UpdateCollaboratorsNode::executePost() {
 	vector<string> lista = UpdateCollaboratorsNode::split(getUri(), '/');
 	string fileId = "";
-	int status = 11;
+	int status = 0;
 
 	Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode] " <<lista[4];
 	Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode] " <<lista[6];
@@ -43,8 +43,6 @@ void UpdateCollaboratorsNode::executePost() {
 
 		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode], UserId: " << userId << ", fileId: " << fileId;
 		const Json::Value root = getConnection().getBodyJson();
-
-		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode], root: " << root.toStyledString();
 
 		time_t rawtime;
 		struct tm *timeinfo;
