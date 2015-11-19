@@ -20,7 +20,7 @@ class UpdateCollaboratorsNode : public Node {
 public:
 	UpdateCollaboratorsNode(MgConnectionW& conn);
 	~UpdateCollaboratorsNode();
-	void executePut();
+	void executePost();
 protected:
 	std::string defaultResponse();
 	std::string getUserId();

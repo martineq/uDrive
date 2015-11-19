@@ -27,12 +27,15 @@ vector<string> UpdateCollaboratorsNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void UpdateCollaboratorsNode::executePut() {
+void UpdateCollaboratorsNode::executePost() {
 	vector<string> lista = UpdateCollaboratorsNode::split(getUri(), '/');
 	string fileId = "";
 	int status = 11;
 
-	if ((!lista[4].compare("file"))) {
+	Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode] " <<lista[4];
+	Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode] " <<lista[6];
+
+	if ( (lista[4]=="files") and (lista[6]=="collaborators") ) {
 		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]";
 		string userId = getUserId();
 		fileId = lista[5];
@@ -40,6 +43,8 @@ void UpdateCollaboratorsNode::executePut() {
 
 		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode], UserId: " << userId << ", fileId: " << fileId;
 		const Json::Value root = getConnection().getBodyJson();
+
+		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode], root: " << root.toStyledString();
 
 		time_t rawtime;
 		struct tm *timeinfo;
@@ -56,12 +61,17 @@ void UpdateCollaboratorsNode::executePut() {
 		RequestDispatcher::user_info_st user_share_info;
 		vector<std::string> listaUserShared;
 
-		for (int i = 0; i < root.size() - 1; ++i) {
-			listaUserShared[i] = root[i]["id"].asString();
+		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: json size: " <<root.size();
+
+		for (int i = 0; i < root.size(); ++i) {
+			Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: Id nodo: " <<root[i]["id"].asString();
+			listaUserShared.push_back(root[i]["id"].asString());
 		};
 
+		Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: lista users size: " << listaUserShared.size();
+
 		if (getRequestDispatcher()->overwrite_file_sharing_by_list(userId, fileId, listaUserShared, fecha, status)) {
-			Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: userId_shared";
+			Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode]: Cant Collaborators: "<<listaUserShared.size();
 			if (listaUserShared.size() > 0) {
 				for (int i = 0; i < listaUserShared.size() - 1; ++i) {
 					if (getRequestDispatcher()->get_user_info(listaUserShared[i], user_share_info, status)) {
@@ -73,15 +83,15 @@ void UpdateCollaboratorsNode::executePut() {
 						result = true;
 					}
 				}
-				if (getRequestDispatcher()->get_user_info(listaUserShared[listaUserShared.size()], user_share_info,status)) {
+				if (getRequestDispatcher()->get_user_info(listaUserShared[listaUserShared.size()-1], user_share_info,status)) {
 					item
-					<< "{\"id\":\"" << listaUserShared[listaUserShared.size()] << "\","
+					<< "{\"id\":\"" << listaUserShared[listaUserShared.size()-1] << "\","
 					<< "\"firstName\":\"" << user_share_info.first_name << "\","
 					<< "\"lastName\":\"" << user_share_info.last_name << "\","
 					<< "\"email\":\"" << user_share_info.email << "\"}";
 					result = true;
 				}
-			}
+			} else result = true;
 		}
 		item << "]";
 
@@ -96,8 +106,8 @@ void UpdateCollaboratorsNode::executePut() {
 
 			const std::string tmp = item.str();
 			const char *msg = tmp.c_str();
-			Log(Log::LogMsgDebug) << tmp.c_str();
-			getConnection().printfData(tmp.c_str());
+			Log(Log::LogMsgDebug) << "[UpdateCollaboratorsNode] msg: " <<msg;
+			getConnection().printfData(msg);
 		}
 	}else {
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);

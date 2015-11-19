@@ -5,4 +5,13 @@
     <ListView android:id="@+id/fileListView" android:layout_width="match_parent" android:layout_height="match_parent"
         android:layout_weight="1" android:drawSelectorOnTop="false" />
 
+    <TextView
+        android:id="@+id/emptyFileListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/fileList_is_empty"
+        android:visibility="gone"></TextView>
+
 </LinearLayout>

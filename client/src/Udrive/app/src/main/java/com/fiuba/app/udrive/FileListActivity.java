@@ -111,6 +111,7 @@ public class FileListActivity extends AppCompatActivity implements
         ListView list = (ListView)findViewById(R.id.fileListView);
         list.setAdapter(mFilesAdapter);
         list.setOnItemClickListener(this);
+        list.setEmptyView(findViewById(R.id.emptyFileListView));
         mFilesService = new FilesService(mUserAccount.getToken(), FileListActivity.this);
         mUserService = new UserService(mUserAccount.getToken(), FileListActivity.this);
         mFileMetadataService = new FileMetadataService(mUserAccount.getToken(), FileListActivity.this);
@@ -456,10 +457,12 @@ public class FileListActivity extends AppCompatActivity implements
     @Override
     public void onShareClick(int FileItem) {
         Log.i(TAG, "Share File position " + FileItem);
-        Integer idFile = mFiles.get(FileItem).getId();
+        mActualFile = mFiles.get(FileItem);
+        mFileId = mActualFile.getId();
         Intent shareIntent = new Intent(FileListActivity.this, ShareActivity.class);
         shareIntent.putExtra(ShareActivity.EXTRA_USER_ACCOUNT, mUserAccount);
-        shareIntent.putExtra(ShareActivity.EXTRA_FILE_ID, idFile);
+        shareIntent.putExtra(ShareActivity.EXTRA_FILE_ID, mFileId);
+        shareIntent.putExtra(ShareActivity.EXTRA_FILE_OWNER_ID, mActualFile.getUserOwner());
         startActivity(shareIntent);
         FileContextMenuManager.getInstance().hideContextMenu();
     }

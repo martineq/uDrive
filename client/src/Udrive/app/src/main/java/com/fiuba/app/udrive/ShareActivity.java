@@ -26,12 +26,14 @@ public class ShareActivity extends AppCompatActivity {
     private static final String TAG = "ShareActivity";
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
     public static final String EXTRA_FILE_ID = "fileId";
+    public static final String EXTRA_FILE_OWNER_ID = "ownerFileId";
     public static final int USER_CODE = 1;
 
     private ListView mUsersListView;
     private List<Collaborator> mCollaborators = new ArrayList<>();
     private UserAccount mUserAccount;
     private Integer mFileId;
+    private Integer mFileOwnerId;
     private FilesService mFileService;
     private CollaboratorsArrayAdapter mCollaboratorsAdapter;
 
@@ -41,13 +43,20 @@ public class ShareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users_list);
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
         mFileId = (Integer) getIntent().getIntExtra(EXTRA_FILE_ID, -1);
+        mFileOwnerId = (Integer) getIntent().getIntExtra(EXTRA_FILE_OWNER_ID, -1);
         mUsersListView = (ListView) findViewById(R.id.usersListView);
         mUsersListView.setEmptyView(findViewById(R.id.emptyCollaboratorsTextView));
         mUsersListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mUsersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCollaboratorsAdapter.toggleChecked(position);
+                if (mCollaboratorsAdapter.isChecked(position) && mFileOwnerId.equals(mUserAccount.getUserId())){
+                    mCollaboratorsAdapter.toggleChecked(position);
+                }
+                else {
+                    String message = getString(R.string.message_validation_no_canShare);
+                    Toast.makeText(ShareActivity.this,message, Toast.LENGTH_LONG).show();
+                }
             }
         });
         mCollaboratorsAdapter = new CollaboratorsArrayAdapter(this);
@@ -69,7 +78,7 @@ public class ShareActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
 
-       mFileService.getAllCollaborators(mUserAccount.getUserId(),mFileId, new ServiceCallback<List<Collaborator>>() {
+       mFileService.getAllCollaborators(mUserAccount.getUserId(), mFileId, new ServiceCallback<List<Collaborator>>() {
            @Override
            public void onSuccess(List<Collaborator> collaborators, int status) {
                setCollaborators(collaborators);
@@ -107,19 +116,10 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void addCollaborator(Collaborator collaborator){
-        if(!existCollaborator(collaborator)){
+        if(!mCollaborators.contains(collaborator)){
             this.mCollaborators.add(collaborator);
         }
         mCollaboratorsAdapter.updateCollaborators(mCollaborators);
-    }
-
-    private boolean existCollaborator(Collaborator selectedUser){
-        for (Collaborator collaborator : mCollaborators) {
-            if (collaborator.getId().equals(selectedUser.getId()))
-                return true;
-        }
-
-        return false;
     }
 
     @Override

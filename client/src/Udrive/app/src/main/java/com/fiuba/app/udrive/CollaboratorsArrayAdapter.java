@@ -89,7 +89,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private boolean isChecked(int position) {
+    public boolean isChecked(int position) {
         Boolean aBoolean = mCheckedPositions.get(position);
         return aBoolean != null && aBoolean == true;
     }

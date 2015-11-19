@@ -151,5 +151,7 @@
     <string name="prev_download">Download</string>
     <string name="versionNumber">Version</string>
     <string name="message_validation_lessQuota">Your quota is insufficient</string>
+    <string name="fileList_is_empty">No files uploaded</string>
+    <string name="message_validation_no_canShare">Not authorized</string>
 
 </resources>
