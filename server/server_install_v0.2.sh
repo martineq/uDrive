@@ -33,6 +33,7 @@ python \
 git \
 cmake \
 wget \
+zip \
 unzip \
 valgrind \
 tree \
