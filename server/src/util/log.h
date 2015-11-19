@@ -6,9 +6,6 @@
 #include <iomanip>
 #include <sstream>
 
-/** Clase para logear.
- * Por defecto el nivel de log es LogMsgError y la salida de log es std::cout
- */
 class Log {
 	public:
 		typedef enum {
@@ -18,8 +15,6 @@ class Log {
 			LogMsgError
 		} LogMsgType;
 
-		/** Clase utilizada para imprimir a un vector como si fuera una string
-		 */
 		class VectorStr {
 			public:
 				VectorStr(const std::vector<char> &vec) : v(vec){}
@@ -32,13 +27,9 @@ class Log {
 				const std::vector<char> &v;
 		};
 
-		/** Clase de logging
-		 */
 		Log(LogMsgType type = LogMsgDebug);
 		~Log();
 
-		/** Escribe un VectorStr al log
-		 */
 		Log &operator<<(const VectorStr &v){
 			if(Log::logLevel <= this->level)
 				for(auto it = v.begin(); it != v.end(); it++)
@@ -46,8 +37,6 @@ class Log {
 			return *this;
 		}
 
-		/** Escribe un vector<char> al log imprimiendo en hexa
-		 */
 		Log &operator<<(const std::vector<char> &v){
 			if(Log::logLevel <= this->level)
 				for(auto it = v.begin(); it != v.end(); it++)
@@ -55,8 +44,6 @@ class Log {
 			return *this;
 		}
 
-		/** Escribe un vector<unsigned char> al log imprimiendo en hexa
-		 */
 		Log &operator<<(const std::vector<unsigned char> &v){
 			if(Log::logLevel <= this->level)
 				for(auto it = v.begin(); it != v.end(); it++)
@@ -64,8 +51,6 @@ class Log {
 			return *this;
 		}
 
-		/** Imprime cualquiercosa al log, utilizando el operador << del ostringstream
-		 */
 		template<typename T>
 			Log &operator<<(const T &t){
 				if(Log::logLevel <= this->level)
@@ -73,9 +58,6 @@ class Log {
 				return *this;
 			}
 
-		/** Setea el nivel de log
-		 * @param nivel de log
-		 */
 		static void setLogLevel(LogMsgType);
 
 		/**
@@ -86,11 +68,6 @@ class Log {
 		 */
 		static void setLogLevel(const std::string&);
 
-		/** Setea el output
-		 * El usuario debe ser el encargado de liberar el ostream proporcionado.
-		 * La libreria solo usa una referencia, si el usuario elimina el objeto y usa Log dsp, explota todo :(
-		 * @param referencia a un ostream donde se escribira.
-		 */
 		static void setOutput(std::ostream&);
 
 	protected:
