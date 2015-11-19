@@ -59,6 +59,7 @@
 #define LABEL_TRUE "true"
 #define LABEL_FALSE "false"
 #define LABEL_USER_IMAGE "user_image"
+#define LABEL_SHARED_FILES "shared_files"
 
 // Search modes
 #define SEARCH_MODE_OFF 0

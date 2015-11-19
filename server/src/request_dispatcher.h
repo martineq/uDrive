@@ -133,7 +133,7 @@ class RequestDispatcher{
     
     /**
     * @brief Adds a new user on the DB. (Used in sign up)
-    *        Creates a "root" directory and user ID. Root directory is always id=0. Returns true on success.
+    *        Creates a "root" directory and a shared_files directory, and user ID. Root directory is always id=0. Returns true on success.
     *        On error returns false and a DataHandler status (see db_constants.h)
     * 
     * @param email 
