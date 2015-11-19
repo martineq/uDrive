@@ -339,7 +339,7 @@ public class FileListActivity extends AppCompatActivity implements
     private void uploadSelectedFile(Intent data) {
         Uri uri = data.getData();
         //Toast.makeText(this, uri.getPath(), Toast.LENGTH_LONG).show();
-        mFilesService.upload(mUserAccount.getUserId(), mUserAccount.getQuotaAvailable(),mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
+        mFilesService.upload(mUserAccount.getUserId(), mUserAccount.getQuotaAvailable(), mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
                 mFilesAdapter.updateFiles(files);
@@ -836,6 +836,7 @@ public class FileListActivity extends AppCompatActivity implements
                                                 startActivity(emptySearch);
                                             }
                                         }
+
                                         @Override
                                         public void onFailure(String message, int status) {
                                             progressDialog.dismiss();
@@ -859,6 +860,7 @@ public class FileListActivity extends AppCompatActivity implements
                                             startActivity(emptySearch);
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(String message, int status) {
                                         // do nothing
@@ -885,6 +887,7 @@ public class FileListActivity extends AppCompatActivity implements
                                             startActivity(emptySearch);
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(String message, int status) {
                                         // do nothing
@@ -894,8 +897,12 @@ public class FileListActivity extends AppCompatActivity implements
                             } else
                                 Toast.makeText(FileListActivity.this, "You must enter a valid extension", Toast.LENGTH_LONG).show();
                         } else { // Tab 3 was active. Search by owner.
-                            int ownerId = ((Collaborator)spinner_tab4.getSelectedItem()).getId();
-                            System.out.println("Owner selected >>>>> "+ownerId);
+                            if (spinner_tab4.getSelectedItem() == null) {
+                                progressDialog.dismiss();
+                                return;
+                            }
+                            int ownerId = ((Collaborator) spinner_tab4.getSelectedItem()).getId();
+                            System.out.println("Owner selected >>>>> " + ownerId);
                             mFilesService.getFilesByOwner(mUserAccount.getUserId(), ownerId, new ServiceCallback<List<File>>() {
                                 @Override
                                 public void onSuccess(List<File> files, int status) {
@@ -911,6 +918,7 @@ public class FileListActivity extends AppCompatActivity implements
                                         startActivity(emptySearch);
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(String message, int status) {
                                     // Do nothing
