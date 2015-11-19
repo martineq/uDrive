@@ -148,6 +148,8 @@
     <string name="prev_download">Descargar</string>
     <string name="versionNumber">Versión</string>
     <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
+    <string name="fileList_is_empty">Sin archivos cargados</string>
+    <string name="message_validation_no_canShare">No posee permisos para descompartir</string>
 
 </resources>
 
