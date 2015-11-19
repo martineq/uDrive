@@ -216,7 +216,7 @@ bool RequestDispatcher::get_file_info(string user_id, string file_id, RequestDis
   }
 
   // Assign file_info value
-  dh_file_info_to_rd_file_info(file_info_temp,file_info);
+  if( !dh_file_info_to_rd_file_info(file_info_temp,file_info,status) ){ return false; }
 
   return true;
 }
@@ -956,7 +956,7 @@ bool RequestDispatcher::get_directory_element_info_from_dir_info(DataHandler::di
 
 
 bool RequestDispatcher::delete_dir_recursive(string dir_id, int& status){
-  
+
   // Get directory info
   DataHandler::dir_info_st dir_info;
   if( !dh_.get_directory_info(dir_id,dir_info,status) ){ return false; }
@@ -1273,7 +1273,7 @@ void RequestDispatcher::fill_user_info_st(string user_id, DataHandler::user_info
 }
 
 
-void RequestDispatcher::dh_file_info_to_rd_file_info(DataHandler::file_info_st file_info_temp, RequestDispatcher::file_info_st& file_info){
+bool RequestDispatcher::dh_file_info_to_rd_file_info(DataHandler::file_info_st file_info_temp, RequestDispatcher::file_info_st& file_info,int &status){
   file_info.date_last_mod = file_info_temp.date_last_mod;
   file_info.extension = file_info_temp.extension;
   file_info.name = file_info_temp.name;
@@ -1281,6 +1281,12 @@ void RequestDispatcher::dh_file_info_to_rd_file_info(DataHandler::file_info_st f
   file_info.size = file_info_temp.size;
   file_info.tags = file_info_temp.tags;
   file_info.user_last_mod = file_info_temp.user_last_mod;
-  file_info.parent_directory = file_info_temp.parent_directory;
-  return void();
+  file_info.owner = file_info_temp.owner;
+ 
+  // Check if parent_dir dir is root_dir
+  DataHandler::dir_info_st parent_dir_info_temp;
+  if( !dh_.get_directory_info(file_info_temp.parent_directory,parent_dir_info_temp,status) ){ return false; }
+  if( parent_dir_info_temp.parent_directory == LABEL_NO_PARENT_DIR ){ file_info.parent_directory = LABEL_ZERO; }   
+
+  return true;
 }
