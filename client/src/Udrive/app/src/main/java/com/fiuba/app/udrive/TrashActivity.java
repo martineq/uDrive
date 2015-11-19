@@ -57,6 +57,7 @@ public class TrashActivity extends AppCompatActivity {
     }
 
     private void loadTrashedFiles() {
+       Log.d(TAG,"Loading trashed files");
        final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
 
@@ -112,6 +113,7 @@ public class TrashActivity extends AppCompatActivity {
     }
 
     private void restoreSelectedFiles() {
+        Log.i(TAG,"Restore selected files");
         showAlertDialog(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -137,6 +139,7 @@ public class TrashActivity extends AppCompatActivity {
     }
 
     private void deleteSelectedFiles() {
+        Log.i(TAG,"Delete selected trashed files");
         showAlertDialog(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -167,6 +170,7 @@ public class TrashActivity extends AppCompatActivity {
     }
 
     private void restoreAll() {
+        Log.i(TAG,"Restore all trashed files");
         showAlertDialog(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -190,6 +194,7 @@ public class TrashActivity extends AppCompatActivity {
     }
 
     private void emptyTrash() {
+        Log.i(TAG,"Delete all trashed files");
         showAlertDialog(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

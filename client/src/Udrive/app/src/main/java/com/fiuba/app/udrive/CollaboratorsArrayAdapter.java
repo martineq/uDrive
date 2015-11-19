@@ -75,6 +75,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
         }
 
         mColaborator = mCollaborators.get(position);
+
         viewHolder.txEmail.setText(mColaborator.getEmail());
 
         if (isChecked(position)) {

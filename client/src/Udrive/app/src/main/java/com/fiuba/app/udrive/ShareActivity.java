@@ -80,6 +80,7 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void loadCollaborators() {
+        Log.d(TAG, "Loading collaborators ");
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
 
@@ -122,6 +123,7 @@ public class ShareActivity extends AppCompatActivity {
 
     private void addCollaborator(Collaborator collaborator){
         if(!mCollaborators.contains(collaborator)){
+            Log.i(TAG, "Add collaborator:  "+collaborator.getEmail());
             this.mCollaborators.add(collaborator);
         }
         mCollaboratorsAdapter.updateCollaborators(mCollaborators);
@@ -133,6 +135,8 @@ public class ShareActivity extends AppCompatActivity {
 
         // Action of add collaborators
         if (id == R.id.action_add_collaborators) {
+            Log.i(TAG, "Update collaborators ");
+            Log.d(TAG, "Update collaborators fileId: " +mFileId);
             mFileService.updateCollaborators(mUserAccount.getUserId(), mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
                 @Override
                 public void onSuccess(List<Collaborator> collaborators, int status) {
