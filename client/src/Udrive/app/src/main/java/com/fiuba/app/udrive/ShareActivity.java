@@ -107,10 +107,19 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void addCollaborator(Collaborator collaborator){
-        if(this.mCollaborators.contains(collaborator)){
+        if(!existCollaborator(collaborator)){
             this.mCollaborators.add(collaborator);
         }
         mCollaboratorsAdapter.updateCollaborators(mCollaborators);
+    }
+
+    private boolean existCollaborator(Collaborator selectedUser){
+        for (Collaborator collaborator : mCollaborators) {
+            if (collaborator.getId().equals(selectedUser.getId()))
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -119,7 +128,7 @@ public class ShareActivity extends AppCompatActivity {
 
         // Action of add collaborators
         if (id == R.id.action_add_collaborators) {
-            mFileService.updateCollaborators(mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
+            mFileService.updateCollaborators(mUserAccount.getUserId(),mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
                 @Override
                 public void onSuccess(List<Collaborator> collaborators, int status) {
                     mCollaboratorsAdapter.updateCollaborators(collaborators);

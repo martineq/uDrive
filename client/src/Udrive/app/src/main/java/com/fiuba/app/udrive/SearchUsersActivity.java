@@ -58,6 +58,7 @@ public class SearchUsersActivity extends AppCompatActivity implements SearchView
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_SELECTED_USER, mUsers.get(position));
                 setResult(RESULT_OK, intent);
+                finish();
             }
         });
         mSearchUsersAdapter = new SearchUsersAdapter(this);

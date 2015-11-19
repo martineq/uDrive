@@ -75,8 +75,8 @@ public class FilesService extends AbstractService {
         @GET("/fileInfo/files/{fileId}/collaborators")
         void getAllCollaborators(@Path("fileId") int fileId, Callback<List<Collaborator>> callback);
 
-        @POST("/fileInfo/files/{fileId}/collaborators")
-        void updateCollaborators(@Path("fileId") int fileId, @Body List<Collaborator> usersList,
+        @POST("/fileInfo/user/{userId}/files/{fileId}/collaborators")
+        void updateCollaborators(@Path("userId") int userId,@Path("fileId") int fileId, @Body List<Collaborator> usersList,
                                  Callback<List<Collaborator>> callback);
 
         /*** Searching requests ***/
@@ -401,9 +401,9 @@ public class FilesService extends AbstractService {
 
     }
 
-    public void updateCollaborators(int fileId, List<Collaborator> collaborators,final ServiceCallback<List<Collaborator>> serviceCallback) {
+    public void updateCollaborators(int userId,int fileId, List<Collaborator> collaborators,final ServiceCallback<List<Collaborator>> serviceCallback) {
 
-        mFilesServiceApi.updateCollaborators(fileId, collaborators, new Callback<List<Collaborator>>() {
+        mFilesServiceApi.updateCollaborators(userId,fileId, collaborators, new Callback<List<Collaborator>>() {
             @Override
             public void success(List<Collaborator> collaborators, Response response) {
                 serviceCallback.onSuccess(collaborators, response.getStatus());
