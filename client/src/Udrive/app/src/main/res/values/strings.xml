@@ -42,6 +42,10 @@
     <string name="error_lastname">You must enter your lastname</string>
     <string name="error_password">You must enter your password</string>
     <string name="signup_ok">User account successfully created!</string>
+    <string name="error_email_format">You must enter a valid e-mail address</string>
+    <string name="password_again">Re-type password</string>
+    <string name="error_match_pass">Passwords do not match</string>
+    <string name="error_password_again">You must re-type your password</string>
 
     <!-- String related to Add file-->
     <string name="action_upload_file">Upload file</string>
@@ -146,5 +150,6 @@
     <string name="version">Select a version</string>
     <string name="prev_download">Download</string>
     <string name="versionNumber">Version</string>
+    <string name="message_validation_lessQuota">Your quota is insufficient</string>
 
 </resources>

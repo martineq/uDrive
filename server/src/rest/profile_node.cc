@@ -41,7 +41,7 @@ void ProfileNode::executeGet() {
             << "\",\"email\":\""	<< user_info.email;
 
             if (user_image.size()!=0)  item << "\",\"photo\":\"" << user_image.c_str();
-            else item << "\",\"photo\":\"\"";
+            else item << "\",\"photo\":\"";
 
             item << "\",\"GPSLatitude\":\"" << user_info.gps_lat
             << "\",\"GPSLongitude\":\"" << user_info.gps_lon

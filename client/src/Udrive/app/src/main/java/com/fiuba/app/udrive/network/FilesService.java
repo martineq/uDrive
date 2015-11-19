@@ -1,6 +1,8 @@
 package com.fiuba.app.udrive.network;
 import android.content.Context;
+import android.widget.Toast;
 
+import com.fiuba.app.udrive.R;
 import com.fiuba.app.udrive.model.Collaborator;
 import com.fiuba.app.udrive.model.File;
 import com.fiuba.app.udrive.model.FolderData;
@@ -87,11 +89,11 @@ public class FilesService extends AbstractService {
         @GET("/info/users/{userId}/file")
         void getFilesByExtension(@Path("userId") int userId, @Query("extension") String extension, Callback<List<File>> files);
 
-        // Gets the results for the searching by file(dir) name
+        // Gets the results for the searching by tag
         @GET("/info/users/{userId}/tags")
         void getFilesByTag(@Path("userId") int userId, @Query("tagname") String tag, Callback<List<File>> files);
 
-        // Gets the results for the searching by file(dir) name
+        // Gets the results for the searching by owner
         @GET("/info/users/{userId}/owners/{ownerId}")
         void getFilesByOwner(@Path("userId") int userId, @Path("ownerId") int ownerId, Callback<List<File>> files);
 
@@ -116,9 +118,11 @@ public class FilesService extends AbstractService {
 
     private FilesServiceApi mFilesServiceApi;
     private String mToken;
+    private Context mcontext;
 
     public FilesService(final String token, Context context) {
         super(context);
+        mcontext = context;
         this.mToken = token;
         this.mFilesServiceApi = createService(FilesServiceApi.class, token);
     }
@@ -142,14 +146,16 @@ public class FilesService extends AbstractService {
         });
     }
 
-    public void upload(int userId, int dirId,String filePath, final ServiceCallback<List<File>> serviceCallback) {
-        try{
-            java.io.File file = new java.io.File(filePath);
-            TypedFile typedFile = new TypedFile("multipart/form-data", file);
-            String  name = file.getName();
-            long fileSizeInBytes= file.length();
-            String ext = Utils.getExtension(name);
+    public void upload(int userId, String quotaAvailable, int dirId,String filePath, final ServiceCallback<List<File>> serviceCallback) {
 
+        java.io.File file = new java.io.File(filePath);
+        TypedFile typedFile = new TypedFile("multipart/form-data", file);
+        String  name = file.getName();
+        long fileSizeInBytes= file.length();
+        Long quota = new Long(quotaAvailable);
+        Long fileSize = new Long(fileSizeInBytes);
+        String ext = Utils.getExtension(name);
+        if (!(fileSize.compareTo(quota) == 1)) {
             mFilesServiceApi.upload(userId, dirId, typedFile, name, ext, fileSizeInBytes, new Callback<List<File>>() {
                 @Override
                 public void success(List<File> files, Response response) {
@@ -166,9 +172,13 @@ public class FilesService extends AbstractService {
                     serviceCallback.onFailure(error.getMessage(), status);
                 }
             });
-        }catch (Exception e){
-            serviceCallback.onFailure("No se pudo cargar el archivo",1);
+        }else{
+
+            String message = mcontext.getString(R.string.message_validation_lessQuota);
+            Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
         }
+
+
 
     }
 

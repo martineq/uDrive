@@ -52,16 +52,16 @@ void ListTagsUserNode::executeGet() {
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 
-				for (int index = 0; index < listTags.size()-1; ++index) {
-					Log(Log::LogMsgDebug) << "[ListTagsUserNode], TAG: " << listTags[index];
-					tags = tags + listTags[index] + ";";
+				if (listTags.size()!=0){
+						for (int index = 0; index < listTags.size() - 1; ++index) {
+							Log(Log::LogMsgDebug) << "[ListTagsUserNode], TAG: " << listTags[index];
+							tags = tags + listTags[index] + ";";
+						}
+						tags = tags + listTags[listTags.size() - 1];
+					}
 				}
-				tags = tags + listTags[listTags.size()-1];
-
 				std::string msg="{\"tags\":\"" + tags + "\"}";
 				getConnection().printfData(msg.c_str());
-			}
-
 	}else{
 		getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
 		getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);

@@ -23,6 +23,7 @@
     <string name="error_auth">Error de autenticación</string>
     <string name="error_port_number">Error: El puerto debe ser mayor a 1024 y menor a 49151</string>
     <string name="error_empty">Ingrese correo electrónico y contraseña</string>
+    <string name="error_password_again">Debe re-ingresar la contraseña</string>
 
     <!-- Strings related to Settings -->
     <string name="settings_title">Configuración</string>
@@ -41,6 +42,9 @@
     <string name="error_firstname">Debe ingresar el nombre</string>
     <string name="error_lastname">Debe ingresar el apellido</string>
     <string name="error_password">Debe ingresar una contraseña</string>
+    <string name="error_email_format">Debe ingresar un correo electrónico válido</string>
+    <string name="password_again">Re-ingrese password</string>
+    <string name="error_match_pass">Las contraseñas ingresadas no coinciden</string>
 
     <!-- String related to Add file-->
     <string name="action_upload_file">Subir archivo</string>
@@ -143,6 +147,7 @@
     <string name="version">Seleccione una versión</string>
     <string name="prev_download">Descargar</string>
     <string name="versionNumber">Versión</string>
+    <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
 
 </resources>
 

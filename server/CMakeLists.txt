@@ -40,7 +40,7 @@ set(SRC_PACK_NODOS ${RUTA_SRC}/rest/node.cc ${RUTA_SRC}/rest/token_node.cc ${RUT
         ${RUTA_SRC}/rest/update_collaborators_node ${RUTA_SRC}/rest/list_collaborators_node ${RUTA_SRC}/rest/search_users_node.cc
         ${RUTA_SRC}/rest/search_filename_node.cc ${RUTA_SRC}/rest/search_extension_node.cc ${RUTA_SRC}/rest/search_owner_node.cc
         ${RUTA_SRC}/rest/search_tag_node.cc ${RUTA_SRC}/rest/list_owners_node.cc ${RUTA_SRC}/rest/list_revisions_node.cc
-        ${RUTA_SRC}/rest/list_info_elem_node.cc)
+        ${RUTA_SRC}/rest/list_info_elem_node.cc ${RUTA_SRC}/rest/update_location_node.cc)
 set(SRC_PACK_YAML ${RUTA_SRC}/util/config_parser.cc)
 set(SRC_PACK_FILE ${RUTA_SRC}/file_handler.cc ${RUTA_SRC}/zip_handler.cc)
 # ***** EN ESTE SECTOR SE AGREGAN TODOS LOS NUEVOS ARCHIVOS FUENTE DEL SERVIDOR *****
