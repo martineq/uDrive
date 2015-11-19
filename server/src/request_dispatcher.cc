@@ -644,6 +644,7 @@ bool RequestDispatcher::purge_deleted_files(string user_id, int& status){
   if( !purge_deleted_files_from_user_info(owner_info,status) ){ return false; }
 
   // Delete all owner_info.files_deleted
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
   if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
     owner_info.shared_files,owner_info.user_quota_used,LABEL_EMPTY_STRING,status) ){ return false; }
 
@@ -667,6 +668,7 @@ bool RequestDispatcher::purge_deleted_files(string user_id, vector<string> selec
   if( !purge_deleted_files_from_user_info(owner_info,status) ){ return false; }
 
   // Delete all owner_info.files_deleted
+  if( !dh_.get_user_info(user_id,owner_info,status) ){ return false; }
   if( !dh_.modify_user_info(user_id,owner_info.email,owner_info.name,owner_info.location,
     owner_info.shared_files,owner_info.user_quota_used,files_untouched,status) ){ return false; }
   
@@ -808,7 +810,7 @@ bool RequestDispatcher::decrease_user_quota_used(string user_id, string quota_de
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
   
   size_t new_quota = stoul_decimal(user_info.user_quota_used) - stoul_decimal(quota_decreased);
-  
+  std::cout <<"new quota: "<< new_quota<< " "<< stoul_decimal(user_info.user_quota_used)<< " - "<< stoul_decimal(quota_decreased)  << std::endl;
   return( dh_.modify_user_info(user_id,user_info.email,user_info.name,user_info.location,
                                user_info.shared_files,to_string(new_quota),user_info.files_deleted,status) );
 }
