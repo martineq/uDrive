@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private UserService mUserService = null;
     private UserAccount mUserAccount = null;
     private static final int SELECT_PHOTO = 100;
+    private static final String TAG = "UserProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +101,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 else
                     total = Math.round(Double.parseDouble(mUserProfile.getQuotaTotal())/Math.pow(2,10))+" KB";
                 ((TextView) findViewById(R.id.textProgressBar)).setText(Html.fromHtml(getString(R.string.quota_usage)));
-                ((TextView) findViewById(R.id.textProgressBar)).append(": "+used+" ("+mUserProfile.getQuotaUsagePercent()+") "+
-                        getString(R.string.quota_of)+" "+ total);
+                ((TextView) findViewById(R.id.textProgressBar)).append(": " + used + " (" + mUserProfile.getQuotaUsagePercent() + ") " +
+                        getString(R.string.quota_of) + " " + total);
                 ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
                 String[] quotaParts = mUserProfile.getQuotaUsagePercent().split("%");
                 int percentage = (int)Double.parseDouble(quotaParts[0]);
@@ -168,6 +170,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void editName(View view) {
+        Log.i(TAG, "Edit profile");
         LayoutInflater inflater = getLayoutInflater();
         final View layout = inflater.inflate(R.layout.edit_fullname_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);

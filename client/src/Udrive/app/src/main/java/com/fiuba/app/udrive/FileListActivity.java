@@ -121,8 +121,7 @@ public class FileListActivity extends AppCompatActivity implements
                 .build();
         mGoogleApiClient.connect();
 
-
-        System.out.println("idDir: "+mDirId);
+        Log.d(TAG, "Actual dir: " + mDirId);
         if (mDirId == null)
             mDirId = 0;
         loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
@@ -159,6 +158,7 @@ public class FileListActivity extends AppCompatActivity implements
 
         // Action of signing out
         if (id == R.id.action_signout) {
+            Log.i(TAG, "Signout ");
             // Stop GPS service
             if (mGoogleApiClient.isConnected())
                 mGoogleApiClient.disconnect();
@@ -170,11 +170,13 @@ public class FileListActivity extends AppCompatActivity implements
             finishAffinity();
 
         }  else if (id == R.id.action_profile) {
+            Log.i(TAG, "Profile ");
             Intent profile = new Intent(FileListActivity.this, UserProfileActivity.class);
             profile.putExtra("userAccount", mUserAccount);
             startActivity(profile);
 
         }  else if (id == R.id.action_upload_file) {
+            Log.i(TAG, "Upload file ");
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
             i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -184,6 +186,7 @@ public class FileListActivity extends AppCompatActivity implements
             startActivityForResult(i, FILE_CODE);
 
         } else if (id == R.id.action_add_folder) {
+            Log.i(TAG, "Add folder ");
             LayoutInflater li = LayoutInflater.from(this);
             View newFolderView = li.inflate(R.layout.new_folder, null);
 
@@ -200,6 +203,7 @@ public class FileListActivity extends AppCompatActivity implements
                     // get user input and set it to result
                     // edit text
                     String nameFolder = userInput.getText().toString();
+                    Log.i(TAG, "Folder name: "+nameFolder);
                     mFilesService.addFolder(mUserAccount.getUserId(), mDirId, nameFolder, new ServiceCallback<List<File>>() {
                         @Override
                         public void onSuccess(List<File> files, int status) {
@@ -245,10 +249,12 @@ public class FileListActivity extends AppCompatActivity implements
             alertDialog.show();
 
         } else if (id == R.id.action_show_trash) {
+            Log.i(TAG, "Show trash ");
             Intent i = new Intent(this, TrashActivity.class);
             i.putExtra(TrashActivity.EXTRA_USER_ACCOUNT, mUserAccount);
             startActivity(i);
         } else if (id == R.id.action_file_search) {
+            Log.i(TAG, "Search file");
             launchFileSearch();
         }
 
@@ -258,7 +264,7 @@ public class FileListActivity extends AppCompatActivity implements
     private void loadFiles(int userId, int dirId){
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
-
+        Log.d(TAG, "Loading files ");
         mFilesService.getFiles(userId, dirId, new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
@@ -296,6 +302,7 @@ public class FileListActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == FILE_CODE && resultCode == Activity.RESULT_OK) {
+            Log.d(TAG,"Call upload file");
             uploadSelectedFile(data);
         } else if (requestCode == DIR_CODE && resultCode == Activity.RESULT_OK) {
             downloadFileIntoSelectedDir(data);
@@ -371,7 +378,9 @@ public class FileListActivity extends AppCompatActivity implements
     @Override
     public void onDownloadClick(int FileItem) {
         FileContextMenuManager.getInstance().hideContextMenu();
-        setSelectedFileForDownload(mFiles.get(FileItem));
+        File file = mFiles.get(FileItem);
+        setSelectedFileForDownload(file);
+        Log.i(TAG, "Download last version "+file.getName());
         Intent i = new Intent(this, FilePickerActivity.class);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -384,9 +393,12 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onDownloadPrevClick(final int FileItem) {
-        if (mFiles.get(FileItem).getLastVersion()<=1){
+        File file = mFiles.get(FileItem);
+        if (file.getLastVersion()<=1){
+            Log.i(TAG, "Download previous version "+file.getName()+" No other versions.");
             Toast.makeText(FileListActivity.this, "No other versions found!", Toast.LENGTH_SHORT).show();
         } else {
+            Log.i(TAG, "Download previous version "+file.getName());
             ArrayList<Integer> versions = getFileVersions(mFiles.get(FileItem).getLastVersion());
             LayoutInflater inflater = getLayoutInflater();
             final View layout = inflater.inflate(R.layout.prev_version_layout, null);
@@ -403,7 +415,7 @@ public class FileListActivity extends AppCompatActivity implements
                     .setPositiveButton(getString(R.string.prev_download), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             int version = Integer.parseInt(spinner.getSelectedItem().toString());
-                            System.out.println("Version selected >>>>> "+version);
+                            Log.d(TAG, "Version selected >>>>> " + version);
                             mFiles.get(FileItem).setDownloadVersion(version);
                             onDownloadClick(FileItem);
                             mFiles.get(FileItem).setDownloadVersion(0);
@@ -626,6 +638,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onDeleteClick(int FileItem) {
+        Log.i(TAG, "Delete File/Directory position " + FileItem);
         FileContextMenuManager.getInstance().hideContextMenu();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         String title = getString(R.string.delete_option_title);
@@ -639,8 +652,10 @@ public class FileListActivity extends AppCompatActivity implements
         alertDialogBuilder.setCancelable(false).setPositiveButton(ok_option, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 if (mActualFile.isDir()){
+                    Log.i(TAG, "Confirm delete directory ");
                     deleteDirectory();
                 }else{
+                    Log.i(TAG, "Confirm delete file ");
                     deleteFile();
                 }
 
@@ -648,6 +663,7 @@ public class FileListActivity extends AppCompatActivity implements
         });
         alertDialogBuilder.setNegativeButton(cancel_option, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                Log.i(TAG, "Cancel delete file/directory ");
                 dialog.cancel();
             }
         });
