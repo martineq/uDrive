@@ -120,6 +120,7 @@ public class SearchUsersActivity extends AppCompatActivity implements SearchView
     }
 
     private void getAutocompleteItems(final String searchString) {
+        Log.i(TAG, "Search user:  "+searchString);
         mUserService.getUsers(searchString,mUserAccount.getUserId(), new ServiceCallback<List<Collaborator>>() {
             @Override
             public void onSuccess(List<Collaborator> users, int status) {
