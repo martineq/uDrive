@@ -69,7 +69,7 @@
     <string name="fullname_ok">¡Nombre actualizado!</string>
     <string name="fullname_error">Error actualizando el nombre</string>
     <string name="error_profile">Error al intentar mostrar el perfil</string>
-    <string name="picture_size_error">El tamaño de la imagen no puede superar 150 KB</string>
+    <string name="picture_size_error">El tamaño de la imagen no puede superar 1 MB</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Descargar</string>
