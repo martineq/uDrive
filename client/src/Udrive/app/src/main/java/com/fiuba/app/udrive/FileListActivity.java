@@ -422,6 +422,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onInformationClick(int FileItem) {
+        FileContextMenuManager.getInstance().hideContextMenu();
         Log.i(TAG, "Information File position " + FileItem);
         /*System.out.println("Position - Lat >>>> "+getLatitude()+
                 "Position - Long >>>> "+getLongitude());*/
