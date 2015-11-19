@@ -18,7 +18,6 @@ public class File implements Serializable {
     private Integer cantItems;
     private Integer userOwner;
     private Integer lastVersion;
-    private Integer downloadVersion = 0;
 
 
     public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems, Integer userOwner){
@@ -29,6 +28,7 @@ public class File implements Serializable {
         this.lastModDate = lastModDate;
         this.cantItems = cantItems;
         this.userOwner = userOwner;
+        //this.downloadVersion = 0;
 
     }
 
@@ -102,15 +102,5 @@ public class File implements Serializable {
     public Integer getLastVersion() {
         return lastVersion;
     }
-
-
-    public Integer getDownloadVersion() {
-        return downloadVersion;
-    }
-
-    public void setDownloadVersion(Integer downloadVersion) {
-        this.downloadVersion = downloadVersion;
-    }
-
 
 }

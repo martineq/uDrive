@@ -48,7 +48,7 @@ void SendDirNode::executeGet() {
 std::string SendDirNode::defaultResponse(){
 	return "[{ \"id\": \"0\",  \"name\": \"\","
 							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"\"}]";
 }
 
 vector<string> SendDirNode::split(const string &s, char delim) {

@@ -53,7 +53,7 @@ void UpdatePhotoNode::executePut() {
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             Log(Log::LogMsgDebug) << "[" << "update profile - resultCode: 1 ]";
-            getConnection().printfData("{\"resultCode\": 1}");
+            getConnection().printfData("{\"resultCode\": \"1\"}");
         }
     }else{
         getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);

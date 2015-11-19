@@ -51,7 +51,7 @@ void SendFileNode::executeGet() {
 std::string SendFileNode::defaultResponse(){
 	return "[{ \"id\": \"0\",  \"name\": \"\","
 							"\"size\": \"0\" ,  \"type\": \"\",  \"cantItems\": \"0\", "
-							"\"shared\": \"\",  \"lastModDate\": \"\"}]";
+							"\"shared\": \"\",  \"lastModDate\": \"\",  \"userOwner\": \"\"}]";
 }
 
 vector<string> SendFileNode::split(const string &s, char delim) {
