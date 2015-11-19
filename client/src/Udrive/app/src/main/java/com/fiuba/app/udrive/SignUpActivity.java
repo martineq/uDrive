@@ -3,6 +3,7 @@ package com.fiuba.app.udrive;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         String email = ((EditText) findViewById(R.id.signup_email)).getText().toString();
         String password = ((EditText) findViewById(R.id.signup_password)).getText().toString();
+        String password2 = ((EditText) findViewById(R.id.signup_password2)).getText().toString();
         String firstname = ((EditText) findViewById(R.id.signup_firstname)).getText().toString();
         String lastname = ((EditText) findViewById(R.id.signup_lastname)).getText().toString();
 
@@ -63,7 +65,10 @@ public class SignUpActivity extends AppCompatActivity {
             error += getString(R.string.error_email)+"\n";
 
         if (Util.matchString(password, words))
-            error += getString(R.string.error_password);
+            error += getString(R.string.error_password)+"\n";
+
+        if (Util.matchString(password2, words))
+            error += getString(R.string.error_password_again);
 
         System.out.println("Error >>>> "+error);
 
@@ -72,6 +77,19 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this, error, Toast.LENGTH_LONG).show();
             return;
         }
+
+        if (!isValidEmail(email)){
+            progressDialog.dismiss();
+            Toast.makeText(SignUpActivity.this, R.string.error_email_format, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (password.compareTo(password2) != 0){
+            progressDialog.dismiss();
+            Toast.makeText(SignUpActivity.this, R.string.error_match_pass, Toast.LENGTH_LONG).show();
+            return;
+        }
+
 
         UserProfile userProfile = new UserProfile(email, password, firstname, lastname,
                 null, 0, 0, 0, null, null, null);
@@ -100,6 +118,14 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 
 }
