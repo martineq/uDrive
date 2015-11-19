@@ -337,7 +337,7 @@ public class FileListActivity extends AppCompatActivity implements
     private void uploadSelectedFile(Intent data) {
         Uri uri = data.getData();
         //Toast.makeText(this, uri.getPath(), Toast.LENGTH_LONG).show();
-        mFilesService.upload(mUserAccount.getUserId(), mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
+        mFilesService.upload(mUserAccount.getUserId(), mUserAccount.getQuotaAvailable(),mDirId, uri.getPath(), new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
                 mFilesAdapter.updateFiles(files);

@@ -150,5 +150,6 @@
     <string name="version">Select a version</string>
     <string name="prev_download">Download</string>
     <string name="versionNumber">Version</string>
+    <string name="message_validation_lessQuota">Your quota is insufficient</string>
 
 </resources>
