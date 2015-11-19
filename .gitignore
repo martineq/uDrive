@@ -2,6 +2,7 @@
 
 # Ignoro los archivos temporales (todos los que terminan con el caracter "~")
 *~
+.lock
 
 # Ignoro la carpeta build:
 /server/**/build/
