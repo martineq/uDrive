@@ -322,8 +322,12 @@ public class FileListActivity extends AppCompatActivity implements
             };
 
             if (selectedFileForDownload.isFile()) {
+                int version = selectedFileForDownload.getDownloadVersion();
+                if (version == 0){
+                    version = selectedFileForDownload.getLastVersion();
+                }
                 mFilesService.downloadFile(mUserAccount.getUserId(), selectedFileForDownload.getId(),
-                        selectedFileForDownload.getLastVersion(), fullPath, callback);
+                        version, fullPath, callback);
             } else {
                 mFilesService.downloadDir(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
             }
@@ -379,8 +383,7 @@ public class FileListActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDownloadPrevClick(int FileItem) {
-        FileContextMenuManager.getInstance().hideContextMenu();
+    public void onDownloadPrevClick(final int FileItem) {
         if (mFiles.get(FileItem).getLastVersion()<=1){
             Toast.makeText(FileListActivity.this, "No other versions found!", Toast.LENGTH_SHORT).show();
         } else {
@@ -396,28 +399,25 @@ public class FileListActivity extends AppCompatActivity implements
             builder.setView(layout);
             builder.setIcon(R.drawable.ic_down_18);
             builder.setCancelable(false)
-                    .setTitle(R.string.version)
+                    .setTitle(R.string.download_action_prev)
                     .setPositiveButton(getString(R.string.prev_download), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             int version = Integer.parseInt(spinner.getSelectedItem().toString());
                             System.out.println("Version selected >>>>> "+version);
+                            mFiles.get(FileItem).setDownloadVersion(version);
+                            onDownloadClick(FileItem);
+                            mFiles.get(FileItem).setDownloadVersion(0);
                         }
                     })
                     .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            FileContextMenuManager.getInstance().hideContextMenu();
                             dialog.cancel();
                         }
                     });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
-        /*setSelectedFileForDownload(mFiles.get(FileItem));
-        Intent i = new Intent(this, FilePickerActivity.class);
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
-        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-
-        startActivityForResult(i, DIR_CODE);
-        FileContextMenuManager.getInstance().hideContextMenu();*/
     }
 
     @Override
@@ -457,6 +457,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onTagClick(final int FileItem) {
+        FileContextMenuManager.getInstance().hideContextMenu();
         Log.i(TAG, "FileTag File position " + FileItem);
         String name = mFiles.get(FileItem).getName();
         String type = mFiles.get(FileItem).isDir()?getString(R.string.dir_type):getString(R.string.file_type);
@@ -686,7 +687,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public void onCancelClick(int FileItem) {
-
+        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
     @Override
@@ -950,7 +951,9 @@ public class FileListActivity extends AppCompatActivity implements
     @Override
     public boolean shouldShowPrevDownloadButton(int position) {
         File actualFile = mFiles.get(position);
-        return (!actualFile.isDir());
+        if ((actualFile.getLastVersion()<=1) || actualFile.isDir())
+            return false;
+        return true;
     }
 
     ArrayList<Integer> getFileVersions(int lastVersion){

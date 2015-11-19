@@ -14,6 +14,7 @@ public class File {
     private Integer cantItems;
     private Integer userOwner;
     private Integer lastVersion;
+    private Integer downloadVersion = 0;
 
 
     public File(String name, Integer size, Character type, Boolean shared, String lastModDate, Integer cantItems, Integer userOwner){
@@ -88,6 +89,15 @@ public class File {
 
     public Integer getLastVersion() {
         return lastVersion;
+    }
+
+
+    public Integer getDownloadVersion() {
+        return downloadVersion;
+    }
+
+    public void setDownloadVersion(Integer downloadVersion) {
+        this.downloadVersion = downloadVersion;
     }
 
 

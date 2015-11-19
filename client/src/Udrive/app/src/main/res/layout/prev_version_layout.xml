@@ -3,12 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="250dp">
     <RelativeLayout
         android:id="@+id/layout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp">
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp">
         <TextView
             android:id="@+id/text_prev"
             android:hint="@string/version"
@@ -20,7 +21,7 @@
         <Spinner
             android:id="@+id/spinner_prev"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/text_prev"
             android:layout_centerVertical="true"
             android:paddingLeft="10dp"
