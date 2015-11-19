@@ -807,7 +807,9 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   user_owner_id;
   file_to_share_id;
   user_shared_id;
-  EXPECT_TRUE(rd->set_file_share(user_owner_id,file_to_share_id,user_shared_id,"06/11/15",status));
+  vector<string> new_user_shared_id_list;
+  new_user_shared_id_list.push_back(user_shared_id);
+  EXPECT_TRUE(rd->overwrite_file_sharing_by_list(user_owner_id,file_to_share_id,new_user_shared_id_list,"06/11/15",status));
   // ...check if the user shared can acces the file
   shared_files.clear();
   EXPECT_TRUE(rd->get_shared_files(user_shared_id,shared_files,status));

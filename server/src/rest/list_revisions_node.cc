@@ -1,23 +1,23 @@
 /*
- * list_collaborators_node.cc
+ * list_revisions_node.cc
  *
  *  Created on: 4/10/2015
  *      Author: Martin
  */
 
-#include "list_collaborators_node.h"
+#include "list_revisions_node.h"
 
 using std::string;
 using std::stringstream;
 using std::vector;
 
-ListCollaboratorsNode::ListCollaboratorsNode(MgConnectionW&  conn)  : Node(conn) {
+ListRevisionsNode::ListRevisionsNode(MgConnectionW&  conn)  : Node(conn) {
 }
 
-ListCollaboratorsNode::~ListCollaboratorsNode() {
+ListRevisionsNode::~ListRevisionsNode() {
 }
 
-vector<string> ListCollaboratorsNode::split(const string &s, char delim) {
+vector<string> ListRevisionsNode::split(const string &s, char delim) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -27,24 +27,27 @@ vector<string> ListCollaboratorsNode::split(const string &s, char delim) {
     return tokens;
 }
 
-void ListCollaboratorsNode::executeGet() {
-	vector<string> lista=ListCollaboratorsNode::split(getUri(),'/');
+void ListRevisionsNode::executeGet() {
+	vector<string> lista=ListRevisionsNode::split(getUri(),'/');
 	string fileId ="";
 	int status=11;
 	if ( (!lista[4].compare("file"))){
-		Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]";
+		Log(Log::LogMsgDebug) << "[ListRevisionsNode]";
 		string userId=getUserId();
 		fileId =lista[5];
 		bool result=false;
-		Log(Log::LogMsgDebug) << "[ListCollaboratorsNode], UserId: " <<userId<< ", fileId: " << fileId;
+
+		Log(Log::LogMsgDebug) << "[ListRevisionsNode], UserId: " <<userId<< ", fileId: " << fileId;
+
 		std::ostringstream item;
 		item << "[";
 
 		RequestDispatcher::user_info_st user_info;
 		vector<RequestDispatcher::user_info_st> lista_user_info;
 
-		if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: list colaborators users ";
+		//TODO (martindonofrio): ver que metodo usar para mandar el listado de revisiones.
+		if (true){
+			Log(Log::LogMsgDebug) << "[ListRevisionsNode]: list colaborators users ";
 			for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
 				item
 				<< "{\"id\":\"" << lista_user_info[i].id << "\","
@@ -53,14 +56,14 @@ void ListCollaboratorsNode::executeGet() {
 				<< "\"email\":\"" << lista_user_info[i].email << "\"},";
 				result=true;
 			}
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: "<<lista_user_info.size();
+			Log(Log::LogMsgDebug) << "[ListRevisionsNode]: "<<lista_user_info.size();
 			item
 			<< "{\"id\":\"" << lista_user_info[lista_user_info.size()-1].id << "\","
 			<< "\"firstName\":\"" << lista_user_info[lista_user_info.size()-1].first_name << "\","
 			<< "\"lastName\":\"" << lista_user_info[lista_user_info.size()-1].last_name << "\","
 			<< "\"email\":\"" << lista_user_info[lista_user_info.size()-1].email << "\"}";
 			result=true;
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: ";
+			Log(Log::LogMsgDebug) << "[ListRevisionsNode]: ";
 
 		}
 		item << "]";
@@ -87,12 +90,12 @@ void ListCollaboratorsNode::executeGet() {
 		getConnection().printfData(msg.c_str());
 	}
 }
-std::string ListCollaboratorsNode::defaultResponse(){
+std::string ListRevisionsNode::defaultResponse(){
 	return "[]";
 }
 
-std::string ListCollaboratorsNode::getUserId(){
-	vector<string> lista=ListCollaboratorsNode::split(getUri(),'/');
+std::string ListRevisionsNode::getUserId(){
+	vector<string> lista=ListRevisionsNode::split(getUri(),'/');
 	return lista[3];
 }
 

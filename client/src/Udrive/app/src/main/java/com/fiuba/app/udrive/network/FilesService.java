@@ -80,8 +80,8 @@ public class FilesService extends AbstractService {
         /*** Searching requests ***/
 
         // Gets the results for the searching by file(dir) name
-        @GET("/info/users/{userId}/dir")
-        void getFilesByName(@Path("userId") int userId, @Query("dirName") String dirName, Callback<List<File>> files);
+        @GET("/info/users/{userId}/file")
+        void getFilesByName(@Path("userId") int userId, @Query("name") String dirName, Callback<List<File>> files);
 
         // Gets the results for the searching by file extension
         @GET("/info/users/{userId}/file")
@@ -89,7 +89,7 @@ public class FilesService extends AbstractService {
 
         // Gets the results for the searching by file(dir) name
         @GET("/info/users/{userId}/tags")
-        void getFilesByTag(@Path("userId") int userId, @Query("tag") String tag, Callback<List<File>> files);
+        void getFilesByTag(@Path("userId") int userId, @Query("tagname") String tag, Callback<List<File>> files);
 
         // Gets the results for the searching by file(dir) name
         @GET("/info/users/{userId}/owners/{ownerId}")
@@ -413,8 +413,8 @@ public class FilesService extends AbstractService {
     }
 
     // Gets the results for the searching by file(dir) name
-    public void getFilesByName(int userId, String dirName, final ServiceCallback<List<File>> cb){
-        mFilesServiceApi.getFilesByName(userId, dirName, new Callback<List<File>>() {
+    public void getFilesByName(int userId, String name, final ServiceCallback<List<File>> cb){
+        mFilesServiceApi.getFilesByName(userId, name, new Callback<List<File>>() {
             @Override
             public void success(List<File> files, Response response) {
                 cb.onSuccess(files, response.getStatus());
