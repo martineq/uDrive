@@ -3,7 +3,7 @@
 UDrive - Entrega 
 ============================================
 
-**30/10/2015**
+**19/11/2015**
 
 **Grupo Nro 5**
 
@@ -44,29 +44,51 @@ Para el desarrollo de UDrive se conformaron los módulos Cliente y Servidor, asi
 + Cliente:  Liva María Eugenia y Cortazzo Romina Pamela
 + Servidor:  Quiroz Martín y D'Onofrio Martín
 
-Tareas que componen el checklist nro 2
+Tareas que componen los Checklists 3 a Final
 --------------------------------------------
-Son todas las pertenecientes al milestone `Checkpoint #2 <https://github.com/martineq/tp7552/milestones/Checkpoint%20%232>`_
+Son todas las pertenecientes a los milestones:
 
-Funcionalidad entregada en el checklist nro 2
+`Checkpoint #3 <https://github.com/martineq/tp7552/milestones/Checkpoint%20%233>`_
+`Checkpoint #4 <https://github.com/martineq/tp7552/milestones/Checkpoint%20%234>`_
+`Checkpoint #5 <https://github.com/martineq/tp7552/milestones/Checkpoint%20%235>`_
+`Checkpoint #Entrega Final <https://github.com/martineq/tp7552/milestones/Entrega%20Final>`_
+
+Decidimos crear Checkpoints no oficiales (3, 4 y 5) como forma de 
+organización interna para proyectar y concretar metas posibles en tales plazos.
+
+Funcionalidades 
 ----------------------------------------------
 
-En esta entrega se incluye a nivel funcionalidad: 
+En esta entrega se incluye a nivel funcionalidad en cliente y servidor, 
+tanto interfaz de usuario como funcionalidades en el core y servicios 
+REST:
 
-**Cliente:**
-
-+ Configuración de la ip del servidor del cual se consumen los servicios (Connection Settings). 
-+ Registración de un nuevo usuario (Sign Up).
-+ Carga de un archivo (Add file).
-+ Creación de una carpeta (Add folder).
-+ Administración de perfil de usuario (My profile).
-
-**Servidor:**
-
-+ Integración con la base de datos del servicio de optención de token y lista de archichos.
-+ Implementación de servicio de creación de carpeta.
-+ Implementación de servicio de carga de archivo.
-+ Implementación de servicio de registración de usuario.
++ Eliminación archivo
++ Eliminación carpeta
++ Papelera-ver archivos borrados 
++ Papelera-eliminar archivo seleccionado
++ Papelera-vaciar papelera
++ Papelera-recuperar todos los archivos
++ Papelera-recuperar archivos seleccionados
++ Compartir-busqueda de usuarios para compartir
++ Compartir-actualizar colaboradores
++ Compartir-mostrar los colaboradores de un archivo
++ Taggeo de archivos y carpetas
++ Vista de perfil de usuario
++ Edición de nombre de usuario
++ Edición de imagen de perfil
++ Obtención de información completa de archivo  o carpeta
++ Modificación de nombre de archivo o carpeta
++ Actualización de geolocalización de usuario
++ Obtención de tags de un usuario
++ Obtención de todos los propietarios de los archivos compartidos con el usuario logueado
++ Búsqueda por nombre de archivo
++ Búsqueda por extensión de archivo
++ Búsqueda por tag
++ Búsqueda por propietario
++ Descarga de archivo por revisión
++ Descarga de archivo   
++ Descarga de directorio
 	
 Control de versiones - Repositorio
 --------------------------------------------
