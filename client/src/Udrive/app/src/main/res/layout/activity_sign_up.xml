@@ -10,7 +10,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
+        android:digits="0123456789*,
+            qwertzuiopasdfghjklyxcvbnm+-ñáéíóú./!?¿¡_
+            ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
         android:ems="10"
         android:hint="@string/signup_firstname"
         android:id="@+id/signup_firstname"
@@ -19,7 +22,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
+        android:digits="0123456789*,
+            qwertzuiopasdfghjklyxcvbnm+-ñáéíóú./!?¿¡_
+            ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
         android:ems="10"
         android:hint="@string/signup_lastname"
         android:id="@+id/signup_lastname"
@@ -29,6 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
+        android:digits="0123456789
+        qwertzuiopasdfghjklyxcvbnm._@"
         android:ems="10"
         android:hint="@string/email"
         android:id="@+id/signup_email"
