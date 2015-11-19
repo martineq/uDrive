@@ -40,14 +40,16 @@ void ListCollaboratorsNode::executeGet() {
 		bool result=false;
 		Log(Log::LogMsgDebug) << "[ListCollaboratorsNode], UserId: " <<userId<< ", fileId: " << fileId;
 		std::ostringstream item;
+
+		vector<RequestDispatcher::user_info_st> lista_user_info;
 		item << "[";
 
-		RequestDispatcher::user_info_st user_info;
-		vector<RequestDispatcher::user_info_st> lista_user_info;
+		RequestDispatcher::file_info_st file_info;
 
-		if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: list colaborators users ";
-			if (lista_user_info.size() > 0) {
+		if (getRequestDispatcher()->get_file_info(userId,fileId,file_info,status)) {
+			lista_user_info=file_info.shared_users;
+			Log(Log::LogMsgDebug) << "[ListOwnersNode]: list owners users " << lista_user_info.size();
+			if (lista_user_info.size() != 0) {
 				for (int i = 0; i < lista_user_info.size() - 1; ++i) {
 					item
 					<< "{\"id\":\"" << lista_user_info[i].id << "\","
@@ -56,15 +58,16 @@ void ListCollaboratorsNode::executeGet() {
 					<< "\"email\":\"" << lista_user_info[i].email << "\"},";
 					result = true;
 				}
-				Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: " << lista_user_info.size();
 				item
 				<< "{\"id\":\"" << lista_user_info[lista_user_info.size() - 1].id << "\","
 				<< "\"firstName\":\"" << lista_user_info[lista_user_info.size() - 1].first_name << "\","
 				<< "\"lastName\":\"" << lista_user_info[lista_user_info.size() - 1].last_name << "\","
 				<< "\"email\":\"" << lista_user_info[lista_user_info.size() - 1].email << "\"}";
 				result = true;
-				Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: ";
-			} else result = true;
+				Log(Log::LogMsgDebug) << "[ListOwnersNode] last node added ";
+			} else {
+				result = true;
+			}
 		}
 
 		item << "]";
@@ -80,8 +83,8 @@ void ListCollaboratorsNode::executeGet() {
 
 			const std::string tmp = item.str();
 			const char* msg = tmp.c_str();
-			Log(Log::LogMsgDebug) << tmp.c_str();
-			getConnection().printfData(tmp.c_str());
+			Log(Log::LogMsgDebug) << msg;
+			getConnection().printfData(msg);
 		}
 	}
 	else{

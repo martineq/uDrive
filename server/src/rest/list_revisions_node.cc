@@ -79,8 +79,8 @@ void ListRevisionsNode::executeGet() {
 
 			const std::string tmp = item.str();
 			const char* msg = tmp.c_str();
-			Log(Log::LogMsgDebug) << tmp.c_str();
-			getConnection().printfData(tmp.c_str());
+			Log(Log::LogMsgDebug) << msg;
+			getConnection().printfData(msg);
 		}
 	}
 	else{
