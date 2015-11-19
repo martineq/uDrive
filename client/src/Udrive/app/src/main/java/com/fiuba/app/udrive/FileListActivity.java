@@ -305,7 +305,7 @@ public class FileListActivity extends AppCompatActivity implements
     private void downloadFileIntoSelectedDir(Intent data) {
         final File selectedFileForDownload = getSelectedFileForDownload();
         if (selectedFileForDownload != null) {
-            final String fullPath = data.getData().getPath() + "/" + selectedFileForDownload.getName();
+            final String fullPath = data.getData().getPath() + "/" + selectedFileForDownload.getDownloadableName();
 
             ServiceCallback<FileOutputStream> callback = new ServiceCallback<FileOutputStream>() {
                 @Override

@@ -42,8 +42,8 @@ public class UserService extends AbstractService {
         @PUT("/userfullname/{userId}")
         void updateFullName(@Path("userId") int userId, @Body UserFullName uFullName, Callback<GenericResult> result);
 
-        @GET("/users")
-        void getUsers(@Query("q") String query, Callback<List<Collaborator>> result);
+        @GET("/user/{userId}/users")
+        void getUsers(@Path("userId") int userId, @Query("q") String query, Callback<List<Collaborator>> result);
 
         // Gets a list of owners who shared files with this user
         @GET("/owners/users/{userId}")
@@ -162,8 +162,8 @@ public class UserService extends AbstractService {
         });
     }
 
-    public void getUsers(@Query("q") String query, final ServiceCallback<List<Collaborator>> callback) {
-        mUserServiceApi.getUsers(query, new Callback<List<Collaborator>>() {
+    public void getUsers(String query, int userId, final ServiceCallback<List<Collaborator>> callback) {
+        mUserServiceApi.getUsers(userId,query,new Callback<List<Collaborator>>() {
             @Override
             public void success(List<Collaborator> result, Response response) {
                 callback.onSuccess(result, response.getStatus());

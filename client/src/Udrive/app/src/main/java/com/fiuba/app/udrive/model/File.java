@@ -39,6 +39,14 @@ public class File {
         return name;
     }
 
+    public String getDownloadableName(){
+        if(this.isDir()){
+            return this.getName()+".zip";
+        }else{
+            return this.getName();
+        }
+    }
+
     public void setName(String name) {
         this.name = name;
     }
