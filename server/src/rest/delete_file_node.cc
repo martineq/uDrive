@@ -57,6 +57,7 @@ void DeleteFileNode::executeDelete() {
 				Log(Log::LogMsgDebug) << "[DeleteFileNode], file deleted, parent folder printing, id: "<<parentDir;
 				MgConnectionW mg=getConnection();
 				std::string uri;
+				if (parentDir.size()==0) parentDir="0";
 				uri = "/info/users/"+ userId + "/dir/" + parentDir;
 				mg.setMethod("GET");
 				mg.setUri(uri);
