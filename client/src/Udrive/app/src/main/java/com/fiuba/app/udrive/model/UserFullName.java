@@ -1,28 +1,30 @@
 package com.fiuba.app.udrive.model;
 
 
-public class UserFullName{
-    private String firstname;
-    private String lastname;
+import java.io.Serializable;
+
+public class UserFullName implements Serializable{
+    private String firstName;
+    private String lastName;
 
     public UserFullName(String firstname, String lastname){
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstname;
+        this.lastName = lastname;
     }
 
     public String getFirstname() {
-        return firstname;
+        return firstName;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName = firstname;
     }
 
     public String getLastname() {
-        return lastname;
+        return lastName;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.lastName = lastname;
     }
 }

@@ -1,9 +1,13 @@
 package com.fiuba.app.udrive.model;
 
+import com.fiuba.app.udrive.network.ServiceCallback;
+
+import java.io.Serializable;
+
 /**
  * Represents a File in the app context with all its required attributes
  */
-public class File {
+public class File implements Serializable {
 
     private Integer id;
     private String name;

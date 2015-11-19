@@ -5,12 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -64,6 +62,7 @@ public class FileListActivity extends AppCompatActivity implements
         FileContextMenu.OnFileContextMenuItemClickButtonVisibilityListener {
 
     public static final String TAG = "FileListActivity";
+    private static final String FILE_INFO = "fileInfo";
 
     private List<File> mFiles = new ArrayList<File>();
 
@@ -430,8 +429,17 @@ public class FileListActivity extends AppCompatActivity implements
         mFileMetadataService.getFileInfo(mUserAccount.getUserId(), type, mFiles.get(FileItem).getId(), new ServiceCallback<FileInfo>() {
             @Override
             public void onSuccess(FileInfo object, int status) {
+
+                System.out.println("FileInfo - owner >>>> " + object.getOwner().getFirstname() + " " + object.getOwner().getFirstname() + " " +
+                        object.getOwner().getEmail());
+                System.out.println("FileInfo - file >>>> " + object.getFile().getName() + " " + object.getFile().getCantItems());
+                System.out.println("FileInfo - updatedBy >>>> " + object.getUpdatedBy().getFirstname() + " " + object.getUpdatedBy().getFirstname() + " " +
+                        object.getUpdatedBy().getEmail());
+                System.out.println("FileInfo - collaborators >>>> " + object.getCollaborators().toString());
+                System.out.println("FileInfo - tags >>>> " + object.getTags());
+
                 Intent infoIntent = new Intent(FileListActivity.this, FileInfoActivity.class);
-                infoIntent.putExtra("fileInfo", object);
+                infoIntent.putExtra(FILE_INFO, object);
                 infoIntent.putExtra("token", mUserAccount.getToken());
                 infoIntent.putExtra("userId", mUserAccount.getUserId());
                 startActivity(infoIntent);
@@ -963,5 +971,9 @@ public class FileListActivity extends AppCompatActivity implements
             v.add(last);
         }
         return v;
+    }
+
+    public String getFileInfo(){
+        return FILE_INFO;
     }
 }

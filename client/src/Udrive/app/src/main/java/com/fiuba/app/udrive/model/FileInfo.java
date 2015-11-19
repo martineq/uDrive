@@ -1,6 +1,5 @@
 package com.fiuba.app.udrive.model;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -8,13 +7,11 @@ public class FileInfo implements Serializable {
     private UserBasicData owner;
     private File file;
     private UserBasicData updatedBy;
-    private ArrayList<UserBasicData> collaborators;
-    //private ArrayList<Tag> tags;
+    private ArrayList<UserBasicData> collaborators = null;
     private String tags = null;
 
     public FileInfo(UserBasicData owner, File file, UserBasicData updatedBy,
-                    double updatedFromLatitude, double updatedFromLongitude,
-                    ArrayList<UserBasicData> collaborators, /*ArrayList<Tag>*/ String tags) {
+                    ArrayList<UserBasicData> collaborators, String tags) {
         this.owner = owner;
         this.file = file;
         this.updatedBy = updatedBy;
@@ -61,4 +58,5 @@ public class FileInfo implements Serializable {
     public void setTags(/*ArrayList<Tag>*/ String tags) {
         this.tags = tags;
     }
+
 }
