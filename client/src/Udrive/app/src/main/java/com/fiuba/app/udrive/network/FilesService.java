@@ -72,8 +72,8 @@ public class FilesService extends AbstractService {
         @POST("/info/users/{userId}/trash/restored")
         void restoreTrashedFiles(@Path("userId") int userId, @Query("fileIds") String fileIds, Callback<List<File>> callback);
 
-        @GET("/fileInfo/files/{fileId}/collaborators")
-        void getAllCollaborators(@Path("fileId") int fileId, Callback<List<Collaborator>> callback);
+        @GET("/fileInfo/user/{userId}/files/{fileId}/collaborators")
+        void getAllCollaborators(@Path("userId") int userId,@Path("fileId") int fileId, Callback<List<Collaborator>> callback);
 
         @POST("/fileInfo/user/{userId}/files/{fileId}/collaborators")
         void updateCollaborators(@Path("userId") int userId,@Path("fileId") int fileId, @Body List<Collaborator> usersList,
@@ -380,9 +380,9 @@ public class FilesService extends AbstractService {
         });
     }
 
-    public void getAllCollaborators(int fileId, final ServiceCallback<List<Collaborator>> serviceCallback) {
+    public void getAllCollaborators(int userId,int fileId, final ServiceCallback<List<Collaborator>> serviceCallback) {
 
-        mFilesServiceApi.getAllCollaborators(fileId, new Callback<List<Collaborator>>() {
+        mFilesServiceApi.getAllCollaborators(userId,fileId, new Callback<List<Collaborator>>() {
             @Override
             public void success(List<Collaborator> collaborators, Response response) {
                 serviceCallback.onSuccess(collaborators, response.getStatus());

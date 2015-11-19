@@ -69,7 +69,7 @@ public class ShareActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.loading), true);
         progressDialog.setCancelable(false);
 
-       mFileService.getAllCollaborators(mFileId, new ServiceCallback<List<Collaborator>>() {
+       mFileService.getAllCollaborators(mUserAccount.getUserId(),mFileId, new ServiceCallback<List<Collaborator>>() {
            @Override
            public void onSuccess(List<Collaborator> collaborators, int status) {
                setCollaborators(collaborators);
