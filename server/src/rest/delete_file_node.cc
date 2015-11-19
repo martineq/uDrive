@@ -40,6 +40,8 @@ void DeleteFileNode::executeDelete() {
 		RequestDispatcher::file_info_st file_info;
 
 		if (!getRequestDispatcher()->get_file_info(userId,fileId,file_info,status)){
+
+			Log(Log::LogMsgDebug) << "[" << "DeleteFileNode " << "] fail recover file info ";
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
