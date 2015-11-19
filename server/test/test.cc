@@ -653,13 +653,16 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   
   // Add new file to 2nd user check quota and delete the file
   string file_temp_2;
+  EXPECT_TRUE(ok = rd->get_user_info(user_id_second,user_info_second,status));
+  EXPECT_EQ("0",user_info_second.user_quota_used);                 // Size of quota used: 9 bytes
   EXPECT_TRUE(rd->new_file(user_id_second,"temp2","txt","11/11/15","123456789","9","0",file_temp_2,status));
   EXPECT_TRUE(ok = rd->get_user_info(user_id_second,user_info_second,status));
   EXPECT_EQ("9",user_info_second.user_quota_used);                 // Size of quota used: 9 bytes
   EXPECT_EQ("6.04%",user_info_second.user_quota_used_percentage); // User quota percentage
   EXPECT_TRUE(rd->delete_file(user_id_second,file_temp_2,status));
   EXPECT_TRUE(rd->purge_deleted_files(user_id_second,status));
-  
+  EXPECT_TRUE(ok = rd->get_user_info(user_id_second,user_info_second,status));
+  EXPECT_EQ("0",user_info_second.user_quota_used);                 // Size of quota used: 9 bytes
   
   // Use get_directory_info() with forbidden user
   string forbidden_user_id = user_id_second;
