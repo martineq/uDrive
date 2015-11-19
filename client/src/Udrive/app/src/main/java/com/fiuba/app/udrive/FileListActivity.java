@@ -99,6 +99,7 @@ public class FileListActivity extends AppCompatActivity implements
     private double mLatitude;
     private double mLongitude;
 
+    private static int downloadVersion = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,12 +323,13 @@ public class FileListActivity extends AppCompatActivity implements
             };
 
             if (selectedFileForDownload.isFile()) {
-                int version = selectedFileForDownload.getDownloadVersion();
+                int version = getDownloadVersion();
                 if (version == 0){
                     version = selectedFileForDownload.getLastVersion();
                 }
                 mFilesService.downloadFile(mUserAccount.getUserId(), selectedFileForDownload.getId(),
                         version, fullPath, callback);
+                setDownloadVersion(0);
             } else {
                 mFilesService.downloadDir(mUserAccount.getUserId(), selectedFileForDownload.getId(), fullPath, callback);
             }
@@ -402,11 +404,9 @@ public class FileListActivity extends AppCompatActivity implements
                     .setTitle(R.string.download_action_prev)
                     .setPositiveButton(getString(R.string.prev_download), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            int version = Integer.parseInt(spinner.getSelectedItem().toString());
-                            System.out.println("Version selected >>>>> "+version);
-                            mFiles.get(FileItem).setDownloadVersion(version);
+                            setDownloadVersion(Integer.parseInt(spinner.getSelectedItem().toString()));
+                            System.out.println("Version selected >>>>> "+getDownloadVersion());
                             onDownloadClick(FileItem);
-                            mFiles.get(FileItem).setDownloadVersion(0);
                         }
                     })
                     .setNegativeButton(getString(R.string.settings_cancel), new DialogInterface.OnClickListener() {
@@ -980,4 +980,15 @@ public class FileListActivity extends AppCompatActivity implements
     public String getFileInfo(){
         return FILE_INFO;
     }
+
+    public void setDownloadVersion(int version){
+        this.downloadVersion = version;
+    }
+
+    public int getDownloadVersion(){
+        System.out.println("Returning downloadVersion >>>>> "+ this.downloadVersion);
+        return this.downloadVersion;
+    }
+
+
 }
