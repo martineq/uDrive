@@ -1,7 +1,9 @@
 package com.fiuba.app.udrive.model;
 
 
-public class UserBasicData extends UserFullName {
+import java.io.Serializable;
+
+public class UserBasicData extends UserFullName implements Serializable {
     private String email = null;
 
     public UserBasicData(String firstname, String lastname, String email){

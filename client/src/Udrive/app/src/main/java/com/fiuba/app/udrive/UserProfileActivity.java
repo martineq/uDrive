@@ -82,8 +82,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 ((TextView)findViewById(R.id.email)).setText(Html.fromHtml(getString(R.string.email_profile)));
                 ((TextView)findViewById(R.id.email)).append(": "+mUserProfile.getEmail());
                 // Last location city
-                /*mUserProfile.setGPSLatitude(-34.795713);
-                mUserProfile.setGPSLongitude(-58.348321);*/
                 String location = Util.getGPSLocation(getApplicationContext(), mUserProfile.getGPSLatitude(), mUserProfile.getGPSLongitude());
                 //String cityName = addresses.get(0).getAddressLine(0);
                 ((TextView)findViewById(R.id.lastLocation)).setText(Html.fromHtml(getString(R.string.last_location)));
@@ -106,7 +104,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbar1);
                 String[] quotaParts = mUserProfile.getQuotaUsagePercent().split("%");
                 int percentage = (int)Double.parseDouble(quotaParts[0]);
-                //progressbar.setProgress(Integer.parseInt(Util.extractDigits(mUserProfile.getQuotaUsagePercent())));
                 progressbar.setProgress(percentage);
             }
 

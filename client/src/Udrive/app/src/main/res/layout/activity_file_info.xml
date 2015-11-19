@@ -242,7 +242,7 @@
             android:layout_height="match_parent"
             android:hint="@string/tags"
             android:textSize="20sp"
-            android:paddingLeft="16dp"
+            android:paddingLeft="20dp"
             android:layout_marginTop="6dp"/>
         <WebView
             android:id="@+id/tags"

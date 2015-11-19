@@ -31,8 +31,10 @@ void ListCollaboratorsNode::executeGet() {
 	vector<string> lista=ListCollaboratorsNode::split(getUri(),'/');
 	string fileId ="";
 	int status=11;
-	if ( (!lista[4].compare("file"))){
-		Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]";
+	Log(Log::LogMsgDebug) << "[ListCollaboratorsNode] ";
+
+	if ( (lista[4]=="files") and (lista[6]=="collaborators") ) {
+
 		string userId=getUserId();
 		fileId =lista[5];
 		bool result=false;
@@ -45,24 +47,26 @@ void ListCollaboratorsNode::executeGet() {
 
 		if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
 			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: list colaborators users ";
-			for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
+			if (lista_user_info.size() > 0) {
+				for (int i = 0; i < lista_user_info.size() - 1; ++i) {
+					item
+					<< "{\"id\":\"" << lista_user_info[i].id << "\","
+					<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
+					<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
+					<< "\"email\":\"" << lista_user_info[i].email << "\"},";
+					result = true;
+				}
+				Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: " << lista_user_info.size();
 				item
-				<< "{\"id\":\"" << lista_user_info[i].id << "\","
-				<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
-				<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
-				<< "\"email\":\"" << lista_user_info[i].email << "\"},";
-				result=true;
-			}
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: "<<lista_user_info.size();
-			item
-			<< "{\"id\":\"" << lista_user_info[lista_user_info.size()-1].id << "\","
-			<< "\"firstName\":\"" << lista_user_info[lista_user_info.size()-1].first_name << "\","
-			<< "\"lastName\":\"" << lista_user_info[lista_user_info.size()-1].last_name << "\","
-			<< "\"email\":\"" << lista_user_info[lista_user_info.size()-1].email << "\"}";
-			result=true;
-			Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: ";
-
+				<< "{\"id\":\"" << lista_user_info[lista_user_info.size() - 1].id << "\","
+				<< "\"firstName\":\"" << lista_user_info[lista_user_info.size() - 1].first_name << "\","
+				<< "\"lastName\":\"" << lista_user_info[lista_user_info.size() - 1].last_name << "\","
+				<< "\"email\":\"" << lista_user_info[lista_user_info.size() - 1].email << "\"}";
+				result = true;
+				Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: ";
+			} else result = true;
 		}
+
 		item << "]";
 
 		if (!result) {

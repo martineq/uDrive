@@ -2,6 +2,7 @@ package com.fiuba.app.udrive;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,16 +33,19 @@ import java.util.ArrayList;
 
 public class FileInfoActivity extends AppCompatActivity {
     public static final String FILE_INFO = "fileInfo";
+    public static final String TOKEN = "token";
     private FileInfo mFileInfo = null;
     private FileMetadataService mFileMetadataService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFileMetadataService = new FileMetadataService(((String)getIntent().getSerializableExtra("token"))
+        mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
+        System.out.println("FileInfoActivity - FileInfo >>>>>>>> "+mFileInfo.getOwner().getFirstname());
+        mFileMetadataService = new FileMetadataService(((String)getIntent().getStringExtra(TOKEN))
             ,FileInfoActivity.this);
         setContentView(R.layout.activity_file_info);
-        ((ScrollView)findViewById(R.id.scroll_layout)).smoothScrollTo(0,0);
+        ((ScrollView)findViewById(R.id.scroll_layout)).smoothScrollTo(0, 0);
         mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
 
         /** TODO: delete this fragment after loading file info from HTTP response **/
@@ -91,7 +95,10 @@ public class FileInfoActivity extends AppCompatActivity {
         setListViewHeightBasedOnItems(access);
 
         // filename and icon
-        ((TextView) findViewById(R.id.tv_filename)).setText(mFileInfo.getFile().getName());
+        String name = mFileInfo.getFile().getName();
+        if (name.length()>20)
+            name = name.substring(0,19)+"...";
+        ((TextView) findViewById(R.id.tv_filename)).setText(name);
         if (!mFileInfo.getFile().isDir()) {
             if (mFileInfo.getFile().getShared())
                 ((ImageView) findViewById(R.id.filename_icon)).setImageResource(R.drawable.ic_file_cloud);
@@ -104,26 +111,33 @@ public class FileInfoActivity extends AppCompatActivity {
 
         // tags
         WebView panel = ((WebView)findViewById(R.id.tags));
-        ArrayList<Tag> tags = Util.stringToTagsArray(mFileInfo.getTags());
+        ArrayList<Tag> tags;
+        if (mFileInfo.getTags().compareTo("") != 0)
+            tags = Util.stringToTagsArray(mFileInfo.getTags());
+        else
+            tags = new ArrayList<>();
         panel.loadData(getPanelHTML(tags), "text/html", "utf-8");
         panel.setBackgroundColor(0);
 
         // labels
-        ((TextView)findViewById(R.id.label_owner)).setText(mFileInfo.getOwner().getFirstname()+" "+
-                mFileInfo.getOwner().getLastname());
+        ((TextView)findViewById(R.id.label_owner)).setText(Util.capitalize(mFileInfo.getOwner().getFirstname())+" "+
+                Util.capitalize(mFileInfo.getOwner().getLastname()));
         // Convert size to KB or MB
         int size = mFileInfo.getFile().getSize();
         String totalSize = "";
-        if ( size >= Math.pow(2,20)){
+        if (size >= Math.pow(2,20)){
             size = (int)(size/Math.pow(2,20));
             totalSize = size+" MB";
-        } else {
+        } else if ( size >= Math.pow(2,10)) {
             size = (int)(size/Math.pow(2,10));
             totalSize = size+" KB";
+        } else {
+            totalSize = size+" bytes";
         }
         ((TextView)findViewById(R.id.label_size)).setText(totalSize);
         ((TextView)findViewById(R.id.label_update)).setText(mFileInfo.getFile().getLastModDateFormated());
-        ((TextView)findViewById(R.id.label_by)).setText(mFileInfo.getUpdatedBy().getFirstname()+" "+mFileInfo.getUpdatedBy().getLastname());
+        ((TextView)findViewById(R.id.label_by)).setText(Util.capitalize(mFileInfo.getUpdatedBy().getFirstname())+" "+
+                Util.capitalize(mFileInfo.getUpdatedBy().getLastname()));
         String numItems = " -- ";
         if (mFileInfo.getFile().isDir()){
             numItems = mFileInfo.getFile().getCantItems().toString();
@@ -201,7 +215,7 @@ public class FileInfoActivity extends AppCompatActivity {
                 .setView(layout)
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        int userId = (int)getIntent().getSerializableExtra("token");
+                        int userId = (int)getIntent().getSerializableExtra("userId");
                         int fileId = mFileInfo.getFile().getId();
                         String type = mFileInfo.getFile().isDir()?"dir":"file";
                         mFileMetadataService.updateFilename(userId, type, fileId, new FolderData(filename.getText().toString()),
@@ -213,7 +227,10 @@ public class FileInfoActivity extends AppCompatActivity {
                                         } else {
                                             // If Request OK:
                                             mFileInfo.getFile().setName(filename.getText().toString());
-                                            ((TextView) findViewById(R.id.tv_filename)).setText(mFileInfo.getFile().getName());
+                                            String newName = mFileInfo.getFile().getName();
+                                            if (newName.length()>20)
+                                                newName = newName.substring(0, 19)+"...";
+                                            ((TextView) findViewById(R.id.tv_filename)).setText(newName);
                                         }
                                     }
 

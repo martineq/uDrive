@@ -54,12 +54,15 @@ void DeleteFileNode::executeDelete() {
 			}else{
 				Log(Log::LogMsgDebug) << "[DeleteFileNode], file deleted, parent folder printing, id: "<<parentDir;
 				MgConnectionW mg=getConnection();
-				InfoNode* in=new InfoNode(mg);
-				in->setRequestDispatcher(RequestDispatcher::get_instance());
 				std::string uri;
 				uri = "/info/users/"+ userId + "/dir/" + parentDir;
 				mg.setMethod("GET");
 				mg.setUri(uri);
+
+				Log(Log::LogMsgDebug) << "[DeleteFileNode] Uri: " <<uri;
+				InfoNode* in=new InfoNode(mg);
+				in->setRequestDispatcher(RequestDispatcher::get_instance());
+
 				in->executeGet();
 				delete in;
 			}
