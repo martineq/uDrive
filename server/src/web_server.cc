@@ -238,7 +238,11 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       Log(Log::LogMsgDebug) << "[OBTIENE LISTA DE REVISIONES DE UN ARCHIVO]";
       return MG_TRUE;
 
-  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/user/",15)) {
+  } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileInfo/user/",15)) {
+
+      Log(Log::LogMsgDebug) << "[/fileInfo/user/]";
+
+      ///fileInfo/user/{userid}/files/{fileid}/collaborators
 
       if (!strncmp(mgConnection.getMethod(),"GET",3)){
           ListCollaboratorsNode* uun=new ListCollaboratorsNode(mgConnection);
@@ -246,7 +250,9 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
           uun->execute();
           delete uun;
           return MG_TRUE;
-      }else if (!strncmp(mgConnection.getMethod(),"PUT",3)){
+
+      }else if (!strncmp(mgConnection.getMethod(),"POST",4)){
+          Log(Log::LogMsgDebug) << "[ACTUALIZACOLABORADORES]";
           UpdateCollaboratorsNode* uun=new UpdateCollaboratorsNode(mgConnection);
           uun->setRequestDispatcher(RequestDispatcher::get_instance());
           uun->execute();
@@ -267,6 +273,7 @@ int WEBServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
       delete sfn;
       return MG_TRUE;
   } else if (ev == MG_REQUEST && !strncmp(conn->uri, "/fileinfo/users/",16)) {
+      Log(Log::LogMsgDebug) << "[FILEINFO]";
       ListInfoElemNode* sfn=new ListInfoElemNode(mgConnection);
       sfn->setRequestDispatcher(RequestDispatcher::get_instance());
       sfn->execute();
