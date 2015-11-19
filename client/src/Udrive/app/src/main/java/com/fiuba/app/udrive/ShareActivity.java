@@ -50,12 +50,13 @@ public class ShareActivity extends AppCompatActivity {
         mUsersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mCollaboratorsAdapter.isChecked(position) && mFileOwnerId.equals(mUserAccount.getUserId())){
-                    mCollaboratorsAdapter.toggleChecked(position);
-                }
-                else {
+                if (mCollaboratorsAdapter.isChecked(position) && (!mFileOwnerId.equals(mUserAccount.getUserId()))){
                     String message = getString(R.string.message_validation_no_canShare);
                     Toast.makeText(ShareActivity.this,message, Toast.LENGTH_LONG).show();
+
+                }
+                else {
+                    mCollaboratorsAdapter.toggleChecked(position);
                 }
             }
         });
