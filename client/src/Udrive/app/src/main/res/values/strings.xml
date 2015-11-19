@@ -70,7 +70,7 @@
     <string name="fullname_ok">Full name updated!</string>
     <string name="fullname_error">Error updating the full name</string>
     <string name="error_profile">Error loading profile</string>
-    <string name="picture_size_error">Your picture size must not be greater than 150 KB</string>
+    <string name="picture_size_error">Your picture size must not be greater than 1 MB</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Download</string>
