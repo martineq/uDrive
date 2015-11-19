@@ -99,7 +99,8 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
   if( revision_found ){  
     // Add physical file revision
     string new_revision = to_string( stoul_decimal(revision_file_info.revision) + 1 );
-    string file_name = user_id+file_id+new_revision;
+    string file_name = user_id+ revision_file_id +new_revision;
+    //cout << "Revision - File: "<< name<< " userid: " << user_id << " fileid: "<< revision_file_id << " revision: " << new_revision << endl;
     if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){ status = STATUS_FAIL_SAVING_FILE; return false; }
     // Update information of file revision
     if( !increase_file_revision(revision_file_id,status) ){ return false; }
@@ -110,6 +111,7 @@ bool RequestDispatcher::new_file(string user_id, string name, string extension, 
      // Add logical file
     if( !dh_.add_file(user_id,name,extension,date,size,LABEL_REVISION_1,parent_dir_id,file_id,status) ){ return false; }
     // Add physical file
+    cout << "New - File: "<< name<< " userid: " << user_id << " fileid: "<< file_id << " revision: " << LABEL_REVISION_1 << endl;
     string file_name = user_id+file_id+LABEL_REVISION_1;
     if( fh_.save_file(file_name,p_file_stream,stoul_decimal(size))==0 ){
       if( !dh_.delete_file(file_id,status) ){ return false; }  status = STATUS_FAIL_SAVING_FILE; return false;
