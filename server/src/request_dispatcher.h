@@ -385,6 +385,19 @@ class RequestDispatcher{
      */
     bool unset_file_share(string user_owner_id, string file_id, string user_shared_id, string date, int& status);
     
+    
+    /**
+     * @brief Removes all previous users shared, and sets a list of users to share a file. Returns true on success.
+     *        On error returns false and a DataHandler status (see db_constants.h)
+     * 
+     * @param user_owner_id ...
+     * @param file_id ...
+     * @param new_user_shared_id_list ...
+     * @param date ...
+     * @param status  returns DataHandler status ONLY if @return==false
+     * @return bool
+     */
+    bool overwrite_file_sharing_by_list(string user_owner_id, string file_id, vector<string> new_user_shared_id_list, string date, int& status);
         
     /**
      * @brief Modifies information of the user. Returns true on success.

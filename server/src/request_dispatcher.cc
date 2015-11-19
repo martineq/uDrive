@@ -270,11 +270,10 @@ bool RequestDispatcher::get_dir_stream(string user_id, string dir_id,
   ZipHandler::dir_tree_node_st dir_structure = get_dir_structure_recursive(dir_id,status);
   
   // Generate the zip file
-  string zip_name = "zipfile_" + user_id;
-  zh_.create_zip(zip_name,dir_structure);
+  string zip_name_with_extension = "zipfile_" + user_id + ".zip";
+  zh_.create_zip(zip_name_with_extension,dir_structure);
 
   // Load file in p_dir_stream
-  string zip_name_with_extension = zip_name + ".zip";
   size_t size = fh_.load_file(zip_name_with_extension,p_dir_stream);
   size_stream = to_string(size);
   if( size==0 ){ status = STATUS_FAIL_LOADING_FILE; return false; }
@@ -440,7 +439,7 @@ bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, s
                        user_shared_info.location,user_shared_info.shared_files,user_shared_info.user_quota_used,
                        user_shared_info.files_deleted,status);
   if( !ok ){ return false; }
-  
+
   // Remove user shared from file
   file_info.users_shared = remove_key_from_string_list(file_info.users_shared,user_shared_id);
   ok = dh_.modify_file_info(file_id,file_info.name,file_info.extension,date,file_info.tags,
@@ -448,6 +447,32 @@ bool RequestDispatcher::unset_file_share(string user_owner_id, string file_id, s
   if( !ok ){ return false; }
   
   return true;
+}
+
+
+bool RequestDispatcher::overwrite_file_sharing_by_list(string user_owner_id, string file_id, vector<string> new_user_shared_id_list,
+                                                       string date, int& status){
+  // Get information of the file
+  DataHandler::file_info_st file_info;
+  if( !dh_.get_file_info(file_id,file_info,status) ){ return false; }
+
+  // Search for authorized user
+  bool user_authorized = (file_info.owner.compare(user_owner_id)==0);
+  if( !user_authorized ){ status = STATUS_USER_FORBIDDEN; return false; }
+
+  // Eliminate all previous sharing for all users
+  vector<string> users_shared_to_unset = split_string(file_info.users_shared,LABEL_STRING_DELIMITER);
+  for(vector<string>::iterator it = users_shared_to_unset.begin() ; it!=users_shared_to_unset.end() ; ++it) {
+    string user_shared_to_unset_id = (*it);
+    if( !unset_file_share(user_owner_id,file_id,user_shared_to_unset_id,file_info.date_last_mod,status) ){ return false; }
+  }
+
+  // Set sharing for the new list of shared users
+  for(vector<string>::iterator it = new_user_shared_id_list.begin() ; it!=new_user_shared_id_list.end() ; ++it) {
+    string new_user_shared_to_set_id = (*it);
+    if( !set_file_share(user_owner_id,file_id,new_user_shared_to_set_id,date,status) ){ return false; }
+  }
+  
 }
 
 
