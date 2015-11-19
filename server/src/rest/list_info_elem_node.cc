@@ -45,11 +45,11 @@ void ListInfoElemNode::executeGet() {
 			RequestDispatcher::file_info_st file_info;
 			if (getRequestDispatcher()->get_file_info(userId,Id,file_info,status)){
 				Log(Log::LogMsgDebug) << "[ListInfoElemNode], ParentDirectory: "<<file_info.parent_directory;
-				RequestDispatcher::dir_info_st dir_info;
-				if (getRequestDispatcher()->get_directory_info(userId,file_info.parent_directory,dir_info,status)){
-					Log(Log::LogMsgDebug) << "[ListInfoElemNode], Dir owner: "<<dir_info.owner;
+			//	RequestDispatcher::dir_info_st dir_info;
+			//	if (getRequestDispatcher()->get_directory_info(userId,file_info.parent_directory,dir_info,status)){
+					Log(Log::LogMsgDebug) << "[ListInfoElemNode], Dir owner: "<<file_info.owner;
 					RequestDispatcher::user_info_st user_info;
-					if (getRequestDispatcher()->get_user_info(dir_info.owner,user_info,status)) {
+					if (getRequestDispatcher()->get_user_info(file_info.owner,user_info,status)) {
 						Log(Log::LogMsgDebug) << "[ListInfoElemNode], user last mod "<<file_info.user_last_mod;
 						RequestDispatcher::user_info_st user_info_updated;
 						if (getRequestDispatcher()->get_user_info(file_info.user_last_mod, user_info_updated, status)) {
@@ -116,7 +116,7 @@ void ListInfoElemNode::executeGet() {
 							}
 
 						}
-					}
+			//		}
 				}
 			}
 
