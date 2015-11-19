@@ -176,6 +176,13 @@ bool RequestDispatcher::get_directory_info(string user_id, string dir_id, Reques
   vector<RequestDispatcher::info_element_st> directory_element_info;
   if( !get_directory_element_info_from_dir_info(dir_info_temp,directory_element_info,status)){ return false; }
   
+  // If is "shared_files" dir, append the shared files of the user in this directory
+  if( dir_info_temp.name.compare(LABEL_SHARED_FILES)==0 ){
+    vector<RequestDispatcher::info_element_st> shared_files;
+    if( !get_shared_files(user_id,shared_files,status)){ return false; }
+    directory_element_info.insert(directory_element_info.end(),shared_files.begin(),shared_files.end());  
+  }
+  
   dir_info.directory_element_info = directory_element_info;
   dir_info.date_last_mod = dir_info_temp.date_last_mod;
   dir_info.name = dir_info_temp.name;
@@ -810,7 +817,7 @@ bool RequestDispatcher::decrease_user_quota_used(string user_id, string quota_de
   if( !dh_.get_user_info(user_id,user_info,status) ){ return false; }
   
   size_t new_quota = stoul_decimal(user_info.user_quota_used) - stoul_decimal(quota_decreased);
-  std::cout <<"new quota: "<< new_quota<< " "<< stoul_decimal(user_info.user_quota_used)<< " - "<< stoul_decimal(quota_decreased)  << std::endl;
+  
   return( dh_.modify_user_info(user_id,user_info.email,user_info.name,user_info.location,
                                user_info.shared_files,to_string(new_quota),user_info.files_deleted,status) );
 }
@@ -897,6 +904,25 @@ ZipHandler::dir_tree_node_st RequestDispatcher::get_dir_structure_recursive(stri
     node.files_contained.push_back(file_zip_info);
   }
   
+
+  // If is "shared_files" dir, append the shared files of the user in this directory
+  if( dir_info.name.compare(LABEL_SHARED_FILES)==0 ){
+    DataHandler::user_info_st dh_user_info;
+    if( !dh_.get_user_info(dir_info.owner,dh_user_info,status) ){ return node; }
+    vector<string> shared_files_ids = split_string(dh_user_info.shared_files,LABEL_STRING_DELIMITER);  
+    for(vector<string>::iterator it = shared_files_ids.begin() ; it!=shared_files_ids.end() ; ++it) {
+      string shared_file_id = (*it);
+      DataHandler::file_info_st file_info;
+      if( !dh_.get_file_info(shared_file_id,file_info,status) ){ return node; }
+      ZipHandler::file_st file_zip_info;
+      file_zip_info.file_id = file_info.owner + shared_file_id + file_info.revision;
+      file_zip_info.file_real_name = file_info.name + "." + file_info.extension;
+      node.files_contained.push_back(file_zip_info);
+    }
+  }
+
+  
+  
   //Fill sub_dirs recursively
   vector<string> subdir_ids = split_string(dir_info.directories_contained,LABEL_STRING_DELIMITER);
   for(vector<string>::iterator it = subdir_ids.begin() ; it!=subdir_ids.end() ; ++it) {
@@ -945,8 +971,6 @@ string RequestDispatcher::remove_key_from_string_list(string list, string key){
 bool RequestDispatcher::get_directory_element_info_from_dir_info(DataHandler::dir_info_st dir_info,
                                                                  vector<RequestDispatcher::info_element_st>& directory_element_info,
                                                                  int& status){
-  directory_element_info.clear();
-  
   // Fill subdir info
   if( !add_info_dirs_from_id_list(dir_info.directories_contained,directory_element_info,status) ){ return false; }
   

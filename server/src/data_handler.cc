@@ -71,6 +71,11 @@ bool DataHandler::add_user(string email, string password, string name, string lo
     status = STATUS_DATABASE_ERROR; return false;
   }
   
+  // Creates shared_files dir
+  string shared_files_dir_id;
+  if(!add_directory(user_id,LABEL_SHARED_FILES,date,id_dir_root,shared_files_dir_id,status)){ return false; }
+  
+  
   return true;
 }
 

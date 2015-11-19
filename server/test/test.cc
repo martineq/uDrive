@@ -312,7 +312,7 @@ TEST(DataHandlerTest, DirectoryInfo) {
   EXPECT_STREQ("",dir_info_jack.tags.c_str());
   EXPECT_STREQ("root",dir_info_jack.name.c_str());
   EXPECT_STREQ("",dir_info_jack.files_contained.c_str());
-  EXPECT_STREQ("",dir_info_jack.directories_contained.c_str());
+  EXPECT_STREQ(";2",dir_info_jack.directories_contained.c_str());  // Include "shared files" dir
 
   // Delete used temp folder
   system("rm -rf /tmp/testdb");
@@ -569,7 +569,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
 
   // ** For reding information of sub-directories and files contained in this directory **
   vector<RequestDispatcher::info_element_st> v_dir_elem_info = dir_info.directory_element_info;
-  EXPECT_EQ(3,v_dir_elem_info.size());                        // Number of elements in this directory == 3
+  EXPECT_EQ(4,v_dir_elem_info.size());                        // Number of elements in this directory == 4
   
   // Get dir info from a non-root dir
   EXPECT_TRUE(rd->check_token(user_id,token,status));
@@ -777,7 +777,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
     search_results.append((*it).name+";");
   }
-  EXPECT_STREQ("archivo;archivo_2;miCarpeta;",search_results.c_str());
+  EXPECT_STREQ("archivo;archivo_2;shared_files;miCarpeta;",search_results.c_str());
   
   // Search by extension
   EXPECT_TRUE(rd->search_by_extension(user_id,"TxT",elements_founded,status));
@@ -796,7 +796,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   status;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("1130",size_stream);  // Size of zip file (3 files): 1130 bytes
+  EXPECT_EQ("1294",size_stream);  // Size of zip file (3 files): 1294 bytes
 
   // Create zip file with forbidden user
   sub_sub_dir_id;
@@ -854,14 +854,14 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   // ...Check file non-deleted from user owner  (the owner can NOT have the file)
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
   EXPECT_TRUE(ok); 
-  EXPECT_EQ(2,dir_info.directory_element_info.size());   // Number of elements in this directory: 3-1==2
+  EXPECT_EQ(3,dir_info.directory_element_info.size());   // Number of elements in this directory: 4-1==3
   
   // Recover deleted file
   EXPECT_TRUE(rd->recover_deleted_files(user_id,status));
   // Check again for the files recovered
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
   EXPECT_TRUE(ok); 
-  EXPECT_EQ(3,dir_info.directory_element_info.size());   // Number of elements in this directory: 2+1=3
+  EXPECT_EQ(4,dir_info.directory_element_info.size());   // Number of elements in this directory: 3+1=4
   
   // Modify file info
   EXPECT_TRUE(rd->modify_file_info(user_id,file_to_share_id,"file_renombrado","txt","08/11/15","favorito;público",status));
@@ -878,7 +878,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   EXPECT_EQ(0,deleted_files.size());
   // ...And get zip file without the file
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("912",size_stream);  // Size of zip file (2 files): 912 bytes
+  EXPECT_EQ("1076",size_stream);  // Size of zip file (2 files): 1076 bytes
   
   // Change directory information
   EXPECT_TRUE(rd->modify_directory_info(user_id,sub_dir_id,"dir_renombrado","09/11/15","importante",status));
@@ -888,13 +888,13 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   // ...Check the directory obtained after directory delete
   ok = rd->get_directory_info(user_id,dir_id,dir_info,status);
   EXPECT_TRUE(ok); 
-  EXPECT_EQ(1,dir_info.directory_element_info.size());   // Number of elements in this directory: 2-1=1
+  EXPECT_EQ(2,dir_info.directory_element_info.size());   // Number of elements in this directory: 3-1=2
   // ...And get zip file without the sub-dir
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("372",size_stream);  // Size of zip file (1 file): 372 bytes
+  EXPECT_EQ("536",size_stream);  // Size of zip file (1 file): 536 bytes
   // Save the zip file
   FileHandler fh;
-  EXPECT_EQ(372,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 372 bytes
+  EXPECT_EQ(536,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 536 bytes
 
   // Change user info
   EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","Ice","Kng","122.34","45.33",status));
@@ -947,17 +947,17 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   EXPECT_TRUE(rd->delete_file(user_id_second,file_id_4,status));
   RequestDispatcher::dir_info_st dir_info_second_user;
   EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
-  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  EXPECT_EQ(1,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 2-1=1
   // ...Recover just one file  (and check)
   vector<string> files_to_recover;
   files_to_recover.push_back(file_id_4);
   EXPECT_TRUE(rd->recover_deleted_files(user_id_second,files_to_recover,status));
   EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
-  EXPECT_EQ(1,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 0+1=1
+  EXPECT_EQ(2,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1+1=2
   // ...delete again  (and check)
   EXPECT_TRUE(rd->delete_file(user_id_second,file_id_4,status));
   EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
-  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  EXPECT_EQ(1,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 2-1=1
   // Verify deleted files (recycle bin)
   vector<RequestDispatcher::info_element_st> vector_info_4;
   EXPECT_TRUE(rd->get_deleted_files(user_id_second,vector_info_4,status));
@@ -965,7 +965,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   // ...purge just one file  (and check)
   EXPECT_TRUE(rd->purge_deleted_files(user_id_second,files_to_recover,status));
   EXPECT_TRUE(rd->get_directory_info(user_id_second,"0",dir_info_second_user,status));
-  EXPECT_EQ(0,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 1-1=0
+  EXPECT_EQ(1,dir_info_second_user.directory_element_info.size());   // Number of elements in this directory: 2-1=1
   // Verify deleted files (recycle bin)
   EXPECT_TRUE(rd->get_deleted_files(user_id_second,vector_info_4,status));
   EXPECT_EQ(0,vector_info_4.size());   // Number of elements in recycle bin: 1-1=0
