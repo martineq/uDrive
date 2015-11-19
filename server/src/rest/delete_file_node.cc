@@ -40,14 +40,14 @@ void DeleteFileNode::executeDelete() {
 		RequestDispatcher::file_info_st file_info;
 
 		if (!getRequestDispatcher()->get_file_info(userId,fileId,file_info,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else{
 			std::string parentDir=file_info.parent_directory;
 			if (!getRequestDispatcher()->delete_file(userId,fileId,status)) {
-				getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg = handlerError(status);
 				getConnection().printfData(msg.c_str());

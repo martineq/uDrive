@@ -40,7 +40,7 @@ void RestoreFileTrashNode::executePost() {
 		vector<std::string> selected_files=RestoreFileTrashNode::split(filesParams,',');
 
 		if (!getRequestDispatcher()->recover_deleted_files(userId,selected_files,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

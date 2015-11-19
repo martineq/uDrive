@@ -30,7 +30,7 @@ void SendFileNode::executeGet() {
 
 		Log(Log::LogMsgDebug) << "[" << "SendFileNode " << "] userId: " << userId << " dirId: " << fileId<< " Version: "<<revision;
         if (!getRequestDispatcher()->get_file_stream(userId,fileId,revision,p_file,size,status)  ){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

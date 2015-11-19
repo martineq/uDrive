@@ -56,6 +56,7 @@ class RequestDispatcher{
     } ;
     
     struct file_info_st {
+      string owner;
       string name;
       string extension;
       string date_last_mod;
@@ -107,7 +108,7 @@ class RequestDispatcher{
     void fill_info_elem_to_file_info(string file_id, DataHandler::file_info_st file_info, RequestDispatcher::info_element_st& info_element);
     bool is_str_included_to_lower(string str_source, string str_to_search);
     void fill_user_info_st(string user_id,DataHandler::user_info_st dh_user_info,RequestDispatcher::user_info_st& user_info);
-    void dh_file_info_to_rd_file_info(DataHandler::file_info_st file_info_temp,RequestDispatcher::file_info_st& file_info);
+    bool dh_file_info_to_rd_file_info(DataHandler::file_info_st file_info_temp,RequestDispatcher::file_info_st& file_info,int &status);
     
   public:  
     

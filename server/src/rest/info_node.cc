@@ -42,7 +42,7 @@ void InfoNode::executeGet() {
         RequestDispatcher::dir_info_st dirInfo_rd;
 
 		if (!getRequestDispatcher()->get_directory_info(userId, dirId, dirInfo_rd, status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

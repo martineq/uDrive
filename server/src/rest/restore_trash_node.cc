@@ -36,7 +36,7 @@ void RestoreTrashNode::executePost() {
 		Log(Log::LogMsgDebug) << "[RestoreTrashNode], UserId: " <<userId;
 
 		if (!getRequestDispatcher()->recover_deleted_files(userId,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

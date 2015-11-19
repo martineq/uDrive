@@ -51,7 +51,7 @@ void UpdateUserFullNameNode::executePut() {
         }
 
         if (!getRequestDispatcher()->modify_user_info(userId,user_info.email,firstname,lastname,user_info.gps_lat,user_info.gps_lat,status)) {
-            getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());

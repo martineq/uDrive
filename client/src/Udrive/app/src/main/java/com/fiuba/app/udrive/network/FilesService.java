@@ -89,11 +89,11 @@ public class FilesService extends AbstractService {
         @GET("/info/users/{userId}/file")
         void getFilesByExtension(@Path("userId") int userId, @Query("extension") String extension, Callback<List<File>> files);
 
-        // Gets the results for the searching by file(dir) name
+        // Gets the results for the searching by tag
         @GET("/info/users/{userId}/tags")
         void getFilesByTag(@Path("userId") int userId, @Query("tagname") String tag, Callback<List<File>> files);
 
-        // Gets the results for the searching by file(dir) name
+        // Gets the results for the searching by owner
         @GET("/info/users/{userId}/owners/{ownerId}")
         void getFilesByOwner(@Path("userId") int userId, @Path("ownerId") int ownerId, Callback<List<File>> files);
 

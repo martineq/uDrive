@@ -36,7 +36,7 @@ void SignupNode::executePost() {
 			std::string new_token=CreateToken(email);
 
 			if (!getRequestDispatcher()->sign_up(email, password, firstname, lastname, "0.00", "0.00",new_token, fecha, userId,status)){
-				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
+				getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				string msg=handlerError(status);
 				getConnection().printfData(msg.c_str());
@@ -44,7 +44,7 @@ void SignupNode::executePost() {
 				getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 				getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 				Log(Log::LogMsgDebug) << "[" << "SignUp - resultCode: 1 ]";
-				getConnection().printfData("{\"resultCode\": 1}");
+				getConnection().printfData("{\"resultCode\": \"1\"}");
 			}
 		}else{
 			Log(Log::LogMsgDebug) << "[" << "empty email or password" << "]";

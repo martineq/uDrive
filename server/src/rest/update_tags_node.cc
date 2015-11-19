@@ -32,6 +32,7 @@ void UpdateTagsNode::executePut() {
 	string id ="";
 	int status=11;
 	Log(Log::LogMsgDebug) << "[UpdateTagsNode]";
+	std:string tags="";
 
 	if ( ( (!lista[4].compare("file")) or (!lista[4].compare("dir"))) && (lista.size()==6)){
 		Log(Log::LogMsgDebug) << "[UpdateTagsNode]";
@@ -43,7 +44,7 @@ void UpdateTagsNode::executePut() {
 
 		Log(Log::LogMsgDebug) << "[ListTagsNode], UserId: " <<userId<< ", Id: " << id;
 
-		std:string tags=getConnection().getBodyJson("tags");
+		tags=getConnection().getBodyJson("tags");
 
 		Log(Log::LogMsgDebug) << "[ListTagsNode], Tags: "<<tags;
 
@@ -51,7 +52,7 @@ void UpdateTagsNode::executePut() {
 		else result=getRequestDispatcher()->get_directory_info(userId,id,dir_info,status);
 
 		if (!result){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
@@ -59,14 +60,14 @@ void UpdateTagsNode::executePut() {
 		}else if ( (!lista[4].compare("file")) and (!getRequestDispatcher()->modify_file_info(userId,
 			id,file_info.name,file_info.extension,file_info.date_last_mod,tags,status)) ){
 
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else if ( (!lista[4].compare("dir")) and (!getRequestDispatcher()->modify_directory_info(userId,
 			id,dir_info.name,dir_info.date_last_mod,tags,status)) ){
 
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

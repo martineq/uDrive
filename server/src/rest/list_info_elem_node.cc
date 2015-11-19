@@ -40,14 +40,17 @@ void ListInfoElemNode::executeGet() {
 		std::ostringstream item;
 		item << "{";
 
-
 		if (lista[5].compare("file")){
+			Log(Log::LogMsgDebug) << "[ListInfoElemNode], File. ";
 			RequestDispatcher::file_info_st file_info;
 			if (getRequestDispatcher()->get_file_info(userId,Id,file_info,status)){
-				RequestDispatcher::dir_info_st dir_info;
-				if (getRequestDispatcher()->get_directory_info(userId,file_info.parent_directory,dir_info,status)){
+				Log(Log::LogMsgDebug) << "[ListInfoElemNode], ParentDirectory: "<<file_info.parent_directory;
+			//	RequestDispatcher::dir_info_st dir_info;
+			//	if (getRequestDispatcher()->get_directory_info(userId,file_info.parent_directory,dir_info,status)){
+					Log(Log::LogMsgDebug) << "[ListInfoElemNode], Dir owner: "<<file_info.owner;
 					RequestDispatcher::user_info_st user_info;
-					if (getRequestDispatcher()->get_user_info(dir_info.owner,user_info,status)) {
+					if (getRequestDispatcher()->get_user_info(file_info.owner,user_info,status)) {
+						Log(Log::LogMsgDebug) << "[ListInfoElemNode], user last mod "<<file_info.user_last_mod;
 						RequestDispatcher::user_info_st user_info_updated;
 						if (getRequestDispatcher()->get_user_info(file_info.user_last_mod, user_info_updated, status)) {
 							result=true;
@@ -62,7 +65,7 @@ void ListInfoElemNode::executeGet() {
 							<< "\"name\":\"" << file_info.name << "\","
 							<< "\"size\":\"" << file_info.size << "\","
 							<< "\"type\":\"" "a\","
-							<< "\"size\":\"" << "false" << "\"," //TODO : Ver de donde sacar el campo este
+							<< "\"shared\":\"" << "false" << "\"," //TODO : Ver de donde sacar el campo este
 							<< "\"lastModDate\":\"" << file_info.date_last_mod << "\","
 							<< "\"cantItems\":\"" "3\"},"
 
@@ -78,28 +81,42 @@ void ListInfoElemNode::executeGet() {
 							vector<RequestDispatcher::user_info_st> lista_user_info;
 
 							if (getRequestDispatcher()->get_owners_of_shared_files(userId,lista_user_info,status)){
-								Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: list colaborators users ";
+								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: list users ";
+								if (lista_user_info.size()!=0){
+
 								for (int i = 0; i < lista_user_info.size()-1 ; ++i) {
 									item
 									<< "{\"id\":\"" << lista_user_info[i].id << "\","
 									<< "\"firstName\":\"" << lista_user_info[i].first_name << "\","
 									<< "\"lastName\":\"" << lista_user_info[i].last_name << "\","
 									<< "\"email\":\"" << lista_user_info[i].email << "\"},";
-									result=true;
+
 								}
-								Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: "<<lista_user_info.size();
+								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: "<<lista_user_info.size();
 								item
 								<< "{\"id\":\"" << lista_user_info[lista_user_info.size()-1].id << "\","
 								<< "\"firstName\":\"" << lista_user_info[lista_user_info.size()-1].first_name << "\","
 								<< "\"lastName\":\"" << lista_user_info[lista_user_info.size()-1].last_name << "\","
 								<< "\"email\":\"" << lista_user_info[lista_user_info.size()-1].email << "\"}";
-								result=true;
-								Log(Log::LogMsgDebug) << "[ListCollaboratorsNode]: ";
 
+								Log(Log::LogMsgDebug) << "[ListInfoElemNode]: ";
+								}
 							}
 							item << "]";
+
+							vector<string> tags;
+							item
+							<< ",\"tags\":\"";
+							if (getRequestDispatcher()->get_tags(userId,tags,status)){
+
+								for (int i = 0; i < tags.size(); ++i) {
+									item << tags[i]+";";
+								}
+								item << "\"";
+							}
+
 						}
-					}
+			//		}
 				}
 			}
 
@@ -108,18 +125,20 @@ void ListInfoElemNode::executeGet() {
 		item << "}";
 
 		if (!result) {
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			Log(Log::LogMsgDebug) << "[ListInfoElemNode]: STATUS_CODE_NO_CONTENT";
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
 		} else {
+			Log(Log::LogMsgDebug) << "[ListInfoElemNode]: STATUS_CODE_OK";
 			getConnection().sendStatus(MgConnectionW::STATUS_CODE_OK);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 
 			const std::string tmp = item.str();
 			const char* msg = tmp.c_str();
-			Log(Log::LogMsgDebug) << tmp.c_str();
-			getConnection().printfData(tmp.c_str());
+			Log(Log::LogMsgDebug) << msg;
+			getConnection().printfData(msg);
 		}
 	}
 	else{
