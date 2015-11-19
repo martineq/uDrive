@@ -30,20 +30,18 @@ vector<string> SearchUsersNode::split(const string &s, char delim) {
 void SearchUsersNode::executeGet() {
 	vector<string> lista=SearchUsersNode::split(getUri(),'/');
 	string fileId ="";
-	int status=11;
+	int status=0;
 	if ( (!lista[3].compare("users"))){
 		Log(Log::LogMsgDebug) << "[SearchUsersNode]";
 		string userId=getUserId();
 		bool result=false;
 
-
-		const string query_mail = getConnection().getParameter("q");
-		Log(Log::LogMsgDebug) << "[SearchUsersNode], UserId: " <<userId << " query: " <<query_mail;
-
+		string query_mail = getConnection().getParameter("q");
 		std::ostringstream item;
 		item << "[";
 		vector<RequestDispatcher::user_info_st> listaUsersInfo;
 
+		Log(Log::LogMsgDebug) << "[SearchUsersNode], UserId: " <<userId << " Patron: " <<query_mail;
 		if (getRequestDispatcher()->get_user_email_list_by_pattern(query_mail,listaUsersInfo,status)){
 			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users , size: "<<listaUsersInfo.size();
 			if (listaUsersInfo.size()!=0) {

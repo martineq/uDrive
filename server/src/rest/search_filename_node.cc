@@ -42,7 +42,7 @@ void SearchFilenameNode::executeGet() {
 		vector<RequestDispatcher::info_element_st> elem_info;
 		string lastVersion="1";
 
-		if (getRequestDispatcher()->search_by_name(userId,filename, elem_info,status)){
+		if (getRequestDispatcher()->search_by_name(userId,filename,elem_info,status)){
 			item << "[";
 			Log(Log::LogMsgDebug) << "[SearchFilenameNode]: listing element "<< elem_info.size();
 			if (elem_info.size()!=0) {
