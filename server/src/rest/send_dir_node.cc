@@ -27,7 +27,7 @@ void SendDirNode::executeGet() {
 
 		Log(Log::LogMsgDebug) << "[" << "SendDirNode " << "] userId: " << userId << " dirId: " << dirId;
         if (!getRequestDispatcher()->get_dir_stream(userId,dirId,p_file,size,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

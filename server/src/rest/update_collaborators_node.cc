@@ -86,7 +86,7 @@ void UpdateCollaboratorsNode::executePut() {
 		item << "]";
 
 		if (!result) {
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());

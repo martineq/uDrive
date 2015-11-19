@@ -43,7 +43,7 @@ void UpdatePhotoNode::executePut() {
         Log(Log::LogMsgDebug) << "[UpdatePhotoNode]: Tome photoStream, tamaño "<<tam_string;
 
         if (!getRequestDispatcher()->set_user_image(userId,photoStream.c_str(),tam_string,status)){
-            getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+            getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());
@@ -64,7 +64,7 @@ void UpdatePhotoNode::executePut() {
 }
 
 std::string UpdatePhotoNode::defaultResponse(){
-    return "{\"resultCode\": 2}";
+    return "{\"resultCode\": \"2\"}";
 }
 
 std::string UpdatePhotoNode::getUserId() {

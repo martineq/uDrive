@@ -38,7 +38,7 @@ void DeleteTrashNode::executeDelete() {
 		vector<RequestDispatcher::info_element_st> deleted_files;
 
 		if (!getRequestDispatcher()->purge_deleted_files(userId,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());

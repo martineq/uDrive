@@ -39,14 +39,14 @@ void DeleteDirNode::executeDelete() {
 		RequestDispatcher::dir_info_st dir_info;
 
 		if (!getRequestDispatcher()->get_directory_info(userId, dirId,dir_info,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());
 		}else Log(Log::LogMsgDebug) << "[DeleteDirNode] dirId parent: "<<dir_info.parent_directory;
 
 		if (!getRequestDispatcher()->delete_directory(userId, dirId,status)) {
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_BAD_REQUEST);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg = handlerError(status);
 			getConnection().printfData(msg.c_str());

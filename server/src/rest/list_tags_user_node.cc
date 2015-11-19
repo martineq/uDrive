@@ -42,7 +42,7 @@ void ListTagsUserNode::executeGet() {
 		std::string tags="";
 
 		if (!getRequestDispatcher()->get_tags(userId,listTags,status)){
-			getConnection().sendStatus(MgConnectionW::STATUS_CODE_UNAUTHORIZED);
+			getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
 			getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
 			string msg=handlerError(status);
 			getConnection().printfData(msg.c_str());
