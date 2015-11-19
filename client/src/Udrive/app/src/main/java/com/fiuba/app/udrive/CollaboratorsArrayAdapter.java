@@ -1,6 +1,7 @@
 package com.fiuba.app.udrive;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
     public void updateCollaborators(List<Collaborator> collaborators) {
         this.mCollaborators = collaborators;
         notifyDataSetChanged();
+
     }
 
     @Override
