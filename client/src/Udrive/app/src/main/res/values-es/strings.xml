@@ -143,6 +143,7 @@
     <string name="version">Seleccione una versión</string>
     <string name="prev_download">Descargar</string>
     <string name="versionNumber">Versión</string>
+    <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
 
 </resources>
 
