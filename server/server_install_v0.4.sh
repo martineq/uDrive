@@ -4,8 +4,8 @@
 ##  Script de instalación del server            ##
 ##  Sistema operativo basado: Ubuntu 14.04 LTS  ##
 ##  Para correr este script, ejecutar:          ##  
-##  sudo chmod 777 server_install_v0.3.sh       ##
-##  sudo ./server_install_v0.3.sh               ##
+##  sudo chmod 777 server_install_v0.4.sh       ##
+##  sudo ./server_install_v0.4.sh               ##
 ##################################################
 
 # Caso sin parámetros: Limpieza de librerías debido a posibles versiones anteriores conflictivas
