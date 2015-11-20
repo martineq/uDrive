@@ -23,16 +23,27 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
     private final Context mContext;
     private List<Collaborator> mCollaborators = Collections.emptyList();
     private Map<Integer, Boolean> mCheckedPositions = new HashMap<>();
-    private Collaborator mColaborator;
 
     public CollaboratorsArrayAdapter(Context context) {
         this.mContext = context;
     }
 
-    public void updateCollaborators(List<Collaborator> collaborators) {
-        this.mCollaborators = collaborators;
-        notifyDataSetChanged();
+    public List<Collaborator> getCollaborators() {
+        return mCollaborators;
+    }
 
+    public void updateAndCheckCollaborators(List<Collaborator> collaborators) {
+        this.mCollaborators = collaborators;
+        for (Collaborator collaborator : this.mCollaborators) {
+            this.mCheckedPositions.put(this.mCollaborators.indexOf(collaborator), true);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void addAndCheckCollaborator(Collaborator collaborator) {
+        this.mCollaborators.add(collaborator);
+        this.mCheckedPositions.put(this.mCollaborators.indexOf(collaborator), true);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -74,9 +85,9 @@ public class CollaboratorsArrayAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        mColaborator = mCollaborators.get(position);
+        Collaborator colaborator = mCollaborators.get(position);
 
-        viewHolder.txEmail.setText(mColaborator.getEmail());
+        viewHolder.txEmail.setText(colaborator.getEmail());
 
         if (isChecked(position)) {
             viewHolder.ivCheck.setImageResource(R.drawable.ic_checkbox_marked_circle);
