@@ -1,7 +1,6 @@
 package com.fiuba.app.udrive;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ public class ShareActivity extends AppCompatActivity {
     public static final int USER_CODE = 1;
 
     private ListView mUsersListView;
-    private List<Collaborator> mCollaborators = new ArrayList<>();
     private UserAccount mUserAccount;
     private Integer mFileId;
     private Integer mFileOwnerId;
@@ -117,16 +115,14 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void setCollaborators(List<Collaborator> collaborators) {
-        this.mCollaborators = collaborators;
-        mCollaboratorsAdapter.updateCollaborators(mCollaborators);
+        mCollaboratorsAdapter.updateAndCheckCollaborators(collaborators);
     }
 
     private void addCollaborator(Collaborator collaborator){
-        if(!mCollaborators.contains(collaborator)){
-            Log.i(TAG, "Add collaborator:  "+collaborator.getEmail());
-            this.mCollaborators.add(collaborator);
+        if(!mCollaboratorsAdapter.getCollaborators().contains(collaborator)){
+            Log.i(TAG, "Add collaborator:  " + collaborator.getEmail());
+            this.mCollaboratorsAdapter.addAndCheckCollaborator(collaborator);
         }
-        mCollaboratorsAdapter.updateCollaborators(mCollaborators);
     }
 
     @Override
@@ -140,9 +136,9 @@ public class ShareActivity extends AppCompatActivity {
             mFileService.updateCollaborators(mUserAccount.getUserId(), mFileId, mCollaboratorsAdapter.getCheckedItems(), new ServiceCallback<List<Collaborator>>() {
                 @Override
                 public void onSuccess(List<Collaborator> collaborators, int status) {
-                    mCollaboratorsAdapter.updateCollaborators(collaborators);
+                    mCollaboratorsAdapter.updateAndCheckCollaborators(collaborators);
                     Log.d(TAG, "Number of collaborators received " + collaborators.size());
-                    backFileList();
+                    finish();
                 }
 
                 @Override
@@ -157,15 +153,6 @@ public class ShareActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    private void backFileList(){
-        Intent nextIntent = new Intent(ShareActivity.this, FileListActivity.class);
-        nextIntent.putExtra(FileListActivity.EXTRA_USER_ACCOUNT, mUserAccount);
-        nextIntent.putExtra(FileListActivity.EXTRA_DIR_ID, mDirId);
-        startActivity(nextIntent);
-        finish();
     }
 
     @Override
