@@ -782,6 +782,7 @@ public class FileListActivity extends AppCompatActivity implements
         tabHost.addTab(spec3);
 
         //create tab4
+        final Spinner spinner_tab4 = (Spinner)layout.findViewById(R.id.spinner_tab4);
         final ArrayList<String> names = new ArrayList<>();
         final ArrayList<String> mails = new ArrayList<>();
         final ArrayList<Collaborator> collab = new ArrayList<>();
@@ -793,6 +794,14 @@ public class FileListActivity extends AppCompatActivity implements
                     names.add(coll.get(i).getFirstName() + " " + coll.get(i).getLastName());
                     mails.add(coll.get(i).getEmail());
                     collab.add(coll.get(i));
+                }
+
+                CollaboratorsListAdapter ownerAdapter = new CollaboratorsListAdapter(FileListActivity.this, android.R.layout.simple_spinner_item,
+                        R.layout.file_info_item, names, mails);
+                ownerAdapter.setDropDownViewResource(R.layout.file_info_item);
+                spinner_tab4.setAdapter(ownerAdapter);
+                for(int i = 0; i < coll.size(); i++) {
+                    ownerAdapter.add(coll.get(i));
                 }
             }
 
@@ -812,15 +821,7 @@ public class FileListActivity extends AppCompatActivity implements
             mails.add(collab.get(i).getEmail());
         }*/
         /*************/
-        final CollaboratorsListAdapter ownerAdapter = new CollaboratorsListAdapter(this, android.R.layout.simple_spinner_item,
-                R.layout.file_info_item, names, mails);
-        ownerAdapter.setDropDownViewResource(R.layout.file_info_item);
-        final Spinner spinner_tab4 = (Spinner)layout.findViewById(R.id.spinner_tab4);
-        spinner_tab4.setAdapter(ownerAdapter);
-        for(int i = 0; i < collab.size(); i++) {
-            collab.get(i).setId(i);
-            ownerAdapter.add(collab.get(i));
-        }
+
         TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
         spec4.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_owner, R.drawable.ic_account_24));
         spec4.setContent(R.id.layout4);
