@@ -88,9 +88,11 @@ public class FileInfoActivity extends AppCompatActivity {
         for (i = 0; i < coll.size(); i++){
             names.add(coll.get(i).getFirstname()+" "+coll.get(i).getLastname());
             mails.add(coll.get(i).getEmail());
+            System.out.println("Collab name >>>> " + coll.get(i).getFirstname() + " " + coll.get(i).getLastname());
+            System.out.println("Collab email >>>> "+ coll.get(i).getEmail());
         }
-        ArrayAdapter adapter = new CollaboratorsListAdapter(this, R.layout.file_info_item,
-                R.layout.file_info_item, names, mails);
+        ArrayAdapter<String> adapter = new CollabListViewAdapter(this, R.layout.file_info_item,
+               names, mails);
         access.setAdapter(adapter);
         setListViewHeightBasedOnItems(access);
 
