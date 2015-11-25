@@ -15,6 +15,7 @@ import java.util.List;
 
 public class FilesArrayAdapter extends ArrayAdapter<File> {
 
+    private final Context mContext;
     private List<File> mFiles;
     private int mResourceId;
     private OnContextMenuClickListener contextMenuClickListener;
@@ -24,6 +25,7 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
         this.mFiles = files;
         this.mResourceId = resourceId;
         this.contextMenuClickListener = contextMenuClickListener;
+        this.mContext = context;
     }
 
     static class FilesViewHolder {

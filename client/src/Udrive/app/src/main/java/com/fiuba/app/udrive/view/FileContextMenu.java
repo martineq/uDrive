@@ -103,6 +103,9 @@ public class FileContextMenu extends LinearLayout {
         if(!this.onItemClickBtnVisibilityListener.shouldShowDeleteButton(mFeedItem))
             btnDelete.setVisibility(GONE);
 
+        if(!this.onItemClickBtnVisibilityListener.shouldShowShareButton(mFeedItem))
+            btnShare.setVisibility(GONE);
+
         if (!this.onItemClickBtnVisibilityListener.shouldShowPrevDownloadButton(mFeedItem))
             btnDownloadPrev.setVisibility(GONE);
 
@@ -141,5 +144,6 @@ public class FileContextMenu extends LinearLayout {
     public interface OnFileContextMenuItemClickButtonVisibilityListener {
         boolean shouldShowDeleteButton(int fileItem);
         boolean shouldShowPrevDownloadButton(int fileItem);
+        boolean shouldShowShareButton(int fileItem);
     }
 }

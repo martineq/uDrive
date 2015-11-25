@@ -47,12 +47,16 @@
         <item name="colorAccent">@color/accent</item>
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
-
+        <item name="nnf_toolbarTheme">@style/FilePickerToolbar</item>
         <!-- If you want to set a specific toolbar theme, do it here -->
         <!-- <item name="nnf_toolbarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item> -->
         <item name="android:textColor">@color/black</item>
         <!-- Itemlist styles -->
         <item name="android:textAppearanceLarge">@style/BlackTextStyle</item>
+    </style>
+
+    <style name="FilePickerToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="FilePickerAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
