@@ -52,7 +52,6 @@ import com.google.android.gms.location.LocationServices;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +67,6 @@ public class FileListActivity extends AppCompatActivity implements
 
     private FilesArrayAdapter mFilesAdapter;
 
-    private ProgressDialog mProgressDialog;
-
     private FilesService mFilesService;
 
     private UserService mUserService = null;
@@ -82,7 +79,7 @@ public class FileListActivity extends AppCompatActivity implements
 
     private Integer mFileId;
 
-    private File mActualFile;
+    private File mCurrentFile;
 
     private File selectedFileForDownload;
 
@@ -90,9 +87,13 @@ public class FileListActivity extends AppCompatActivity implements
 
     public static final int DIR_CODE = 2;
 
+    public static final int FILE_INFO_OK = 3;
+
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
 
     public static final String EXTRA_DIR_ID = "dirId";
+
+    private static final String EXTRA_CURRENT_FILE = "currentFile";
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation = null;
@@ -105,7 +106,9 @@ public class FileListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
+        System.out.println(" >>>>>> Executing onCreate()");
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
+        mCurrentFile = (File) getIntent().getSerializableExtra(EXTRA_CURRENT_FILE);
         mDirId = (Integer) getIntent().getSerializableExtra(EXTRA_DIR_ID);
         Log.d(TAG, "TOKEN: " + mUserAccount.getToken());
         mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_list_item, mFiles, this);
@@ -127,6 +130,20 @@ public class FileListActivity extends AppCompatActivity implements
             mDirId = 0;
         loadFiles(mUserAccount.getUserId(), mDirId); // Change 0 to the corresponding dirId
     }
+
+    @Override
+    public void onResume() {
+        if(mDirId == 0){
+            super.onResume();
+        }else{
+            if(mCurrentFile.isDir()){
+                setTitle(mCurrentFile.getName());
+            }
+            super.onResume();
+        }
+        loadFiles(mUserAccount.getUserId(), mDirId);
+    }
+
     @Override
     public void onConnected(Bundle connectionHint) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -293,6 +310,7 @@ public class FileListActivity extends AppCompatActivity implements
         if (actualFile.isDir()){
             Intent mNextIntent = new Intent(this, FileListActivity.class);
             mNextIntent.putExtra(this.EXTRA_USER_ACCOUNT, mUserAccount);
+            mNextIntent.putExtra(this.EXTRA_CURRENT_FILE, actualFile);
             mNextIntent.putExtra(this.EXTRA_DIR_ID, actualFile.getId());
             startActivity(mNextIntent);
         }
@@ -463,18 +481,18 @@ public class FileListActivity extends AppCompatActivity implements
                 Toast.makeText(FileListActivity.this, getString(R.string.error_fileinfo), Toast.LENGTH_LONG).show();
             }
         });
-
+        System.out.println(" >>>> After FileInfoActivity ");
     }
 
     @Override
     public void onShareClick(int FileItem) {
         Log.i(TAG, "Share File position " + FileItem);
-        mActualFile = mFiles.get(FileItem);
-        mFileId = mActualFile.getId();
+        mCurrentFile = mFiles.get(FileItem);
+        mFileId = mCurrentFile.getId();
         Intent shareIntent = new Intent(FileListActivity.this, ShareActivity.class);
         shareIntent.putExtra(ShareActivity.EXTRA_USER_ACCOUNT, mUserAccount);
         shareIntent.putExtra(ShareActivity.EXTRA_FILE_ID, mFileId);
-        shareIntent.putExtra(ShareActivity.EXTRA_FILE_OWNER_ID, mActualFile.getUserOwner());
+        shareIntent.putExtra(ShareActivity.EXTRA_FILE_OWNER_ID, mCurrentFile.getUserOwner());
         shareIntent.putExtra(ShareActivity.EXTRA_DIR_ID, mDirId);
         startActivity(shareIntent);
         FileContextMenuManager.getInstance().hideContextMenu();
@@ -646,12 +664,12 @@ public class FileListActivity extends AppCompatActivity implements
         String ok_option = getString(R.string.alert_ok);
         String cancel_option = getString(R.string.alert_cancel);
         alertDialogBuilder.setTitle(title).setMessage(message);
-        mActualFile = mFiles.get(FileItem);
-        mFileId = mActualFile.getId();
+        mCurrentFile = mFiles.get(FileItem);
+        mFileId = mCurrentFile.getId();
 
         alertDialogBuilder.setCancelable(false).setPositiveButton(ok_option, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
-                if (mActualFile.isDir()){
+                if (mCurrentFile.isDir()){
                     Log.i(TAG, "Confirm delete directory ");
                     deleteDirectory();
                 }else{
@@ -695,7 +713,7 @@ public class FileListActivity extends AppCompatActivity implements
         });
     }
 
-    private void deleteFile(){
+    private void deleteFile() {
         mFilesService.deleteFile(mUserAccount.getUserId(), mFileId, new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
@@ -712,11 +730,6 @@ public class FileListActivity extends AppCompatActivity implements
                 Log.e(TAG, message);
             }
         });
-    }
-
-    @Override
-    public void onCancelClick(int FileItem) {
-        FileContextMenuManager.getInstance().hideContextMenu();
     }
 
     @Override
@@ -1020,6 +1033,5 @@ public class FileListActivity extends AppCompatActivity implements
         System.out.println("Returning downloadVersion >>>>> "+ this.downloadVersion);
         return this.downloadVersion;
     }
-
 
 }

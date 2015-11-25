@@ -44,7 +44,6 @@ public class FileContextMenu extends LinearLayout {
         LinearLayout btnShare = (LinearLayout) findViewById(R.id.lnBtnShare);
         LinearLayout btnTag = (LinearLayout) findViewById(R.id.lnBtnTag);
         LinearLayout btnDelete = (LinearLayout) findViewById(R.id.lnBtnDelete);
-        LinearLayout btnCancel = (LinearLayout) findViewById(R.id.lnBtnCancel);
 
         btnDownload.setOnClickListener(new OnClickListener() {
             @Override
@@ -109,15 +108,6 @@ public class FileContextMenu extends LinearLayout {
         if (!this.onItemClickBtnVisibilityListener.shouldShowPrevDownloadButton(mFeedItem))
             btnDownloadPrev.setVisibility(GONE);
 
-        btnCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onCancelClick(fileItem);
-                }
-            }
-        });
-
     }
 
     public void dismiss() {
@@ -138,7 +128,6 @@ public class FileContextMenu extends LinearLayout {
         void onShareClick(int FileItem);
         void onTagClick(int FileItem);
         void onDeleteClick(int FileItem);
-        void onCancelClick(int FileItem);
     }
 
     public interface OnFileContextMenuItemClickButtonVisibilityListener {
