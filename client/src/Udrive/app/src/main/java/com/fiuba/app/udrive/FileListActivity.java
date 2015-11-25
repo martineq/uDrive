@@ -730,11 +730,6 @@ public class FileListActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCancelClick(int FileItem) {
-        FileContextMenuManager.getInstance().hideContextMenu();
-    }
-
-    @Override
     public void onClick(View v, int position) {
         FileContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this, this);
     }
