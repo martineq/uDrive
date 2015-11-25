@@ -1107,6 +1107,7 @@ bool RequestDispatcher::recover_deleted_files_from_user_info(DataHandler::user_i
     // If the old parent directory is deleted, assign the root directory
     if( !dh_.get_directory_info(file_info.parent_directory,dir_info,status) ){
       new_dir_id = user_info.dir_root;
+      file_info.parent_directory = user_info.dir_root;
       if( !dh_.get_directory_info(new_dir_id,dir_info,status) ){ return false; }
     }
     // Add file id to files_contained
