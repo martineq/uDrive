@@ -132,7 +132,7 @@ public class FileListActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         if(mDirId == 0){
             super.onResume();
         }else{
@@ -141,7 +141,7 @@ public class FileListActivity extends AppCompatActivity implements
             }
             super.onResume();
         }
-
+        loadFiles(mUserAccount.getUserId(), mDirId);
     }
 
     @Override
@@ -713,7 +713,7 @@ public class FileListActivity extends AppCompatActivity implements
         });
     }
 
-    private void deleteFile(){
+    private void deleteFile() {
         mFilesService.deleteFile(mUserAccount.getUserId(), mFileId, new ServiceCallback<List<File>>() {
             @Override
             public void onSuccess(List<File> files, int status) {
@@ -1032,12 +1032,6 @@ public class FileListActivity extends AppCompatActivity implements
     public int getDownloadVersion(){
         System.out.println("Returning downloadVersion >>>>> "+ this.downloadVersion);
         return this.downloadVersion;
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        loadFiles(mUserAccount.getUserId(), mDirId);
     }
 
 }
