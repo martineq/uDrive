@@ -982,8 +982,14 @@ public class FileListActivity extends AppCompatActivity implements
 
     @Override
     public boolean shouldShowDeleteButton(int position) {
-        File actualFile = mFiles.get(position);
-        return (actualFile.getUserOwner().equals(mUserAccount.getUserId()));
+        File currentFile = mFiles.get(position);
+        return (currentFile.getUserOwner().equals(mUserAccount.getUserId()));
+    }
+
+    @Override
+    public boolean shouldShowShareButton(int position) {
+        File currentFile = mFiles.get(position);
+        return (currentFile.isFile());
     }
 
     @Override
