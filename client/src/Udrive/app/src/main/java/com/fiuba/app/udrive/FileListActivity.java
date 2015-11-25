@@ -87,6 +87,8 @@ public class FileListActivity extends AppCompatActivity implements
 
     public static final int DIR_CODE = 2;
 
+    public static final int FILE_INFO_OK = 3;
+
     public static final String EXTRA_USER_ACCOUNT = "userAccount";
 
     public static final String EXTRA_DIR_ID = "dirId";
@@ -104,6 +106,7 @@ public class FileListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
+        System.out.println(" >>>>>> Executing onCreate()");
         mUserAccount = (UserAccount) getIntent().getSerializableExtra(EXTRA_USER_ACCOUNT);
         mCurrentFile = (File) getIntent().getSerializableExtra(EXTRA_CURRENT_FILE);
         mDirId = (Integer) getIntent().getSerializableExtra(EXTRA_DIR_ID);
@@ -478,7 +481,7 @@ public class FileListActivity extends AppCompatActivity implements
                 Toast.makeText(FileListActivity.this, getString(R.string.error_fileinfo), Toast.LENGTH_LONG).show();
             }
         });
-
+        System.out.println(" >>>> After FileInfoActivity ");
     }
 
     @Override
@@ -1031,5 +1034,10 @@ public class FileListActivity extends AppCompatActivity implements
         return this.downloadVersion;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        loadFiles(mUserAccount.getUserId(), mDirId);
+    }
 
 }
