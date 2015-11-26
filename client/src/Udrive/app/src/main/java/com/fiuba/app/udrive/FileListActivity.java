@@ -137,10 +137,18 @@ public class FileListActivity extends AppCompatActivity implements
             super.onResume();
         }else{
             if(mCurrentFile.isDir()){
-                setTitle(mCurrentFile.getName());
+                if(mCurrentFile.getName().equals("Archivos Compartidos")){
+                    String newName = getResources().getString(R.string.folder_share);
+                    setTitle(newName);
+                }else{
+
+                    setTitle(mCurrentFile.getName());
+                }
+
             }
             super.onResume();
         }
+
         loadFiles(mUserAccount.getUserId(), mDirId);
     }
 
