@@ -78,7 +78,12 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
                 }
 
             }else{
-                viewHolder.imagFile.setImageResource(R.drawable.ic_file);
+                if(file.getShared()){
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_file_cloud);
+                }else{
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_file);
+                }
+
             }
 
         }
