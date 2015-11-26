@@ -68,14 +68,18 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
         File file = mFiles.get(position);
         if (file != null) {
             String lastMod = convertView.getResources().getString(R.string.file_lastMod)+" "+file.getLastModDateFormated();
-            viewHolder.txName.setText(file.getName());
             viewHolder.txLastMod.setText(lastMod);
-            if(file.getType() == 'd'){
+            if(file.isDir()){
                 if(file.getShared()){
                     viewHolder.imagFile.setImageResource(R.drawable.ic_folder_account);
                 }else{
                     viewHolder.imagFile.setImageResource(R.drawable.ic_folder);
                 }
+
+                if(file.getName().equals("Archivos Compartidos")){
+                    viewHolder.txName.setText(R.string.folter_share);
+                }
+
 
             }else{
                 if(file.getShared()){
@@ -83,7 +87,7 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
                 }else{
                     viewHolder.imagFile.setImageResource(R.drawable.ic_file);
                 }
-
+                viewHolder.txName.setText(file.getName());
             }
 
         }
