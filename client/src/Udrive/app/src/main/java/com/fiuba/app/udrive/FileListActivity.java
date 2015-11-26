@@ -321,7 +321,7 @@ public class FileListActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == FILE_CODE && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG,"Call upload file");
+            Log.d(TAG, "Call upload file");
             uploadSelectedFile(data);
         } else if (requestCode == DIR_CODE && resultCode == Activity.RESULT_OK) {
             downloadFileIntoSelectedDir(data);
@@ -668,11 +668,11 @@ public class FileListActivity extends AppCompatActivity implements
         mFileId = mCurrentFile.getId();
 
         alertDialogBuilder.setCancelable(false).setPositiveButton(ok_option, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int id) {
-                if (mCurrentFile.isDir()){
+            public void onClick(DialogInterface dialog, int id) {
+                if (mCurrentFile.isDir()) {
                     Log.i(TAG, "Confirm delete directory ");
                     deleteDirectory();
-                }else{
+                } else {
                     Log.i(TAG, "Confirm delete file ");
                     deleteFile();
                 }
@@ -996,7 +996,12 @@ public class FileListActivity extends AppCompatActivity implements
     @Override
     public boolean shouldShowDeleteButton(int position) {
         File currentFile = mFiles.get(position);
-        return (currentFile.getUserOwner().equals(mUserAccount.getUserId()));
+        if (currentFile.getUserOwner() != null){
+            return (currentFile.getUserOwner().equals(mUserAccount.getUserId()));
+        }else{
+            return true;
+        }
+
     }
 
     @Override
@@ -1008,7 +1013,7 @@ public class FileListActivity extends AppCompatActivity implements
     @Override
     public boolean shouldShowPrevDownloadButton(int position) {
         File actualFile = mFiles.get(position);
-        if ((actualFile.getLastVersion()<=1) || actualFile.isDir())
+        if ((actualFile.getLastVersion()== null) || (actualFile.getLastVersion()!= null && ((actualFile.getLastVersion()<=1) || actualFile.isDir())))
             return false;
         return true;
     }
