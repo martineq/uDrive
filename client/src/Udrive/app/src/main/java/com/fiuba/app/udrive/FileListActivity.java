@@ -804,7 +804,7 @@ public class FileListActivity extends AppCompatActivity implements
             @Override
             public void onSuccess(List<Collaborator> coll, int status) {
                 for (int i = 0; i < coll.size(); i++) {
-                    names.add(coll.get(i).getFirstName() + " " + coll.get(i).getLastName());
+                    names.add(Util.capitalize(coll.get(i).getFirstName() + " " + coll.get(i).getLastName()));
                     mails.add(coll.get(i).getEmail());
                     collab.add(coll.get(i));
                 }
@@ -823,17 +823,6 @@ public class FileListActivity extends AppCompatActivity implements
                 // Do nothing
             }
         });
-
-        // TODO: delete after testing
-        /*************/
-        /*collab.add(new Collaborator("Name1", "Name1", "name1@name1.com"));
-        collab.add(new Collaborator("Name2", "Name2", "name2@name2.com"));
-        collab.add(new Collaborator("Name3", "Name3", "name3@name3.com"));
-        for (int i = 0; i < collab.size(); i++){
-            names.add(collab.get(i).getFirstName()+" "+collab.get(i).getLastName());
-            mails.add(collab.get(i).getEmail());
-        }*/
-        /*************/
 
         TabHost.TabSpec spec4 = tabHost.newTabSpec("tab4");
         spec4.setIndicator(getTabIndicator(tabHost.getContext(), R.string.by_owner, R.drawable.ic_account_24));
@@ -936,7 +925,9 @@ public class FileListActivity extends AppCompatActivity implements
                             mFilesService.getFilesByOwner(mUserAccount.getUserId(), ownerId, new ServiceCallback<List<File>>() {
                                 @Override
                                 public void onSuccess(List<File> files, int status) {
+                                    System.out.println(" Got hits by owner *** No files");
                                     if (files.size() > 0) {
+                                        System.out.println(" Got hits by owner");
                                         progressDialog.dismiss();
                                         mFilesAdapter.updateFiles(files);
                                         Log.d(TAG, "Number of files received " + files.size());
