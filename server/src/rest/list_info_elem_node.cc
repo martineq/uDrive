@@ -114,11 +114,8 @@ void ListInfoElemNode::executeGet() {
 						}
 				}
 			}
-
 		}else{
 			//dir
-
-
 			Log(Log::LogMsgDebug) << "[ListInfoElemNode], Dir. ";
 				RequestDispatcher::dir_info_st dir_info;
 				if (getRequestDispatcher()->get_directory_info(userId,Id,dir_info,status)){
@@ -127,7 +124,7 @@ void ListInfoElemNode::executeGet() {
 					Log(Log::LogMsgDebug) << "[ListInfoElemNode], user last mod "<<dir_info.owner;
 					RequestDispatcher::user_info_st user_info_updated;
 					if (getRequestDispatcher()->get_user_info(dir_info.owner, user_info_updated, status)) {
-                                                string dir_tags = dir_info.tags;
+						string dir_tags = dir_info.tags;
 						result=true;
 						item
 						<< "\"owner\":"
@@ -179,20 +176,12 @@ void ListInfoElemNode::executeGet() {
 								result = true;
 							}
 						}
-
 						item << "]";
-
-                                                item << ",\"tags\":\"" + dir_tags + "\"";
+						item << ",\"tags\":\"" + dir_tags + "\"";
 					}
 				}
 			}
-
-
-
-
 		}
-
-
 		item << "}";
 
 		if (!result) {

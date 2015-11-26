@@ -64,6 +64,7 @@ void CreateDirNode::executePost() {
 				vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;  // Assign value
 				bool enc = false;
 				std::ostringstream item;
+				string lastVersion="";
 	  			item << "[";
 				if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
@@ -77,8 +78,10 @@ void CreateDirNode::executePost() {
 		     				<< "\",\"size\":\""	<< (*directory_it).size	
 		     				<< "\",\"type\":\""	<< (*directory_it).type 
 		     				<< "\",\"cantItems\":\"" << (*directory_it).number_of_items 
-		     				<< "\",\"shared\":\"" << (*directory_it).shared 
-		     				<< "\",\"lastModDate\":\"" << (*directory_it).lastModDate << "\"},";
+		     				<< "\",\"shared\":\"" << (*directory_it).shared
+							<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
+							<< "\"userOwner\":\"" << (*directory_it).owner << "\", "
+							<< "\"lastVersion\":\"" << lastVersion << "\"},";
 						}
 					}
 					if (directory_element_info.size()==1) enc=true;
@@ -96,8 +99,10 @@ void CreateDirNode::executePost() {
 	     				<< "\",\"size\":\""	<< (*(directory_it)).size	
 	     				<< "\",\"type\":\""	<< (*(directory_it)).type 
 	     				<< "\",\"cantItems\":\"" << (*(directory_it)).number_of_items 
-	     				<< "\",\"shared\":\"" << (*(directory_it)).shared 
-	     				<< "\",\"lastModDate\":\"" << (*(directory_it)).lastModDate << "\"}";
+	     				<< "\",\"shared\":\"" << (*(directory_it)).shared
+						<< "\"lastModDate\":\"" << (*directory_it).lastModDate << "\", "
+						<< "\"userOwner\":\"" << (*directory_it).owner << "\", "
+						<< "\"lastVersion\":\"" << lastVersion << "\"}";
 	     				item << "]";
 
 						Log(Log::LogMsgDebug) << "[" << "listing directory" << "]: dirInfo: " << dirInfo_rd.name << ", Number of items: " << directory_element_info.size();
@@ -123,8 +128,7 @@ void CreateDirNode::executePost() {
 	}
 }
 std::string CreateDirNode::defaultResponse(){
-	return "[{ \"id\": \"0\",\"name\": \"\",\"size\": \"0\","
-			"\"type\": \"\",\"cantItems\": \"0\",\"shared\": \"\",\"lastModDate\": \"\"}]";
+	return "[]";
 }
 
 std::string CreateDirNode::getUserId() {
