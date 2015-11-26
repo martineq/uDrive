@@ -23,12 +23,15 @@ void ProfileNode::executeGet() {
         RequestDispatcher::user_info_st user_info;
 
         if (!getRequestDispatcher()->get_user_info(userId,user_info,status)){
+            Log(Log::LogMsgDebug) << "[ProfileNode] paso ";
             getConnection().sendStatus(MgConnectionW::STATUS_CODE_NO_CONTENT);
             getConnection().sendContentType(MgConnectionW::CONTENT_TYPE_JSON);
+
             string msg=handlerError(status);
             getConnection().printfData(msg.c_str());
         }
         else{
+
 
             std::ostringstream item;
             std::string user_image;
