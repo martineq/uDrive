@@ -777,7 +777,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   for(vector<RequestDispatcher::info_element_st>::iterator it=elements_founded.begin();it!=elements_founded.end();++it){
     search_results.append((*it).name+";");
   }
-  EXPECT_STREQ("archivo;archivo_2;shared_files;miCarpeta;",search_results.c_str());
+  EXPECT_STREQ("archivo;archivo_2;Archivos Compartidos;miCarpeta;",search_results.c_str());
   
   // Search by extension
   EXPECT_TRUE(rd->search_by_extension(user_id,"TxT",elements_founded,status));
@@ -796,7 +796,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   status;
   EXPECT_TRUE(rd->check_token(user_id,token,status));
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("1294",size_stream);  // Size of zip file (3 files): 1294 bytes
+  EXPECT_EQ("1286",size_stream);  // Size of zip file (3 files): 1286 bytes
 
   // Create zip file with forbidden user
   sub_sub_dir_id;
@@ -878,7 +878,7 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   EXPECT_EQ(0,deleted_files.size());
   // ...And get zip file without the file
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("1076",size_stream);  // Size of zip file (2 files): 1076 bytes
+  EXPECT_EQ("1068",size_stream);  // Size of zip file (2 files): 1068 bytes
   
   // Change directory information
   EXPECT_TRUE(rd->modify_directory_info(user_id,sub_dir_id,"dir_renombrado","09/11/15","importante",status));
@@ -891,10 +891,10 @@ TEST(RequestDispatcherTest, ReleaseCandidateIntegration) {
   EXPECT_EQ(2,dir_info.directory_element_info.size());   // Number of elements in this directory: 3-1=2
   // ...And get zip file without the sub-dir
   EXPECT_TRUE(rd->get_dir_stream(user_id,root_dir_id,p_dir_stream,size_stream,status));
-  EXPECT_EQ("536",size_stream);  // Size of zip file (1 file): 536 bytes
+  EXPECT_EQ("528",size_stream);  // Size of zip file (1 file): 528 bytes
   // Save the zip file
   FileHandler fh;
-  EXPECT_EQ(536,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 536 bytes
+  EXPECT_EQ(528,fh.save_file("carpeta_372.zip",p_dir_stream,stoul(size_stream,nullptr,10)));  // Size of zip file (1 file): 528 bytes
 
   // Change user info
   EXPECT_TRUE(rd->modify_user_info(user_id_second,"minuevo@mail.com.br","Ice","Kng","122.34","45.33",status));
