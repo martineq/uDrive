@@ -64,7 +64,7 @@ void CreateDirNode::executePost() {
 				vector<RequestDispatcher::info_element_st> directory_element_info = dirInfo_rd.directory_element_info;  // Assign value
 				bool enc = false;
 				std::ostringstream item;
-				string lastVersion="";
+				string lastVersion="0";
 	  			item << "[";
 				if ( true ){  //TODO(martindonofrio): delete "if" (not needed anymore)
 					vector<RequestDispatcher::info_element_st>::iterator directory_it;
