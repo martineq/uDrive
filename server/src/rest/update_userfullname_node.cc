@@ -32,11 +32,11 @@ void UpdateUserFullNameNode::executePut() {
         string userId=lista[2];
         Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: userid: "<<userId;
 
-        std::string firstname=getConnection().getBodyJson("firstname");
-        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok";
+        std::string firstname=getConnection().getBodyJson("firstName");
+        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field firstname ok: "<<firstname;
 
-        std::string lastname=getConnection().getBodyJson("lastname");
-        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field lastname ok";
+        std::string lastname=getConnection().getBodyJson("lastName");
+        Log(Log::LogMsgDebug) << "[UpdateUserFullNameNode]: field lastname ok: " <<lastname;
         bool enc=true;
 
         RequestDispatcher::user_info_st user_info;
