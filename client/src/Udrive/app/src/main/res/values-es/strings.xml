@@ -70,6 +70,7 @@
     <string name="fullname_error">Error actualizando el nombre</string>
     <string name="error_profile">Error al intentar mostrar el perfil</string>
     <string name="picture_size_error">El tamaño de la imagen no puede superar 1 MB</string>
+    <string name="error_fullname_empty">Debe ingresar nombre y apellido</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Descargar</string>
@@ -114,6 +115,7 @@
     <string name="by">Por</string>
     <string name="from">Desde</string>
     <string name="items">Cant. items</string>
+    <string name="error_filename_empty">Debe ingresar un nombre de archivo válido</string>
 
     <!-- Strings related to file actions -->
     <string name="share_title">Compartir</string>

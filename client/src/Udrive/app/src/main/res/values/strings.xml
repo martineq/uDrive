@@ -71,6 +71,7 @@
     <string name="fullname_error">Error updating the full name</string>
     <string name="error_profile">Error loading profile</string>
     <string name="picture_size_error">Your picture size must not be greater than 1 MB</string>
+    <string name="error_fullname_empty">You must enter firstname and lastname.</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Download</string>
@@ -118,6 +119,7 @@
     <string name="by">By</string>
     <string name="from">From</string>
     <string name="items">No. items</string>
+    <string name="error_filename_empty">You must enter a valid filename</string>
 
     <!-- Strings related to file actions -->
     <string name="share_title">Share</string>
