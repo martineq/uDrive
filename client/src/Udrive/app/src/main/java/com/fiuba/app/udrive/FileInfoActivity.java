@@ -48,37 +48,6 @@ public class FileInfoActivity extends AppCompatActivity {
         ((ScrollView)findViewById(R.id.scroll_layout)).smoothScrollTo(0, 0);
         mFileInfo = (FileInfo) getIntent().getSerializableExtra(FILE_INFO);
 
-        /** TODO: delete this fragment after loading file info from HTTP response **/
-        /*UserBasicData owner = new UserBasicData("Owner", "User", "owner@owner.com");
-
-        File file = new File("Image.jpg", 565421,'a', false, "21/08/2015 08:53", null,null);
-        file.setId(1);
-        UserBasicData updatedBy = owner;
-        double updatedFromLatitude = -34.795713;
-        double updatedFromLongitude = -58.348321;
-        ArrayList<UserBasicData> collaborators = new ArrayList<>();
-        collaborators.add(new UserBasicData("user1", "user1", "user1@lala.com"));
-        collaborators.add(new UserBasicData("AnotherUser", "AnotherUser", "anotheruser@lolo.com"));
-        collaborators.add(new UserBasicData("Bono", "Vox", "blabla@blabla.com"));
-        collaborators.add(new UserBasicData("Sharon", "Den Adel", "xxxxx@yyyy.com"));
-        ArrayList<Tag> tags = new ArrayList<>();
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
-        tags.add(new Tag("tag2"));
-
-        mFileInfo = new FileInfo(owner, file, updatedBy, updatedFromLatitude, updatedFromLongitude,
-                collaborators, tags);*/
-        /******/
         ListView access = (ListView)findViewById(R.id.list_access);
         // who has access
         ArrayList<String> names = new ArrayList<>();
@@ -86,7 +55,7 @@ public class FileInfoActivity extends AppCompatActivity {
         int i;
         ArrayList<UserBasicData> coll = mFileInfo.getCollaborators();
         for (i = 0; i < coll.size(); i++){
-            names.add(coll.get(i).getFirstname()+" "+coll.get(i).getLastname());
+            names.add(Util.capitalize(coll.get(i).getFirstname()+" "+coll.get(i).getLastname()));
             mails.add(coll.get(i).getEmail());
             System.out.println("Collab name >>>> " + coll.get(i).getFirstname() + " " + coll.get(i).getLastname());
             System.out.println("Collab email >>>> "+ coll.get(i).getEmail());
