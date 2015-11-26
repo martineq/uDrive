@@ -217,6 +217,18 @@ public class FileInfoActivity extends AppCompatActivity {
                 .setView(layout)
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        ArrayList<String> words = new ArrayList<String>();
+                        words.add("");
+                        words.add(" ");
+                        words.add(null);
+
+                        String error = "";
+
+                        if (Util.matchString(filename.getText().toString(), words)) {
+                            Toast.makeText(FileInfoActivity.this, R.string.error_filename_empty, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        //if (filename.getText().toString().length()
                         int userId = (int)getIntent().getSerializableExtra("userId");
                         int fileId = mFileInfo.getFile().getId();
                         String type = mFileInfo.getFile().isDir()?"dir":"file";
