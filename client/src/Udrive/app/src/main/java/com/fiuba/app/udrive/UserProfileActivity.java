@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -189,6 +190,17 @@ public class UserProfileActivity extends AppCompatActivity {
                 .setView(layout)
                 .setPositiveButton(getString(R.string.save_changes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        ArrayList<String> words = new ArrayList<String>();
+                        words.add("");
+                        words.add(" ");
+                        words.add(null);
+
+                        String error = "";
+
+                        if ((Util.matchString(firstname.getText().toString(), words)) || (Util.matchString(lastname.getText().toString(), words))) {
+                            Toast.makeText(UserProfileActivity.this, R.string.error_fullname_empty, Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         mUserService.updateFullName(mUserProfile.getUserId(), new UserFullName(firstname.getText().toString(),
                                 lastname.getText().toString()), new ServiceCallback<GenericResult>() {
                             @Override

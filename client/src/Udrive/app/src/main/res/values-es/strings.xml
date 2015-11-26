@@ -13,8 +13,8 @@
     <string name="button_send">Ingresar</string>
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
-    <string name="sign_up_msg">No tienes una cuenta?</string>
-    <string name="sign_up_link">Registrate</string>
+    <string name="sign_up_msg">¿No tienes una cuenta?</string>
+    <string name="sign_up_link">Regístrate</string>
     <string name="loading">Cargando...</string>
     <string name="error_obtaining_files">Error obteniendo archivos</string>
     <string name="error_mail_pass">Correo electrónico o contraseña incorrectos</string>
@@ -34,7 +34,7 @@
     <!-- Sign up strings -->
     <string name="title_activity_sign_up">Registrarse en uDrive</string>
     <string name="signup_firstname">Nombre</string>
-    <string name="signup_lastname">Apelido</string>
+    <string name="signup_lastname">Apellido</string>
     <string name="signup_button">Crear cuenta</string>
     <string name="error_mail_exists">El correo electrónico ingresado ya existe. Por favor ingrese otro.</string>
     <string name="signup_ok">¡La cuenta se creó exitosamente!</string>
@@ -50,7 +50,7 @@
     <string name="action_upload_file">Subir archivo</string>
 
     <!-- String related to Add folder-->
-    <string name="alert_ok">OK</string>
+    <string name="alert_ok">Aceptar</string>
     <string name="alert_cancel">Cancelar</string>
     <string name="action_add_folder">Crear carpeta</string>
     <string name="folder_name">Nombre de carpeta: </string>
@@ -58,7 +58,7 @@
     <!-- Strings related to User Profile Activity -->
     <string name="userprofile_title">Mi perfil</string>
     <string name="screen_name">Modificar nombre y apellido</string>
-    <string name="save_changes">Guardar cambios</string>
+    <string name="save_changes">Guardar</string>
     <string name="unknown_location">Desconocido</string>
     <string name="last_location"><![CDATA[<strong>Última ubicación</strong>]]></string>
     <string name="email_profile"><![CDATA[<b>Correo electrónico</b>]]></string>
@@ -70,6 +70,7 @@
     <string name="fullname_error">Error actualizando el nombre</string>
     <string name="error_profile">Error al intentar mostrar el perfil</string>
     <string name="picture_size_error">El tamaño de la imagen no puede superar 1 MB</string>
+    <string name="error_fullname_empty">Debe ingresar nombre y apellido</string>
 
     <!-- Strings related to Context Menu -->
     <string name="download_action">Descargar</string>
@@ -90,8 +91,8 @@
     <string name="no">No</string>
     <string name="are_you_sure">¿Está seguro?</string>
     <string name="action_show_trash">Papelera</string>
-    <string name="collaborators_is_empty">No collaborators</string>
-    <string name="delete_option_message">Desea eliminar?</string>
+    <string name="collaborators_is_empty">Sin colaboradores</string>
+    <string name="delete_option_message">¿Desea eliminar?</string>
 
     <!-- Strings related to file tagging dialog -->
     <string name="file_tag_title">Etiquetar</string>
@@ -110,10 +111,11 @@
     <string name="edit_filename_title">Actualizar nombre de archivo</string>
     <string name="owner">Propietario</string>
     <string name="size">Tamaño</string>
-    <string name="lastUpd">Ult. mod.</string>
+    <string name="lastUpd">Últ. mod.</string>
     <string name="by">Por</string>
     <string name="from">Desde</string>
     <string name="items">Cant. items</string>
+    <string name="error_filename_empty">Debe ingresar un nombre de archivo válido</string>
 
     <!-- Strings related to file actions -->
     <string name="share_title">Compartir</string>
@@ -150,6 +152,7 @@
     <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
     <string name="fileList_is_empty">Sin archivos cargados</string>
     <string name="message_validation_no_canShare">No posee permisos para descompartir</string>
+    <string name="folter_share">Archivos Compartidos</string>
 
 </resources>
 

@@ -41,9 +41,12 @@ void SearchUsersNode::executeGet() {
 		item << "[";
 		vector<RequestDispatcher::user_info_st> listaUsersInfo;
 
+		if (query_mail=="%40") query_mail="@";
+
 		Log(Log::LogMsgDebug) << "[SearchUsersNode], UserId: " <<userId << " Patron: " <<query_mail;
+
 		if (getRequestDispatcher()->get_user_email_list_by_pattern(query_mail,listaUsersInfo,status)){
-			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users , size: "<<listaUsersInfo.size();
+			Log(Log::LogMsgDebug) << "[SearchUsersNode]: list users , size: ";
 			if (listaUsersInfo.size()!=0) {
 				for (int i = 0; i < listaUsersInfo.size()-1 ; ++i) {
 					item

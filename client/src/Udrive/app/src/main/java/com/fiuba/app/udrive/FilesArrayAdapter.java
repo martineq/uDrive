@@ -15,6 +15,7 @@ import java.util.List;
 
 public class FilesArrayAdapter extends ArrayAdapter<File> {
 
+    private final Context mContext;
     private List<File> mFiles;
     private int mResourceId;
     private OnContextMenuClickListener contextMenuClickListener;
@@ -24,6 +25,7 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
         this.mFiles = files;
         this.mResourceId = resourceId;
         this.contextMenuClickListener = contextMenuClickListener;
+        this.mContext = context;
     }
 
     static class FilesViewHolder {
@@ -66,17 +68,26 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
         File file = mFiles.get(position);
         if (file != null) {
             String lastMod = convertView.getResources().getString(R.string.file_lastMod)+" "+file.getLastModDateFormated();
-            viewHolder.txName.setText(file.getName());
             viewHolder.txLastMod.setText(lastMod);
-            if(file.getType() == 'd'){
+            if(file.isDir()){
                 if(file.getShared()){
                     viewHolder.imagFile.setImageResource(R.drawable.ic_folder_account);
                 }else{
                     viewHolder.imagFile.setImageResource(R.drawable.ic_folder);
                 }
 
+                if(file.getName().equals("Archivos Compartidos")){
+                    viewHolder.txName.setText(R.string.folter_share);
+                }
+
+
             }else{
-                viewHolder.imagFile.setImageResource(R.drawable.ic_file);
+                if(file.getShared()){
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_file_cloud);
+                }else{
+                    viewHolder.imagFile.setImageResource(R.drawable.ic_file);
+                }
+                viewHolder.txName.setText(file.getName());
             }
 
         }

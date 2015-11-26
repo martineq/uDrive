@@ -96,6 +96,7 @@ public class Util {
         if ((latitude != 0.00) && (longitude != 0.00)) {
             try {
                 //addresses = geocoder.getFromLocation(-34.795713, -58.348321, 1);
+                System.out.println("Lat >>> "+latitude+" - Long >>> "+longitude);
                 addresses = geocoder.getFromLocation(latitude,longitude, 1);
                 location = addresses.get(0).getAddressLine(1);// + ", " + addresses.get(0).getAddressLine(2);
             } catch (IOException e) {

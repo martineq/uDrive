@@ -11,7 +11,7 @@
         <ImageButton
             android:id="@+id/btnDownload"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -42,7 +42,7 @@
         <ImageButton
             android:id="@+id/btnDownloadPrev"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -73,7 +73,7 @@
         <ImageButton
             android:id="@+id/btnInformation"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -104,7 +104,7 @@
         <ImageButton
             android:id="@+id/btnShare"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -136,7 +136,7 @@
         <ImageButton
             android:id="@+id/btnTag"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -167,7 +167,7 @@
         <ImageButton
             android:id="@+id/btnDelete"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@color/white"
@@ -181,38 +181,6 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:text="@string/delete_action" />
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#eeeeee" />
-
-    <LinearLayout
-        android:id="@+id/lnBtnCancel"
-        style="@style/ContextMenuButton"
-        android:background="@color/white"
-        android:clickable="true"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/btnCancel"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:background="@color/white"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_close_circle" />
-
-        <TextView
-            android:id="@+id/textViewCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="5dp"
-            android:text="@string/cancel_action" />
     </LinearLayout>
 
 </merge>

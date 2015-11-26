@@ -54,7 +54,9 @@ void ListInfoElemNode::executeGet() {
 						Log(Log::LogMsgDebug) << "[ListInfoElemNode], user last mod "<<file_info.user_last_mod;
 						RequestDispatcher::user_info_st user_info_updated;
 						if (getRequestDispatcher()->get_user_info(file_info.user_last_mod, user_info_updated, status)) {
-							result=true;
+                                                        string is_shared = "false"; if( !file_info.shared_users.empty() ){ is_shared="true"; }
+                                                        string file_tags = file_info.tags;
+                                                        result=true;
 							item
 							<< "\"owner\":"
 							<< "{\"firstName\":\"" << user_info.first_name << "\","
@@ -66,7 +68,7 @@ void ListInfoElemNode::executeGet() {
 							<< "\"name\":\"" << file_info.name << "\","
 							<< "\"size\":\"" << file_info.size << "\","
 							<< "\"type\":\"" "a\","
-							<< "\"shared\":\"" << "false" << "\"," //TODO : Ver de donde sacar el campo este
+							<< "\"shared\":\"" << is_shared << "\"," 
 							<< "\"lastModDate\":\"" << file_info.date_last_mod << "\","
 							<< "\"cantItems\":\""<<cantItems<< "\"},"
 
@@ -108,25 +110,12 @@ void ListInfoElemNode::executeGet() {
 
 							item << "]";
 
-							vector<string> tags;
-							item
-							<< ",\"tags\":\"";
-							if (getRequestDispatcher()->get_tags(userId,tags,status)){
-
-								for (int i = 0; i < tags.size(); ++i) {
-									item << tags[i]+";";
-								}
-								item << "\"";
-							}
-
+                                                        item << ",\"tags\":\"" + file_tags + "\"";
 						}
 				}
 			}
-
 		}else{
 			//dir
-
-
 			Log(Log::LogMsgDebug) << "[ListInfoElemNode], Dir. ";
 				RequestDispatcher::dir_info_st dir_info;
 				if (getRequestDispatcher()->get_directory_info(userId,Id,dir_info,status)){
@@ -135,6 +124,7 @@ void ListInfoElemNode::executeGet() {
 					Log(Log::LogMsgDebug) << "[ListInfoElemNode], user last mod "<<dir_info.owner;
 					RequestDispatcher::user_info_st user_info_updated;
 					if (getRequestDispatcher()->get_user_info(dir_info.owner, user_info_updated, status)) {
+						string dir_tags = dir_info.tags;
 						result=true;
 						item
 						<< "\"owner\":"
@@ -145,9 +135,9 @@ void ListInfoElemNode::executeGet() {
 						<< "\"file\":"
 						<< "{\"id\":\"" << Id << "\","
 						<< "\"name\":\"" << dir_info.name<< "\","
-						<< "\"size\":\"" << "4096" << "\","
-						<< "\"type\":\"" "a\","
-						<< "\"shared\":\"" << "false" << "\"," //TODO : Ver de donde sacar el campo este
+						<< "\"size\":\"" << dir_info.size << "\","
+						<< "\"type\":\"" "d\","
+						<< "\"shared\":\"" << "false" << "\"," // Siempre es falso, por ser directorio
 						<< "\"lastModDate\":\"" << dir_info.date_last_mod << "\","
 						<< "\"cantItems\":\""<< dir_info.directory_element_info.size()<< "\"},"
 
@@ -186,30 +176,12 @@ void ListInfoElemNode::executeGet() {
 								result = true;
 							}
 						}
-
 						item << "]";
-
-						vector<string> tags;
-						item
-						<< ",\"tags\":\"";
-						if (getRequestDispatcher()->get_tags(userId,tags,status)){
-
-							for (int i = 0; i < tags.size(); ++i) {
-								item << tags[i]+";";
-							}
-							item << "\"";
-						}
-
+						item << ",\"tags\":\"" + dir_tags + "\"";
 					}
 				}
 			}
-
-
-
-
 		}
-
-
 		item << "}";
 
 		if (!result) {
