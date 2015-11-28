@@ -79,6 +79,8 @@ public class FilesArrayAdapter extends ArrayAdapter<File> {
                 if(file.getName().equals("Archivos Compartidos")){
                     String newName = getContext().getResources().getString(R.string.folder_share);
                     viewHolder.txName.setText(newName);
+                } else {
+                    viewHolder.txName.setText(file.getName());
                 }
 
 
