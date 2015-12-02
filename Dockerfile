@@ -13,10 +13,10 @@ MAINTAINER mart mart
 COPY ./ /home
 
 # Uso el script de instalación con parámetro para Docker
-RUN cd /home/server && chmod 777 server_install_v0.2.sh && ./server_install_v0.2.sh -docker
+RUN cd /home/server && chmod 777 server_install_v0.5.sh && ./server_install_v0.5.sh -docker
 
-# Defino el directorio de trabajo
-WORKDIR /home
+# Defino el directorio para correr
+WORKDIR /home/server/build
 
 # Defino el comando estándar
 CMD ["bash"]
