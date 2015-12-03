@@ -40,7 +40,7 @@ Luego ejecutar el servidor con:
 ### Instalación y ejecución
 
 Descargar el archivo apk de instalación (Android) correspondiente a la misma versión del servidor:
-* [:arrow_down: Versión 0.5 :arrow_down:](https://github.com/martineq/tp7552/raw/master/client/src/Udrive/app/app-release.apk) ( :ballot_box_with_check: Última versión )
+* [:arrow_down: Versión 0.5 :arrow_down:](https://github.com/martineq/tp7552/raw/master/client/uDrive.apk) ( :ballot_box_with_check: Última versión )
 * [:arrow_down: Versión 0.4 :arrow_down:](https://github.com/martineq/tp7552/raw/master/client/uDrive.apk)
 * [:arrow_down: Versión 0.3 :arrow_down:](https://github.com/martineq/tp7552/raw/master/client/src/Udrive/app/app-release.apk) 
 * [:arrow_down: Versión 0.2 :arrow_down:](https://github.com/martineq/tp7552/raw/v0.2/client/src/Udrive/app/app-release.apk) 
@@ -58,3 +58,10 @@ Descargar el archivo apk de instalación (Android) correspondiente a la misma ve
 
 ### Coveralls
 [![Coverage Status](https://coveralls.io/repos/martineq/tp7552/badge.svg?branch=develop&service=github)](https://coveralls.io/github/martineq/tp7552?branch=develop)
+
+***
+
+## :wrench: Docker
+Para correr el servidor usando la imagen de docker, con docker instalado ejecutar
+
+`sudo docker run -p 0.0.0.0:8080:8080 martineq/tp7552:latest /bin/sh -c "./server"`
