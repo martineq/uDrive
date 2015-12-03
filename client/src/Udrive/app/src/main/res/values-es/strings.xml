@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">uDrive</string>
+    <string name="app_name">Udrive</string>
     <string name="action_settings">Configuración</string>
     <string name="action_profile">Mi perfil</string>
     <string name="action_signout">Salir</string>
@@ -9,7 +9,7 @@
     <string name="file_lastMod">Última modificación </string>
     <string name="file_name">Nombre</string>
 
-    <string name="title_main_activity">Ingresar a uDrive</string>
+    <string name="title_main_activity">Ingresar a Udrive</string>
     <string name="button_send">Ingresar</string>
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
@@ -32,7 +32,7 @@
     <string name="settings_cancel">Cancelar</string>
 
     <!-- Sign up strings -->
-    <string name="title_activity_sign_up">Registrarse en uDrive</string>
+    <string name="title_activity_sign_up">Registrarse en Udrive</string>
     <string name="signup_firstname">Nombre</string>
     <string name="signup_lastname">Apellido</string>
     <string name="signup_button">Crear cuenta</string>
@@ -152,7 +152,7 @@
     <string name="message_validation_lessQuota">Su cuota es insuficiente</string>
     <string name="fileList_is_empty">Sin archivos cargados</string>
     <string name="message_validation_no_canShare">No posee permisos para descompartir</string>
-    <string name="folter_share">Archivos Compartidos</string>
+    <string name="folder_share">Archivos Compartidos</string>
 
 </resources>
 

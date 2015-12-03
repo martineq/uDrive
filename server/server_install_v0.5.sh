@@ -106,3 +106,12 @@ then
   echo "Creación de archivo de configuración..."
   printf '# UDrive configuration file server\n## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0\nbindip: 0.0.0.0\n\n## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080\nbindport: 8080\n\n## loglevel: we want to see server. debug, warning, info, error. Default: info\nloglevel: debug\n\n## logfile: destination to send the log records. Default: "stdout"\n#logfile: messages.log\n\n## path of database\ndbpath: /tmp/testdb_Release\n\n## User quota\nmaxquotauser: 100000000\n ' > config.yml
 fi
+
+# Caso docker: Compilo y creo el archivo config.yml por defecto para su uso en la imagen
+if [ "$1" == "-docker" ]
+then
+  mkdir build && cd build
+  sudo cmake -DEXE=SI .. && sudo make
+  printf '# UDrive configuration file server\n## bindip: parameter that lets you choose in which direction the web server ip listen. Default: 0.0.0.0\nbindip: 0.0.0.0\n\n## bindport: parameter that lets you choose the server port to listen UDrive. Default: 8080\nbindport: 8080\n\n## loglevel: we want to see server. debug, warning, info, error. Default: info\nloglevel: debug\n\n## logfile: destination to send the log records. Default: "stdout"\n#logfile: messages.log\n\n## path of database\ndbpath: /tmp/testdb_Release\n\n## User quota\nmaxquotauser: 100000000\n ' > config.yml
+fi
+
